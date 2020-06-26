@@ -1,2 +1,2 @@
 # pySentioProberControl
- Python bindings for controlling MPI probe stations
+ Python bindings for controlling MPI SENTIO probe stations
