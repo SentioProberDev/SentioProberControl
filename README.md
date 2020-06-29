@@ -1,5 +1,5 @@
 # Sentio Prober Control - Python Bindings
- Python bindings for controlling MPI SENTIO probe stations
+This archive contains a package with python bindings to control a MPI Sentio probe station.
 
 ## Instructions for package maintainer
 
