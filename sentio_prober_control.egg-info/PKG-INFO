@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: sentio-prober-control
+Version: 0.1.0
+Summary: MPI Sentio Prober Control - Python Bindings
+Home-page: https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/
+Author: Ingo Berg
+Author-email: ingo.berg@atv-systems.de
+License: UNKNOWN
+Description: # pySentioProberControl
+         Python bindings for controlling MPI SENTIO probe stations
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

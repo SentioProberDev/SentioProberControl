@@ -4,11 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="mpi-probe-station-control",
+    name="sentio_prober_control",
     version="0.1.0",
     author="Ingo Berg",
     author_email="ingo.berg@atv-systems.de",
-    description="MPI probe station control package",
+    description="MPI Sentio Prober Control - Python Bindings",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/",
@@ -22,4 +22,5 @@ setuptools.setup(
         "Natural Language :: English",
         "Topic :: Scientific/Engineering"
     ],
+    python_requires='>=3.6',
 )
