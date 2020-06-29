@@ -3,11 +3,13 @@ This archive contains a package with python bindings to control a MPI Sentio pro
 
 ## Instructions for package maintainer
 
-1.) Get the latest version of setuptools and wheel:
+1.) Install python3
+
+2.) Get the latest version of setuptools and wheel:
 
 ```python3 -m pip install --user --upgrade setuptools wheel```
 
-2.) create the distribution archive:
+3.) create the distribution archive:
 
 ```python3 setup.py sdist bdist_wheel```
 
