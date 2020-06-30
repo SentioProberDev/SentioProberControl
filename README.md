@@ -1,5 +1,5 @@
 # SENTIO® Prober Control - Python Bindings
-This archive contains a package with python bindings to control a [MPI Sentio probe station](https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/).
+This archive contains a package with python bindings to control a [MPI SENTIO® probe station](https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/).
 
 ![](https://www.mpi-corporation.com/wp-content/uploads/2019/12/1.-TS3500-SE-with-WaferWallet_frontview.jpg)
 
@@ -31,6 +31,6 @@ This command will create the dist folder.
 
 ```
 dist/
-  sentio_prober_control-0.1.3-py3-none-any.whl
-  sentio_prober_control-0.1.3.tar.gz
+  sentio_prober_control-0.1.5-py3-none-any.whl
+  sentio_prober_control-0.1.5.tar.gz
 ```
