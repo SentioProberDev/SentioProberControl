@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BinCodeMap NullBin="12">
+    <BinDefinitions>
+        <BinDefinition BinCode="0" BinDescription="bin0" BinQuality="Pass" BinColor="255,0,0" />
+        <BinDefinition BinCode="1" BinDescription="bin1" BinQuality="Pass" BinColor="0,255,0" />
+        <BinDefinition BinCode="2" BinDescription="bin2" BinQuality="Pass" BinColor="0,0,255" />
+        <BinDefinition BinCode="3" BinDescription="bin3" BinQuality="Pass" BinColor="255,255,0" />
+        <BinDefinition BinCode="4" BinDescription="bin4" BinQuality="Pass" BinColor="0,255,255" />
+        <BinDefinition BinCode="5" BinDescription="bin5" BinQuality="Pass" BinColor="255,0,255" />
+        <BinDefinition BinCode="6" BinDescription="bin6" BinQuality="Pass" BinColor="255,128,128" />
+        <BinDefinition BinCode="7" BinDescription="bin7" BinQuality="Pass" BinColor="128,255,128" />
+        <BinDefinition BinCode="8" BinDescription="bin8" BinQuality="Pass" BinColor="128,128,255" />
+        <BinDefinition BinCode="9" BinDescription="bin9" BinQuality="Pass" BinColor="255,255,128" />
+        <BinDefinition BinCode="10" BinDescription="bin10" BinQuality="Pass" BinColor="128,255,255" />
+        <BinDefinition BinCode="11" BinDescription="bin11" BinQuality="Pass" BinColor="255,128,255" />
+        <BinDefinition BinCode="12" BinDescription="null bin" BinQuality="Undefined" BinColor="255,255,255" />
+    </BinDefinitions>
+</BinCodeMap>
