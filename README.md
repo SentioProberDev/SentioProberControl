@@ -11,7 +11,7 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 2.) Install the python package with pip:
 
-```python -m pip install sentio_prober_control-0.1.3.tar.gz```
+```python -m pip install sentio_prober_control-0.1.5.tar.gz```
 
 ## Instructions for package maintainer (updating the package) 
 
