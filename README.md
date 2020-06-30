@@ -31,6 +31,6 @@ This command will create the dist folder.
 
 ```
 dist/
-  sentio_prober_control-0.1.3-py3-none-any.whl
-  sentio_prober_control-0.1.3.tar.gz
+  sentio_prober_control-0.1.5-py3-none-any.whl
+  sentio_prober_control-0.1.5.tar.gz
 ```
