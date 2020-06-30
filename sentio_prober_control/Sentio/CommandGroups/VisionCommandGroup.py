@@ -1,9 +1,9 @@
-from Mpi.Sentio.CommandGroups.CommandGroupBase import *
-from Mpi.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
-from Mpi.Sentio.CommandGroups.VisionCameraCommandGroup import VisionCameraCommandGroup
-from Mpi.Sentio.CommandGroups.VisionIMagProCommandGroup import VisionIMagProCommandGroup
-from Mpi.Sentio.Response import *
-from Mpi.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
+from sentio_prober_control.Sentio.CommandGroups.VisionCameraCommandGroup import VisionCameraCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.VisionIMagProCommandGroup import VisionIMagProCommandGroup
+from sentio_prober_control.Sentio.Response import *
+from sentio_prober_control.Sentio.Enumerations import *
 
 
 class VisionCommandGroup(ModuleCommandGroupBase):

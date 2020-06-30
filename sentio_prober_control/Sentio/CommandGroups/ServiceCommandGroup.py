@@ -1,7 +1,7 @@
-from Mpi.Sentio.CommandGroups.CommandGroupBase import *
-from Mpi.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
-from Mpi.Sentio.Response import *
-from Mpi.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
+from sentio_prober_control.Sentio.Response import *
+from sentio_prober_control.Sentio.Enumerations import *
 
 
 class ServiceCommandGroup(ModuleCommandGroupBase):

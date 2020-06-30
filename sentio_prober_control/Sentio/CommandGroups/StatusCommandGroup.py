@@ -1,8 +1,8 @@
 from typing import Tuple
 
-from Mpi.Sentio.CommandGroups.CommandGroupBase import *
-from Mpi.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
-from Mpi.Sentio.Response import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
+from sentio_prober_control.Sentio.Response import *
 
 
 class StatusCommandGroup(ModuleCommandGroupBase):

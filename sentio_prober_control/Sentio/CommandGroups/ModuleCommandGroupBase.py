@@ -1,7 +1,7 @@
 from abc import ABC
 
-from Mpi.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from Mpi.Sentio.Response import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.Response import *
 
 class ModuleCommandGroupBase(CommandGroupBase):
     def __init__(self, comm, abbr):

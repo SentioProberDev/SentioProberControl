@@ -1,6 +1,6 @@
-from Mpi.Sentio.CommandGroups.CommandGroupBase import *
-from Mpi.Sentio.Response import *
-from Mpi.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
+from sentio_prober_control.Sentio.Response import *
+from sentio_prober_control.Sentio.Enumerations import *
 from typing import Tuple
 
 class VisionCameraCommandGroup(CommandGroupBase):

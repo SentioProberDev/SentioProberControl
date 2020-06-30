@@ -1,14 +1,14 @@
 from typing import Tuple
 
-from Mpi.Sentio.ProberBase import ProberBase
-from Mpi.Sentio.CommandGroups.WafermapCommandGroup import *
-from Mpi.Sentio.CommandGroups.VisionCommandGroup import *
-from Mpi.Sentio.CommandGroups.StatusCommandGroup import *
-from Mpi.Sentio.CommandGroups.LoaderCommandGroup import *
-from Mpi.Sentio.CommandGroups.SiPHCommandGroup import *
-from Mpi.Sentio.CommandGroups.ServiceCommandGroup import *
-from Mpi.Sentio.CommandGroups.ProbeCommandGroup import *
-from Mpi.Sentio.CommandGroups.CompensationCommandGroup import *
+from sentio_prober_control.Sentio.ProberBase import ProberBase
+from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import *
 
 class SentioProber(ProberBase):
 

@@ -1,6 +1,6 @@
-from Mpi.Sentio.Enumerations import AxisOrient
-from Mpi.Sentio.Response import Response
-from Mpi.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.Enumerations import AxisOrient
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 from typing import Tuple
 

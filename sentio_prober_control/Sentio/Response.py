@@ -1,4 +1,4 @@
-from Mpi.Sentio.ProberBase import ProberException
+from sentio_prober_control.Sentio.ProberBase import ProberException
 
 
 class Response:

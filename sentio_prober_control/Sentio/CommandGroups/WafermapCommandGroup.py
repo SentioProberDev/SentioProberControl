@@ -1,9 +1,9 @@
-from Mpi.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
-from Mpi.Sentio.Response import Response
-from Mpi.Sentio.ProberBase import ProberException
-from Mpi.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from Mpi.Sentio.CommandGroups.WafermapSubsiteCommandGroup import  WafermapSubsiteGroup
-from Mpi.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.ProberBase import ProberException
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup import  WafermapSubsiteGroup
+from sentio_prober_control.Sentio.Enumerations import *
 
 from typing import Tuple
 
