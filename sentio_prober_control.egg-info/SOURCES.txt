@@ -17,3 +17,17 @@ sentio_prober_control/Sentio/ProberBase.py
 sentio_prober_control/Sentio/ProberSentio.py
 sentio_prober_control/Sentio/Response.py
 sentio_prober_control/Sentio/__init__.py
+sentio_prober_control/Sentio/CommandGroups/CommandGroupBase.py
+sentio_prober_control/Sentio/CommandGroups/CompensationCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/LoaderCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/ModuleCommandGroupBase.py
+sentio_prober_control/Sentio/CommandGroups/ProbeCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/ServiceCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/SiPHCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/StatusCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/VisionCameraCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/VisionCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/VisionIMagProCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/WafermapCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/WafermapSubsiteCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/__init__.py
