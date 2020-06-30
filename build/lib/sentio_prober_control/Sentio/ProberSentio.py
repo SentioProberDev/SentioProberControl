@@ -10,7 +10,7 @@ from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import *
 from sentio_prober_control.Sentio.Enumerations import *
-
+from sentio_prober_control.Sentio.Response import *
 
 class SentioProber(ProberBase):
     def __init__(self, comm):
