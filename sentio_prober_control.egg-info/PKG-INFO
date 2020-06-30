@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: sentio-prober-control
-Version: 0.1.2
+Version: 0.1.3
 Summary: MPI Sentio Prober Control - Python Bindings
 Home-page: https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/
 Author: Ingo Berg

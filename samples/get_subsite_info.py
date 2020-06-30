@@ -1,5 +1,4 @@
 from sentio_prober_control.Sentio.ProberSentio import *
-from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 from sentio_prober_control.Communication.CommunicatorGpib import *
 from sentio_prober_control.Communication.CommunicatorTcpIp import *
 

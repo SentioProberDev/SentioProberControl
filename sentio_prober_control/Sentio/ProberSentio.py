@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.ProberBase import ProberBase
+from sentio_prober_control.Sentio.ProberBase import *
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import *
@@ -9,9 +9,10 @@ from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import *
+from sentio_prober_control.Sentio.Enumerations import *
+
 
 class SentioProber(ProberBase):
-
     def __init__(self, comm):
         ProberBase.__init__(self, comm)
 
