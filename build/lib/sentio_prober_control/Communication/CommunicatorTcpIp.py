@@ -1,6 +1,6 @@
 import socket
 
-from Mpi.Communication.CommunicatorBase import CommunicatorBase;
+from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase;
 
 
 class CommunicatorTcpIp(CommunicatorBase):

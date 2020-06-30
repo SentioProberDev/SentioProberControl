@@ -1,6 +1,6 @@
-from Mpi.Devices.Enumerations import GpibCardVendor
-from Mpi.Devices.GpibAdlinkDriver import *
-from Mpi.Communication.CommunicatorBase import CommunicatorBase;
+from sentio_prober_control.Devices.Enumerations import GpibCardVendor
+from sentio_prober_control.Devices.GpibAdlinkDriver import *
+from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase;
 
 
 class CommunicatorGpib(CommunicatorBase):
