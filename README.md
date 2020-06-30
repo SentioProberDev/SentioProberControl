@@ -11,6 +11,8 @@ This archive contains a package with python bindings to control a MPI Sentio pro
 
 3.) create the distribution archive:
 
+cd into the archive (where setup.py) is located.
+
 ```python3 setup.py sdist bdist_wheel```
 
 This command will create the dist folder
