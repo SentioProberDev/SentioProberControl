@@ -1,7 +1,7 @@
 # Sentio Prober Control - Python Bindings
 This archive contains a package with python bindings to control a MPI Sentio probe station.
 
-## Instructions for User
+## Instructions for installing the SENTIO prober control module
 
 1.) Download the latest python archive from:
 
@@ -11,7 +11,7 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 ```python -m pip install sentio_prober_control-0.1.3.tar.gz```
 
-## Instructions for package maintainer
+## Instructions for package maintainer (updating the package) 
 
 1.) Install python3
 
