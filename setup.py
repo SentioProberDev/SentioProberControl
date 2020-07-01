@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="sentio_prober_control",
+    name="sentio-prober-control-beltoforion",
     version="0.1.0",
     author="Ingo Berg",
     author_email="ingo.berg@atv-systems.de",

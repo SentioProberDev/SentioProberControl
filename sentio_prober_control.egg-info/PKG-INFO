@@ -6,7 +6,7 @@ Home-page: https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sen
 Author: Ingo Berg
 Author-email: ingo.berg@atv-systems.de
 License: UNKNOWN
-Description: # pySentioProberControl
+Description: # Sentio Prober Control - Python Bindings
          Python bindings for controlling MPI SENTIO probe stations
         
 Platform: UNKNOWN
