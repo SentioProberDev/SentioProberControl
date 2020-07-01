@@ -1,10 +1,6 @@
 README.md
 setup.py
 sentio_prober_control/__init__.py
-sentio_prober_control.egg-info/PKG-INFO
-sentio_prober_control.egg-info/SOURCES.txt
-sentio_prober_control.egg-info/dependency_links.txt
-sentio_prober_control.egg-info/top_level.txt
 sentio_prober_control/Communication/CommunicatorBase.py
 sentio_prober_control/Communication/CommunicatorGpib.py
 sentio_prober_control/Communication/CommunicatorTcpIp.py
@@ -31,3 +27,7 @@ sentio_prober_control/Sentio/CommandGroups/VisionIMagProCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapSubsiteCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/__init__.py
+sentio_prober_control_SentioProberDev.egg-info/PKG-INFO
+sentio_prober_control_SentioProberDev.egg-info/SOURCES.txt
+sentio_prober_control_SentioProberDev.egg-info/dependency_links.txt
+sentio_prober_control_SentioProberDev.egg-info/top_level.txt
