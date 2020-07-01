@@ -15,13 +15,11 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 ## Instructions for package maintainer (updating the package) 
 
-1.) Install python3
-
-2.) Get the latest version of setuptools and wheel:
+1.) Get the latest version of setuptools and wheel:
 
 ```python -m pip install --user --upgrade setuptools wheel```
 
-3.) create the distribution archive:
+2.) create the distribution archive:
 
 cd into the archive (where setup.py) is located.
 
@@ -34,3 +32,5 @@ dist/
   sentio_prober_control-0.1.5-py3-none-any.whl
   sentio_prober_control-0.1.5.tar.gz
 ```
+
+3.) Create a new release on GitHub with the new binary archive
