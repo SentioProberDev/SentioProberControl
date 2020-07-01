@@ -13,6 +13,8 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 ```python -m pip install sentio_prober_control-0.1.5.tar.gz```
 
+Please note that pip will automatically uninstall an older version of the sentio_prober_control repository, if one is found.
+
 ## Instructions for package maintainer (updating the package) 
 
 1.) Get the latest version of setuptools and wheel:
