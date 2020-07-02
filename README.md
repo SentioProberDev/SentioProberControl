@@ -20,6 +20,8 @@ Please note that pip will automatically uninstall an older version of the sentio
 
 ## Instructions for package maintainer (updating the package) 
 
+*The following instructions are for creating a new release of the package. If you only want to use the package you do not need to do this! Just follow the instructions listed above for installing an existing package.*
+
 1.) Get the latest version of setuptools and wheel:
 
 ```python -m pip install --user --upgrade setuptools wheel```
