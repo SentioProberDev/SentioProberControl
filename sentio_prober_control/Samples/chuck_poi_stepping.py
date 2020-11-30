@@ -112,7 +112,7 @@ def main():
             selected_poi = range(0, num_poi)
 
             # Variant 2: Step over all POI
-            selected_poi = [ 'poi_1', 'poi_5', 'poi_9']
+            #selected_poi = [ 'poi_1', 'poi_5', 'poi_9']
 
             # Do the poi stepping
             for i in selected_poi:

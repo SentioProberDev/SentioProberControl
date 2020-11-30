@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
-Name: sentio-prober-control-SentioProberDev
-Version: 1.0.0
+Name: sentio-prober-control-beltoforion
+Version: 0.1.0
 Summary: MPI Sentio Prober Control - Python Bindings
 Home-page: https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/
 Author: Ingo Berg
@@ -51,7 +51,7 @@ Description: [![GitHub issues](https://img.shields.io/github/issues/SentioProber
         3.) Create a new release on GitHub with the new binary archive
         
 Platform: UNKNOWN
-Classifier: Development Status :: 4 - Beta
+Classifier: Development Status :: 3 - Alpha
 Classifier: Environment :: Console
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: Other/Proprietary License

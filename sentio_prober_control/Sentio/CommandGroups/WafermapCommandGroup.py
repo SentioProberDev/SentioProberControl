@@ -54,8 +54,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self._comm.send("map:get_index_size")
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
-
-        return int(tok[0]), int(tok[1])
+        return float(tok[0]), float(tok[1])
 
     def get_street_size(self) -> Tuple[int, int]:
         self._comm.send("map:get_street_size")

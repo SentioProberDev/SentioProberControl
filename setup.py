@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="sentio-prober-control-beltoforion",
-    version="0.1.0",
+    name="sentio-prober-control-SentioProberDev",
+    version="1.0.0",
     author="Ingo Berg",
     author_email="ingo.berg@atv-systems.de",
     description="MPI Sentio Prober Control - Python Bindings",
@@ -14,7 +14,7 @@ setuptools.setup(
     url="https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Programming Language :: Python :: 3",
         "License :: Other/Proprietary License",

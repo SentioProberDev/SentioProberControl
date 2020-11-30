@@ -30,7 +30,7 @@ sentio_prober_control/Sentio/CommandGroups/WafermapPathCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapPoiCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapSubsiteCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/__init__.py
-sentio_prober_control_SentioProberDev.egg-info/PKG-INFO
-sentio_prober_control_SentioProberDev.egg-info/SOURCES.txt
-sentio_prober_control_SentioProberDev.egg-info/dependency_links.txt
-sentio_prober_control_SentioProberDev.egg-info/top_level.txt
+sentio_prober_control_beltoforion.egg-info/PKG-INFO
+sentio_prober_control_beltoforion.egg-info/SOURCES.txt
+sentio_prober_control_beltoforion.egg-info/dependency_links.txt
+sentio_prober_control_beltoforion.egg-info/top_level.txt
