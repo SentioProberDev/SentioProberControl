@@ -1,5 +1,36 @@
 from enum import Enum
 
+class Stage(Enum):
+    Chuck = 0,
+    Scope = 1,
+    Vce = 2,
+    Probe1 = 3,
+    Probe2 = 4,
+    Probe3 = 5,
+    Probe4 = 6
+
+    def toSentioAbbr(self):
+        switcher = {
+            Stage.Chuck: "chuck",
+            Stage.Scope: "scope",
+            Stage.Vce:   "vce01",
+            Stage.Probe1: "Probe01",
+            Stage.Probe2: "Probe02",
+            Stage.Probe3: "Probe03",
+            Stage.Probe4: "Probe04"
+        }
+        return switcher.get(self, "Invalid stage")
+
+class PoiReferenceXy(Enum):
+    DieCenter = 0,
+    StageCenter = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            PoiReferenceXy.DieCenter: "DieCenter",
+            PoiReferenceXy.StageCenter: "StageCenter"
+        }
+        return switcher.get(self, "Invalid stage")
 
 class PtpaType(Enum):
     OffAxis = 0,
