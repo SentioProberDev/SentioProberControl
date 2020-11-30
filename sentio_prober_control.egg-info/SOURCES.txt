@@ -30,4 +30,6 @@ sentio_prober_control/Sentio/CommandGroups/VisionCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/VisionIMagProCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapSubsiteCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/WafermapPathCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/WafermapBinsCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/__init__.py

@@ -2,85 +2,13 @@ from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import Mo
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.CommandGroups.WafermapBinsCommandGroup import  WafermapBinsCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapPathCommandGroup import  WafermapPathCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapPoiCommandGroup import  WafermapPoiCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup import  WafermapSubsiteGroup
 from sentio_prober_control.Sentio.Enumerations import *
 
 from typing import Tuple
-
-
-class WafermapBinsCommandGroup(CommandGroupBase):
-    def set_all(self, bin_val: int, selection: BinSelection):
-        switcher = {
-            BinSelection.All: "a",
-            BinSelection.DiesOnly: "d",
-            BinSelection.SubsitesOnly: "s"
-        }
-
-        what = switcher.get(selection, "Invalid bin selection")
-        self._comm.send("map:bins:set_all {0}, {1}".format(bin_val, what))
-        Response.check_resp(self._comm.read_line())#
-
-    def load(self, file: str):
-        self._comm.send("map:bins:load {0}".format(file))
-        Response.check_resp(self._comm.read_line())
-
-    def set_bin(self, bin_value: int, col: int, row: int, site=None):
-        if site is None:
-            self._comm.send("map:bins:set_bin {0}, {1}, {2}".format(bin_value, col, row))
-        else:
-            self._comm.send("map:bins:set_bin {0}, {1}, {2}, {3}".format(bin_value, col, row, site))
-        Response.check_resp(self._comm.read_line())
-
-    def clear_all(self):
-        self._comm.send("map:bins:clear_all")
-        Response.check_resp(self._comm.read_line())
-
-
-class WafermapPathCommandGroup(CommandGroupBase):
-
-    def select_dies(self, selection: TestSelection):
-        switcher = {
-            TestSelection.Nothing: "n",
-            TestSelection.Good: "g",
-            TestSelection.GoodAndUgly: "u",
-            TestSelection.GoodUglyAndEdge: "e",
-            TestSelection.All: "a"
-        }
-
-        what = switcher.get(selection, "Invalid die selection")
-        self._comm.send("map:path:select_dies {0}".format(what))
-        Response.check_resp(self._comm.read_line())
-
-    def create_from_bin(self, bin_val: int):
-        self._comm.send("map:path:create_from_bins {0}".format(bin_val))
-        Response.check_resp(self._comm.read_line())
-
-    def get_die(self, seq: int):
-        self._comm.send("map:path:get_die {0}".format(seq))
-        resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
-
-    def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority):
-        switcher1 = {
-            RoutingStartPoint.UpperLeft: "ul",
-            RoutingStartPoint.UpperRight: "ur",
-            RoutingStartPoint.LowerLeft: "ll",
-            RoutingStartPoint.LowerRight: "lr",
-        }
-
-        switcher2 = {
-            RoutingPriority.RowUniDir: "r",
-            RoutingPriority.ColUniDir: "c",
-            RoutingPriority.RowBiDir: "wr",
-            RoutingPriority.ColBiDir: "wc",
-        }
-
-        wsp = switcher1.get(sp, "Invalid route start point!")
-        wpri = switcher2.get(pri, "Invalid routing priority!")
-
-        self._comm.send("map:set_routing {0}, {1}".format(wsp, wpri))
-        Response.check_resp(self._comm.read_line())
-
 
 
 class WafermapDieGroup(CommandGroupBase):
@@ -98,6 +26,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.path = WafermapPathCommandGroup(comm)
         self.bins = WafermapBinsCommandGroup(comm)
         self.die = WafermapDieGroup(comm)
+        self.poi = WafermapPoiCommandGroup(comm)
 
     def create(self, diameter: float):
         self._comm.send("map:create {0}".format(diameter))

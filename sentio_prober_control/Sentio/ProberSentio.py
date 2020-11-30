@@ -215,6 +215,11 @@ class SentioProber(ProberBase):
             if (not resp.ok()):
                 raise ProberException("Initialization failed: {0}".format(resp.message()))
 
+    def has_chuck_xyz(self) -> bool:
+        self.comm.send("has_chuck_xyz")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message().upper()=="YES"
+
     def has_scope_xyz(self) -> bool:
         self.comm.send("has_scope_xyz")
         resp = Response.check_resp(self.comm.read_line())
