@@ -6,7 +6,7 @@ This archive contains a package with python bindings to control a [MPI SENTIO® 
 
 ![](https://www.mpi-corporation.com/wp-content/uploads/2019/12/1.-TS3500-SE-with-WaferWallet_frontview.jpg)
 
-## Instructions for installing the SENTIO® prober control module
+## Instructions for installing the SENTIO® prober control Python package
 
 1.) Download the latest python package from:
 
