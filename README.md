@@ -36,8 +36,8 @@ This command will create the dist folder.
 
 ```
 dist/
-  sentio_prober_control-0.1.5-py3-none-any.whl
-  sentio_prober_control-0.1.5.tar.gz
+  sentio-prober-control-1.0.0-py3-none-any.whl
+  sentio-prober-control-1.0.0.tar.gz
 ```
 
 3.) Create a new release on GitHub with the new binary archive
