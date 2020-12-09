@@ -1,5 +1,18 @@
 from enum import Enum
 
+class SteppingContactMode(Enum):
+    BackToContact = 0,
+    StepToSeparation = 1,
+    LockContact = 2,
+
+    def toSentioAbbr(self):
+        switcher = {
+            SteppingContactMode.BackToContact: "BackToContact",
+            SteppingContactMode.StepToSeparation: "StepToSeparation",
+            SteppingContactMode.LockContact:   "LockContact"
+        }
+        return switcher.get(self, "Invalid stepping mode")
+
 class Stage(Enum):
     Chuck = 0,
     Scope = 1,

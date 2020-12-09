@@ -8,6 +8,7 @@ from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import *
 from sentio_prober_control.Sentio.Enumerations import *
 from sentio_prober_control.Sentio.Response import *
@@ -19,6 +20,7 @@ class SentioProber(ProberBase):
         self.__name = "SentioProber"
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
         self.map = WafermapCommandGroup(comm)
+        self.aux = AuxCommandGroup(comm)
         self.vision = VisionCommandGroup(comm)
         self.status = StatusCommandGroup(comm)
         self.loader = LoaderCommandGroup(comm)
@@ -283,6 +285,10 @@ class SentioProber(ProberBase):
         else:
             self.comm.send("clear_contact {0}".format(site.toSentioAbbr()))
 
+        return Response.check_resp(self.comm.read_line())
+
+    def set_stepping_contact_mode(self, mode: SteppingContactMode):
+        self.comm.send("set_stepping_contact_mode {0}".format(mode.toSentioAbbr()))
         return Response.check_resp(self.comm.read_line())
 
     #
