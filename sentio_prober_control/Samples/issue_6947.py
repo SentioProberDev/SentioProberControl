@@ -25,10 +25,11 @@ def main():
     try:
         prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
 
-        #check_preconditions(prober)
+        check_preconditions(prober)
         prober.aux.cleaning.enable_auto(False);
         prober.set_stepping_contact_mode(SteppingContactMode.BackToContact)
 
+        prober.move_chuck_site(ChuckSite.Wafer)
         prober.map.step_first_die()
         prober.move_chuck_contact()
 
@@ -37,7 +38,14 @@ def main():
             prober.map.step_next_die()
             ct = ct + 1
             if (ct % 3) == 0:
-                prober.aux.cleaning.start(1)
+                # root cause of the issue is that SENTIO will reset the active die when the hchuck is moved to
+                # the aux site home position
+                prober.move_chuck_site(ChuckSite.AuxRight)
+                prober.move_chuck_home()
+                prober.move_chuck_site(ChuckSite.Wafer)
+
+                # workflow that does not show the error:
+                #prober.aux.cleaning.start(1)
 
             #time.sleep(0.3)
             if prober.map.end_of_route():
