@@ -5,7 +5,8 @@ from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBas
 
 class CommunicatorTcpIp(CommunicatorBase):
     def __init__(self):
-        self.__socket = socket.socket()
+        self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
     @staticmethod
     def create(addr: str):

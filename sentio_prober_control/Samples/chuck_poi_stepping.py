@@ -12,6 +12,11 @@ from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTc
 #    - You need a system with a motorized chuck
 #    - a chuck home position must be set
 #
+#from Sentio.Enumerations import *
+#from Sentio.ProberSentio import SentioProber
+#from Sentio.Communication.CommunicatorTcpIp import CommunicatorTcpIp
+
+
 def check_preconditions(prober):
     # 1.) Check whether the machine has a motorized chuck.
     if (not prober.has_chuck_xyz()):
@@ -52,6 +57,9 @@ def set_poi(prober):
     sx, sy = prober.map.get_index_size()
     print("Die size is {0}, {1} µm".format(sx, sy))
 
+    die_center_x = sx / 2
+    die_center_y = sy / 2
+
     # IMPORTANT:
     # The POI MUST be inside of the Die! If you set up POI at the edge of the wafer you may experience undefined
     # behavior! Here is why:
@@ -64,28 +72,26 @@ def set_poi(prober):
     sx = sx - 4  # 2 µm on the sides of the die are the poi "no go" zone
     sy = sy - 4  # 2 µm on the sides of the die are the poi "no go" zone
 
-    die_center_x = sx / 2
-    die_center_y = sy / 2
-
     # Create this many rows and columns of POI. You can change the number is you like but
     # use an odd number!
-    ncols = 3
-    nrows = 3
+    ncols = 9
+    nrows = 9
 
     dx = sx / (ncols-1)
     dy = sy / (nrows-1)
 
     print("Creating {0} points of interest:".format(ncols * nrows))
+    print("Grid limits: rows: {0}, {1}; cols: {2}, {3}".format(-(nrows//2), nrows//2, -(ncols//2), ncols//2))
 
     # Set up a poi map for the chuck which i using the die center as a reference position
     prober.map.poi.reset(Stage.Chuck, PoiReferenceXy.DieCenter)
 
     ct = 0
-    for r in range(-nrows//2, nrows//2):
-        for c in range(-ncols//2, ncols//2):
+    for r in range(-(nrows//2), nrows//2 + 1):
+        for c in range(-(ncols//2), ncols//2 + 1):
             ct = ct + 1
-            poi_x = die_center_x + c * dx
-            poi_y = die_center_y + r * dy
+            poi_x = c * dx
+            poi_y = r * dy
             print("Poi {0} at {1}, {2} µm".format(ct, poi_x, poi_y))
             prober.map.poi.add(poi_x, poi_y, "poi_{0}".format(ct))
 
