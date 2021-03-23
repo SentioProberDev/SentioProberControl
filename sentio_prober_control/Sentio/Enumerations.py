@@ -1,5 +1,40 @@
 from enum import Enum
 
+
+class ProjectFileInfo(Enum):
+    NameOnly = 0,
+    FullPath = 1,
+
+    def toSentioAbbr(self):
+        switcher = {
+            ProjectFileInfo.NameOnly: "Name",
+            ProjectFileInfo.FullPath: "FullPath"
+        }
+        return switcher.get(self, "Invalid ProjectFileInfo")
+
+
+class DefaultPattern(Enum):
+    Align = 0,
+    Home = 1,
+    DieAlignPos1 = 3,
+    DieAlignPos2 = 4,
+    TwoPoint = 5,
+    Vce = 6,
+    Ptpa = 7,
+
+    def toSentioAbbr(self):
+        switcher = {
+            DefaultPattern.Align: "align",
+            DefaultPattern.Home: "home",
+            DefaultPattern.DieAlignPos1:   "diealignpos1",
+            DefaultPattern.DieAlignPos2: "diealignpos2",
+            DefaultPattern.TwoPoint: "2pt",
+            DefaultPattern.Vce: "vce",
+            DefaultPattern.Ptpa: "ptpa",
+        }
+        return switcher.get(self, "Invalid default pattern id")
+
+
 class SteppingContactMode(Enum):
     BackToContact = 0,
     StepToSeparation = 1,
@@ -12,6 +47,7 @@ class SteppingContactMode(Enum):
             SteppingContactMode.LockContact:   "LockContact"
         }
         return switcher.get(self, "Invalid stepping mode")
+
 
 class Stage(Enum):
     Chuck = 0,
@@ -34,6 +70,7 @@ class Stage(Enum):
         }
         return switcher.get(self, "Invalid stage")
 
+
 class PoiReferenceXy(Enum):
     DieCenter = 0,
     StageCenter = 1
@@ -44,6 +81,7 @@ class PoiReferenceXy(Enum):
             PoiReferenceXy.StageCenter: "StageCenter"
         }
         return switcher.get(self, "Invalid stage")
+
 
 class PtpaType(Enum):
     OffAxis = 0,
@@ -56,12 +94,14 @@ class PtpaType(Enum):
         }
         return switcher.get(self, "Invalid ptpa type")
 
+
 class TestSelection(Enum):
     Nothing = 0,
     Good = 1,
     GoodAndUgly = 2,
     GoodUglyAndEdge = 3,
     All = 4
+
 
 class ProbeTipCoordinates(Enum):
     Image = 0,
@@ -75,6 +115,7 @@ class ProbeTipCoordinates(Enum):
             ProbeTipCoordinates.Roi: "Roi"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
+
 
 class ProbeTipDetector(Enum):
     Keypoint = 0,
@@ -98,6 +139,7 @@ class ProbeTipDetector(Enum):
             ProbeTipDetector.VerticalProbeCard: "VerticalProbeCard"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
+
 
 class Module(Enum):
     Wafermap = 0,
@@ -128,9 +170,11 @@ class DieNumber(Enum):
     Present = 1,
     Selected = 2
 
+
 class ColorScheme(Enum):
     ColorFromPath = 0,
     ColorFromBin = 1
+
 
 class OrientationMarker(Enum):
     Notch = 0,
@@ -142,6 +186,7 @@ class OrientationMarker(Enum):
             OrientationMarker.Flat: "Flat"
         }
         return switcher.get(self, "Invalid orientation marker")
+
 
 class AutoFocusCmd(Enum):
     Calibration = 0,
@@ -156,6 +201,7 @@ class AutoFocusCmd(Enum):
         }
         return switcher.get(self, "Invalid auto focus function")
 
+
 class ScopeXYReference(Enum):
     Zero = 0,
     Home = 1,
@@ -169,6 +215,7 @@ class ScopeXYReference(Enum):
         }
         return switcher.get(self, "Invalid scope xy reference")
 
+
 class ScopeZReference(Enum):
     Zero = 0,
     Relative = 1
@@ -179,6 +226,7 @@ class ScopeZReference(Enum):
             ScopeZReference.Relative: "R"
         }
         return switcher.get(self, "Invalid scope z reference")
+
 
 # Wishlist, not supported by Sentio right now!
 class IMagProZReference(Enum):
@@ -210,6 +258,7 @@ class AutoFocusAlgorithm(Enum):
         }
         return switcher.get(self, "Invalid focus measure")
 
+
 class ChuckXYReference(Enum):
     Zero = 0,
     Home = 1,
@@ -226,6 +275,7 @@ class ChuckXYReference(Enum):
             ChuckXYReference.User: "U",
         }
         return switcher.get(self, "Invalid chuck xy reference")
+
 
 class ChuckZReference(Enum):
     Zero = 0,
@@ -244,6 +294,7 @@ class ChuckZReference(Enum):
         }
         return switcher.get(self, "Invalid chuck z reference")
 
+
 class ChuckThetaReference(Enum):
     Zero = 0,
     Site = 1,
@@ -257,6 +308,7 @@ class ChuckThetaReference(Enum):
         }
         return switcher.get(self, "Invalid chuck theta reference")
 
+
 class WorkArea(Enum):
     Probing = 0,
     Offaxis = 1,
@@ -267,6 +319,7 @@ class WorkArea(Enum):
             WorkArea.Offaxis: "Offaxis",
         }
         return switcher.get(self, "Invalid chuck site")
+
 
 class ChuckSite(Enum):
     Wafer = 0,
@@ -286,6 +339,7 @@ class ChuckSite(Enum):
             ChuckSite.ChuckCamera: "ChuckCamera",
         }
         return switcher.get(self, "Invalid chuck site")
+
 
 class LoaderStation(Enum):
     Cassette1 = 0,
@@ -325,6 +379,7 @@ class ProbeXYReference(Enum):
         }
         return switcher.get(self, "Invalid chuck xy reference")
 
+
 class ProbeZReference(Enum):
     Zero = 0,
     Relative = 1,
@@ -335,6 +390,7 @@ class ProbeZReference(Enum):
             ProbeZReference.Relative: "R",
         }
         return switcher.get(self, "Invalid chuck z reference")
+
 
 class CameraMountPoint(Enum):
     Scope = 0,
@@ -391,6 +447,7 @@ class StatusBits:
     EndOfRoute = 1
     LastSite = 2
 
+
 # Remote command errors for Sentio 3.0
 class RemoteCommandError:
         NoError = 0
@@ -438,6 +495,7 @@ class FindPatternReference(Enum):
         }
         return switcher.get(self, "Invalid find pattern reference id")
 
+
 class DialogButtons(Enum):
     Ok = 1,
     Cancel = 2,
@@ -451,6 +509,7 @@ class DialogButtons(Enum):
         }
         return switcher.get(self, "Invalid button id")
 
+
 class LoadPosition(Enum):
     Front = 0,
     Side = 1
@@ -462,6 +521,7 @@ class LoadPosition(Enum):
         }
         return switcher.get(self, "Invalid Load position")
 
+
 class VceZReference(Enum):
     Zero = 0,
     Relative = 1
@@ -472,6 +532,7 @@ class VceZReference(Enum):
             VceZReference.Relative: "R"
         }
         return switcher.get(self, "Invalid vce z reference")
+
 
 class SoftwareFence(Enum):
     Disabled = 0,
@@ -487,6 +548,7 @@ class SoftwareFence(Enum):
             SoftwareFence.SoftwareLimit: 'SoftwareLimit',
         }
         return switcher.get(self, "Invalid SoftwareFence parameter")
+
 
 class ImagePattern(Enum):
     align = 0,
@@ -507,6 +569,7 @@ class ImagePattern(Enum):
         }
         return switcher.get(self, "Invalid image pattern parameter")
 
+
 class ProbeXYReference(Enum):
     Zero = 0,
     Home = 1,
@@ -521,6 +584,7 @@ class ProbeXYReference(Enum):
             ProbeXYReference.Center: "C",
         }
         return switcher.get(self, "Invalid probe xy reference")
+
 
 class ProbeZReference(Enum):
     Zero = 0,
@@ -537,6 +601,7 @@ class ProbeZReference(Enum):
         }
         return switcher.get(self, "Invalid probe z reference")
 
+
 class ProbeSentio(Enum):
     East = 0,
     West = 1,
@@ -551,6 +616,7 @@ class ProbeSentio(Enum):
             ProbeSentio.South: "S"
         }
         return switcher.get(self, "Invalid Probe reference")
+
 
 class Compensation(Enum):
     Lateral = 0,
@@ -573,6 +639,7 @@ class Compensation(Enum):
         }
         return switcher.get(self, "Invalid compensation type")
 
+
 class ExecuteCompensation(Enum):
     AlignDie = 0,
     MapScan = 1,
@@ -585,6 +652,7 @@ class ExecuteCompensation(Enum):
             ExecuteCompensation.Topography: "Topography",
         }
         return switcher.get(self, "Invalid compensation type")
+
 
 class OnTheFlyMode(Enum):
     Lateral = 0,

@@ -1,3 +1,5 @@
+import base64
+import os
 from typing import Tuple
 
 from sentio_prober_control.Sentio.ProberBase import *
@@ -116,6 +118,17 @@ class SentioProber(ProberBase):
         vacuumOn = str_to_bool(tok[3])
 
         return hasHome, hasContact, overtravelActive, vacuumOn
+
+    def file_transfer(self, source: str, dest: str):
+        # open file and encode with base64
+        if not os.path.isfile(source):
+            raise ProberException(f"File {source} not found!")
+
+        file_bytes = open(source, "rb").read()
+        encoded = base64.b64encode(file_bytes).decode('ascii')
+
+        self.comm.send(f'file_transfer {dest}, {encoded}')
+        Response.check_resp(self.comm.read_line())
 
     def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:
         """
@@ -325,7 +338,7 @@ class SentioProber(ProberBase):
         self.comm.send('status:show_hint \"{0}\", \"{1}\"'.format(msg, subtext))
         resp = Response.check_resp(self.comm.read_line())
 
-    def get_project_name(self, msg: str):
-        self.comm.send('get_project Name'.format(msg))
+    def get_project(self, pfi: ProjectFileInfo = ProjectFileInfo.FullPath) -> str:
+        self.comm.send(f'get_project {pfi.toSentioAbbr()}')
         resp = Response.check_resp(self.comm.read_line())
-        return resp
+        return resp.message()

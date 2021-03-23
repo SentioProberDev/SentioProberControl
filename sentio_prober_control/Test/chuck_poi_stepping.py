@@ -74,8 +74,8 @@ def set_poi(prober):
 
     # Create this many rows and columns of POI. You can change the number is you like but
     # use an odd number!
-    ncols = 9
-    nrows = 9
+    ncols = 101
+    nrows = 101
 
     dx = sx / (ncols-1)
     dy = sy / (nrows-1)
@@ -87,6 +87,7 @@ def set_poi(prober):
     prober.map.poi.reset(Stage.Chuck, PoiReferenceXy.DieCenter)
 
     ct = 0
+
     for r in range(-(nrows//2), nrows//2 + 1):
         for c in range(-(ncols//2), ncols//2 + 1):
             ct = ct + 1
