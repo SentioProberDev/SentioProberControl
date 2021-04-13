@@ -33,10 +33,6 @@ def main():
         check_preconditions(prober)
 
         script_path = os.path.dirname(os.path.realpath(__file__))
-        projectPath: str = prober.get_project(ProjectFileInfo.FullPath)
-        print(f'Project path: {projectPath}')
-
-        prober.file_transfer('C:\\Users\\berg\\Desktop\\WaferTracking.pptx', 'C:\\Users\\berg\\Desktop\\foobar.pptx')
 
         # align wafer, find home and determine contact through PTPA alignment
         prober.move_chuck_home()
