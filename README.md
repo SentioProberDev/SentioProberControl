@@ -14,7 +14,7 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 2.) Install the python package with pip:
 
-```python -m pip install --user sentio-prober-control-1.0.0.tar.gz```
+```python -m pip install --user sentio-prober-control-3.5.0.tar.gz```
 
 Please note that pip will automatically uninstall an older version of the sentio_prober_control repository, if one is found.
 
@@ -36,8 +36,8 @@ This command will create the dist folder.
 
 ```
 dist/
-  sentio-prober-control-1.0.0-py3-none-any.whl
-  sentio-prober-control-1.0.0.tar.gz
+  sentio-prober-control-3.5.0-py3-none-any.whl
+  sentio-prober-control-3.5.0.tar.gz
 ```
 
 3.) Create a new release on GitHub with the new binary archive
