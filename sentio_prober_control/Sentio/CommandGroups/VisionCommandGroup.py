@@ -43,11 +43,11 @@ class VisionCommandGroup(ModuleCommandGroupBase):
     def detect_probetips(self, camera: CameraMountPoint, detector:  ProbeTipDetector, coords: ProbeTipCoordinates = ProbeTipCoordinates.Roi):
         self._comm.send("vis:detect_probetips {0}, {1}, {2}".format(camera.toSentioAbbr(), detector.toSentioAbbr(), coords.toSentioAbbr(), coords.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
-        str_tips = resp.message().split(";")
+        str_tips = resp.message().split(",")
 
         found_tips = []
         for n in range(0, len(str_tips)):
-            str_tip = str_tips[n].split(",")
+            str_tip = str_tips[n].strip().split(" ")
             x = float(str_tip[0])  # tip x position
             y = float(str_tip[1])  # tip y position
             w = float(str_tip[2])  # detection width

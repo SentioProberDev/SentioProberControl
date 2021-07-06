@@ -121,22 +121,22 @@ class ProbeTipDetector(Enum):
     Keypoint = 0,
     ProbeTip = 1,
     ProbeTipFromBelow = 2,
-    TitanTipNorth = 3,
-    TitanTipSouth = 4,
-    TitanTipEast = 5,
-    TitanTipWest = 6,
-    VerticalProbeCard = 7
+    TitanHead = 3,
+    TitanTip = 4,
+    VerticalProbeCard = 5,
+    PyramidTipRingLight = 6,
+    PyramidTipSpotLight = 7
 
     def toSentioAbbr(self):
         switcher = {
             ProbeTipDetector.Keypoint: "Keypoint",
             ProbeTipDetector.ProbeTip: "ProbeTip",
             ProbeTipDetector.ProbeTipFromBelow: "ProbeTipFromBelow",
-            ProbeTipDetector.TitanTipNorth: "TitanTipNorth",
-            ProbeTipDetector.TitanTipSouth: "TitanTipSouth",
-            ProbeTipDetector.TitanTipEast: "TitanTipEast",
-            ProbeTipDetector.TitanTipWest: "TitanTipWest",
-            ProbeTipDetector.VerticalProbeCard: "VerticalProbeCard"
+            ProbeTipDetector.TitanHead: "TitanHead",
+            ProbeTipDetector.TitanTip: "TitanTip",
+            ProbeTipDetector.VerticalProbeCard: "VerticalProbeCard",
+            ProbeTipDetector.PyramidTipRingLight: "PyramidTipRingLight",
+            ProbeTipDetector.PyramidTipSpotLight: "PyramidTipSpotLight"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
 
