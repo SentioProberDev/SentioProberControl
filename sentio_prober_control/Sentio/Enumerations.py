@@ -125,7 +125,8 @@ class ProbeTipDetector(Enum):
     TitanTip = 4,
     VerticalProbeCard = 5,
     PyramidTipRingLight = 6,
-    PyramidTipSpotLight = 7
+    PyramidTipSpotLight = 7,
+    PyramidTipRingLightMultiPass = 8
 
     def toSentioAbbr(self):
         switcher = {
@@ -136,7 +137,8 @@ class ProbeTipDetector(Enum):
             ProbeTipDetector.TitanTip: "TitanTip",
             ProbeTipDetector.VerticalProbeCard: "VerticalProbeCard",
             ProbeTipDetector.PyramidTipRingLight: "PyramidTipRingLight",
-            ProbeTipDetector.PyramidTipSpotLight: "PyramidTipSpotLight"
+            ProbeTipDetector.PyramidTipSpotLight: "PyramidTipSpotLight",
+            ProbeTipDetector.PyramidTipRingLightMultiPass: "PyramidTipRingLightMultiPass"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
 

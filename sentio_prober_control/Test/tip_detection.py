@@ -18,6 +18,84 @@ def check_preconditions(prober):
         raise Exception("This script requires a chuck camera in order to run!")
 
 
+def TestPyramideTipDetection(prober):
+    prober.vision.switch_camera(CameraMountPoint.Chuck)
+
+    #
+    # PyramidTipRingLight Detector:
+    # A haar cascade based detector trained on images of the entire pyramid tip as seen from the chuck camera and
+    # illuminated with the ring light
+    #
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring.jpg")
+    prober.vision.set_prop('tip_detector.min_neighbors', 'PyramidTipRingLightMultiPass', 2)
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLightMultiPass)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLightMultiPass)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x_2.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLightMultiPass)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x_3.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLightMultiPass)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x_4.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLightMultiPass)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    #
+    # PyramidTipRingLight Detector:
+    # A haar cascade based detector trained on images with pyramid tips (tipy only!) as seen from the chuck camera and
+    # illuminated with the ring light
+    #
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLight)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLight)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x_2.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLight)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x_3.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLight)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring_4x_4.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLight)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+    #
+    # PyramidTipSpotLight Detector:
+    # A haar cascade based detector trained on images with pyramid tips as seen from the chuck camera and
+    # illuminated with the spot light
+    #
+
+    prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_spot.jpg")
+    prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipSpotLight)
+    time.sleep(2)
+    prober.vision.remove_probetip_marker()
+
+
 def main():
     try:
         script_path = os.path.dirname(os.path.realpath(__file__))
@@ -28,6 +106,8 @@ def main():
         check_preconditions(prober)
 
         prober.select_module(Module.Vision)
+
+        prober.vision.switch_camera(CameraMountPoint.Chuck)
 
         ###########################################################################################
         #
@@ -81,49 +161,47 @@ def main():
         #
         ###########################################################################################
 
-        prober.vision.switch_camera(CameraMountPoint.Chuck)
-        comm.send("*DEMO_IMAGE chuck, probe_tips_bottom.jpg")
+        if prober.vision.has_camera(CameraMountPoint.Chuck):
+            prober.vision.switch_camera(CameraMountPoint.Chuck)
 
-        #
-        # Keypoint Detector:
-        # A generic detector originally designed for automatic stitching of panoramic images.
-        # Will snap to Edges and high contrast areas.
-        #
+            #
+            # Keypoint Detector:
+            # A generic detector originally designed for automatic stitching of panoramic images.
+            # Will snap to Edges and high contrast areas.
+            #
 
-        prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.Keypoint)
-        time.sleep(2)
-        prober.vision.remove_probetip_marker()
+            comm.send("*DEMO_IMAGE chuck, probe_tips_bottom.jpg")
+            prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.Keypoint)
+            time.sleep(2)
+            prober.vision.remove_probetip_marker()
 
-        #
-        # Probe tips from below:
-        # A haar cascade based detector trained on images of tips seen and illuminated from below
-        #
+            #
+            # Probe tips from below:
+            # A haar cascade based detector trained on images of tips seen and illuminated from below
+            #
 
-        prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.ProbeTipFromBelow)
-        time.sleep(2)
-        prober.vision.remove_probetip_marker()
+            comm.send("*DEMO_IMAGE chuck, probe_tips_bottom.jpg")
+            prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.ProbeTipFromBelow)
+            time.sleep(2)
+            prober.vision.remove_probetip_marker()
 
-        #
-        # PyramidTipRingLight Detector:
-        # A haar cascade based detector trained on images with pyramid tips as seen from the chuck camera and
-        # illuminated with the ring light
-        #
+            #
+            # PyramidTipRingLight Detector:
+            # A haar cascade based detector trained on images with pyramid tips as seen from the chuck camera and
+            # illuminated with the ring light
+            #
 
-        comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring.jpg")
-        prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLight)
-        time.sleep(2)
-        prober.vision.remove_probetip_marker()
+            TestPyramideTipDetection(prober)
 
-        #
-        # PyramidTipSpotLight Detector:
-        # A haar cascade based detector trained on images with pyramid tips as seen from the chuck camera and
-        # illuminated with the spot light
-        #
+            #
+            # VerticalProbeCard Detector:
+            # A haar cascade based detector trained on tip images of vertical probe cards
+            #
 
-        comm.send("*DEMO_IMAGE chuck, pyramide_tips_spot.jpg")
-        prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipSpotLight)
-        time.sleep(2)
-        prober.vision.remove_probetip_marker()
+            comm.send("*DEMO_IMAGE chuck, vertical_probecard_tips.jpg")
+            prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.VerticalProbeCard)
+            time.sleep(2)
+            prober.vision.remove_probetip_marker()
 
     except Exception as e:
         print("\n#### Error ##################################")
