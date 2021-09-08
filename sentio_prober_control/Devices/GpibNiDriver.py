@@ -1,21 +1,30 @@
 import ctypes
+import re
 from ctypes import *
 
 
-class GpibAdlinkDriver:
+class GpibNiDriver:
 
     def __init__(self):
         # load gpib dll
-        gpibDll = ctypes.WinDLL("gpib-32.dll")
+        gpibDll = ctypes.WinDLL("ni4882.dll")
 
         # gpib init functions
-        self._gpibIbfind = gpibDll.ibfindW
-        self._gpibIbfind.restype = c_int
-        self._gpibIbfind.argtypes = [c_wchar_p]
+        self._gpibSendIfc = gpibDll.SendIFC
+        self._gpibSendIfc.argtypes = [c_int]
 
-        self._gpibIbrsc = gpibDll.ibrsc
-        self._gpibIbrsc.restype = c_int
-        self._gpibIbrsc.argtypes = [c_int, c_int]
+        self._gpibThreadIbsta = gpibDll.ThreadIbsta
+        self._gpibThreadIbsta.restype = c_int
+
+        self._gpibThreadIberr = gpibDll.ThreadIberr
+        self._gpibThreadIberr.restype = c_int
+
+        self._gpibThreadIbcnt = gpibDll.ThreadIbcnt
+        self._gpibThreadIbcnt.restype = c_int
+
+#        self._gpibIbfind = gpibDll.ibfindW
+#        self._gpibIbfind.restype = c_int
+#        self._gpibIbfind.argtypes = [c_wchar_p]
 
         self._gpibIbsic = gpibDll.ibsic
         self._gpibIbsic.restype = c_int
@@ -29,32 +38,25 @@ class GpibAdlinkDriver:
         self._gpibReceiveImpl = gpibDll.Receive
         self._gpibReceiveImpl.argtypes = [c_int, c_ushort, c_void_p, c_int, c_int]
 
-        # gpib receive
-        self._gpibGetGlobalsImpl = gpibDll.gpib_get_globals
-        self._gpibGetGlobalsImpl.restype = c_int
-        self._gpibGetGlobalsImpl.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
-
 
     def connect(self, board_name: str, address: int):
         # init
-        self._board = self._gpibIbfind(board_name) #"GPIB0")
-        if self._board < 0:
-            raise Exception(f"Board {board_name} does not exist!")
+        numbers = re.findall('[0-9]+', board_name)
+        self._board = int(numbers[0])
 
-        self._gpibIbrsc(self._board, 1)
-        self._gpibIbsic(self._board)
+        self._gpibSendIfc(self._board)
 
         self._addr = address
         self._max_len = 1000
 
 
     def get_globals(self):
-        ibsta = c_int()
-        iberr = c_int()
-        ibcnt = c_int()
-        ibcntl = c_int()
-        self._gpibGetGlobalsImpl(byref(ibsta), byref(iberr), byref(ibcnt), byref(ibcntl))
-        return ibsta.value, iberr.value, ibcnt.value, ibcntl.value
+        ibsta = self._gpibThreadIbsta()
+        iberr = self._gpibThreadIberr()
+        ibcnt = 0
+        ibcntl = self._gpibThreadIbcnt()
+
+        return ibsta, iberr, ibcnt, ibcntl
 
     def send(self, str):
         self._gpibSendImpl(self._board, self._addr, str.encode('utf-8'), len(str), 1)

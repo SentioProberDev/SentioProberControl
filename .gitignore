@@ -1,5 +1,4 @@
 build/*
-__pycache__/*
 sentio_prober_control/.idea/*
 .idea/*
 *.pyc

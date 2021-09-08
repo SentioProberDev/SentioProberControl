@@ -1,5 +1,6 @@
 from sentio_prober_control.Devices.Enumerations import GpibCardVendor
 from sentio_prober_control.Devices.GpibAdlinkDriver import *
+from sentio_prober_control.Devices.GpibNiDriver import *
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase;
 
 
@@ -7,6 +8,8 @@ class CommunicatorGpib(CommunicatorBase):
     def __init__(self, vendor: GpibCardVendor):
         if (vendor==GpibCardVendor.Adlink):
             self._driver = GpibAdlinkDriver()
+        elif (vendor==GpibCardVendor.NationalInstruments):
+            self._driver = GpibNiDriver()
         else:
             raise NotImplementedError("Driver for Gpib card vendor {0}not implemented!".format(vendor))
 
