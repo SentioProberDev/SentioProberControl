@@ -28,7 +28,7 @@ def TestPyramideTipDetection(prober):
     #
 
     prober.comm.send("*DEMO_IMAGE chuck, pyramide_tips_ring.jpg")
-    prober.vision.set_prop('tip_detector.min_neighbors', 'PyramidTipRingLightMultiPass', 2)
+    prober.vision.set_prop('tip_detector.min_neighbors', 'PyramidTipRingLightMultiPass', 1)
     prober.vision.detect_probetips(CameraMountPoint.Chuck, ProbeTipDetector.PyramidTipRingLightMultiPass)
     time.sleep(2)
     prober.vision.remove_probetip_marker()
