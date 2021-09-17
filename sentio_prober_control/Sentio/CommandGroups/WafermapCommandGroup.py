@@ -22,7 +22,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         super().__init__(comm, 'map')
         self.__end_of_route: bool = False
 
-        self.subsites = WafermapSubsiteGroup(comm)
+        self.subsites = WafermapSubsiteGroup(comm, self)
         self.path = WafermapPathCommandGroup(comm)
         self.bins = WafermapBinsCommandGroup(comm)
         self.die = WafermapDieGroup(comm)
@@ -163,6 +163,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
     def step_first_die(self, site: int = 0) -> Tuple[int, int, int]:
         self._comm.send("map:step_first_die {0}".format(site))
         resp = Response.parse_resp(self._comm.read_line())
+
+        # update status information
         self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         tok = resp.message().split(",")
@@ -177,28 +179,36 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def bin_step_next_die(self, bin_value: int, site: int = 0) -> Tuple[int, int, int]:
-        self._comm.send("map:bin_step_next_die {0}, {1}".format(bin_value, site))
+    def bin_step_next_die(self, bin_value: int, site: int = None) -> Tuple[int, int, int]:
+        # 2021-09-17: bugfix: when no site is given current site must be retained
+        if site is None:
+            self._comm.send(f'map:bin_step_next_die {bin_value}')
+        else:
+            self._comm.send(f'map:bin_step_next_die {bin_value}, {site}')
 
         resp = Response.parse_resp(self._comm.read_line())
         self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         # i.e. Stepping while at the end of the route
         if not resp.ok():
-            raise ProberException(resp.message())
+            raise ProberException(resp.message(), resp.errc())
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def step_next_die(self, site: int = 0) -> Tuple[int, int, int]:
-        self._comm.send("map:step_next_die {0}".format(site))
+    def step_next_die(self, site: int = None) -> Tuple[int, int, int]:
+        # 2021-09-17: bugfix: when no site is given current site must be retained
+        if site is None:
+            self._comm.send(f'map:step_next_die')
+        else:
+            self._comm.send(f'map:step_next_die {site}')
 
         resp = Response.parse_resp(self._comm.read_line())
         self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         # i.e. Stepping while at the end of the route
         if not resp.ok():
-            raise ProberException(resp.message())
+            raise ProberException(resp.message(), resp.errc())
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
@@ -213,5 +223,6 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             raise ProberException(resp.message())
 
         return int(tok[0]), int(tok[1]), int(tok[2])
+
     def end_of_route(self):
         return self.__end_of_route
