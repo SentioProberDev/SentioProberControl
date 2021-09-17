@@ -18,6 +18,18 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 Please note that pip will automatically uninstall an older version of the sentio_prober_control repository, if one is found.
 
+## Troubleshooting
+
+If you have problems getting the package to work. Check wether an old version of the sentio-prober-control is still installed. To do so type
+
+```python -m pip list```
+
+if an older version is listed uninstall it first by using the command. 
+
+```python -m pip uninstall sentio-prober-control```
+
+After the uninstallation you can proceed with the installation as explained in the section above.
+
 ## Instructions for package maintainer (updating the package) 
 
 *The following instructions are for creating a new release of the package. If you only want to use the package you do not need to do this! Just follow the instructions listed above for installing an existing package.*
