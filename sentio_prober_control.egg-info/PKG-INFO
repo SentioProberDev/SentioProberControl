@@ -1,16 +1,57 @@
 Metadata-Version: 2.1
 Name: sentio-prober-control
-Version: 1.0.0
+Version: 3.5.1
 Summary: MPI Sentio Prober Control - Python Bindings
 Home-page: https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/
 Author: Ingo Berg
 Author-email: ingo.berg@atv-systems.de
 License: UNKNOWN
-Description: # Sentio Prober Control - Python Bindings
-         Python bindings for controlling MPI SENTIO probe stations
+Description: [![GitHub issues](https://img.shields.io/github/issues/SentioProberDev/SentioProberControl.svg?maxAge=360)](https://github.com/SentioProberDev/SentioProberControl/issues)
+        [![Version](https://img.shields.io/github/release/SentioProberDev/SentioProberControl.svg?maxAge=360)](https://github.com/SentioProberDev/SentioProberControl/releases/)
+        [![Github All Releases](https://img.shields.io/github/downloads/SentioProberDev/SentioProberControl/total.svg)](https://github.com/SentioProberDev/SentioProberControl/releases/)
+        # SENTIOÂ® Prober Control - Python Bindings
+        This archive contains a package with python bindings to control a [MPI SENTIOÂ® probe station](https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/).
+        
+        ![](https://www.mpi-corporation.com/wp-content/uploads/2019/12/1.-TS3500-SE-with-WaferWallet_frontview.jpg)
+        
+        ## Instructions for installing the SENTIOÂ® prober control Python package
+        
+        1.) Download the latest python package from:
+        
+        https://github.com/SentioProberDev/SentioProberControl/releases
+        
+        2.) Install the python package with pip:
+        
+        ```python -m pip install --user sentio-prober-control-3.5.0.tar.gz```
+        
+        Please note that pip will automatically uninstall an older version of the sentio_prober_control repository, if one is found.
+        
+        ## Instructions for package maintainer (updating the package) 
+        
+        *The following instructions are for creating a new release of the package. If you only want to use the package you do not need to do this! Just follow the instructions listed above for installing an existing package.*
+        
+        1.) Get the latest version of setuptools and wheel:
+        
+        ```python -m pip install --user --upgrade setuptools wheel```
+        
+        2.) create the distribution archive:
+        
+        cd into the archive (where setup.py) is located.
+        
+        ```python setup.py sdist bdist_wheel```
+        
+        This command will create the dist folder.
+        
+        ```
+        dist/
+          sentio-prober-control-3.5.0-py3-none-any.whl
+          sentio-prober-control-3.5.0.tar.gz
+        ```
+        
+        3.) Create a new release on GitHub with the new binary archive
         
 Platform: UNKNOWN
-Classifier: Development Status :: 4 - Beta
+Classifier: Development Status :: 5 - Production/Stable
 Classifier: Environment :: Console
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: Other/Proprietary License
