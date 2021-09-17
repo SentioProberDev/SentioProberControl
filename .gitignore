@@ -2,3 +2,5 @@ build/*
 sentio_prober_control/.idea/*
 .idea/*
 *.pyc
+*.gz
+dist/*
