@@ -10,10 +10,6 @@ Version 3.5.2
 -------------
 
 New Features:
-+ support for new Remote Commands
-	- map:subsite:set_bin -> prober.map.subsites.set_bin(...)
-	- map:subsite:get_bin -> prober.map.subsites.get_bin(...)
-
 Python API Bugfixes:
 + When no subsite was specified "prober.map.step_next_die" and 
   "prober.map.bin_step_next_die" were always stepping to site 0 
