@@ -2,6 +2,8 @@ from sentio_prober_control.Sentio.ProberSentio import *
 from sentio_prober_control.Communication.CommunicatorGpib import *
 from sentio_prober_control.Communication.CommunicatorTcpIp import *
 
+from random import random
+
 
 def main():
 
@@ -83,7 +85,6 @@ def main():
         # Step over all sites of the first die, then proceed to the next die.
         # Repeat until all subsites of all dies were measured
         #
-
         try:
             col, row, site = prober.map.step_first_die()
             bin_value = 0
@@ -99,7 +100,7 @@ def main():
 
     except Exception as e:
         print("\n#### Error ##################################")
-        print(e.message())
+        print(e)
 
 if __name__ == "__main__":
     main()
