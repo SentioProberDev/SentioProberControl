@@ -66,7 +66,7 @@ def main():
             try:
                 while True:
                     bin_value = testSite
-                    prober.map.subsites.set_bin(bin_value)
+                    prober.map.bins.set_bin(bin_value, col, row, site)
 
                     col, row, site = prober.map.step_next_die()
                     print(f'Position {col}, {row} (Site: {site})')

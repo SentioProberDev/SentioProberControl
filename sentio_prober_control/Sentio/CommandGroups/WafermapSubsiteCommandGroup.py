@@ -22,33 +22,6 @@ class WafermapSubsiteGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return str(tok[0]), float(tok[1]), float(tok[2])
 
-    """Set bin code of a subsite"""
-    def set_bin(self, bin:int, site:int = None, col:int = None, row:int = None):
-        if site is None and col is None and row is None:
-            self._comm.send(f'map:subsite:set_bin {bin}')
-        elif site is not None and col is None and row is None:
-            self._comm.send(f'map:subsite:set_bin {bin}, {site}')
-        elif site is not None and not col is None and not row is None:
-            self._comm.send(f'map:subsite:set_bin {bin}, {site}, {col}, {row}')
-        else:
-            raise ProberException('Site, col and row parameters must always be given in conjunction!', RemoteCommandError.InvalidParameter)
-
-        Response.check_resp(self._comm.read_line())
-
-    """Get bin code of a specific subsite"""
-    def get_bin(self, site:int = None, col:int = None, row:int = None):
-        if site is None and col is None and row is None:
-            self._comm.send(f'map:subsites:get_bin')
-        elif site is not None and col is None and row is None:
-            self._comm.send(f'map:subsites:get_bin {site}')
-        elif site is not None and not col is None and not row is None:
-            self._comm.send(f'map:subsites:get_bin {site} {col} {row}')
-        else:
-            raise ProberException('Site, col and row parameters must always be given in conjunction!', RemoteCommandError.InvalidParameter)
-
-        resp = Response.check_resp(self._comm.read_line())
-        return int(resp.message())
-
     """ Reset Sentios subsite definitions. """
     def reset(self):
         self._comm.send("map:subsite:reset")
