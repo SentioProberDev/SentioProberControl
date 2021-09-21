@@ -1,17 +1,19 @@
 Changes:
 
 Version 3.5.1
---------------
+=============
 
 New Features:
-+ added communicator class for NI GPIB drivers
+	+ added communicator class for NI GPIB drivers
 
 Version 3.5.2
--------------
+=============
 
 New Features:
-Python API Bugfixes:
-+ When no subsite was specified "prober.map.step_next_die" and 
-  "prober.map.bin_step_next_die" were always stepping to site 0 
-  instead of staying at the current site
+	+ no new features
 
+Python API Bugfixes:
+	+ When no subsite was specified "prober.map.step_next_die" and 
+	  "prober.map.bin_step_next_die" were always stepping to site 0 
+	  instead of staying at the current site
+	+ missing error handling in map.step_first_die added
