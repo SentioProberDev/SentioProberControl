@@ -46,8 +46,8 @@ class SentioProber(ProberBase):
         resp = Response.parse_resp(self.comm.read_line())
         return resp
 
-    def open_project(self, project: str):
-        self.comm.send("open_project " + project)
+    def open_project(self, project: str, restore_heights: bool = False):
+        self.comm.send(f"open_project {project}, {restore_heights}")
         Response.check_resp(self.comm.read_line())
 
     def save_project(self, project: str):
