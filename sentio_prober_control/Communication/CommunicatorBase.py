@@ -2,7 +2,7 @@ from abc import ABC
 
 
 class CommunicatorBase(ABC):
-    _verbose = True
+    _verbose = False
 
     def connect(self):
         raise NotImplementedError("CommunicatorBase.connect is not implemented!")

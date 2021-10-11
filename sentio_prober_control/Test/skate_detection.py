@@ -55,13 +55,42 @@ def main():
 
         prober.open_project("C:\\ProgramData\\MPI Corporation\\SENTIO\\projects\\test_skate_detection", True)
         prober.move_chuck_z(ChuckZReference.Separation, 0)
-        
-        resp = prober.send_cmd("vis:sd:find_contact scope")
-        if not resp.ok:
-            raise Exception("vis:sd:find_contact scope")
 
-#        prober.move_chuck_z(ChuckZReference.Contact, 0)
-#        prober.move_scope_z(ScopeZReference.Zero, -135624.2)
+        prober.vision.auto_focus(AutoFocusCmd.GoTo)
+
+        # I have titan tips in the FOV, move scope away
+        prober.vision.align_wafer(120000)
+        prober.vision.find_home()
+
+        prober.select_module(Module.Vision)
+
+        # for this implementation stepping mode must be set to Step to separation. Because this script will
+        # determine the contact height
+        prober.vision.set_prop('stepping_mode', 'StepToSeparation')
+        col, row, site = prober.map.step_first_die()
+
+        resp1 = prober.send_cmd("vis:sd:find_offset scope, true")
+        resp1.check_error()
+
+        resp2 = prober.send_cmd("vis:sd:find_contact scope, update")
+        resp2.check_error()
+
+        print(f'{col}, {row}, {site}, {resp1.message()}, {resp2.message()}')
+
+        try:
+            while True:
+                col, row, site = prober.map.step_next_die()
+
+                resp1 = prober.send_cmd("vis:sd:find_offset scope, true")
+                resp1.check_error()
+               
+                resp2 = prober.send_cmd("vis:sd:find_contact scope, update")
+                resp2.check_error()
+
+                print(f'{col}, {row}, {site}, {resp1.message()}, {resp2.message()}')
+        except ProberException as e:
+            if e.error() != RemoteCommandError.EndOfRoute:
+                raise  
 
 #        test_offset_loop(prober)
 

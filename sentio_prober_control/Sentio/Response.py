@@ -36,11 +36,6 @@ class Response:
         if not self.ok():
             raise ProberException(self.message(), self.errc())
 
-    @staticmethod
-    def check_resp_allow_error(str_resp):
-        resp = Response.parse_resp(str_resp)
-        return resp
-
     def cmd_id(self) -> int:
         return self.__cmd_id
 
@@ -56,5 +51,9 @@ class Response:
     def ok(self) -> str:
         return self.__errc == 0
 
+    def check_error(self):
+        if not self.ok():
+            raise ProberException(self.resp.message(), self.resp.errc())
+    
     def dump(self):
         print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))
