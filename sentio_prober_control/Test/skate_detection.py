@@ -53,11 +53,17 @@ def main():
 
         # train_initial_setup(prober)
 
-#        prober.open_project("C:\\ProgramData\\MPI Corporation\\SENTIO\\projects\\test_skate_detection", True)
+        prober.open_project("C:\\ProgramData\\MPI Corporation\\SENTIO\\projects\\test_skate_detection", True)
+        prober.move_chuck_z(ChuckZReference.Separation, 0)
+        
+        resp = prober.send_cmd("vis:sd:find_contact scope")
+        if not resp.ok:
+            raise Exception("vis:sd:find_contact scope")
+
 #        prober.move_chuck_z(ChuckZReference.Contact, 0)
 #        prober.move_scope_z(ScopeZReference.Zero, -135624.2)
 
-        test_offset_loop(prober)
+#        test_offset_loop(prober)
 
     except Exception as e:
         print("\n#### Error ##################################")
