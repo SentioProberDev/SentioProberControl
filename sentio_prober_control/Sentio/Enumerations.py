@@ -1,5 +1,36 @@
 from enum import Enum
 
+class CompensationMode(Enum):
+    Lateral = 0,
+    Vertical = 1,
+    Both = 2,
+    ProbeCard = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            CompensationMode.Lateral: "Lateral",
+            CompensationMode.Vertical: "Vertical",
+            CompensationMode.Both: "Both",
+            CompensationMode.ProbeCard: "ProbeCard"
+        }
+        return switcher.get(self, "Invalid CompensationMode")
+
+class CompensationType(Enum):
+    DieAlign = 0,
+    Topography = 1,
+    MapScan = 2,
+    AlignDie = 3,
+    SkateDetection = 4
+
+    def toSentioAbbr(self):
+        switcher = {
+            CompensationType.DieAlign: "DieAlign",
+            CompensationType.Topography: "Topography",
+            CompensationType.MapScan: "MapScan",
+            CompensationType.AlignDie: "AlignDie",
+            CompensationType.SkateDetection: "SkateDetection"
+        }
+        return switcher.get(self, "Invalid CompensationType")
 
 class ProjectFileInfo(Enum):
     NameOnly = 0,
