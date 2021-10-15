@@ -4,3 +4,4 @@ sentio_prober_control/.idea/*
 *.pyc
 *.gz
 dist/*
+sentio_prober_control/Test/internal/*
