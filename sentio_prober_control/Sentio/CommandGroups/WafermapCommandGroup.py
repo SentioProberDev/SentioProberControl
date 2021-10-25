@@ -145,13 +145,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         Response.check_resp(self._comm.read_line())
 
     def set_color_scheme(self, scheme: ColorScheme):
-        switcher = {
-            ColorScheme.ColorFromBin: 2,
-            ColorScheme.ColorFromPath: 1
-        }
-
-        what = switcher.get(scheme, "Invalid color scheme")
-        self._comm.send("map:set_color_scheme {0}".format(what))
+        self._comm.send(f'map:set_color_scheme {scheme.toSentioAbbr()}')
         Response.check_resp(self._comm.read_line())
 
     ###############################################################################################

@@ -205,9 +205,15 @@ class DieNumber(Enum):
 
 
 class ColorScheme(Enum):
-    ColorFromPath = 0,
-    ColorFromBin = 1
+    ColorFromBin = 0,
+    ColorFromValue = 1
 
+    def toSentioAbbr(self):
+        switcher = {
+            ColorScheme.ColorFromBin: 0,
+            ColorScheme.ColorFromValue: 1
+        }
+        return switcher.get(self, "Invalid ColorScheme")
 
 class OrientationMarker(Enum):
     Notch = 0,
