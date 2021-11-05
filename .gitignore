@@ -5,4 +5,3 @@ sentio_prober_control/.idea/*
 *.gz
 dist/*
 sentio_prober_control/Test/internal/*
-sentio_prober_control/Test/*
