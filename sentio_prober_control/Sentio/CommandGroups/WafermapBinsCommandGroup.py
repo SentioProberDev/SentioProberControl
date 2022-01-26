@@ -29,3 +29,11 @@ class WafermapBinsCommandGroup(CommandGroupBase):
     def clear_all(self):
         self._comm.send("map:bins:clear_all")
         Response.check_resp(self._comm.read_line())
+
+    def clear_all_values(self):
+        self._comm.send("map:bins:clear_all_values")
+        Response.check_resp(self._comm.read_line())
+
+    def set_value(self, value: float, col: int, row: int):
+        self._comm.send("map:bins:set_value {0}, {1}, {2}".format(value, col, row))
+        Response.check_resp(self._comm.read_line())

@@ -18,3 +18,34 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         LoaderBusy = "LoaderBusy" in tok
         return isInitialized, isMeasuring, LoaderBusy
 
+    def get_chuck_temp(self) -> float:
+        self._comm.send("status:get_chuck_temp")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        temp = float(tok[0])
+        return temp 
+
+    def get_chuck_temp_setpoint(self) -> float:
+        self._comm.send("status:get_chuck_temp_setpoint")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        temp = float(tok[0])
+        return temp 
+
+    def set_chuck_temp(self, temp:float):
+        self._comm.send(f"status:set_chuck_temp {temp:.2f}")
+        resp = Response.check_resp(self._comm.read_line())
+
+    def get_chuck_thermo_state(self) -> Tuple[bool, bool, bool, bool, bool, bool]:
+        self._comm.send("status:get_chuck_thermo_state")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        isCooling = "Cooling" in tok
+        isHeating = "Heating" in tok
+        isControlling = "Controlling" in tok
+        isStandby = "Standby" in tok
+        isError = "Error" in tok
+        isUncontrolled = "Uncontrolled" in tok 
+        return isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled 
+
+

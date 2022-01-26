@@ -2,6 +2,7 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
 from sentio_prober_control.Sentio.CommandGroups.VisionCameraCommandGroup import VisionCameraCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionIMagProCommandGroup import VisionIMagProCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.VisionCompensationGroup import VisionCompensationGroup
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Sentio.Enumerations import *
 
@@ -11,6 +12,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         super().__init__(comm, 'vis')
         self.camera = VisionCameraCommandGroup(comm)
         self.imagpro = VisionIMagProCommandGroup(comm)
+        self.compensation = VisionCompensationGroup(comm)
 
     def switch_all_lights(self, stat:bool):
         self._comm.send("vis:switch_all_lights {0}".format(stat))

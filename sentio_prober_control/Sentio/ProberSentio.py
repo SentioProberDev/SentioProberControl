@@ -203,7 +203,7 @@ class SentioProber(ProberBase):
         self.comm.send("select_module " + str_module)
         Response.check_resp(self.comm.read_line())
 
-    def wait_complete(self, cmd_id: int, timeout: int) -> Response:
+    def wait_complete(self, cmd_id: int, timeout: int = 60) -> Response:
         self.comm.send("wait_complete {0}, {1}".format(cmd_id, timeout))
         return Response.check_resp(self.comm.read_line())
 
