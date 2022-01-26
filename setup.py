@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sentio-prober-control",
-    version="3.5.2",
+    version="3.6.0",
     author="Ingo Berg",
     author_email="ingo.berg@atv-systems.de",
     description="MPI Sentio Prober Control - Python Bindings",

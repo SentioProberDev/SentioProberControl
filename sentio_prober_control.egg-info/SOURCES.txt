@@ -30,6 +30,7 @@ sentio_prober_control/Sentio/CommandGroups/SiPHCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/StatusCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/VisionCameraCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/VisionCommandGroup.py
+sentio_prober_control/Sentio/CommandGroups/VisionCompensationGroup.py
 sentio_prober_control/Sentio/CommandGroups/VisionIMagProCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapBinsCommandGroup.py
 sentio_prober_control/Sentio/CommandGroups/WafermapCommandGroup.py
