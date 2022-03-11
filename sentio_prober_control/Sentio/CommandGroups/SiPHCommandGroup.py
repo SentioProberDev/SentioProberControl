@@ -7,12 +7,12 @@ class SiPHCommandGroup(CommandGroupBase):
         super().__init__(comm)
 
     def move_hover(self, probe: ProbeSentio) -> str:
-        self._comm.send("siph:move_hover, {0}".format(probe.toSentioAbbr()))
+        self._comm.send("siph:move_hover {0}".format(probe.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()
 
     def move_separation(self, probe: ProbeSentio) -> str:
-        self._comm.send("siph:move_separation, {0}".format(probe.toSentioAbbr()))
+        self._comm.send("siph:move_separation {0}".format(probe.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()
 

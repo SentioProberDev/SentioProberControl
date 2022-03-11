@@ -612,15 +612,13 @@ class ImagePattern(Enum):
 class ProbeXYReference(Enum):
     Zero = 0,
     Home = 1,
-    Relative = 2,
-    Center = 3,
+    Current = 2,
 
     def toSentioAbbr(self):
         switcher = {
-            ProbeXYReference.Zero: "Z",
-            ProbeXYReference.Home: "H",
-            ProbeXYReference.Relative: "R",
-            ProbeXYReference.Center: "C",
+            ProbeXYReference.Zero: "Zero",
+            ProbeXYReference.Home: "Home",
+            ProbeXYReference.Current: "Current",
         }
         return switcher.get(self, "Invalid probe xy reference")
 
@@ -649,10 +647,10 @@ class ProbeSentio(Enum):
 
     def toSentioAbbr(self):
         switcher = {
-            ProbeSentio.East: "E",
-            ProbeSentio.West: "W",
-            ProbeSentio.North: "N",
-            ProbeSentio.South: "S"
+            ProbeSentio.East: "East",
+            ProbeSentio.West: "West",
+            ProbeSentio.North: "North",
+            ProbeSentio.South: "South"
         }
         return switcher.get(self, "Invalid Probe reference")
 

@@ -26,7 +26,7 @@ class SentioProber(ProberBase):
         self.vision = VisionCommandGroup(comm)
         self.status = StatusCommandGroup(comm)
         self.loader = LoaderCommandGroup(comm)
-        self.SiPH = SiPHCommandGroup(comm)
+        self.siph = SiPHCommandGroup(comm)
         self.service = ServiceCommandGroup(comm)
         self.probe = ProbeCommandGroup(comm)
         self.compensation = CompensationCommandGroup(comm)

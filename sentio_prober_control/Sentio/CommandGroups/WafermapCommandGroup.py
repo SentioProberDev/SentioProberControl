@@ -179,6 +179,18 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
+    def step_next_die(self) -> Tuple[int, int, int]:
+        self._comm.send("map:step_next_die")
+        resp = Response.parse_resp(self._comm.read_line())
+
+        self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
+
+        if not resp.ok():
+            raise ProberException(resp.message(), resp.errc())
+
+        tok = resp.message().split(",")
+        return int(tok[0]), int(tok[1]), int(tok[2])
+
     def bin_step_next_die(self, bin_value: int, site: int = None) -> Tuple[int, int, int]:
         # 2021-09-17: bugfix: when no site is given current site must be retained
         if site is None:
