@@ -39,9 +39,9 @@ def main():
     prober.move_chuck_home()
     prober.move_chuck_contact()
 
-    prober.siph.move_siph_hover('East')
-    prober.siph.move_siph_hover('West')
-    prober.siph.siph_fast_alignment()
+    prober.siph.move_hover(ProbeSentio.East)
+    prober.siph.move_hover(ProbeSentio.West)
+    prober.siph.fast_alignment()
 
     prober.map.step_first_die()
 
@@ -51,8 +51,8 @@ def main():
 
         prober.move_chuck_contact()
 
-        prober.siph.move_siph_hover('East')
-        prober.siph.move_siph_hover('West')
+        prober.siph.move_hover(ProbeSentio.East)
+        prober.siph.move_hover(ProbeSentio.West)
 
         prober.siph.gradient_search()
 
@@ -73,8 +73,8 @@ def main():
                                        subsiteListWestY[j])
             prober.move_chuck_contact()
 
-            prober.siph.move_siph_hover('East')
-            prober.siph.move_siph_hover('West')
+            prober.siph.move_siph_hover(ProbeSentio.East)
+            prober.siph.move_siph_hover(ProbeSentio.West)
 
             prober.siph.gradient_search()
 
