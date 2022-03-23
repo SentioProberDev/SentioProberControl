@@ -203,7 +203,13 @@ class SentioProber(ProberBase):
         self.comm.send("select_module " + str_module)
         Response.check_resp(self.comm.read_line())
 
-    def wait_complete(self, cmd_id: int, timeout: int = 60) -> Response:
+    # Wait until all async commands have finished.
+    # Added in SENTIO 3.6.2
+    def wait_all(self, timeout: int = 90) -> Response:
+        self.comm.send(f"wait_all {timeout}")
+        return Response.check_resp(self.comm.read_line())
+
+    def wait_complete(self, cmd_id: int, timeout: int = 90) -> Response:
         self.comm.send("wait_complete {0}, {1}".format(cmd_id, timeout))
         return Response.check_resp(self.comm.read_line())
 
