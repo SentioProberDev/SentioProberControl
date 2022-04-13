@@ -8,7 +8,7 @@ This archive contains a package with python bindings to control a [MPI SENTIO® 
 
 ## Instructions for installing the SENTIO® prober control Python package
 
-1.) Download the latest python package from:
+1.) Download the latest python package from: 
 
 https://github.com/SentioProberDev/SentioProberControl/releases
 
