@@ -93,6 +93,10 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:align_wafer {0}".format(timeout))
         Response.check_resp(self._comm.read_line())
 
+    def align_wafer(self, mode: AutoAlignCmd):
+        self._comm.send("vis:align_wafer {0}".format(mode.toSentioAbbr()))
+        Response.check_resp(self._comm.read_line())
+
     def align_die(self, threshold: float = 0.05):
         self._comm.send("vis:align_die {0}".format(threshold))
         resp = Response.check_resp(self._comm.read_line())

@@ -44,3 +44,8 @@ class LoaderCommandGroup(CommandGroupBase):
         self._comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()
+
+    def unlaod_wafer(self):
+        self._comm.send("loader:unload_wafer")
+        resp = Response.check_resp(self._comm.read_line())
+        return resp.message()

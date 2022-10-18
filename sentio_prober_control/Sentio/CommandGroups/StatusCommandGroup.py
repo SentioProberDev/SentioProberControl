@@ -49,3 +49,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         return isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled 
 
 
+    def get_soaking_time(self, temp:float):
+        self._comm.send(f"status:get_soaking_time {temp:.2f}")
+        resp = Response.check_resp(self._comm.read_line())
+        temp = float(resp.message())
+        return temp

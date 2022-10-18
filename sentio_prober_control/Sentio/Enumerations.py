@@ -240,6 +240,18 @@ class AutoFocusCmd(Enum):
         }
         return switcher.get(self, "Invalid auto focus function")
 
+class AutoAlignCmd(Enum):
+    AutoDieSize = 0,
+    UpdateDieSize = 1,
+    TwoPt = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            AutoAlignCmd.AutoDieSize: "auto",
+            AutoAlignCmd.UpdateDieSize: "update",
+            AutoAlignCmd.TwoPt: "2pt"
+        }
+        return switcher.get(self, "Invalid Auto Align function")
 
 class ScopeXYReference(Enum):
     Zero = 0,
@@ -705,3 +717,14 @@ class OnTheFlyMode(Enum):
             OnTheFlyMode.ProbeCard: "ProbeCard",
         }
         return switcher.get(self, "Invalid OTF mode")
+
+class ExecuteAction(Enum):
+    Execute = 0,
+    Abort = 1,
+
+    def toSentioAbbr(self):
+        switcher = {
+            ExecuteAction.Execute: "execute",
+            ExecuteAction.Abort: "aboru",
+        }
+        return switcher.get(self, "Invalid ExecuteAction function")
