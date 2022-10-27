@@ -728,3 +728,14 @@ class ExecuteAction(Enum):
             ExecuteAction.Abort: "aboru",
         }
         return switcher.get(self, "Invalid ExecuteAction function")
+
+class PTPA_Find_Tips_Mode(Enum):
+    OnAxis = 0,
+    OffAxis = 1,
+
+    def toSentioAbbr(self):
+        switcher = {
+            PTPA_Find_Tips_Mode.OnAxis: "OnAxis",
+            PTPA_Find_Tips_Mode.OffAxis: "OffAxis",
+        }
+        return switcher.get(self, "Invalid PTPA_Find_Tips_Mode function")

@@ -159,8 +159,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
-    def ptpa_find_tips(self, row: int = 0, column: int = 0):
-        self._comm.send("vis:execute_ptpa_find_tips {0},{1}".format(row, column))
+    def ptpa_find_tips(self, ptpa_mode: PTPA_Find_Tips_Mode):
+        self._comm.send("vis:ptpa_find_tips {0}".format(ptpa_mode.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])

@@ -240,7 +240,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         return self.__end_of_routeecute
 
     def execute_topogrphy(self, execute:ExecuteAction):
-        self._comm.send("map:compensation:topography {}".format(execute))
+        self._comm.send("map:compensation:topography {}".format(execute.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         # i.e. Stepping while at the end of the route
         if not resp.ok():
