@@ -20,7 +20,7 @@ Please note that pip will automatically uninstall an older version of the sentio
 
 ## Example-Scripts
 
-We have compiled a list of example scripts to get you started with conrolling SENTIO via Python. Please download this archive from here:
+A set of example scripts for python is maintained in a seperate archive at GitHub. 
 
 https://github.com/SentioProberDev/Examples-Python
 
