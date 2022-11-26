@@ -18,6 +18,12 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 Please note that pip will automatically uninstall an older version of the sentio_prober_control repository, if one is found.
 
+## Example-Scripts
+
+We have compiled a list of example scripts to get you started with conrolling SENTIO via Python. Please download this archive from here:
+
+https://github.com/SentioProberDev/Examples-Python
+
 ## Troubleshooting
 
 If you have problems getting the package to work. Check wether an old version of the sentio-prober-control is still installed. To do so type
