@@ -42,7 +42,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:remove_probetip_marker")
         Response.check_resp(self._comm.read_line())
 
-    def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.CommonProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
+    def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.ProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
         """ For internal use only!
             This function is subject to change without any prior warning. MPI will not maintain backwards 
             compatibility or provide support. """        
@@ -55,16 +55,18 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         cid = 0
         for n in range(0, len(str_tips)):
             str_tip = str_tips[n].strip().split(" ")
+            num_col = len(str_tip)
+
             x = float(str_tip[0])    # tip x position
             y = float(str_tip[1])    # tip y position
             w = float(str_tip[2])    # detection width
             h = float(str_tip[3])    # detection height
             q = float(str_tip[4])    # detection quality (meaning depends on the used detector)
             
-            if len(str_tips)>=5:
+            if num_col>=6:
                 cid = float(str_tip[5])  # class id (only multi class detectors)
 
-            found_tips.append([x,y,w,h,q, cid])
+            found_tips.append([x, y, w, h, q, cid])
 
         return found_tips
 

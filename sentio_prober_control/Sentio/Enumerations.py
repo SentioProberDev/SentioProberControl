@@ -157,7 +157,7 @@ class DetectionAlgorithm(Enum):
     PyramidTipRingLight = 5,
     PyramidTipSpotLight = 6,
     PyramidTipRingLightMultiPass = 7,
-    CommonProbeDetector = 8,
+    ProbeDetector = 8,
     WaferDetector = 9
 
     def toSentioAbbr(self):
@@ -170,7 +170,7 @@ class DetectionAlgorithm(Enum):
             DetectionAlgorithm.PyramidTipRingLight: "PyramidTipRingLight",
             DetectionAlgorithm.PyramidTipSpotLight: "PyramidTipSpotLight",
             DetectionAlgorithm.PyramidTipRingLightMultiPass: "PyramidTipRingLightMultiPass",
-            DetectionAlgorithm.CommonProbeDetector: "CommonProbeDetector",
+            DetectionAlgorithm.ProbeDetector: "ProbeDetector",
             DetectionAlgorithm.WaferDetector: "WaferDetector"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
