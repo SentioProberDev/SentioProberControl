@@ -134,42 +134,44 @@ class TestSelection(Enum):
     All = 4
 
 
-class ProbeTipCoordinates(Enum):
+class DetectionCoordindates(Enum):
     Image = 0,
     Fov = 1,
     Roi = 2
 
     def toSentioAbbr(self):
         switcher = {
-            ProbeTipCoordinates.Image: "Image",
-            ProbeTipCoordinates.Fov: "Fov",
-            ProbeTipCoordinates.Roi: "Roi"
+            DetectionCoordindates.Image: "Image",
+            DetectionCoordindates.Fov: "Fov",
+            DetectionCoordindates.Roi: "Roi"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
 
 
-class ProbeTipDetector(Enum):
+class DetectionAlgorithm(Enum):
     Keypoint = 0,
     ProbeTip = 1,
     ProbeTipFromBelow = 2,
-    TitanHead = 3,
-    TitanTip = 4,
-    VerticalProbeCard = 5,
-    PyramidTipRingLight = 6,
-    PyramidTipSpotLight = 7,
-    PyramidTipRingLightMultiPass = 8
+    TitanTip = 3,
+    VerticalProbeCard = 4,
+    PyramidTipRingLight = 5,
+    PyramidTipSpotLight = 6,
+    PyramidTipRingLightMultiPass = 7,
+    CommonProbeDetector = 8,
+    WaferDetector = 9
 
     def toSentioAbbr(self):
         switcher = {
-            ProbeTipDetector.Keypoint: "Keypoint",
-            ProbeTipDetector.ProbeTip: "ProbeTip",
-            ProbeTipDetector.ProbeTipFromBelow: "ProbeTipFromBelow",
-            ProbeTipDetector.TitanHead: "TitanHead",
-            ProbeTipDetector.TitanTip: "TitanTip",
-            ProbeTipDetector.VerticalProbeCard: "VerticalProbeCard",
-            ProbeTipDetector.PyramidTipRingLight: "PyramidTipRingLight",
-            ProbeTipDetector.PyramidTipSpotLight: "PyramidTipSpotLight",
-            ProbeTipDetector.PyramidTipRingLightMultiPass: "PyramidTipRingLightMultiPass"
+            DetectionAlgorithm.Keypoint: "Keypoint",
+            DetectionAlgorithm.ProbeTip: "ProbeTip",
+            DetectionAlgorithm.ProbeTipFromBelow: "ProbeTipFromBelow",
+            DetectionAlgorithm.TitanTip: "TitanTip",
+            DetectionAlgorithm.VerticalProbeCard: "VerticalProbeCard",
+            DetectionAlgorithm.PyramidTipRingLight: "PyramidTipRingLight",
+            DetectionAlgorithm.PyramidTipSpotLight: "PyramidTipSpotLight",
+            DetectionAlgorithm.PyramidTipRingLightMultiPass: "PyramidTipRingLightMultiPass",
+            DetectionAlgorithm.CommonProbeDetector: "CommonProbeDetector",
+            DetectionAlgorithm.WaferDetector: "WaferDetector"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
 

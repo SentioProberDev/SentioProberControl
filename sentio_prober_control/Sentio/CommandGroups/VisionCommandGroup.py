@@ -42,7 +42,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:remove_probetip_marker")
         Response.check_resp(self._comm.read_line())
 
-    def detect_probetips(self, camera: CameraMountPoint, detector:  ProbeTipDetector, coords: ProbeTipCoordinates = ProbeTipCoordinates.Roi):
+    def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.CommonProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
         """ For internal use only!
             This function is subject to change without any prior warning. MPI will not maintain backwards 
             compatibility or provide support. """        

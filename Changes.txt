@@ -1,5 +1,13 @@
 Changes:
 
+Version 3.8.0
+=============
+
+Modification:
+	+ Common Probe Tip detector added (new SENTIO 3.8)
+		- prober.vision.detect_probetips adapted to SENTIO changes
+
+
 Version 3.6.0
 =============
 
@@ -9,11 +17,14 @@ New features:
 		- prober.status.get_chuck_temp_setpoint 
 		- prober.status.set_chuck_temp 
 		- prober.status.get_chuck_thermo_state
+
+
 Version 3.5.1
 =============
 
 New Features:
 	+ added communicator class for NI GPIB drivers
+
 
 Version 3.5.2
 =============
