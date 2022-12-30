@@ -348,3 +348,8 @@ class SentioProber(ProberBase):
         self.comm.send(f'get_project {pfi.toSentioAbbr()}')
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
+    def step_scope_site(self, site: str):
+        self.comm.send('step_scope_site {}'.format(site))
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()

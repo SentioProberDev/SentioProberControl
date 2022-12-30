@@ -164,3 +164,12 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
+
+    def start_execute_compensation(self, comp_type: Die_Compensation_Type, comp_mode: Die_Compensation_Mode):
+        self._comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.toSentioAbbr(), comp_mode.toSentioAbbr()))
+        resp = Response.check_resp(self._comm.read_line())
+
+        if not resp.ok():
+            raise ProberException(resp.message())
+
+        return resp.cmd_id()

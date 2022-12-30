@@ -739,3 +739,33 @@ class PTPA_Find_Tips_Mode(Enum):
             PTPA_Find_Tips_Mode.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid PTPA_Find_Tips_Mode function")
+
+class Die_Compensation_Type(Enum):
+    DiaAlign = 0,
+    MapScan = 1,
+    Topography = 2,
+
+    def toSentioAbbr(self):
+        switcher = {
+            Die_Compensation_Type.DiaAlign: "DiaAlign",
+            Die_Compensation_Type.MapScan: "MapScan",
+            Die_Compensation_Type.MapScan: "Topography",
+        }
+        return switcher.get(self, "Invalid Compensation_Type function")
+
+class Die_Compensation_Mode(Enum):
+    Lateral = 0,
+    Vertical = 1,
+    Both = 2,
+    ProbeCard = 3,
+    SkateDetection = 4,
+
+    def toSentioAbbr(self):
+        switcher = {
+            Die_Compensation_Mode.Lateral: "Lateral",
+            Die_Compensation_Mode.Vertical: "Vertical",
+            Die_Compensation_Mode.Both: "Both",
+            Die_Compensation_Mode.ProbeCard: "ProbeCard",
+            Die_Compensation_Mode.SkateDetection: "SkateDetection",
+        }
+        return switcher.get(self, "Invalid Die_Compensation_Mode function")
