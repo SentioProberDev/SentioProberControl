@@ -42,26 +42,40 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:remove_probetip_marker")
         Response.check_resp(self._comm.read_line())
 
-    def detect_probetips(self, camera: CameraMountPoint, detector:  ProbeTipDetector, coords: ProbeTipCoordinates = ProbeTipCoordinates.Roi):
+    def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.ProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
+        """ For internal use only!
+            This function is subject to change without any prior warning. MPI will not maintain backwards 
+            compatibility or provide support. """        
+
         self._comm.send("vis:detect_probetips {0}, {1}, {2}".format(camera.toSentioAbbr(), detector.toSentioAbbr(), coords.toSentioAbbr(), coords.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         str_tips = resp.message().split(",")
 
         found_tips = []
+        cid = 0
         for n in range(0, len(str_tips)):
             str_tip = str_tips[n].strip().split(" ")
-            x = float(str_tip[0])  # tip x position
-            y = float(str_tip[1])  # tip y position
-            w = float(str_tip[2])  # detection width
-            h = float(str_tip[3])  # detection height
-            q = float(str_tip[4])  # detection qulity (meaning depends on the used detector)
+            num_col = len(str_tip)
 
-            found_tips.append([x,y,w,h,q])
+            x = float(str_tip[0])    # tip x position
+            y = float(str_tip[1])    # tip y position
+            w = float(str_tip[2])    # detection width
+            h = float(str_tip[3])    # detection height
+            q = float(str_tip[4])    # detection quality (meaning depends on the used detector)
+            
+            if num_col>=6:
+                cid = float(str_tip[5])  # class id (only multi class detectors)
+
+            found_tips.append([x, y, w, h, q, cid])
 
         return found_tips
 
-    """ under development, will change! """
+    
     def match_tips(self, ptpa_type:PtpaType):
+        """ For internal use only!
+            This function is subject to change without any prior warning. MPI will not maintain backwards 
+            compatibility or provide support. """        
+
         self._comm.send("vis:match_tips {0}".format(ptpa_type.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
