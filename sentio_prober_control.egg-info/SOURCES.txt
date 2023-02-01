@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 sentio_prober_control/__init__.py
