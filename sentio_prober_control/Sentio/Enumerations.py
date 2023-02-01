@@ -182,8 +182,20 @@ class Module(Enum):
     Setup = 2,
     Service = 3,
     Qalibria = 4,
-    AuxSites = 5
+    AuxSites = 5,
+    Loader = 6
 
+    def toSentioAbbr(self):
+        switcher = {
+            Module.Wafermap: "Wafermap",
+            Module.Vision: "Vision",
+            Module.Setup: "Setup",
+            Module.Service: "Service",
+            Module.Qalibria: "Qalibria",
+            Module.AuxSites: "AuxSites",
+            Module.Loader: "Loader"
+        }
+        return switcher.get(self, "Invalid Module Name")
 
 class AxisOrient(Enum):
     DownRight = 0,

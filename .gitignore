@@ -4,11 +4,9 @@ sentio_prober_control/.idea/*
 *.pyc
 *.gz
 dist/*
-sentio_prober_control/Test/internal/*
-sentio_prober_control/Test/temp_control.py
 sentio_prober_control/.vs/ProjectSettings.json
 sentio_prober_control/.vs/sentio_prober_control/v17/.suo
 sentio_prober_control/.vs/slnx.sqlite
 sentio_prober_control/.vs/VSWorkspaceState.json
 sentio_prober_control/Python-Test-Scripts
-sentio_prober_control/Test/*.py
+sentio_prober_control/Test/*

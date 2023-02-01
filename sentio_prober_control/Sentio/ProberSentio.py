@@ -190,17 +190,7 @@ class SentioProber(ProberBase):
         return resp.message()
 
     def select_module(self, module: Module):
-        switcher = {
-            Module.Wafermap: "Wafermap",
-            Module.Vision: "Vision",
-            Module.Setup: "Setup",
-            Module.Service: "Service",
-            Module.Qalibria: "Qalibria",
-            Module.AuxSites: "AuxSites",
-        }
-
-        str_module = switcher.get(module, "Invalid Module")
-        self.comm.send("select_module " + str_module)
+        self.comm.send(f"select_module {module.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
 
     # Wait until all async commands have finished.
