@@ -149,27 +149,23 @@ class DetectionCoordindates(Enum):
 
 
 class DetectionAlgorithm(Enum):
-    Keypoint = 0,
-    ProbeTip = 1,
-    ProbeTipFromBelow = 2,
-    TitanTip = 3,
-    VerticalProbeCard = 4,
-    PyramidTipRingLight = 5,
-    PyramidTipSpotLight = 6,
-    PyramidTipRingLightMultiPass = 7,
-    ProbeDetector = 8,
-    WaferDetector = 9
+    Keypoint = 0,            
+    ProbeTip = 1,            # deprecated; subject to future removal   
+    ProbeTipFromBelow = 2,   # deprecated; subject to future removal   
+    VerticalProbeCard = 3,   # deprecated; subject to future removal   
+    PyramidTipRingLight = 4, # deprecated; subject to future removal   
+    PyramidTipSpotLight = 5, # deprecated; subject to future removal   
+    ProbeDetector = 6,
+    WaferDetector = 7
 
     def toSentioAbbr(self):
         switcher = {
             DetectionAlgorithm.Keypoint: "Keypoint",
             DetectionAlgorithm.ProbeTip: "ProbeTip",
             DetectionAlgorithm.ProbeTipFromBelow: "ProbeTipFromBelow",
-            DetectionAlgorithm.TitanTip: "TitanTip",
             DetectionAlgorithm.VerticalProbeCard: "VerticalProbeCard",
             DetectionAlgorithm.PyramidTipRingLight: "PyramidTipRingLight",
             DetectionAlgorithm.PyramidTipSpotLight: "PyramidTipSpotLight",
-            DetectionAlgorithm.PyramidTipRingLightMultiPass: "PyramidTipRingLightMultiPass",
             DetectionAlgorithm.ProbeDetector: "ProbeDetector",
             DetectionAlgorithm.WaferDetector: "WaferDetector"
         }

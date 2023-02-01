@@ -7,6 +7,8 @@ Modification:
 	+ Common Probe Tip detector added (new SENTIO 3.8)
 		- prober.vision.detect_probetips adapted to SENTIO changes
 
+Bugfixes:
+	+ The Module enumerator did not have a "Loader" entry.
 
 Version 3.6.0
 =============
