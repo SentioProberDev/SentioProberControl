@@ -13,6 +13,8 @@ package simply type:
 
 ```python -m pip install sentio-prober-control```
 
+You no longer need to download the package by yourself, just use pip.
+
 ## Example-Scripts
 
 A set of example scripts for python is maintained in a seperate archive at GitHub. 
