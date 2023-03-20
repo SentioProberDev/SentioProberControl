@@ -22,4 +22,4 @@ dist/
 
 3.) Create a new release on GitHub with the new binary archive
 
-Make sure to manually add the created python package to the release.
+When you create a new release the packages at PyPi.org will automatically be updated. You do not have to add any binaries to the release at github because the binaries can now be download from pypi.org (https://pypi.org/manage/project/sentio-prober-control/release/23.1.2/).
