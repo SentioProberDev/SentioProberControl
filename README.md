@@ -30,24 +30,3 @@ if an older version is listed uninstall it first by using the command.
 ```python -m pip uninstall sentio-prober-control```
 
 After the uninstallation you can proceed with the installation as explained in the section above.
-
-## Instructions for package maintainer (updating the package) 
-
-*This section is for the package maintainers at MPI Corporation. The following instructions are for creating a new release of the package. If you only want to use the package you do not need to do this! Just follow the instructions listed above for installing an existing package.*
-
-This section explains how to manually build a package. You do not have to do this! Packages will be automatically build and pushed to
-the python package index when a new release is drafted on GitHub!
-
-1.) Update the Version information in [pyproject.toml](https://github.com/SentioProberDev/SentioProberControl/blob/master/pyproject.toml)
-
-2.) Rebuild the package
-
-```py -m build```
-
-This command will create the dist folder and put the two package files into it.
-
-```
-dist/
-  sentio-prober-control-23.1.2-py3-none-any.whl
-  sentio-prober-control-23.1.2.tar.gz
-```
