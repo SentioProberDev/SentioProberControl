@@ -1,6 +1,6 @@
 LICENSE
 README.md
-setup.py
+pyproject.toml
 sentio_prober_control/__init__.py
 sentio_prober_control.egg-info/PKG-INFO
 sentio_prober_control.egg-info/SOURCES.txt

@@ -1,30 +1,30 @@
 Metadata-Version: 2.1
 Name: sentio-prober-control
-Version: 3.8.0
+Version: 23.1.1
 Summary: MPI Sentio Prober Control - Python Bindings
-Home-page: https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/
-Author: Ingo Berg
-Author-email: ingo.berg@atv-systems.de
+Author-email: Ingo Berg <ingo.berg@atv-systems.de>
+Project-URL: Homepage, https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/
+Project-URL: Bug Tracker, https://github.com/SentioProberDev/SentioProberControl/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Environment :: Console
-Classifier: Programming Language :: Python :: 3
 Classifier: License :: Other/Proprietary License
-Classifier: Operating System :: OS Independent
 Classifier: Natural Language :: English
 Classifier: Topic :: Scientific/Engineering
-Requires-Python: >=3.6
+Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
 [![GitHub issues](https://img.shields.io/github/issues/SentioProberDev/SentioProberControl.svg?maxAge=360)](https://github.com/SentioProberDev/SentioProberControl/issues)
 [![Version](https://img.shields.io/github/release/SentioProberDev/SentioProberControl.svg?maxAge=360)](https://github.com/SentioProberDev/SentioProberControl/releases/)
 [![Github All Releases](https://img.shields.io/github/downloads/SentioProberDev/SentioProberControl/total.svg)](https://github.com/SentioProberDev/SentioProberControl/releases/)
-# SENTIOÂ® Prober Control - Python Bindings
-This archive contains a package with python bindings to control a [MPI SENTIOÂ® probe station](https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/).
+# SENTIO® Prober Control - Python Bindings
+This archive contains a package with python bindings to control a [MPI SENTIO® probe station](https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/).
 
 ![AST_Back_2A fw_](https://user-images.githubusercontent.com/2202567/204108957-0c7a864a-a526-4d32-a1ca-51985a0b01c6.png)
 
-## Instructions for installing the SENTIOÂ® prober control Python package
+## Instructions for installing the SENTIO® prober control Python package
 
 1.) Download the latest python package from: 
 
@@ -32,7 +32,7 @@ https://github.com/SentioProberDev/SentioProberControl/releases
 
 2.) Install the python package with pip:
 
-```python -m pip install --user sentio-prober-control-3.6.1.tar.gz```
+```python -m pip install --user sentio-prober-control-3.8.0.tar.gz```
 
 Please note that pip will automatically uninstall an older version of the sentio_prober_control repository, if one is found.
 
@@ -77,8 +77,8 @@ This command will create the dist folder.
 
 ```
 dist/
-  sentio-prober-control-3.5.0-py3-none-any.whl
-  sentio-prober-control-3.5.0.tar.gz
+  sentio-prober-control-3.8.0-py3-none-any.whl
+  sentio-prober-control-3.8.0.tar.gz
 ```
 
 4.) Create a new release on GitHub with the new binary archive

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentio-prober-control"
+version = "23.1.1"
+authors = [
+  { name="Ingo Berg", email="ingo.berg@atv-systems.de" },
+]
+description = "MPI Sentio Prober Control - Python Bindings"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+	"Development Status :: 5 - Production/Stable",
+	"Environment :: Console",
+	"License :: Other/Proprietary License",
+	"Natural Language :: English",
+	"Topic :: Scientific/Engineering"
+]
+
+[project.urls]
+"Homepage" = "https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/"
+"Bug Tracker" = "https://github.com/SentioProberDev/SentioProberControl/issues"
