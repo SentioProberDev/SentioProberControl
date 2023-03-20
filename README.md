@@ -30,3 +30,7 @@ if an older version is listed uninstall it first by using the command.
 ```python -m pip uninstall sentio-prober-control```
 
 After the uninstallation you can proceed with the installation as explained in the section above.
+
+## For MPI Package maintainer
+
+[Manually Building a Package](PackageUpdate.md)
