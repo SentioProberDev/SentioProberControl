@@ -1,6 +1,5 @@
 [![GitHub issues](https://img.shields.io/github/issues/SentioProberDev/SentioProberControl.svg?maxAge=360)](https://github.com/SentioProberDev/SentioProberControl/issues)
 [![Version](https://img.shields.io/github/release/SentioProberDev/SentioProberControl.svg?maxAge=360)](https://github.com/SentioProberDev/SentioProberControl/releases/)
-[![Github All Releases](https://img.shields.io/github/downloads/SentioProberDev/SentioProberControl/total.svg)](https://github.com/SentioProberDev/SentioProberControl/releases/)
 # SENTIO® Prober Control - Python Bindings
 This archive contains a package with python bindings to control a [MPI SENTIO® probe station](https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/).
 
@@ -8,7 +7,7 @@ This archive contains a package with python bindings to control a [MPI SENTIO® 
 
 ## Instructions for installing the SENTIO® prober control Python package
 
-The package for controlling MPI probe stations running the MPI SENTIO Software suite is now available via pythons package index. To install the
+The package for controlling MPI probe stations running the MPI SENTIO Software suite is now available via [pythons package index](https://pypi.org/project/sentio-prober-control/). To install the
 package simply type:
 
 ```python -m pip install sentio-prober-control```
