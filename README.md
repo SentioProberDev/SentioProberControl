@@ -31,6 +31,6 @@ if an older version is listed uninstall it first by using the command.
 
 After the uninstallation you can proceed with the installation as explained in the section above.
 
-## For MPI Package maintainer
+## Instructions for Package maintainer
 
 [Manually Building a Package](PackageUpdate.md)
