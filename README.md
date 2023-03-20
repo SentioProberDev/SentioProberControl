@@ -22,15 +22,11 @@ https://github.com/SentioProberDev/Examples-Python
 
 ## Troubleshooting
 
-If you have problems getting the package to work. Check wether an old version of the sentio-prober-control is still installed. To do so type
+Most problems arise from having multiple python environments on the local machine and installing the sentio-prober-control package into the wrong python environment. You can list all installed packages with the command:
 
 ```python -m pip list```
 
-if an older version is listed uninstall it first by using the command. 
-
-```python -m pip uninstall sentio-prober-control```
-
-After the uninstallation you can proceed with the installation as explained in the section above.
+Make sure that the sentio-prober-control package in the latest version is in that list.
 
 ## Instructions for Package maintainer
 
