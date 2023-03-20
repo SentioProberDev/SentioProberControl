@@ -34,4 +34,4 @@ After the uninstallation you can proceed with the installation as explained in t
 
 ## Instructions for Package maintainer
 
-[Manually Building a Package](PackageUpdate.md)
+[Manually Building a Package](https://github.com/SentioProberDev/SentioProberControl/blob/master/PackageUpdate.md)
