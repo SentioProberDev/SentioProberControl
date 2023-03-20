@@ -12,7 +12,7 @@ package simply type:
 
 ```python -m pip install sentio-prober-control```
 
-You no longer need to download the package by yourself, just use pip.
+You no longer need to download the package by yourself, just use pip. If you cannot access the internet from you machine you can still download the archives from [the release section of this project](https://github.com/SentioProberDev/SentioProberControl/releases/).
 
 ## Example-Scripts
 
