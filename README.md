@@ -35,29 +35,19 @@ After the uninstallation you can proceed with the installation as explained in t
 
 *This section is for the package maintainers at MPI Corporation. The following instructions are for creating a new release of the package. If you only want to use the package you do not need to do this! Just follow the instructions listed above for installing an existing package.*
 
-1.) Get the latest version of setuptools and wheel:
+This section explains how to manually build a package. You do not have to do this! Packages will be automatically build and pushed to
+the python package index when a new release is drafted on GitHub!
 
-```python -m pip install --user --upgrade setuptools wheel```
+1.) Update the Version information in [pyproject.toml](https://github.com/SentioProberDev/SentioProberControl/blob/master/pyproject.toml)
 
-2.) Update the package Version number
+2.) Rebuild the package
 
-Open the file setup.py an change the "version" attribute to the most current version of SENTIO tested with the python package. The python package is backwards
-compatible and will run with older SENTIO versions in general but it may contain new API bindings that are missing in the old versions.
+```py -m build```
 
-3.) create the distribution archive:
-
-cd into the archive (where setup.py) is located.
-
-```python setup.py sdist bdist_wheel```
-
-This command will create the dist folder.
+This command will create the dist folder and put the two package files into it.
 
 ```
 dist/
-  sentio-prober-control-3.8.0-py3-none-any.whl
-  sentio-prober-control-3.8.0.tar.gz
+  sentio-prober-control-23.1.2-py3-none-any.whl
+  sentio-prober-control-23.1.2.tar.gz
 ```
-
-4.) Create a new release on GitHub with the new binary archive
-
-Make sure to manually add the created python package to the release.
