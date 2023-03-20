@@ -4,20 +4,13 @@
 
 *This section is for the package maintainers at MPI Corporation. The following instructions are for creating a new release of the package. If you only want to use the package you do not need to do this! Just follow the instructions listed above for installing an existing package.*
 
-1.) Get the latest version of setuptools and wheel:
+0.) Update the Version number
 
-```python -m pip install --user --upgrade setuptools wheel```
+Before creatinga new package update the version number in https://github.com/SentioProberDev/SentioProberControl/blob/master/pyproject.toml
 
-2.) Update the package Version number
+1.) Create new package files:
 
-Open the file setup.py an change the "version" attribute to the most current version of SENTIO tested with the python package. The python package is backwards
-compatible and will run with older SENTIO versions in general but it may contain new API bindings that are missing in the old versions.
-
-3.) create the distribution archive:
-
-cd into the archive (where setup.py) is located.
-
-```python setup.py sdist bdist_wheel```
+```python -m build```
 
 This command will create the dist folder.
 
