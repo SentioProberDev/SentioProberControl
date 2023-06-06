@@ -59,11 +59,6 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return float(resp.message())
 
-    def add_probe_site(self, probe: ProbeSentio, x: float = 0, y: float = 0, id: str = None ) -> int:
-        self.__comm.send("add_positioner_site {0},{1},{2},{3}".format(probe.toSentioAbbr(), x, y, id))
-        resp = Response.check_resp(self.__comm.read_line())
-        return int(resp.message())
-
     def get_probe_site(self, probe: ProbeSentio, idx: int ) -> int:
         self.__comm.send("get_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))
         resp = Response.check_resp(self.__comm.read_line())
@@ -103,3 +98,27 @@ class ProbeCommandGroup(CommandGroupBase):
         self.__comm.send("reset_positioner_sites {0}".format(probe.toSentioAbbr()))
         resp = Response.check_resp(self.__comm.read_line())
         return resp.message()
+
+    def async_step_probe_site(self, probe: ProbeSentio, idx: int )  -> float:
+        self.__comm.send("start_step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))
+        resp = Response.check_resp(self.__comm.read_line())
+        if not resp.ok():
+            raise ProberException(resp.message())
+
+        return resp.cmd_id()
+
+    def async_step_probe_site_next(self, probe: ProbeSentio)  -> float:
+        self.__comm.send("start_step_positioner_site_next {0}".format(probe.toSentioAbbr()))
+        resp = Response.check_resp(self.__comm.read_line())
+        if not resp.ok():
+            raise ProberException(resp.message())
+
+        return resp.cmd_id()
+
+    def async_step_probe_site_first(self, probe: ProbeSentio)  -> float:
+        self.__comm.send("start_step_positioner_site_first {0}".format(probe.toSentioAbbr()))
+        resp = Response.check_resp(self.__comm.read_line())
+        if not resp.ok():
+            raise ProberException(resp.message())
+
+        return resp.cmd_id()
