@@ -45,7 +45,7 @@ class LoaderCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()
 
-    def unlaod_wafer(self):
+    def unload_wafer(self):
         self._comm.send("loader:unload_wafer")
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()

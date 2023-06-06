@@ -190,7 +190,18 @@ class SentioProber(ProberBase):
         return resp.message()
 
     def select_module(self, module: Module):
-        self.comm.send(f"select_module {module.toSentioAbbr()}")
+        switcher = {
+            Module.Wafermap: "Wafermap",
+            Module.Vision: "Vision",
+            Module.Setup: "Setup",
+            Module.Service: "Service",
+            Module.Qalibria: "Qalibria",
+            Module.AuxSites: "AuxSites",
+            Module.DashBoard: "DashBoard"
+        }
+
+        str_module = switcher.get(module, "Invalid Module")
+        self.comm.send("select_module " + str_module)
         Response.check_resp(self.comm.read_line())
 
     # Wait until all async commands have finished.
@@ -336,10 +347,5 @@ class SentioProber(ProberBase):
 
     def get_project(self, pfi: ProjectFileInfo = ProjectFileInfo.FullPath) -> str:
         self.comm.send(f'get_project {pfi.toSentioAbbr()}')
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-
-    def step_scope_site(self, site: str):
-        self.comm.send('step_scope_site {}'.format(site))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()

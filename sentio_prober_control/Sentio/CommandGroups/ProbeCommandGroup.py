@@ -80,19 +80,19 @@ class ProbeCommandGroup(CommandGroupBase):
         self.__comm.send("step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))
         resp = Response.check_resp(self.__comm.read_line())
         tok = resp.message().split(",")
-        return float(tok[0]), float(tok[1])
+        return tok[0], float(tok[1]), float(tok[2])
 
     def step_probe_site_first(self, probe: ProbeSentio)  -> float:
         self.__comm.send("step_positioner_site_first {0}".format(probe.toSentioAbbr()))
         resp = Response.check_resp(self.__comm.read_line())
         tok = resp.message().split(",")
-        return float(tok[0]), float(tok[1])
+        return tok[0], float(tok[1]), float(tok[2])
 
     def step_probe_site_next(self, probe: ProbeSentio)  -> float:
         self.__comm.send("step_positioner_site_next {0}".format(probe.toSentioAbbr()))
         resp = Response.check_resp(self.__comm.read_line())
         tok = resp.message().split(",")
-        return float(tok[0]), float(tok[1])
+        return tok[0], float(tok[1]), float(tok[2])
 
     def remove_probe_site(self, probe: ProbeSentio, idx: int )  -> float:
         self.__comm.send("remove_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))

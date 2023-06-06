@@ -253,13 +253,15 @@ class AutoFocusCmd(Enum):
 class AutoAlignCmd(Enum):
     AutoDieSize = 0,
     UpdateDieSize = 1,
-    TwoPt = 2
+    TwoPt = 2,
+    CurrentDieSize = 3,
 
     def toSentioAbbr(self):
         switcher = {
             AutoAlignCmd.AutoDieSize: "auto",
             AutoAlignCmd.UpdateDieSize: "update",
-            AutoAlignCmd.TwoPt: "2pt"
+            AutoAlignCmd.TwoPt: "2pt",
+            AutoAlignCmd.CurrentDieSize: ""
         }
         return switcher.get(self, "Invalid Auto Align function")
 
@@ -647,16 +649,16 @@ class ProbeXYReference(Enum):
 
 class ProbeZReference(Enum):
     Zero = 0,
-    Relative = 1,
+    Current = 1,
     Contact = 2,
     Separation = 3
 
     def toSentioAbbr(self):
         switcher = {
-            ProbeZReference.Zero: "Z",
-            ProbeZReference.Relative: "R",
-            ProbeZReference.Contact: "C",
-            ProbeZReference.Separation: "S"
+            ProbeZReference.Zero: "Zero",
+            ProbeZReference.Current: "Current",
+            ProbeZReference.Contact: "Contact",
+            ProbeZReference.Separation: "Separation"
         }
         return switcher.get(self, "Invalid probe z reference")
 
