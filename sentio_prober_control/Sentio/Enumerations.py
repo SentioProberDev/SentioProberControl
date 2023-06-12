@@ -84,16 +84,18 @@ class Stage(Enum):
     Chuck = 0,
     Scope = 1,
     Vce = 2,
-    Probe1 = 3,
-    Probe2 = 4,
-    Probe3 = 5,
-    Probe4 = 6
+    Vce2 = 3,
+    Probe1 = 4,
+    Probe2 = 5,
+    Probe3 = 6,
+    Probe4 = 7
 
     def toSentioAbbr(self):
         switcher = {
             Stage.Chuck: "chuck",
             Stage.Scope: "scope",
             Stage.Vce:   "vce01",
+            Stage.Vce2:  "vce02",            
             Stage.Probe1: "Probe01",
             Stage.Probe2: "Probe02",
             Stage.Probe3: "Probe03",
@@ -784,3 +786,22 @@ class DieCompensationMode(Enum):
             DieCompensationMode.SkateDetection: "SkateDetection",
         }
         return switcher.get(self, "Invalid DieCompensationMode function")
+    
+class ZPositionHint(Enum):
+    Default = 0,
+    Contact = 1,
+    Hover = 2,
+    Separation = 3,
+    Lift = 4,
+    Transfer = 5
+
+    def toSentioAbbr(self):
+        switcher = {
+            ZPositionHint.Default: "Default",
+            ZPositionHint.Contact: "Contact",
+            ZPositionHint.Hover: "Hover",
+            ZPositionHint.Separation: "Separation",
+            ZPositionHint.Lift: "Lift",
+            ZPositionHint.Transfer: "Transfer",            
+        }
+        return switcher.get(self, "Invalid ZPositionHint")
