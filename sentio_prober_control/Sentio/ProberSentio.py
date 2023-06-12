@@ -253,6 +253,10 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+    def move_scope_lift(self, state: bool) -> float:
+        self.comm.send(f"move_scope_lift {state}")
+        Response.check_resp(self.comm.read_line())
+
     def get_scope_xy(self) -> Tuple[float, float]:
         self.comm.send("get_scope_xy")
         resp = Response.check_resp(self.comm.read_line())
