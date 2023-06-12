@@ -1,6 +1,11 @@
 Changes:
 
-Version 3.8.0
+Version 23.1.2
+=============
+Bugfixes:
+	+ Fix for SENTIO#12991 (#4)
+
+Version 23.1.0
 =============
 
 Modification:
