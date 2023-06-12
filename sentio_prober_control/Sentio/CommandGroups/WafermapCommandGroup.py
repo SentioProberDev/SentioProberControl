@@ -237,9 +237,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         return int(tok[0]), int(tok[1]), int(tok[2])
 
     def end_of_route(self):
-        return self.__end_of_routeecute
+        return self.__end_of_route
 
-    def execute_topogrphy(self, execute:ExecuteAction):
+    def execute_topography(self, execute:ExecuteAction):
         self._comm.send("map:compensation:topography {}".format(execute.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         # i.e. Stepping while at the end of the route

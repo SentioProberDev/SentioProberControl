@@ -737,35 +737,35 @@ class ExecuteAction(Enum):
     def toSentioAbbr(self):
         switcher = {
             ExecuteAction.Execute: "execute",
-            ExecuteAction.Abort: "aboru",
+            ExecuteAction.Abort: "abort",
         }
         return switcher.get(self, "Invalid ExecuteAction function")
 
-class PTPA_Find_Tips_Mode(Enum):
+class PtpaFindTipsMode(Enum):
     OnAxis = 0,
     OffAxis = 1,
 
     def toSentioAbbr(self):
         switcher = {
-            PTPA_Find_Tips_Mode.OnAxis: "OnAxis",
-            PTPA_Find_Tips_Mode.OffAxis: "OffAxis",
+            PtpaFindTipsMode.OnAxis: "OnAxis",
+            PtpaFindTipsMode.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid PTPA_Find_Tips_Mode function")
 
-class Die_Compensation_Type(Enum):
-    DiaAlign = 0,
+class DieCompensationType(Enum):
+    DieAlign = 0,
     MapScan = 1,
     Topography = 2,
 
     def toSentioAbbr(self):
         switcher = {
-            Die_Compensation_Type.DiaAlign: "DiaAlign",
-            Die_Compensation_Type.MapScan: "MapScan",
-            Die_Compensation_Type.MapScan: "Topography",
+            DieCompensationType.DieAlign: "DiEAlign",
+            DieCompensationType.MapScan: "MapScan",
+            DieCompensationType.MapScan: "Topography",
         }
         return switcher.get(self, "Invalid Compensation_Type function")
 
-class Die_Compensation_Mode(Enum):
+class DieCompensationMode(Enum):
     Lateral = 0,
     Vertical = 1,
     Both = 2,
@@ -774,10 +774,10 @@ class Die_Compensation_Mode(Enum):
 
     def toSentioAbbr(self):
         switcher = {
-            Die_Compensation_Mode.Lateral: "Lateral",
-            Die_Compensation_Mode.Vertical: "Vertical",
-            Die_Compensation_Mode.Both: "Both",
-            Die_Compensation_Mode.ProbeCard: "ProbeCard",
-            Die_Compensation_Mode.SkateDetection: "SkateDetection",
+            DieCompensationMode.Lateral: "Lateral",
+            DieCompensationMode.Vertical: "Vertical",
+            DieCompensationMode.Both: "Both",
+            DieCompensationMode.ProbeCard: "ProbeCard",
+            DieCompensationMode.SkateDetection: "SkateDetection",
         }
-        return switcher.get(self, "Invalid Die_Compensation_Mode function")
+        return switcher.get(self, "Invalid DieCompensationMode function")
