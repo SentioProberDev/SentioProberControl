@@ -179,7 +179,8 @@ class Module(Enum):
     Service = 3,
     Qalibria = 4,
     AuxSites = 5,
-    Loader = 6
+    Loader = 6,
+    Dashboard = 7
 
     def toSentioAbbr(self):
         switcher = {
@@ -189,9 +190,11 @@ class Module(Enum):
             Module.Service: "Service",
             Module.Qalibria: "Qalibria",
             Module.AuxSites: "AuxSites",
-            Module.Loader: "Loader"
+            Module.Loader: "Loader",
+            Module.Dashboard: "Dashboard",
         }
         return switcher.get(self, "Invalid Module Name")
+
 
 class AxisOrient(Enum):
     DownRight = 0,
@@ -759,9 +762,9 @@ class DieCompensationType(Enum):
 
     def toSentioAbbr(self):
         switcher = {
-            DieCompensationType.DieAlign: "DiEAlign",
+            DieCompensationType.DieAlign: "DieAlign",
             DieCompensationType.MapScan: "MapScan",
-            DieCompensationType.MapScan: "Topography",
+            DieCompensationType.Topography: "Topography",
         }
         return switcher.get(self, "Invalid Compensation_Type function")
 

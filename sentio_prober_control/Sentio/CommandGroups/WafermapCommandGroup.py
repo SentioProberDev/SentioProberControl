@@ -6,15 +6,11 @@ from sentio_prober_control.Sentio.CommandGroups.WafermapBinsCommandGroup import 
 from sentio_prober_control.Sentio.CommandGroups.WafermapPathCommandGroup import  WafermapPathCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapPoiCommandGroup import  WafermapPoiCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup import  WafermapSubsiteGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapCompensationCommandGroup import  WafermapCompensationCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapDieCommandGroup import  WafermapDieCommandGroup
 from sentio_prober_control.Sentio.Enumerations import *
 
 from typing import Tuple
-
-
-class WafermapDieGroup(CommandGroupBase):
-    def remove(self, x: int, y: int):
-        self._comm.send("map:die:remove {0}, {1}".format(x, y))
-        Response.check_resp(self._comm.read_line())
 
 
 class WafermapCommandGroup(ModuleCommandGroupBase):
@@ -25,8 +21,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.subsites = WafermapSubsiteGroup(comm, self)
         self.path = WafermapPathCommandGroup(comm)
         self.bins = WafermapBinsCommandGroup(comm)
-        self.die = WafermapDieGroup(comm)
+        self.die = WafermapDieCommandGroup(comm)
         self.poi = WafermapPoiCommandGroup(comm)
+        self.compensation = WafermapCompensationCommandGroup(comm)
 
     def create(self, diameter: float):
         self._comm.send("map:create {0}".format(diameter))
@@ -238,12 +235,3 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
     def end_of_route(self):
         return self.__end_of_route
-
-    def execute_topography(self, execute:ExecuteAction):
-        self._comm.send("map:compensation:topography {}".format(execute.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
-        # i.e. Stepping while at the end of the route
-        if not resp.ok():
-            raise ProberException(resp.message())
-
-        return resp.cmd_id()
