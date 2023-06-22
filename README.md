@@ -16,7 +16,7 @@ You no longer need to download the package by yourself, just use pip. If you can
 
 ## Example-Scripts
 
-A set of example scripts for python is maintained in a seperate archive at GitHub. 
+A set of example scripts for python is maintained in a separate archive at GitHub. 
 
 https://github.com/SentioProberDev/Examples-Python
 
