@@ -151,12 +151,13 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
     #
     ###############################################################################################
 
-    def step_first_die(self, site: int = 0) -> Tuple[int, int, int]:
-        self._comm.send("map:step_first_die {0}".format(site))
+    def step_first_die(self, site: int=-1) -> Tuple[int, int, int]:
+        if site == -1:
+            self._comm.send("map:step_first_die")
+        else:
+            self._comm.send("map:step_first_die {0}".format(site))
         resp = Response.parse_resp(self._comm.read_line())
-
         self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
-
         if not resp.ok():
             raise ProberException(resp.message(), resp.errc())
             
