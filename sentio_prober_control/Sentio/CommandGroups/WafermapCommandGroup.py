@@ -156,10 +156,11 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             self._comm.send("map:step_first_die")
         else:
             self._comm.send(f"map:step_first_die {site}")
+            
         resp = Response.parse_resp(self._comm.read_line())
-
+        
         self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
-
+        
         if not resp.ok():
             raise ProberException(resp.message(), resp.errc())
             

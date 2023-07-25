@@ -61,6 +61,14 @@ class VisionCameraCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         is_trained = resp.message() == '1'
         return is_trained
+        
+    def snap_image(self, file_path: str, overlays: int=0) -> str:
+        # File Path must include the filename and requested extension.
+        self._comm.send(f"vis:snap_image {file_path}, {overlays}")
+        resp = Response.check_resp(self._comm.read_line())
+        if not resp.ok():
+            raise ProberException(resp.message(), resp.errc())
+
 
 #    def is_pattern_trained(self, mp: CameraMountPoint, pat: DefaultPattern) -> bool:
 #        self._comm.send("vis:pattern:is_trained {}, {}".format(mp.toSentioAbbr(), pat.toSentioAbbr()))
