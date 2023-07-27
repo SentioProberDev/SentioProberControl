@@ -166,6 +166,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             
         tok = resp.message().split(",")
 
+        return int(tok[0]), int(tok[1]), int(tok[2])
+
     def step_die(self, col:int, row:int, site: int = 0) -> Tuple[int, int, int]:
         self._comm.send("map:step_die {0}, {1}, {2}".format(col, row, site))
         resp = Response.parse_resp(self._comm.read_line())
