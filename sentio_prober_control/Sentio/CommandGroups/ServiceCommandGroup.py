@@ -8,7 +8,7 @@ class ServiceCommandGroup(ModuleCommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm, 'service')
 
-    def set_compensation_mode(self, status:bool):
+    def set_compensation_mode(self, status: bool):
         self._comm.send("service:chuck_compensation {0}".format(status))
         Response.check_resp(self._comm.read_line())
 
