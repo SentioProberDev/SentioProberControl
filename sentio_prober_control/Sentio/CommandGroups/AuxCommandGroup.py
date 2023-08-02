@@ -10,3 +10,11 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         self.cleaning = AuxCleaningGroup(comm)
 
+    def start_clean(self):
+        self._comm.send("aux:cleaning:start")
+        resp = Response.check_resp(self._comm.read_line())
+        if not resp.ok():
+            raise ProberException(resp.message())
+
+        return resp.message()
+

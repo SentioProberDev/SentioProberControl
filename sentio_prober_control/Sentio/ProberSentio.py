@@ -12,6 +12,7 @@ from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup import *
 from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import *
+from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import *
 from sentio_prober_control.Sentio.Enumerations import *
 from sentio_prober_control.Sentio.Response import *
 
@@ -30,6 +31,7 @@ class SentioProber(ProberBase):
         self.service = ServiceCommandGroup(comm)
         self.probe = ProbeCommandGroup(comm)
         self.compensation = CompensationCommandGroup(comm)
+        self.qalibria = QAlibriaCommandGroup(comm)
 
     def send_cmd(self, cmd: str):
         self.comm.send(cmd)
