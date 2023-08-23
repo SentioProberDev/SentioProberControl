@@ -12,6 +12,8 @@ Before creatinga new package update the version number in [this file](https://gi
 
 When you create a new release the packages at PyPi.org will automatically be updated. You do not have to add any binaries to the release at github because the binaries can now be download from pypi.org (https://pypi.org/manage/project/sentio-prober-control/release/23.1.2/).
 
+Check the Actions tab to see whether deployment was succesfull. If it was not fix the problem (i.e. you may have forgotten to update the package version number) and manually restart the action. 
+
 ### 3.) Manually creating a package for distribution (optional)
 
 There is no need to do this unless you want to distribute a package to a specific customer for testing. Otherwise just create a new release and 
