@@ -36,4 +36,4 @@ jobs:
     - name: Publish package to PyPi
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.PYPI_API_TOKEN_ATV }}
+        password: ${{ secrets.PYPI_API_TOKEN_MPI }}
