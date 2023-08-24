@@ -25,7 +25,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
     def get_die(self, seq: int):
         self._comm.send("map:path:get_die {0}".format(seq))
         resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
+        tok = resp.message().split(",")
+        return tok[0], tok[1]
 
     def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority):
         switcher1 = {
