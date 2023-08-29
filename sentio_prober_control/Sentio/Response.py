@@ -4,12 +4,16 @@ from sentio_prober_control.Sentio.ProberBase import ProberException
 class Response:
     """ This class represents the response of a single SENTIO remote command. 
     
-        :param errc: The error code returned by SENTIO.
-        :param stat: The status code returned by SENTIO.
-        :param cmd_id: The async command id returned by SENTIO.
-        :param msg: The response message returned by SENTIO.
+        Sentio's remote command response is a comma separated string that contains three fields
+        which represent 4 data items. (error code and status code are combined)
+
+        :param errc: The error code.
+        :param stat: The status code.
+        :param cmd_id: The async command id. (only used by async commands)
+        :param msg: The response message.
     """
     def __init__(self, errc: int, stat: int, cmd_id: int, msg: str):
+        """ Creates a new Response object. """
         self.__errc = errc
         self.__stat = stat
         self.__cmd_id = cmd_id
@@ -17,10 +21,12 @@ class Response:
 
     @staticmethod
     def parse_resp(resp):
-        """ Parses a response string and returns a Response object.
-        
+        """ A static method that parses a SENTIO remote command response string and returns a Response object.
+
+            A typical response from SENTIO to a remote command might look like "0,0,ok"
             SENTIO's remote command responses are strings that contain multiple items
             separated by two commas. 
+
             - error code and status information (combined in one integer)
             - an async command id (only used by async commands)
             - a response message
@@ -101,5 +107,8 @@ class Response:
         return self.__errc == 0
 
     def dump(self):
-        """ Prints the content of the response object to the console."""
+        """ Prints the content of the response object to the console.
+        
+            Used for debugging purposes.
+        """
         print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))

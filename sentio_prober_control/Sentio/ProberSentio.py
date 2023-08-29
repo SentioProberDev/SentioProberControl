@@ -1,3 +1,6 @@
+"""
+This file contains the implementation of the SentioProber class.
+"""
 import base64
 import os
 from typing import Tuple
@@ -20,7 +23,7 @@ from sentio_prober_control.Communication.CommunicatorBase import *
 class SentioProber(ProberBase):
     """ This class represents the SENTIO probe station in python. 
     
-        It provides wrapper for most of the remote commands exposed by SENTIO.
+        It provides wrapper for most of the remote commands exposed by SENTIO and
     """
     def __init__(self, comm : CommunicatorBase):
         """ Construct a SENTIO prober object.
@@ -46,10 +49,14 @@ class SentioProber(ProberBase):
         self.qalibria = QAlibriaCommandGroup(comm)
 
     def send_cmd(self, cmd: str) -> Response:
-        """ Sends a command to the prober and returns the response.
+        """ Sends a command to the prober and return a response object.
         
-            This command is specifically intended for sending commands in SENTIO's remote command syntax.
-            It will parse the SENTIO specific response and wrap it into a Response object.
+            This function is intended for directly sending remote commands that
+            are not yet included in the python wrapper. It will send the command 
+            and parse the respone from SENTIO.
+
+            It will then return a Response object with the extracted data from 
+            SENTIO's response.
 
             :return: The response from the prober.
         """
@@ -64,18 +71,61 @@ class SentioProber(ProberBase):
         return self.__name
 
     def connect(self):
+        """ Establish a connection with the underlying communicator object. """
         self.__comm.connect()
 
-    def query_command_status(self, cmd_id: int) -> Tuple[Response, int]:
+    def query_command_status(self, cmd_id: int) -> Response:
+        """ Query the status of an async command. 
+        
+            This command will send a query to the prober to get the status 
+            of an async command. The submitted command id must be a valid id
+            of an async command that was previously started at the prober.
+
+            When an async command is being executed SENTIO can receive other
+            remnote commands. This command is intended to be used in a polling 
+            loop to query the status of ongoing remote commands.
+
+            Example:
+
+            <pre><code>while True:
+                time.sleep(1)
+                resp = prober.query_command_status(cmd_id)
+                if (resp.errc()!=RemoteCommandError.CommandPending):
+                    break;</code></pre>
+
+            :param cmd_id: The id of the async command to query.
+        """
         self.comm.send("query_command_status {0}".format(cmd_id))
         resp = Response.parse_resp(self.comm.read_line())
         return resp
 
     def open_project(self, project: str, restore_heights: bool = False):
+        """ Open a SENTIO project file. 
+        
+            Wraps SENTIO's "open_project" remote command.
+
+            :param project: The name or path of the project to open. If a full 
+            path to the trex project file is given SENTIO will try to open this file. 
+            If the argument does not contain a path SENTIO will look in its default
+            project folder for a matching project and open it.
+            :param restore_heights: If set to true SENTIO will restore the contact 
+            heights from the project. Be carefull when using this option because
+            the contact heights may have been become invalid since creating the project 
+            due to a probe card change.
+            :return: A response object with the result of the command.
+            :raises: ProberException if an error occured.
+        """
         self.comm.send(f"open_project {project}, {restore_heights}")
         Response.check_resp(self.comm.read_line())
 
     def save_project(self, project: str):
+        """ Save the current SENTIO project. 
+        
+            Wraps SENTIO's "save_project" remote command.
+
+            :return: A response object with the result of the command.
+            :raises: ProberException if an error occured.
+        """
         self.comm.send("save_project " + project)
         Response.check_resp(self.comm.read_line())
 
