@@ -3,6 +3,10 @@ from ctypes import *
 
 
 class GpibAdlinkDriver:
+    """ A python wrapper for the ADLINK gpib-32.dll. 
+    
+        This class is used internally only.
+    """
 
     def __init__(self):
         # load gpib dll

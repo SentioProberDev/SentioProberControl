@@ -5,7 +5,18 @@ from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBas
 
 
 class CommunicatorGpib(CommunicatorBase):
+    """ Communicator for GPIB communication. 
+    
+        This class is a wrapper around the native GPIB drivers. You can
+        use it either with ADLINK or National Instruments GPIB cards.
+        The native drivers must be installed on the system or this class 
+        will not work.
+    """
     def __init__(self, vendor: GpibCardVendor):
+        """ Construcst a GPIB communicator. 
+        
+            :param vendor: Specifies the native driver to use (either Adlink or NI).
+        """
         if (vendor==GpibCardVendor.Adlink):
             self._driver = GpibAdlinkDriver()
         elif (vendor==GpibCardVendor.NationalInstruments):
@@ -16,11 +27,25 @@ class CommunicatorGpib(CommunicatorBase):
 
     @staticmethod
     def create(vendor: GpibCardVendor, addr: str):
+        """ Create an instance of a GPIB communicator. 
+        
+            This functions creates an instance of a GPIB communicator and connects it to a given address.
+
+            :param vendor: Specifies the native driver to use (either Adlink or NI)
+            :param addr: A string that specifies the address of the GPIB device to connect to. The address must have the format "BOARD_NAME&colon;ADDRESS"
+            :return: returns an instance of a GPIB communicator.
+            :raises Exception: If the address is empty or does not have the correct format.
+        """
         c = CommunicatorGpib(vendor)
         c.connect(addr)
         return c
 
     def connect(self, address: str):
+        """ Connects to a GPIB device at the specified address.
+
+            :param addr: A string that specifies the address of the GPIB device to connect to. The address must have the format "BOARD_NAME&colon;ADDRESS"
+            :raises Exception: If the address is empty or does not have the correct format.
+        """
         if address is None:
             raise Exception('Gpib address must not be empty!')
 
@@ -33,10 +58,16 @@ class CommunicatorGpib(CommunicatorBase):
         self._driver.connect(board, address)
 
     def disconnect(self):
+        """ Disconnects from the GPIB device. """
         pass
 
     def send(self, msg: str):
+        """ Send a text string via the communication interface. 
+        
+            :param msg: The text string to send.
+        """
         self._driver.send(msg)
 
     def read_line(self):
+        """ Read a line from the communication interface."""
         return self._driver.receive().rstrip()

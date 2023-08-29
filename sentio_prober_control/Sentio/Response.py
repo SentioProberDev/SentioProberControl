@@ -2,6 +2,13 @@ from sentio_prober_control.Sentio.ProberBase import ProberException
 
 
 class Response:
+    """ This class represents the response of a single SENTIO remote command. 
+    
+        :param errc: The error code returned by SENTIO.
+        :param stat: The status code returned by SENTIO.
+        :param cmd_id: The async command id returned by SENTIO.
+        :param msg: The response message returned by SENTIO.
+    """
     def __init__(self, errc: int, stat: int, cmd_id: int, msg: str):
         self.__errc = errc
         self.__stat = stat
@@ -10,6 +17,16 @@ class Response:
 
     @staticmethod
     def parse_resp(resp):
+        """ Parses a response string and returns a Response object.
+        
+            SENTIO's remote command responses are strings that contain multiple items
+            separated by two commas. 
+            - error code and status information (combined in one integer)
+            - an async command id (only used by async commands)
+            - a response message
+
+            :return: A Response object created from the information in SENTIO's response string.
+        """
         tok = resp.split(",", 2)
 
         # split response items
@@ -25,7 +42,13 @@ class Response:
         return resp
 
     @staticmethod
-    def check_resp(str_resp):
+    def check_resp(str_resp : str):
+        """ A static method that parses a response string and raises an exception if the response indicates an error. 
+            
+            :param str_resp: The response string to parse.
+            :return: A Response object created from the information in SENTIO's response string.
+            :raises: ProberException if the response indicates an error.
+        """
         resp = Response.parse_resp(str_resp)
         if not resp.ok():
             raise ProberException(resp.message(), resp.errc())
@@ -33,27 +56,50 @@ class Response:
         return resp
 
     def check(self):
+        """ Raises an exception if this response indicates an error."""
         if not self.ok():
             raise ProberException(self.message(), self.errc())
 
+    def check_error(self):
+        # ibg: I dont think this code works. it is a duplicate of check() and it is either outdated or never worked.
+        if not self.ok():
+            raise ProberException(self.resp.message(), self.resp.errc())
+
     def cmd_id(self) -> int:
+        """ The async commans id returned by SENTIO. 
+        
+            If the remote command is not an async command 0 is returned.
+
+            :return: The async command id returned by SENTIO.
+        """
         return self.__cmd_id
 
     def errc(self) -> int:
+        """ The error code returned by SENTIO. 
+
+            The meaning of the error code is documented in the SENTIO's remote command documentation.
+            It is also used by the enumerator RemoteCommandError.
+
+            :return: The error code returned by SENTIO.
+        """
         return self.__errc
 
     def message(self) -> str:
+        """ The response message returned by SENTIO.
+            :return: The response message returned by SENTIO.
+        """
         return self.__msg
 
     def status(self):
+        """ The status coode extracted from the response.
+            :return: The status code returned by SENTIO.
+        """
         return self.__stat
 
     def ok(self) -> str:
+        """ Returns True if the response indicates no error."""
         return self.__errc == 0
 
-    def check_error(self):
-        if not self.ok():
-            raise ProberException(self.resp.message(), self.resp.errc())
-    
     def dump(self):
+        """ Prints the content of the response object to the console."""
         print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))

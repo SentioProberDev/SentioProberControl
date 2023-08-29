@@ -2,6 +2,7 @@ from abc import ABC
 
 
 class ProberBase(ABC):
+    """ Abstract base class of a probe station. """
     def __init__(self, comm):
         self.comm = comm
 
@@ -13,6 +14,7 @@ class ProberBase(ABC):
 
 
 class ProberException(Exception):
+    """ A custom exception class for the prober. """
     def __init__(self, msg, errc = -1):
         super().__init__(msg)
         self.__message = msg

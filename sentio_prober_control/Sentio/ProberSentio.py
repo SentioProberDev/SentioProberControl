@@ -15,9 +15,21 @@ from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import 
 from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import *
 from sentio_prober_control.Sentio.Enumerations import *
 from sentio_prober_control.Sentio.Response import *
+from sentio_prober_control.Communication.CommunicatorBase import *
 
 class SentioProber(ProberBase):
-    def __init__(self, comm):
+    """ This class represents the SENTIO probe station in python. 
+    
+        It provides wrapper for most of the remote commands exposed by SENTIO.
+    """
+    def __init__(self, comm : CommunicatorBase):
+        """ Construct a SENTIO prober object.
+         
+            The prober must be initialized with a communication object that specifies 
+            how the system communicates with the probe station.
+
+            :param comm: The communicator to use for communication with the prober.
+        """
         ProberBase.__init__(self, comm)
 
         self.__name = "SentioProber"
@@ -33,11 +45,22 @@ class SentioProber(ProberBase):
         self.compensation = CompensationCommandGroup(comm)
         self.qalibria = QAlibriaCommandGroup(comm)
 
-    def send_cmd(self, cmd: str):
+    def send_cmd(self, cmd: str) -> Response:
+        """ Sends a command to the prober and returns the response.
+        
+            This command is specifically intended for sending commands in SENTIO's remote command syntax.
+            It will parse the SENTIO specific response and wrap it into a Response object.
+
+            :return: The response from the prober.
+        """
         self.comm.send(cmd)
         return Response.check_resp(self.comm.read_line())
 
     def name(self):
+        """ Returns the name of the prober. 
+        
+            :return: This function will always return the string "SentioProber".
+        """
         return self.__name
 
     def connect(self):

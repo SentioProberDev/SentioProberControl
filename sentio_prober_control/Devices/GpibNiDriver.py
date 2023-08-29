@@ -4,7 +4,10 @@ from ctypes import *
 
 
 class GpibNiDriver:
-
+    """ A python wrapper for the NI gpib-32.dll.
+     
+        This class is used internally only.  
+    """
     def __init__(self):
         # load gpib dll
         gpibDll = ctypes.WinDLL("ni4882.dll")
