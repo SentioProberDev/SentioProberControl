@@ -554,7 +554,7 @@ class AutoFocusAlgorithm(Enum):
 
 
 class ChuckXYReference(Enum):
-    """ Defines a reference for chuck xy-positions. """
+    """ Defines a reference for chuck xy motions. """
 
     Zero = 0,
     """ Use absolute chuck coordinates. """
@@ -584,7 +584,7 @@ class ChuckXYReference(Enum):
 
 
 class ChuckZReference(Enum):
-    """ Defines the position reference for chuck z-positions."""
+    """ Defines a position reference for chuck z-motions."""
 
     Zero = 0,
     """ Use absolute chuck z coordinates with respect the the physical axis zero positon. """
@@ -614,9 +614,16 @@ class ChuckZReference(Enum):
 
 
 class ChuckThetaReference(Enum):
+    """ Reference to use for chuck theat motions. """
+
     Zero = 0,
+    """ Use zero of the theta axis."""
+
     Site = 1,
+    """ Use the trained site of "home" angle as the reference. """
+
     Relative = 2
+    """ Use the current theta position as reference. """
 
     def toSentioAbbr(self):
         """ Convert the enumerator into a string SENTIO understands. """
@@ -870,9 +877,15 @@ class FindPatternReference(Enum):
 
 
 class DialogButtons(Enum):
+    """ A list of buttons that can be used in SENTIO's dialogs."""
     Ok = 1,
+    """ The Ok button."""
+
     Cancel = 2,
+    """ The Cancel button. """
+
     OkCancel = 3
+    """ Both the Ok and the Cancel button."""
 
     def toSentioAbbr(self):
         """ Convert the enumerator into a string SENTIO understands. """
@@ -1094,7 +1107,7 @@ class ZPositionHint(Enum):
         Not all values are used by all stages. A scope does not have a contact height
         and a chuck Hover height may be disabled by SENTIO.
     """
-    
+
     Default = 0,
     """ Used internally only. Essentially means the value is unset or undefined. """
     Contact = 1,

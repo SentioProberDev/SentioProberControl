@@ -38,15 +38,30 @@ class SentioProber(ProberBase):
         self.__name = "SentioProber"
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
         self.map = WafermapCommandGroup(comm)
+        """ The wafermap command group provides access to the wafermap modules functionality.  """
+
         self.aux = AuxCommandGroup(comm)
+        """ The aux command group provides access the the aux site modules functionality. """
+
         self.vision = VisionCommandGroup(comm)
+        """ The vision command group provides access to the vision modules functionality. """
+
         self.status = StatusCommandGroup(comm)
+        """ The status command group provides access to the dashboard modules functionality. (formerly called status module)"""
+
         self.loader = LoaderCommandGroup(comm)
+        """ The loader command group provides access to the loader modules functionality. """
+
         self.siph = SiPHCommandGroup(comm)
+        """ The siph command group provides access to the SiPH modules functionality. """
+
         self.service = ServiceCommandGroup(comm)
+        """ The service command group provides access to the service modules functionality. """
+
         self.probe = ProbeCommandGroup(comm)
         self.compensation = CompensationCommandGroup(comm)
         self.qalibria = QAlibriaCommandGroup(comm)
+
 
     def send_cmd(self, cmd: str) -> Response:
         """ Sends a command to the prober and return a response object.
@@ -63,6 +78,7 @@ class SentioProber(ProberBase):
         self.comm.send(cmd)
         return Response.check_resp(self.comm.read_line())
 
+
     def name(self):
         """ Returns the name of the prober. 
         
@@ -70,9 +86,11 @@ class SentioProber(ProberBase):
         """
         return self.__name
 
+
     def connect(self):
         """ Establish a connection with the underlying communicator object. """
         self.__comm.connect()
+
 
     def query_command_status(self, cmd_id: int) -> Response:
         """ Query the status of an async command. 
@@ -99,6 +117,7 @@ class SentioProber(ProberBase):
         resp = Response.parse_resp(self.comm.read_line())
         return resp
 
+
     def open_project(self, project: str, restore_heights: bool = False):
         """ Open a SENTIO project file. 
         
@@ -118,6 +137,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"open_project {project}, {restore_heights}")
         Response.check_resp(self.comm.read_line())
 
+
     def save_project(self, project: str):
         """ Save the current SENTIO project. 
         
@@ -129,38 +149,95 @@ class SentioProber(ProberBase):
         self.comm.send("save_project " + project)
         Response.check_resp(self.comm.read_line())
 
+
     def save_config(self):
+        """ Save the SENTIO configuration file. 
+            
+            Wraps SENTIO's "save_config" remote command.
+
+            :raises: ProberException if an error occured.
+        """
         self.comm.send("save_config")
         Response.check_resp(self.comm.read_line())
 
+
     def move_chuck_separation(self) -> float:
+        """ Move the chuck to separation height. 
+            :raises: ProberException if an error occured.
+            :return: The separation height in micrometer from chuck z axis zero.
+        """
         self.comm.send("move_chuck_separation ")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+
     def move_chuck_contact(self) -> float:
+        """ Move the chuck to contact height. 
+
+            Wraps SENTIO's "move_chuck_contact" remote command.
+
+            :raises: ProberException if an error occured.
+            :return: The contact height in micrometer from chuck z axis zero.
+        """
         self.comm.send("move_chuck_contact")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+
     def move_chuck_theta(self, ref:ChuckThetaReference, angle:float) -> float:
+        """ Move chuck theta axis to a given angle. 
+
+            Wraps SENTIO's "move_chuck_theta" remote command.
+
+            :param ref: The reference to use for the move.
+            :param angle: The angle to move to in degrees.
+            :raises: ProberException if an error occured.
+        """
         self.comm.send("move_chuck_theta {0}, {1}".format(ref.toSentioAbbr(), angle))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+
     def move_chuck_xy(self, ref: ChuckXYReference, x:float, y:float) -> Tuple[float, float]:
+        """ Move chuck to a given xy position. 
+
+            Wraps SENTIO's "move_chuck_xy" remote command.
+
+            :param ref: The reference to use for the move.
+            :param x: The x position to move to in micrometer.
+            :param y: The y position to move to in micrometer.
+            :raises: ProberException if an error occured.
+            :return: The actual x and y position in micrometer after the move.
+        """
         self.comm.send("move_chuck_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def move_chuck_z(self, ref: ChuckZReference, z:float) -> float:
+        """ Move chuck to a given z position. 
+
+            Wraps SENTIO's "move_chuck_z" remote command.
+
+            :param ref: The z-reference to use for the move.
+            :param z: The z position to move to in micrometer.
+            :raises: ProberException if an error occured.
+            :return: The actual z position in micrometer after the move.
+        """
         self.comm.send("move_chuck_z {0}, {1}".format(ref.toSentioAbbr(), z))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def get_chuck_xy_pos(self):
+
+    def get_chuck_xy_pos(self) -> Tuple[float, float]:
+        """ Returns the current xy position of the chuck. 
+
+            Wraps SENTIO's "get_chuck_xy" remote command.
+
+            :return: The actual x,y position in micrometer from axis zero.
+        """
         self.comm.send('get_chuck_xy')
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -168,10 +245,20 @@ class SentioProber(ProberBase):
         curY = float(tok[1])
         return curX, curY
 
+
     def get_chuck_theta(self, site: ChuckSite) -> float:
+        """ Get the current angle of the chuck. 
+
+            Wraps SENTIO's "get_chuck_theta" remote command.
+
+            :param site: The chuck site to query.
+            :raises: ProberException if an error occured.            
+            :return: The current angle of the chuck site in degrees.
+        """
         self.comm.send("get_chuck_theta {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
+
 
     def get_chuck_site_status(self, site: ChuckSite) -> Tuple[bool, bool, bool, bool]:
         self.comm.send("get_chuck_site_status {0}".format(site.toSentioAbbr()))
@@ -194,6 +281,7 @@ class SentioProber(ProberBase):
 
         return hasHome, hasContact, overtravelActive, vacuumOn
 
+
     def file_transfer(self, source: str, dest: str):
         # open file and encode with base64
         if not os.path.isfile(source):
@@ -204,6 +292,7 @@ class SentioProber(ProberBase):
 
         self.comm.send(f'file_transfer {dest}, {encoded}')
         Response.check_resp(self.comm.read_line())
+
 
     def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:
         """
@@ -231,6 +320,7 @@ class SentioProber(ProberBase):
 
         return contact, separation, overtravel_gap, hover_gap
 
+
     def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_gap: float, hover_gap: float):
         """
         Description: Sets z position information of a chuck site\n
@@ -241,11 +331,13 @@ class SentioProber(ProberBase):
         self.comm.send("set_chuck_site_heights {0}".format(par))
         Response.check_resp(self.comm.read_line())
 
+
     def move_chuck_home(self) -> Tuple[float, float]:
         self.comm.send("move_chuck_home ")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
+
 
     # Moves chuck to the last active position of the selected chuck site.
     def move_chuck_site(self, site:ChuckSite) -> Tuple[float, float, float, float]:
@@ -254,19 +346,23 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
 
+
     def move_chuck_load(self, pos: LoadPosition):
         self.comm.send("move_chuck_load {0}".format(pos.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
 
     def move_chuck_work_area(self, site:WorkArea):
         self.comm.send("move_chuck_work_area {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
+
     def select_module(self, module: Module):
         self.comm.send(f"select_module {module.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
+
 
     # Wait until all async commands have finished.
     # Added in SENTIO 3.6.2
@@ -274,18 +370,22 @@ class SentioProber(ProberBase):
         self.comm.send(f"wait_all {timeout}")
         return Response.check_resp(self.comm.read_line())
 
+
     def wait_complete(self, cmd_id: int, timeout: int = 90) -> Response:
         self.comm.send("wait_complete {0}, {1}".format(cmd_id, timeout))
         return Response.check_resp(self.comm.read_line())
+
 
     # Stop an ongoing remote command, no return value
     def abort_command(self, cmd_id: int) -> Response:
         self.comm.send("abort_command {0}".format(cmd_id))
         return Response.check_resp(self.comm.read_line())
 
+
     def start_initialization(self) -> Response:
         self.comm.send("start_initialization")
         return Response.check_resp(self.comm.read_line())
+
 
     # Initialize the prober if it is not already initialized
     def initialize_if_needed(self):
@@ -301,20 +401,24 @@ class SentioProber(ProberBase):
             if (not resp.ok()):
                 raise ProberException("Initialization failed: {0}".format(resp.message()))
 
+
     def has_chuck_xyz(self) -> bool:
         self.comm.send("has_chuck_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
+
 
     def has_scope_xyz(self) -> bool:
         self.comm.send("has_scope_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
 
+
     def has_scope_z(self) -> bool:
         self.comm.send("has_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
+
 
     def move_scope_xy(self, ref: ScopeXYReference, x:float, y:float) -> Tuple[float, float]:
         self.comm.send("move_scope_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
@@ -323,14 +427,17 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def move_scope_z(self, ref: ScopeZReference, z: float) -> float:
         self.comm.send("move_scope_z {0}, {1}".format(ref.toSentioAbbr(), z))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+
     def move_scope_lift(self, state: bool) -> float:
         self.comm.send(f"move_scope_lift {state}")
         Response.check_resp(self.comm.read_line())
+
 
     def get_scope_xy(self) -> Tuple[float, float]:
         self.comm.send("get_scope_xy")
@@ -338,10 +445,12 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def get_scope_z(self) -> float:
         self.comm.send("get_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
+
 
     def get_chuck_xy(self, site : ChuckSite, ref : ChuckXYReference) -> Tuple[float, float]:
         if (site is None):
@@ -353,10 +462,12 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def get_chuck_z(self, ref : ChuckZReference) -> float:
         self.comm.send("get_chuck_z {0}".format(ref.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
+
 
     def move_vce_z(self, ref: VceZReference, z: float) -> float:
         self.comm.send("move_vce_z {0}, {1}".format(ref.toSentioAbbr(), z))
@@ -384,6 +495,15 @@ class SentioProber(ProberBase):
     #
 
     def show_message(self, msg : str, buttons : DialogButtons,  caption : str, dialog_timeout : int = 180) -> DialogButtons:
+        """ An command that will pop up a message box in SENTIO and wait for the result.
+
+            Wraps SENTIO's "status:start_show_message" remote command.
+
+            :param msg: The message to display.
+            :param buttons: The buttons to display.
+            :param caption: The caption of the message box.
+            :param dialog_timeout: An optional dialog timeout in seconds after which the dialog will be closed automatically.
+        """
         self.comm.send('status:start_show_message {0}, {1}, {2}'.format(msg, buttons.toSentioAbbr(), caption))
         resp = Response.check_resp(self.comm.read_line())
 
@@ -399,19 +519,47 @@ class SentioProber(ProberBase):
 
         raise ProberException("Invalid dialog button return value")
 
-    """ show_hint_and_wait with button, wait for button press before returning """
-    def show_hint_and_wait(self, msg : str, subtext: str, button_caption: str, timeout: int = 180, isLockGui: bool = True):
-        self.comm.send('status:start_show_hint \"{0}\", \"{1}\", \"{2}\", \"{3}\"'.format(msg, subtext, button_caption, isLockGui))
+
+    def show_hint_and_wait(self, msg : str, subtext: str, button_caption: str, timeout: int = 180, lock_ui: bool = True):
+        """ Show an on screen message (hint) with a button wait for the button to be pressed. 
+
+            Hints are on screen messages that pop up in SENTIO's lower left corner. This 
+            overload will display a hint with a button and only return once the button has been pressed.
+
+            This function wraps SENTIO's "status:show_hint" remote command.
+
+            :param msg: The message to display.
+            :param subtext: The subtext to display.
+            :param button_caption: The caption of the button.
+            :param timeout: An optional timeout in seconds after which the dialog will be closed automatically. (default = 180 s)
+            :param lock_ui: An optional flag that determines wether the UI shall be locked. If this flag is set nothing but the button can be pressed.
+            :raises: ProberException if an error occured.                        
+            :return: None
+        """
+        self.comm.send('status:start_show_hint \"{0}\", \"{1}\", \"{2}\", \"{3}\"'.format(msg, subtext, button_caption, lock_ui))
         resp = Response.check_resp(self.comm.read_line())
 
         # wait for button press
         self.comm.send('wait_complete {0}, {1}'.format(resp.cmd_id(), timeout))
         Response.check_resp(self.comm.read_line())
 
-    """ show_hint return immediately """
+
     def show_hint(self, msg : str, subtext: str):
+        """ Show an on screen message (hint) and return immediately 
+
+            Hints are on screen messages that pop up in SENTIO's lower left corner. This hint will 
+            disappears automatically after a few seconds.
+
+            This function wraps SENTIO's "status:show_hint" remote command.
+
+            :param msg: The message to display.
+            :param subtext: The subtext to display.
+            :raises: ProberException if an error occured.                        
+            :return: None            
+        """
         self.comm.send('status:show_hint \"{0}\", \"{1}\"'.format(msg, subtext))
         resp = Response.check_resp(self.comm.read_line())
+        
 
     def get_project(self, pfi: ProjectFileInfo = ProjectFileInfo.FullPath) -> str:
         self.comm.send(f'get_project {pfi.toSentioAbbr()}')

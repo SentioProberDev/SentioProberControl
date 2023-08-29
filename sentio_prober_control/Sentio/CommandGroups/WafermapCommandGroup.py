@@ -14,16 +14,34 @@ from typing import Tuple
 
 
 class WafermapCommandGroup(ModuleCommandGroupBase):
+    """ This class represents the SENTIO command group for wafermap related commands."""
+
     def __init__(self, comm):
+        """ Creates the wafermap command group. 
+        
+            The wafermap command group contains several other command groups that handle
+            aspects of the wafermap and stepping.
+        """
         super().__init__(comm, 'map')
         self.__end_of_route: bool = False
 
-        self.subsites = WafermapSubsiteGroup(comm, self)
+        self.subsites : WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
+        """ A group the handle subsites. """
+
         self.path = WafermapPathCommandGroup(comm)
+        """ A group the handle setting up tests paths. """
+
         self.bins = WafermapBinsCommandGroup(comm)
+        """ A group to set up the binning."""
+
         self.die = WafermapDieCommandGroup(comm)
+        """ A group to set up the die."""
+
         self.poi = WafermapPoiCommandGroup(comm)
+        """ A group for working with points of interest."""
+
         self.compensation = WafermapCompensationCommandGroup(comm)
+        """ A command group with functions for setting up and executing x,y and z compensation."""
 
     def create(self, diameter: float):
         self._comm.send("map:create {0}".format(diameter))

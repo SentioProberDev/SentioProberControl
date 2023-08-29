@@ -7,6 +7,8 @@ class GpibNiDriver:
     """ A python wrapper for the NI gpib-32.dll.
      
         This class is used internally only.  
+
+        @private
     """
     def __init__(self):
         # load gpib dll

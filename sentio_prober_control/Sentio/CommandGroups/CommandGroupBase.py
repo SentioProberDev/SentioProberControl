@@ -6,6 +6,8 @@ class CommandGroupBase(ABC):
      
         The functionality of the prober control suiote is organized in command groups.
         Each command group contains a set of commands that are logically related.
+
+        @private
     """
     def __init__(self, comm):
         self._comm = comm
