@@ -5,6 +5,8 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 
 class ServiceCommandGroup(ModuleCommandGroupBase):
+    """ A command group for accessing service module functions. """
+    
     def __init__(self, comm):
         super().__init__(comm, 'service')
 

@@ -6,8 +6,6 @@ class GpibAdlinkDriver:
     """ A python wrapper for the ADLINK gpib-32.dll. 
     
         This class is used internally only.
-
-        @private
     """
 
     def __init__(self):

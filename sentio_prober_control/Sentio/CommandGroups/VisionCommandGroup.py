@@ -8,13 +8,31 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 
 class VisionCommandGroup(ModuleCommandGroupBase):
+    """ A command group for accessing vision module functions."""
+
     def __init__(self, comm):
+        """ Create a new instance of VisionCommandGroup.
+            @private 
+        """
+
         super().__init__(comm, 'vis')
         self.camera = VisionCameraCommandGroup(comm)
+        """ A subgroup to provide logic for camera specific functions. """
+
         self.imagpro = VisionIMagProCommandGroup(comm)
+        """ A subgroup to provide logic for IMagPro specific functions."""
+
         self.compensation = VisionCompensationGroup(comm)
+        """ A subgroup to provide logic for compensation specific functions."""
 
     def switch_all_lights(self, stat:bool):
+        """ Switch all camera lights on or off. 
+            
+            This function wraps the "vis:switch_all_lights" remote command.    
+        
+            :param stat: A flag indicating whether to switch the lights on or off.
+            :raises: ProberException if an error occured.
+        """
         self._comm.send("vis:switch_all_lights {0}".format(stat))
         Response.check_resp(self._comm.read_line())
 
@@ -39,13 +57,18 @@ class VisionCommandGroup(ModuleCommandGroupBase):
                 print(str(e))
 
     def remove_probetip_marker(self):
+        """ Remove probetip marker from the camera display.
+            :raises: ProberException if an error occured.
+        """
         self._comm.send("vis:remove_probetip_marker")
         Response.check_resp(self._comm.read_line())
 
     def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.ProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
-        """ For internal use only!
-            This function is subject to change without any prior warning. MPI will not maintain backwards 
-            compatibility or provide support. """        
+        """ Run probe tip detection.
+
+            This function is for internal use only! The command may change in the future or be removed altogether. 
+            MPI will not maintain backwards compatibility or provide support. 
+        """        
 
         self._comm.send("vis:detect_probetips {0}, {1}, {2}".format(camera.toSentioAbbr(), detector.toSentioAbbr(), coords.toSentioAbbr(), coords.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())

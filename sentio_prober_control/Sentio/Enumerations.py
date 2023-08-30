@@ -271,7 +271,9 @@ class DetectionCoordindates(Enum):
     Roi = 2
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             DetectionCoordindates.Image: "Image",
             DetectionCoordindates.Fov: "Fov",
@@ -295,43 +297,29 @@ class DetectionAlgorithm(Enum):
     Keypoint = 0,            
     """ A Keypoint / ORB detector. """
 
-    ProbeTip = 1, 
-    """ Haar Cascade model for Probe tips seen from above. 
-        This model was removed in SENTIO 23.2
+    ProbeDetector = 1,
+    """ Deep learning based AI model trained on various types of probe tips. 
+    
+        Detects different classes of probe tips with high reliability. Requires
+        a pre-trained AI model in the sentio config folder (smod Extention)
     """
 
-    ProbeTipFromBelow = 2,   # deprecated; subject to future removal   
-    """ Haar Cascade model for probe tips seen from below. 
-        This model was removed in SENTIO 23.2
-    """
-    VerticalProbeCard = 3,   # deprecated; subject to future removal   
-    """ Haar Cascade model trained on the tips of vertical probe cards. 
-        This model was removed in SENTIO 23.2
-    """
-    PyramidTipRingLight = 4, # deprecated; subject to future removal   
-    """ Haar Cascade model trained on pyramid tips illuminated with ring light. 
-        This model was removed in SENTIO 23.2
-    """
+    WaferDetector = 2
+    """ Deep learning based AI model trained on wafer structures. 
 
-    PyramidTipSpotLight = 5, # deprecated; subject to future removal   
-    """ Haar Cascade trained on pyramid tips illuminated with spot light.
-        This model was removed in SENTIO 23.2
-    """
+        Experimental detector for pads, street crossings, Text, Octagonal 
+        Pads, RF structures and small dies.
 
-    ProbeDetector = 6,
-    """ Deep learning based AI model trained on various types of probe tips. """
-    WaferDetector = 7
-    """ Deep learning based AI model trained on wafer structures. (Experimental) """
+        This is experimental functionality that may be removed or changed 
+        at any time without prior warning!
+    """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             DetectionAlgorithm.Keypoint: "Keypoint",
-            DetectionAlgorithm.ProbeTip: "ProbeTip",
-            DetectionAlgorithm.ProbeTipFromBelow: "ProbeTipFromBelow",
-            DetectionAlgorithm.VerticalProbeCard: "VerticalProbeCard",
-            DetectionAlgorithm.PyramidTipRingLight: "PyramidTipRingLight",
-            DetectionAlgorithm.PyramidTipSpotLight: "PyramidTipSpotLight",
             DetectionAlgorithm.ProbeDetector: "ProbeDetector",
             DetectionAlgorithm.WaferDetector: "WaferDetector"
         }
@@ -714,7 +702,9 @@ class LoaderStation(Enum):
     """ Id-reader station."""
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             LoaderStation.Cassette1: "cas1",
             LoaderStation.Cassette2: "cas2",
@@ -758,20 +748,42 @@ class ProbeZReference(Enum):
 
 
 class CameraMountPoint(Enum):
+    """ Available camera mount points. 
+    
+        A camera mount point is a physical position in the prober where a camera can be located.
+        SENTIO refers to its camera via the camera mount point.
+    """
     Scope = 0,
-    Chuck = 1,
-    OffAxis = 2,
-    Vce = 3,
-    Scope2 = 4,
+    """ The downward looking microscope camera. """
+
+    Scope2 = 1,
+    """ Second scope camera. 
+        This camera is only used by IMag to provide a wider field of view in addition to the scope camera.
+    """
+
+    Chuck = 2,
+    """ The upward looking chuck camera. """
+
+    OffAxis = 3,
+    """ Downward looking platen camera."""
+
+    Vce = 4,
+    """ First Vce camera. """
+    
+    Vce2 = 5,
+    """ Second Vce camera. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             CameraMountPoint.Scope: "scope",
+            CameraMountPoint.Scope2: "scope2",
             CameraMountPoint.Chuck: "chuck",
             CameraMountPoint.OffAxis: "offaxis",
             CameraMountPoint.Vce: "vce01",
-            CameraMountPoint.Scope2: "scope2"
+            CameraMountPoint.Vce2: "vce02"
         }
         return switcher.get(self, "Invalid camera mount point id")
 
@@ -827,20 +839,34 @@ class RemoteCommandError:
         """
         NoError = 0
         """ No error occured. """
+
         InternalError = 1
         """ An internal error occured in SENTIO. This is not supposed to happen and you can probably not fix the issue on your own. Please contact SENTIO support. """
+        
         ExecutionError = 2
         """ A generic execution error. This is the most widely used error code to signal remote command failure. """
 
         CommandHandlerNotFound = 3
+        """ A command handler for a certain subsystem of SENTIO was not found. This may happen when sending commands to a SENTIO module that is not 
+            available on a given machine. """
+
         InvalidCommand = 4
         InvalidCommandFormat = 5
         InvalidParameter = 6
+        """ A remote command parameter is incoreect.  """
+
         InvalidNumberOfParameters = 7
+        """ The number of submitted remote command parameters is incoreect. """
+
         ArgumentOutOfBounds = 8
+
         FileNotFound = 9
+        """ A file that was supposed to be loaded by SENTIO was not found. """
+
         InvalidFileFormat = 10
         EndOfRoute = 11
+        """ Stepping reached the end of the route. """
+
         InvalidOperation = 12
         NotSupported = 13
         SubsiteNotRoutable = 14

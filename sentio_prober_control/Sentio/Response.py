@@ -48,11 +48,12 @@ class Response:
         return resp
 
     @staticmethod
-    def check_resp(str_resp : str):
+    def check_resp(str_resp : str) -> 'Response':
         """ A static method that parses a response string and raises an exception if the response indicates an error. 
             
             :param str_resp: The response string to parse.
-            :return: A Response object created from the information in SENTIO's response string.
+            :return: A Response object created from the information in SENTIO's response string. If the response represents 
+            an error an exception is raised instead of returning a Response object.
             :raises: ProberException if the response indicates an error.
         """
         resp = Response.parse_resp(str_resp)
@@ -62,14 +63,12 @@ class Response:
         return resp
 
     def check(self):
-        """ Raises an exception if this response indicates an error."""
+        """ Raises an exception if this response indicates an error.
+        
+            :raises: ProberException if the response indicates an error.
+        """
         if not self.ok():
             raise ProberException(self.message(), self.errc())
-
-    def check_error(self):
-        # ibg: I dont think this code works. it is a duplicate of check() and it is either outdated or never worked.
-        if not self.ok():
-            raise ProberException(self.resp.message(), self.resp.errc())
 
     def cmd_id(self) -> int:
         """ The async commans id returned by SENTIO. 

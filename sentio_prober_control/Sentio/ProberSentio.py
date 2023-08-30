@@ -37,30 +37,30 @@ class SentioProber(ProberBase):
 
         self.__name = "SentioProber"
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
-        self.map = WafermapCommandGroup(comm)
+        self.map : WafermapCommandGroup = WafermapCommandGroup(comm)
         """ The wafermap command group provides access to the wafermap modules functionality.  """
 
-        self.aux = AuxCommandGroup(comm)
+        self.aux : AuxCommandGroup = AuxCommandGroup(comm)
         """ The aux command group provides access the the aux site modules functionality. """
 
-        self.vision = VisionCommandGroup(comm)
+        self.vision : VisionCommandGroup = VisionCommandGroup(comm)
         """ The vision command group provides access to the vision modules functionality. """
 
-        self.status = StatusCommandGroup(comm)
+        self.status : StatusCommandGroup = StatusCommandGroup(comm)
         """ The status command group provides access to the dashboard modules functionality. (formerly called status module)"""
 
-        self.loader = LoaderCommandGroup(comm)
+        self.loader : LoaderCommandGroup = LoaderCommandGroup(comm)
         """ The loader command group provides access to the loader modules functionality. """
 
-        self.siph = SiPHCommandGroup(comm)
+        self.siph : SiPHCommandGroup = SiPHCommandGroup(comm)
         """ The siph command group provides access to the SiPH modules functionality. """
 
-        self.service = ServiceCommandGroup(comm)
+        self.service : ServiceCommandGroup = ServiceCommandGroup(comm)
         """ The service command group provides access to the service modules functionality. """
 
-        self.probe = ProbeCommandGroup(comm)
-        self.compensation = CompensationCommandGroup(comm)
-        self.qalibria = QAlibriaCommandGroup(comm)
+        self.probe : ProbeCommandGroup = ProbeCommandGroup(comm)
+        self.compensation : CompensationCommandGroup = CompensationCommandGroup(comm)
+        self.qalibria : QAlibriaCommandGroup = QAlibriaCommandGroup(comm)
 
 
     def send_cmd(self, cmd: str) -> Response:
