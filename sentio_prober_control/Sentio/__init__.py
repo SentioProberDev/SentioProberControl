@@ -1,9 +1,9 @@
-""" SENTIO package 
+""" # The Sentio package
 
     The Sentio package is your gateway to control a probe station running the MPI SENTIO Software suite. 
     To start you need two things: A communication channel and a `SentioProber` instance.
 
-    Example:
+    ## Creating a Prober Instance
 
     The following example will Connect to a probe station and switch to SENTIO's wafermap module.
 

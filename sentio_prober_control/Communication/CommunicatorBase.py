@@ -1,11 +1,13 @@
+""" @private """
 from abc import ABC
-
 
 class CommunicatorBase(ABC):
     """Base class for all communicators.
     
         Communicators ore objects that implement different communication protocols
-        for talking to the probe station. (i.e. TCP/IP, RS232 or VISA)
+        for talking to the probe station. 
+
+        @private
     """
     _verbose = False
 

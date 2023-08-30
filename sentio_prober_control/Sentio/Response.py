@@ -53,7 +53,7 @@ class Response:
             
             :param str_resp: The response string to parse.
             :return: A Response object created from the information in SENTIO's response string. If the response represents 
-            an error an exception is raised instead of returning a Response object.
+an error an exception is raised instead of returning a Response object.
             :raises: ProberException if the response indicates an error.
         """
         resp = Response.parse_resp(str_resp)

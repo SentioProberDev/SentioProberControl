@@ -1,7 +1,18 @@
-from sentio_prober_control.Devices.Enumerations import GpibCardVendor
+from enum import Enum
+
 from sentio_prober_control.Devices.GpibAdlinkDriver import *
 from sentio_prober_control.Devices.GpibNiDriver import *
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase;
+
+
+class GpibCardVendor(Enum):
+    """ An enumeration that specifies the type of the GPIB card to use for GPIB communication. """    
+    
+    Adlink = 0,
+    """ Specify this if you use an ADLINK GPIB card. You must have installed the ADLINK drivers on your system in order to use this option! """
+
+    NationalInstruments = 1
+    """ Specify this if you use a National Instruments GPIB card. You must have installed the NI-GPIB drivers on your systen in order to use this option! """
 
 
 class CommunicatorGpib(CommunicatorBase):

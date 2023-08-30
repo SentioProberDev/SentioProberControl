@@ -334,25 +334,35 @@ class Module(Enum):
         wafermap and Vision module will also be present (unless you have a purely manual 
         station)
     """
+
     Wafermap = 0,
     """ The wafermap module. """
+
     Vision = 1,
     """ The vision module"""
+
     Setup = 2,
     """ The setup module"""
+
     Service = 3,
     """ The service module"""
+
     Qalibria = 4,
     """The Qalibria module"""
+    
     AuxSites = 5,
     """The aux site module"""
+
     Loader = 6,
     """The loader module"""
+    
     Dashboard = 7
     """The dashboard module"""
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             Module.Wafermap: "Wafermap",
             Module.Vision: "Vision",
@@ -386,7 +396,9 @@ class AxisOrient(Enum):
     """ Y-axis pointing up; X axis pointing left. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             AxisOrient.DownRight: "DR",
             AxisOrient.DownLeft: "DL",
@@ -826,7 +838,6 @@ class StatusBits:
     LastSite = 2
 
 
-# Remote command errors for Sentio 3.0
 class RemoteCommandError:
         """ A list of possible error codes used by SENTIO.
         
@@ -842,7 +853,7 @@ class RemoteCommandError:
 
         InternalError = 1
         """ An internal error occured in SENTIO. This is not supposed to happen and you can probably not fix the issue on your own. Please contact SENTIO support. """
-        
+
         ExecutionError = 2
         """ A generic execution error. This is the most widely used error code to signal remote command failure. """
 
@@ -874,7 +885,11 @@ class RemoteCommandError:
         TransferSlotEmpty = 16
         PrealignmentFailed = 17
         IsBusy = 18
+        """ Sentio is currently busy. Cannot take new commands. """
+
         Timeout = 19
+        """ A command or operation timed out. """
+
         PatternNotTrained = 20
         PatternNotFound = 21
         UnknownCommandId = 22
@@ -905,20 +920,40 @@ class FindPatternReference(Enum):
 class DialogButtons(Enum):
     """ A list of buttons that can be used in SENTIO's dialogs."""
     Ok = 1,
-    """ The Ok button."""
+    """ An Ok button."""
+    
+    Yes = 2,
+    """ A Yes button."""
 
-    Cancel = 2,
+    No = 3,
+    """ A No button."""
+
+    Cancel = 4,
     """ The Cancel button. """
 
-    OkCancel = 3
-    """ Both the Ok and the Cancel button."""
+    OkCancel = 5
+    """ Both the Ok and the Cancel button. """
+
+    YesNo = 6
+    """ Both a Yes and a No button. """
+
+    YesCancel = 7
+    """ Yes and cancel button. """
+
+    YesNoCancel = 8
+    """ Yes, No and Cancel button. """
 
     def toSentioAbbr(self):
         """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             DialogButtons.Ok: "Ok",
             DialogButtons.Cancel: "Cancel",
-            DialogButtons.OkCancel: "OkCancel"
+            DialogButtons.OkCancel: "OkCancel",
+            DialogButtons.Yes: "Yes",
+            DialogButtons.No: "No",            
+            DialogButtons.YesNo: "YesNo",
+            DialogButtons.YesCancel: "YesCancel",
+            DialogButtons.YesNoCancel: "YesNoCancel"                        
         }
         return switcher.get(self, "Invalid button id")
 

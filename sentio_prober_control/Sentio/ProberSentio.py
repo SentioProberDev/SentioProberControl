@@ -1,5 +1,39 @@
-"""
-This file contains the implementation of the SentioProber class.
+""" This package contains the implementation of the SentioProber class.
+
+    # Overview
+
+    The SentioProber class is your gateway to control a probe station running the MPI SENTIO 
+    Software suite.
+
+    Some functionality is provided directy via member functions of the class.
+    The following example triggers a switch of the active SENTIO module by using the 
+    select_module function:
+
+    >>> from sentio_prober_control.Sentio.ProberSentio import *
+    >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
+    >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
+    >>> prober.select_module(Module.Wafermap)
+
+
+    Most functionality is grouped into so called command groups that are accessible 
+    through the member variables listed below. A command group is merely a class that groups a number 
+    of prober related functions together. The available command groups are:
+    * map (sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup.WafermapCommandGroup)
+    * vis
+    * aux
+    * status
+    * loader
+    * siph
+    * service
+    * probe
+    * compensation
+    * qalibria
+
+    To access a function associated with a command group simply add the name of the command group to
+    the prober call. The following example would call the switch_all_lights command from the 
+    vision command group:
+
+    >>> prober.vis.switch_all_lights(False)
 """
 import base64
 import os
@@ -20,16 +54,17 @@ from sentio_prober_control.Sentio.Enumerations import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Communication.CommunicatorBase import *
 
+
 class SentioProber(ProberBase):
     """ This class represents the SENTIO probe station in python. 
-    
-        It provides wrapper for most of the remote commands exposed by SENTIO and
+        It provides wrapper for most of the remote commands exposed by SENTIO.
     """
+
     def __init__(self, comm : CommunicatorBase):
         """ Construct a SENTIO prober object.
          
-            The prober must be initialized with a communication object that specifies 
-            how the system communicates with the probe station.
+            The prober must be initialized with a communication object that 
+            specifies how the system communicates with the probe station.
 
             :param comm: The communicator to use for communication with the prober.
         """
@@ -85,11 +120,6 @@ class SentioProber(ProberBase):
             :return: This function will always return the string "SentioProber".
         """
         return self.__name
-
-
-    def connect(self):
-        """ Establish a connection with the underlying communicator object. """
-        self.__comm.connect()
 
 
     def query_command_status(self, cmd_id: int) -> Response:
@@ -360,6 +390,16 @@ class SentioProber(ProberBase):
 
 
     def select_module(self, module: Module):
+        """ Activate a given SENTIO module. 
+        
+            In response to this function SENTIO will switch its user interface to make 
+            the given module the active one.
+
+            This function wraps the "select_module" remote command of SENTIO.
+
+            :param module: The module to activate.
+            :raises: ProberException if an error occured.
+        """
         self.comm.send(f"select_module {module.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
 
@@ -495,14 +535,14 @@ class SentioProber(ProberBase):
     #
 
     def show_message(self, msg : str, buttons : DialogButtons,  caption : str, dialog_timeout : int = 180) -> DialogButtons:
-        """ An command that will pop up a message box in SENTIO and wait for the result.
-
-            Wraps SENTIO's "status:start_show_message" remote command.
+        """ Pop up a message dialog in SENTIO and wait for the result.
 
             :param msg: The message to display.
             :param buttons: The buttons to display.
             :param caption: The caption of the message box.
             :param dialog_timeout: An optional dialog timeout in seconds after which the dialog will be closed automatically.
+            :raises: ProberException if an error occured.
+            :return: The button that was as an DialogButtons enum value.
         """
         self.comm.send('status:start_show_message {0}, {1}, {2}'.format(msg, buttons.toSentioAbbr(), caption))
         resp = Response.check_resp(self.comm.read_line())
@@ -514,6 +554,12 @@ class SentioProber(ProberBase):
         if (resp.message().lower()=="ok"):
             return DialogButtons.Ok
 
+        if (resp.message().lower()=="yes"):
+            return DialogButtons.Yes
+
+        if (resp.message().lower()=="no"):
+            return DialogButtons.No
+
         if (resp.message().lower()=="cancel"):
             return DialogButtons.Cancel
 
@@ -521,26 +567,25 @@ class SentioProber(ProberBase):
 
 
     def show_hint_and_wait(self, msg : str, subtext: str, button_caption: str, timeout: int = 180, lock_ui: bool = True):
-        """ Show an on screen message (hint) with a button wait for the button to be pressed. 
+        """ Show an on screen message with a button wait for a button to be pressed. 
 
-            Hints are on screen messages that pop up in SENTIO's lower left corner. This 
-            overload will display a hint with a button and only return once the button has been pressed.
-
-            This function wraps SENTIO's "status:show_hint" remote command.
+            Hints pop up in SENTIO's lower left corner. This function will display a hint with a button 
+            and only return once the button has been pressed.
 
             :param msg: The message to display.
-            :param subtext: The subtext to display.
+            :param subtext: The subtext to display. Subtext is displayed in a second line with a slightly smaller font.
             :param button_caption: The caption of the button.
             :param timeout: An optional timeout in seconds after which the dialog will be closed automatically. (default = 180 s)
-            :param lock_ui: An optional flag that determines wether the UI shall be locked. If this flag is set nothing but the button can be pressed.
+            :param lock_ui: An optional flag that determines wether the UI shall be locked. Most of the UI is disabled in 
+            remote mode anyway. This button affects only the on screen interactions on the right side of the main module view. (default = True)
             :raises: ProberException if an error occured.                        
             :return: None
         """
-        self.comm.send('status:start_show_hint \"{0}\", \"{1}\", \"{2}\", \"{3}\"'.format(msg, subtext, button_caption, lock_ui))
+        self.comm.send(f'status:start_show_hint \"{msg}\", \"{subtext}\", \"{button_caption}\", \"{lock_ui}\"')
         resp = Response.check_resp(self.comm.read_line())
 
         # wait for button press
-        self.comm.send('wait_complete {0}, {1}'.format(resp.cmd_id(), timeout))
+        self.comm.send(f'wait_complete {resp.cmd_id()}, {timeout}')
         Response.check_resp(self.comm.read_line())
 
 
@@ -557,7 +602,7 @@ class SentioProber(ProberBase):
             :raises: ProberException if an error occured.                        
             :return: None            
         """
-        self.comm.send('status:show_hint \"{0}\", \"{1}\"'.format(msg, subtext))
+        self.comm.send(f'status:show_hint \"{msg}\", \"{subtext}\"')
         resp = Response.check_resp(self.comm.read_line())
         
 
@@ -565,3 +610,5 @@ class SentioProber(ProberBase):
         self.comm.send(f'get_project {pfi.toSentioAbbr()}')
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
+

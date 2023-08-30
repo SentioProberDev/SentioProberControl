@@ -1,8 +1,38 @@
-""" 
-    Abstract base class of a probe station.
+""" This pakcage contains an abstrach base class for the probe station and a custom exception class for signalling errors.
+    @private
 """
 from abc import ABC, abstractmethod
 
+
+class ProberException(Exception):
+    """ A custom exception class for SENTIO's python package.
+
+        All errors that occur in this package will be wrapped in this exception class. 
+    """
+
+    def __init__(self, msg, errc = -1):
+        """ Creates a new ProberException object.
+            :param msg: The error message.
+            :param errc: The error code (optional). If no error code is set -1 is used.
+        """
+        super().__init__(msg)
+        self.__message = msg
+        self.__error = errc
+
+
+    def error(self):
+        """  Get error code. 
+            :return: The error code of the exception.
+        """
+        return self.__error
+
+
+    def message(self):
+        """ Returns the error message.
+            :return: The error message.
+        """
+        return self.__message
+    
 
 class ProberBase(ABC):
     """ Abstract base class of a probe station.
@@ -26,34 +56,3 @@ class ProberBase(ABC):
         """
         pass
 
-    @abstractmethod
-    def connect(self):
-        """ Connects the probe station to the prober.
-
-            Must be implemented by derived classes.
-        """
-        pass
-
-
-class ProberException(Exception):
-    """ A custom exception class for the prober. """
-    def __init__(self, msg, errc = -1):
-        """ Creates a new ProberException object.
-            :param msg: The error message.
-            :param errc: The error code (optional). If no error code is set -1 is used.
-        """
-        super().__init__(msg)
-        self.__message = msg
-        self.__error = errc
-
-    def error(self):
-        """ Returns the error code of the exception. 
-            :return: The error code of the exception.
-        """
-        return self.__error
-
-    def message(self):
-        """ Returns the error message.
-            :return: The error message.
-        """
-        return self.__message
