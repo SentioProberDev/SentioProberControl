@@ -291,6 +291,18 @@ class SentioProber(ProberBase):
 
 
     def get_chuck_site_status(self, site: ChuckSite) -> Tuple[bool, bool, bool, bool]:
+        """ Get status of a chuck site. 
+         
+            Wraps SENTIO's "get_chuck_site_status" remote command.
+
+            :param site: The chuck site to query.
+            :raises: ProberException if an error occured.
+            :return: A tuple with the status of the chuck site. The tuple contains the following values:
+            * hasHome: True if the chuck site has a home position.
+            * hasContact: True if the chuck site has a contact position.
+            * overtravelActive: True if the overtravel is active.
+            * vacuumOn: True if the vacuum is on.    
+        """
         self.comm.send("get_chuck_site_status {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
 
@@ -313,6 +325,16 @@ class SentioProber(ProberBase):
 
 
     def file_transfer(self, source: str, dest: str):
+        """ Transfer a file to the prober. 
+        
+            This function will transfer a file to the prober. The file will be stored in the position specified by dast.
+            The file will be transmitted in base64 encoding which can take some time.
+            
+            :param source: The path to the file to transfer.
+            :param dest: The destination path on the prober. Must be a complete path including file name. Make sure that SENTIO has write access to the given destination.
+            :raises: ProberException if an error occured.            
+            :return: None
+        """
         # open file and encode with base64
         if not os.path.isfile(source):
             raise ProberException(f"File {source} not found!")
@@ -325,10 +347,17 @@ class SentioProber(ProberBase):
 
 
     def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:
-        """
-        Description: Retrieves height information of a chuck site\n
-        Example: contact, separation, overtravel_gap, hover_gap = get_chuck_site_height(ChuckSite.Wafer)\n
-        Gets for chuck site “Wafer” contact height, separation heights ,overtravel gap and hover height
+        """ Retrieves height information of a chuck site
+        
+            Example: 
+        
+            >>> contact, separation, overtravel_dist, hover_gap = get_chuck_site_height(ChuckSite.Wafer)
+        
+            Gets for chuck site "Wafer" contact height, separation heights ,overtravel distance and hover height
+
+            :param site: The chuck site to query.
+            :raises: ProberException if an error occured.            
+            :return: A tuple with the contact height, separation height, overtravel distance and hover height in micrometer.
         """
         self.comm.send("get_chuck_site_heights {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
@@ -351,26 +380,51 @@ class SentioProber(ProberBase):
         return contact, separation, overtravel_gap, hover_gap
 
 
-    def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_gap: float, hover_gap: float):
+    def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_dist: float, hover_gap: float):
+        """ Sets z position information of a chuck site
+        
+            Example:
+            
+            >>> set_chuck_site_height(ChuckSite.Wafer,16000,250,20,50)
+
+            Will set the contact height of the wafer site to 16000 µm with a separation height of 250 µm an overtravel of 20 and a hover height of 50
+
+            :param site: The chuck site to query.
+            :param contact: The new contact height in micrometer.
+            :param separation: The new separation height in micrometer.
+            :param overtravel_dist: The new overtravel distance in micrometer.
+            :param hover_gap: The new hover gap in micrometer.
+            :raises: ProberException if an error occured.
+            :return: None
         """
-        Description: Sets z position information of a chuck site\n
-        Example: set_chuck_site_height(ChuckSite.Wafer,1000,800,20,5)\n
-        Sets for chuck site “Wafer” contact height=1000 µm, separation heights=800 µm ,overtravel gap=20 µm and hover height=50 µm
-        """
-        par: str = "{},{},{},{},{}".format(site.toSentioAbbr(), contact, separation, overtravel_gap, hover_gap)
+        par: str = "{},{},{},{},{}".format(site.toSentioAbbr(), contact, separation, overtravel_dist, hover_gap)
         self.comm.send("set_chuck_site_heights {0}".format(par))
         Response.check_resp(self.comm.read_line())
 
 
     def move_chuck_home(self) -> Tuple[float, float]:
+        """ Move chuck to its home position.
+            :raises: ProberException if an error occured.
+            :return: The actual x,y position in micrometer (with respect to axis zero).   
+        """
         self.comm.send("move_chuck_home ")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
 
-    # Moves chuck to the last active position of the selected chuck site.
     def move_chuck_site(self, site:ChuckSite) -> Tuple[float, float, float, float]:
+        """ Moves chuck to the last active position of the selected chuck site.
+
+            Wraps SENTIO's "move_chuck_site" remote command.
+
+            :raises: ProberException if an error occured.
+            :return: A tuple consisting of 4 floating point values representing the chuck position after the move. The tuple contains the following values:
+            * x: The x position in micrometer.
+            * y: The y position in micrometer.
+            * z: The z height in micrometer.
+            * theta: The theta angle in degrees.
+        """
         self.comm.send("move_chuck_site {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -378,15 +432,29 @@ class SentioProber(ProberBase):
 
 
     def move_chuck_load(self, pos: LoadPosition):
+        """ Move chuck to load position.
+         
+            Wraps SENTIO's "move_chuck_load" remote command.
+
+            :param  pos: The load position to move to.    
+            :raises: ProberException if an error occured.
+            :Return: A response object with the result of the command.
+        """
         self.comm.send("move_chuck_load {0}".format(pos.toSentioAbbr()))
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return Response.check_resp(self.comm.read_line())
 
 
     def move_chuck_work_area(self, site:WorkArea):
+        """ Move the chuck to a given work area.
+         
+            Wraps SENTIO's "move_chuck_work_area" remote command.   
+
+            :param site: The work area to move to.
+            :raises: ProberException if an error occured.
+            :return: A response object with the result of the command.
+        """
         self.comm.send("move_chuck_work_area {0}".format(site.toSentioAbbr()))
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return Response.check_resp(self.comm.read_line())
 
 
     def select_module(self, module: Module):
@@ -399,36 +467,75 @@ class SentioProber(ProberBase):
 
             :param module: The module to activate.
             :raises: ProberException if an error occured.
+            :return: A response object with the result of the command.
         """
         self.comm.send(f"select_module {module.toSentioAbbr()}")
-        Response.check_resp(self.comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
-    # Wait until all async commands have finished.
-    # Added in SENTIO 3.6.2
     def wait_all(self, timeout: int = 90) -> Response:
+        """ Wait until all async commands have finished.
+
+            added in SENTIO 3.6.2        
+
+            :param timeout: The timeout in seconds.
+            :raises: ProberException if an error occured.            
+            :return: A response object with the result of the command.
+        """
         self.comm.send(f"wait_all {timeout}")
         return Response.check_resp(self.comm.read_line())
 
 
     def wait_complete(self, cmd_id: int, timeout: int = 90) -> Response:
+        """ Wait for a single async command to complete.
+            :param cmd_id: The id of the async command to wait for.
+            :param timeout: The timeout in seconds.
+            :raises: ProberException if an error occured.            
+            :return: A response object with the result of the command. 
+        """
         self.comm.send("wait_complete {0}, {1}".format(cmd_id, timeout))
         return Response.check_resp(self.comm.read_line())
 
 
     # Stop an ongoing remote command, no return value
     def abort_command(self, cmd_id: int) -> Response:
+        """ Stop an ongoing asynchronous remote command.
+
+            :param cmd_id: The id of the async command to abort. 
+            :raises: ProberException if an error occured.            
+            :return: A response object with the result of the command.             
+        """
         self.comm.send("abort_command {0}".format(cmd_id))
         return Response.check_resp(self.comm.read_line())
 
 
     def start_initialization(self) -> Response:
+        """ Start the initialization of the probe station. 
+        
+            This function will start the initialization of the prober. This is an 
+            async command that will return immediately.
+
+            The initialization process will take some time to complete. Use
+            waitcomplete to wait for the initialization to complete.
+
+            :raises: ProberException if an error occured.
+            :return: A response object with the result of the command.
+        """
         self.comm.send("start_initialization")
         return Response.check_resp(self.comm.read_line())
 
 
-    # Initialize the prober if it is not already initialized
     def initialize_if_needed(self):
+        """ Initialize the prober if it is not already initialized. 
+
+            This command will check if the prober is already initialized. If not
+            it will start the initialization process and wait for it to complete.
+
+            You do not have to call waitcomplete after this function on your own!
+
+            :raises: ProberException if an error occured.       
+            :return: None
+        """
         isInitialized, isMeasuring, isLoaderBusy = self.status.get_machine_status()
 
         if (not isInitialized):
@@ -443,24 +550,44 @@ class SentioProber(ProberBase):
 
 
     def has_chuck_xyz(self) -> bool:
+        """ Returns True if the chuck has xyz axes.
+            :raises: ProberException if an error occured.       
+            :return: True if the chuck has xyz axes.
+        """
         self.comm.send("has_chuck_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
 
 
     def has_scope_xyz(self) -> bool:
+        """ Returns True if the scope has xyz axes.
+            :raises: ProberException if an error occured.       
+            :return: True if the scope has xyz axes.
+        """
         self.comm.send("has_scope_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
 
 
     def has_scope_z(self) -> bool:
+        """ Returns true if the microscope has a motorized z axis.
+            :raises: ProberException if an error occured.       
+            :return: True if the scope has xyz axes.
+        """
         self.comm.send("has_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
 
 
     def move_scope_xy(self, ref: ScopeXYReference, x:float, y:float) -> Tuple[float, float]:
+        """ Move scope to a given xy position. 
+
+            :param ref: The reference to use for the move.
+            :param x: The x position to move to in micrometer.
+            :param y: The y position to move to in micrometer.
+            :raises: ProberException if an error occured.                   
+            :return The actual x,y position in micrometer after the move.
+        """
         self.comm.send("move_scope_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
         resp = Response.check_resp(self.comm.read_line())
 
@@ -469,17 +596,40 @@ class SentioProber(ProberBase):
 
 
     def move_scope_z(self, ref: ScopeZReference, z: float) -> float:
+        """ Move scope to a given z position. 
+            :param ref: The reference to use for the move.
+            :param z: The z position to move to in micrometer.
+            :raises: ProberException if an error occured.                               
+            :return: The actual z position in micrometer after the move.
+        """
         self.comm.send("move_scope_z {0}, {1}".format(ref.toSentioAbbr(), z))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
     def move_scope_lift(self, state: bool) -> float:
+        """ Move scope to its lift position.
+         
+            The scope lift position is a position where the scope is
+            at its axis maximum. This position will give you the maximum
+            possible are of unhindered operation when changing probe cards
+            or other maintenance tasks.
+
+            :param state: True to move to the lift position, False to move away from the lift position.  
+            :return: None
+         """
         self.comm.send(f"move_scope_lift {state}")
         Response.check_resp(self.comm.read_line())
 
 
     def get_scope_xy(self) -> Tuple[float, float]:
+        """ Get current scope xy position. 
+
+            The returned position is an absolute position with respect to the axis zero in micrometer.
+
+            :raises: ProberException if an error occured.                               
+            :return: The actual x,y position in micrometer.
+        """
         self.comm.send("get_scope_xy")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -487,12 +637,24 @@ class SentioProber(ProberBase):
 
 
     def get_scope_z(self) -> float:
+        """ Get scope z position in micrometer from axis zero.
+            
+            :raises: ProberException if an error occured.
+            :return: The actual z position in micrometer. 
+        """
         self.comm.send("get_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
     def get_chuck_xy(self, site : ChuckSite, ref : ChuckXYReference) -> Tuple[float, float]:
+        """ Get current chuck xy position with respect to a given reference.
+
+            :param site: The chuck site to query.
+            :param ref: The reference to use for the query.
+            :raises: ProberException if an error occured.
+            :return: The actual x,y position in micrometer.
+        """
         if (site is None):
             self.comm.send("get_chuck_xy {0}".format(site.toSentioAbbr()))
         else:
@@ -504,19 +666,32 @@ class SentioProber(ProberBase):
 
 
     def get_chuck_z(self, ref : ChuckZReference) -> float:
+        """ Get chuck z position. 
+        
+            :param ref: The reference to use for the query.
+            :raises: ProberException if an error occured.
+            :return: The actual z position in micrometer.
+        """
         self.comm.send("get_chuck_z {0}".format(ref.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
-    def move_vce_z(self, ref: VceZReference, z: float) -> float:
-        self.comm.send("move_vce_z {0}, {1}".format(ref.toSentioAbbr(), z))
+    def move_vce_z(self, stage:Stage, ref: VceZReference, z: float) -> float:
+        """ Move VCE stage to a given z position.
+         
+            :param ref: The reference to use for the move.
+            :param z: The z position to move to in micrometer.
+            :raises: ProberException if an error occured.
+            :return: The actual z position in micrometer after the move.
+        """
+        if stage != Stage.Vce and stage != Stage.Vce2:
+            raise ProberException(f"This command can only be applied to vce stages! (stage={0})")
+        
+        self.comm.send(f"move_vce_z {stage.toSentioAbbr()}, {ref.toSentioAbbr()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    #
-    # Contact Handling
-    #
 
     def clear_contact(self, site: ChuckSite = None):
         if site is None:

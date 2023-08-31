@@ -493,12 +493,21 @@ class AutoAlignCmd(Enum):
 
 
 class ScopeXYReference(Enum):
+    """ Position reference for scope motions. """
+    
     Zero = 0,
+    """ Use absolute scope coordinates. """
+
     Home = 1,
+    """ Use coordinates with respect to the scope home position."""
+
     Relative = 2
+    """ Use coordinates with respect to the current scope position."""
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ScopeXYReference.Zero: "Z",
             ScopeXYReference.Home: "H",
@@ -508,11 +517,18 @@ class ScopeXYReference(Enum):
 
 
 class ScopeZReference(Enum):
+    """ Scope z reference for scoep motions. """
+
     Zero = 0,
+    """ Move relative to the physical axis zero position. """
+
     Relative = 1
+    """ Move relative to the current position. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ScopeZReference.Zero: "Z",
             ScopeZReference.Relative: "R"
@@ -572,7 +588,9 @@ class ChuckXYReference(Enum):
     """ Use user defined coordinate system. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ChuckXYReference.Zero: "Z",
             ChuckXYReference.Home: "H",
@@ -602,7 +620,9 @@ class ChuckZReference(Enum):
     """ Use relative chuck z coordinated with respect to the chucks separation height. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ChuckZReference.Zero: "Z",
             ChuckZReference.Relative: "R",
@@ -626,7 +646,9 @@ class ChuckThetaReference(Enum):
     """ Use the current theta position as reference. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ChuckThetaReference.Zero: "Z",
             ChuckThetaReference.Site: "S",
@@ -636,11 +658,17 @@ class ChuckThetaReference(Enum):
 
 
 class WorkArea(Enum):
+    """ An enumeration containing probe station work areas. """
     Probing = 0,
+    """ The probing work are is the area in which the chuck is under the downward lookin microscope. This is where the wafer is probed. """
+    
     Offaxis = 1,
+    """ The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             WorkArea.Probing: "Probing",
             WorkArea.Offaxis: "Offaxis",
@@ -674,7 +702,9 @@ class ChuckSite(Enum):
     """ The chuck camera """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ChuckSite.Wafer: "Wafer",
             ChuckSite.AuxLeft: "AuxLeft",
@@ -736,7 +766,9 @@ class ProbeXYReference(Enum):
     Center = 3,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ProbeXYReference.Zero: "Z",
             ProbeXYReference.Home: "H",
@@ -751,7 +783,9 @@ class ProbeZReference(Enum):
     Relative = 1,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ProbeZReference.Zero: "Z",
             ProbeZReference.Relative: "R",
@@ -765,6 +799,7 @@ class CameraMountPoint(Enum):
         A camera mount point is a physical position in the prober where a camera can be located.
         SENTIO refers to its camera via the camera mount point.
     """
+
     Scope = 0,
     """ The downward looking microscope camera. """
 
@@ -805,13 +840,6 @@ class ChuckPositionHint(Enum):
     FrontLoad = 1,
     SideLoad = 2
 
-#    def toSentioAbbr(self):
-#        switcher = {
-#            ChuckPositionHint.Center: "Wafer",
-#            ChuckPositionHint.FrontLoad: "AuxLeft",
-#            ChuckPositionHint.SideLoad: "AuxLeft2",
-#        }
-#        return switcher.get(self, "Invalid chuck position hint")
 
 class BinSelection(Enum):
     All = 0,
@@ -944,7 +972,9 @@ class DialogButtons(Enum):
     """ Yes, No and Cancel button. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             DialogButtons.Ok: "Ok",
             DialogButtons.Cancel: "Cancel",
@@ -959,11 +989,21 @@ class DialogButtons(Enum):
 
 
 class LoadPosition(Enum):
+    """ An enumeration containing the possible load positions.
+     
+        Not all load positions are available on all probe stations.
+    """
+
     Front = 0,
+    """ The Front Load position. All probe station have a front load position."""
+
     Side = 1
+    """ The Side Load position. The side load position is optional and only present on systems with a side loader, a cassette loader or a wafer wallet. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             LoadPosition.Front: "front",
             LoadPosition.Side: "side"
@@ -972,11 +1012,18 @@ class LoadPosition(Enum):
 
 
 class VceZReference(Enum):
+    """ Reference for Vce z motions. """
+
     Zero = 0,
+    """ Move stage absolute. (relative to axis zero)"""
+
     Relative = 1
+    """ Move stage relative to current position. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             VceZReference.Zero: "Z",
             VceZReference.Relative: "R"
@@ -1044,7 +1091,9 @@ class ProbeZReference(Enum):
     Separation = 3
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands.
+            @private
+        """
         switcher = {
             ProbeZReference.Zero: "Zero",
             ProbeZReference.Current: "Current",
