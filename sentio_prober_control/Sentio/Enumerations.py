@@ -65,11 +65,18 @@ class CompensationType(Enum):
 
 
 class ProjectFileInfo(Enum):
+    """ An enumerator containing the different aspects of retrieving current project info. """
+    
     NameOnly = 0,
+    """ Return only the project name. """
+    
     FullPath = 1,
+    """ Return the full path to the project file. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ProjectFileInfo.NameOnly: "Name",
             ProjectFileInfo.FullPath: "FullPath"
@@ -105,7 +112,9 @@ class DefaultPattern(Enum):
     """ A pattern used for probe to pad alignment. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             DefaultPattern.Align: "align",
             DefaultPattern.Home: "home",
@@ -131,7 +140,9 @@ class SteppingContactMode(Enum):
     """ Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             SteppingContactMode.BackToContact: "BackToContact",
             SteppingContactMode.StepToSeparation: "StepToSeparation",
@@ -876,6 +887,7 @@ class RemoteCommandError:
             Have a look at the remote command specification to see which codes are
             supported by your version.
         """
+
         NoError = 0
         """ No error occured. """
 
@@ -890,7 +902,11 @@ class RemoteCommandError:
             available on a given machine. """
 
         InvalidCommand = 4
+        """ not used by SENTIO's native remote command set. """
+
         InvalidCommandFormat = 5
+        """ not used by SENTIO's native remote command set. """
+
         InvalidParameter = 6
         """ A remote command parameter is incoreect.  """
 
@@ -898,38 +914,179 @@ class RemoteCommandError:
         """ The number of submitted remote command parameters is incoreect. """
 
         ArgumentOutOfBounds = 8
+        """ A submitted parameter exceeds the range of allowed values. """
 
         FileNotFound = 9
         """ A file that was supposed to be loaded by SENTIO was not found. """
 
         InvalidFileFormat = 10
+        """ not used by SENTIO's native remote command set. """
+        
         EndOfRoute = 11
         """ Stepping reached the end of the route. """
 
         InvalidOperation = 12
+        """ The requested operation is not allowed in the current state. """
+
         NotSupported = 13
+        """ A function is not supported by a specific type of probe station. """
+
         SubsiteNotRoutable = 14
-        TransferSlotOccupied = 15
-        TransferSlotEmpty = 16
+        """ The target of a stepping command is not marked for test and present. """
+
+        ProjectRequired = 15
+        """ A requested operation require an active project."""
+        
+        Unused = 16
+        """ This error code is unused. """
+
         PrealignmentFailed = 17
-        IsBusy = 18
-        """ Sentio is currently busy. Cannot take new commands. """
+        """ Prealignment failed. """
+
+        HomePositionNotSet = 18
+        """ The home position is not set."""
 
         Timeout = 19
         """ A command or operation timed out. """
 
         PatternNotTrained = 20
+        """ A required pattern is not trained """
+
         PatternNotFound = 21
-        UnknownCommandId = 22
-        AsyncCommandAborted = 24
-        CameraNotCalibrated = 25
+        """ A pattern could not be found """
+
+        TooManyPatternsFound = 22
+        """ Too many patterns were found """
+
+        ContactHeightNotSet = 23
+        """ The contact height is not set. """
+
+        AutoFocusFailed = 24
+        """ Auto focus failed on the wafer. """
+
+        TipFocusFailed = 25
+        """ Auto focus failed on the tips """
+
+        TipNotFound = 26
+        """  Cound not detect any tip on the probe card needle. """
+
+        OffsetOverTolerance = 27
+        """ The new Ptpa offset is gereter than tolerance z. """
+
         CommandPending = 30
+        """ Returned when the status of an async command is polled with query_command_status and the command is Running """
+
+        AsyncCommandAborted = 31
+        """ Returned when a async command was aborted prematurely """
+
+        UnknownCommandId = 32
+        """ Returned when an async command is queried but SENTIO does not know anything about this command id """
+
+        CameraNotCalibrated = 35
+        """" A camera required for a vision task is not calibrated """
+
+        CameraDoesNotExist = 36
+        """ A required camera is not installed in the system. """
+
+        AlignAccuracyBad = 37
+        """ Alignment accuracy over 10 µm """
+
+        SteppingWithWrongZPosition = 38
+        """ Stepping when Chuck is below Separation """
+
         FrontDoorOpen = 60
+        """ The front load door is open """
+
         LoaderDoorOpen = 61
+        """ The side door is open """
+
         FrontDoorLockFail = 62
+        """ Front door lock cannot be engaged """
+
         LoaderDoorLockFail = 63
-        WaferExisting = 64
-        WaferNotExisting = 65
+        """ Side door lock cannot be engaged """
+
+        SlotOrStationOccupied = 64
+        """ A slot or station that is the target of a wafer transfer is already occupied """
+
+        SlotOrStationEmpty = 65
+        """ A slot or station that is the origin of a wafer transfer does not have a wafer """
+
+        ProbeBackDoorOpen = 66
+        """ The probe back door is open """
+
+        ProbeSideDoorOpen = 67
+        """  The probe side door is open (Not loader door, only TS2500/SE has this door, the door near the probe back door) """
+
+        VacuumFailed = 68
+        """ The vacuum failed """
+
+        LoaderTrayDoorOpen = 69
+        """ The tray door is open """
+
+        LoaderCassetteDoesNotExist = 80
+        LoaderSlotNumberError = 81
+        LoaderPreAlignerAngleError = 83
+        LoaderNoWaferOnPrealigner = 85
+        LoaderNoWaferOnChuck = 86
+        LoaderNoWaferAtSlotOrTray = 87
+        LoaderNoWaferOnRobot = 88
+        LoaderNoIdReader = 90
+        LoaderReadIdFail = 91
+        LoaderTransferWaferFail = 92
+        LoaderNoWaferOnAuxiliary = 93
+
+        ProbeNotInitialized = 100
+        ProbeServoOnOffFail = 101
+
+        OvertravelOutOfAxisLimit = 120
+        MissingTopographyTable = 121
+        IndexerDeviceIsNotExisting = 122
+
+        LoaderWaferOnFork = 150
+        LoaderWaferSlideOutCassette = 151
+        LoaderNoWaferOnFork = 152
+        LoaderWaferTrackerReceivedTimeout = 153
+        LoaderWaferIsOblique = 154
+        LoaderCassetteWithoutScan = 155
+        LoaderPrealignerSensorSwitchSizeTimeOut = 156
+        LoaderCassetteDoorBarOpenTimeout = 157
+        LoaderCassetteDoorBarCloseTimeout = 158
+        LoaderWaferIsCrossOver = 159
+        LoaderWaferOnChuck = 160
+        LoaderPrealignCalOffsetTooLarge = 161
+        LoaderPrealignFailedTooMuchTime = 162
+        LoaderConnectPrealignerFailed = 163
+        LoaderWaferOnTray = 164
+        LoaderCassetteMappingLagCountTooMuch = 165
+        LoaderTransferSoakingTimeOut = 166
+        LoaderUpdateMappingResultFail = 167
+        LoaderTrayDoorLockTimeout = 168
+        LoaderWaferOnPrealigner = 169
+
+        ThermalSoakingTimeIsNotCorrect = 200
+
+        SiPhMoveHoverFail = 300
+        SiPhMoveSeparationFail = 301
+        SiPhGradientSearchFail = 302
+        SiPhFastAlignFail = 303
+        SiPhPowerMeasurementFail = 304
+        SiPhCouplingFail = 305
+        SiPhTrackingFail = 306
+        SiPhPivotPointSearchFail = 307
+
+        PositionerSiteDataFail = 400
+
+        QaChuckNotWorkingPosition = 450
+        QaSubstrateNotSet = 451
+        QaRemoteModeNotSet = 452
+        QaStandardsEmpty = 453
+        QaCalculateEtsFail = 454
+        QaSetCalDriftDutDataFail = 455
+        QaCalDriftDutNotFound = 456
+        QaCalDriftDutFail = 457
+        QaSwitchViewFail = 458
+        QaExportCalDriftDataFail = 459
 
 
 class FindPatternReference(Enum):

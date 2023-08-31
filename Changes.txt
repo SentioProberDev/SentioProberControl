@@ -1,19 +1,17 @@
 Changes:
 
-Version 23.1.2
+Version 23.1.x
 =============
 Bugfixes:
 	+ Fix for SENTIO#12991 (#4)
-
-Version 23.1.0
-=============
+	+ The Module enumerator did not have a "Loader" entry.
+	+ move_vce_z was broken
 
 Modification:
 	+ Common Probe Tip detector added (new SENTIO 3.8)
 		- prober.vision.detect_probetips adapted to SENTIO changes
+	+ remote command error codes updated
 
-Bugfixes:
-	+ The Module enumerator did not have a "Loader" entry.
 
 Version 3.6.0
 =============

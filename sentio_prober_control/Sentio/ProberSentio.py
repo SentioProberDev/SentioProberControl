@@ -694,14 +694,33 @@ class SentioProber(ProberBase):
 
 
     def clear_contact(self, site: ChuckSite = None):
+        """ Clear contact positions.
+
+            :param  site: The chuck site to clear. If None is given all sites will be cleared.
+            :raises: ProberException if an error occured.
+            :return: None
+        """
         if site is None:
             self.comm.send("clear_contact")
         else:
-            self.comm.send("clear_contact {0}".format(site.toSentioAbbr()))
+            self.comm.send(f"clear_contact {site.toSentioAbbr()}")
 
         return Response.check_resp(self.comm.read_line())
 
+
     def set_stepping_contact_mode(self, mode: SteppingContactMode):
+        """ Change the stepping contact mode.
+         
+            The stepping contact mode defines what happens during stepping over a wafer.
+            The following modes are available:
+            * BackToContact: The chuck will step into contact position
+            * StepToSeparation: The chuck will step into separation position. You have to move into contact with a seaparate command.
+            * LockContack: The Chuck is not allowed to leave contact position automatically as part of a stepping command. You have to move into separation with a separate command bevore being able to step to the next die..
+
+            :param mode: The stepping contact mode to set.
+            :raises: ProberException if an error occured.
+            :return: A response object with the result of the command.
+         """
         self.comm.send("set_stepping_contact_mode {0}".format(mode.toSentioAbbr()))
         return Response.check_resp(self.comm.read_line())
 
@@ -782,6 +801,11 @@ class SentioProber(ProberBase):
         
 
     def get_project(self, pfi: ProjectFileInfo = ProjectFileInfo.FullPath) -> str:
+        """ Get the name of the current project. 
+            
+            :raises: A ProberException is raised if no project is loaded.
+            :return The name of the current project.
+        """
         self.comm.send(f'get_project {pfi.toSentioAbbr()}')
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
