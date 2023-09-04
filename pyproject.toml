@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sentio-prober-control"
 # ibg 2023-08-30: added pyvisa as run time dependency
-dependencies = ["pyvisa"]
+dependencies = ["pyvisa", "deprecated"]
 version = "23.1.5"
 authors = [
   { name="Ingo Berg", email="ingo.berg@atv-systems.de" },

@@ -1,3 +1,6 @@
+from typing import Tuple
+from deprecated import deprecated
+
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.ProberBase import ProberException
@@ -9,8 +12,6 @@ from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup impo
 from sentio_prober_control.Sentio.CommandGroups.WafermapCompensationCommandGroup import  WafermapCompensationCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapDieCommandGroup import  WafermapDieCommandGroup
 from sentio_prober_control.Sentio.Enumerations import *
-
-from typing import Tuple
 
 
 class WafermapCommandGroup(ModuleCommandGroupBase):
@@ -28,69 +29,56 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.subsites : WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
         """ A group the handle subsites. """
 
-        self.path = WafermapPathCommandGroup(comm)
+        self.path : WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
         """ A group the handle setting up tests paths. """
 
-        self.bins = WafermapBinsCommandGroup(comm)
+        self.bins : WafermapBinsCommandGroup = WafermapBinsCommandGroup(comm)
         """ A group to set up the binning."""
 
-        self.die = WafermapDieCommandGroup(comm)
+        self.die : WafermapDieCommandGroup = WafermapDieCommandGroup(comm)
         """ A group to set up the die."""
 
-        self.poi = WafermapPoiCommandGroup(comm)
+        self.poi : WafermapPoiCommandGroup = WafermapPoiCommandGroup(comm)
         """ A group for working with points of interest."""
 
-        self.compensation = WafermapCompensationCommandGroup(comm)
+        self.compensation : WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
         """ A command group with functions for setting up and executing x,y and z compensation."""
 
+
     def create(self, diameter: float):
-        self._comm.send("map:create {0}".format(diameter))
+        """ Create a new round wafer map. 
+        
+            Wraps Sentios "map:create" remote command.
+
+            :param diameter: The diameter of the wafer.
+            :raises: ProberException if an error occured.            
+        """
+        self._comm.send(f"map:create {diameter}")
         Response.check_resp(self._comm.read_line())
 
+
     def create_rect(self, cols: int, rows: int):
+        """ Create a new rectangular wafer map.
+
+            Wraps Sentios "map:create_rect" remote command.
+
+            :param cols: The number of columns.
+            :param rows: The number of rows.
+            :raises: ProberException if an error occured.
+        """
         self._comm.send("map:create_rect {0}, {1}".format(cols, rows))
         Response.check_resp(self._comm.read_line())
 
-    def get_diameter(self) -> float:
-        self._comm.send("map:get_diameter")
-        resp = Response.check_resp(self._comm.read_line())
-
-        dia = int(resp.message())
-        return dia
-
-    def get_grid_origin(self) -> Tuple[int, int]:
-        self._comm.send("map:get_grid_origin")
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-
-        return int(tok[0]), int(tok[1])
-
-    def get_index_size(self) -> Tuple[int, int]:
-        self._comm.send("map:get_index_size")
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-        return float(tok[0]), float(tok[1])
-
-    def get_street_size(self) -> Tuple[int, int]:
-        self._comm.send("map:get_street_size")
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-
-        return int(tok[0]), int(tok[1])
-
-    def get_num_dies(self, selection: DieNumber) -> int:
-        switcher = {
-            DieNumber.Present: "Present",
-            DieNumber.Selected: "Selected"
-        }
-
-        what = switcher.get(selection, "Invalid die number selector")
-
-        self._comm.send("map:get_num_dies {0}".format(what))
-        resp = Response.check_resp(self._comm.read_line())
-        return int(resp.message())
 
     def get_axis_orient(self) -> AxisOrient:
+        """ Get axis orientation of the wafer map. 
+        
+            Wraps Sentios "map:get_axis_orient" remote command.
+
+            :raises: ProberException if an error occured.
+            :return: The axis orientation.
+        """
+
         self._comm.send("map:get_axis_orient")
         resp = Response.check_resp(self._comm.read_line())
 
@@ -106,30 +94,123 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         if resp.message().upper()=="DL":
             return AxisOrient.DownLeft
 
+
+    def get_diameter(self) -> float:
+        """ Get diameter of the wafer map im millimeter. 
+            
+            Wraps Sentios "map:get_diameter" remote command.
+        
+            :raises: ProberException if an error occured.
+            :returns: The diameter of the wafer map in millimeter.
+        """
+        self._comm.send("map:get_diameter")
+        resp = Response.check_resp(self._comm.read_line())
+
+        dia = int(resp.message())
+        return dia
+
+
+    def get_grid_origin(self) -> Tuple[int, int]:
+        """ Get origin of the wafermap grid. 
+
+            Wraps Sentios "map:get_grid_origin" remote command.
+
+            :raises: ProberException if an error occured.
+            :returns: A tuple with the column and row indices of the origin. 
+         """
+        self._comm.send("map:get_grid_origin")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+
+        return int(tok[0]), int(tok[1])
+
+
+    def get_index_size(self) -> Tuple[float, float]:
+        """ Return the die size set up in the wafer map.
+         
+            :raises: ProberException if an error occured.
+            :returns: A tuple with the die width and height in micrometer.
+         """
+        self._comm.send("map:get_index_size")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        return float(tok[0]), float(tok[1])
+
+
+    def get_street_size(self) -> Tuple[int, int]:
+        """ Returns the street size set up in the wafer map.
+         
+            In SENTIO the street size is merely a visual aid. It is not used for 
+            any calculations. The only purpose is rendering the diese in a more
+            realistic manner.
+
+            :raises: ProberException if an error occured.
+            :return: A tuple with the street width and height in micrometer.
+        """
+        self._comm.send("map:get_street_size")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+
+        return int(tok[0]), int(tok[1])
+
+
+    def get_num_dies(self, selection: DieNumber) -> int:
+        """ Returns the number of dies in the wafer map. 
+        
+            :param selection: The selection of dies to count.
+            :raises: ProberException if an error occured.
+            :return: The number of dies.
+        """
+        switcher = {
+            DieNumber.Present: "Present",
+            DieNumber.Selected: "Selected"
+        }
+
+        what = switcher.get(selection, "Invalid die number selector")
+
+        self._comm.send("map:get_num_dies {0}".format(what))
+        resp = Response.check_resp(self._comm.read_line())
+        return int(resp.message())
+
+
+    @version(">=2.8.1")
     def get_die_seq(self) -> int:
+        """ Returns the sequence number of the current die. 
+        
+            Wraps Sentios "map:get_die_seq" remote command.
+
+            :raises: ProberException if an error occured.
+            :return: The sequence number of the current die.
+        """
         self._comm.send("map:get_die_seq")
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()  # 0:Result+status, 1:Command ID, 2:Response
+
 
     def set_flat_params(self, angle: float, width: float):
         self._comm.send("map:set_flat_params {0}, {1}".format(angle, width))
         Response.check_resp(self._comm.read_line())
 
+
     def set_index_size(self, x: float, y: float):
         self._comm.send("map:set_index_size {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
+
 
     def set_grid_params(self, ix: float, iy: float, offx: float, offy: float, edge: float):
         self._comm.send("map:set_grid_params {0}, {1}, {2}, {3}, {4}".format(ix, iy, offx, offy, edge))
         Response.check_resp(self._comm.read_line())
 
+
     def set_grid_origin(self, x: int, y: int):
         self._comm.send("map:set_grid_origin {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
 
+
     def set_home_die(self, x: int, y: int):
         self._comm.send("map:set_home_die {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
+
 
     def set_street_size(self, x: float, y: float):
         self._comm.send("map:set_street_size {0}, {1}".format(x, y))

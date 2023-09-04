@@ -1,38 +1,54 @@
 from enum import Enum
+from deprecated import deprecated
 
 
-class CompensationMode(Enum):
+@deprecated(reason="duplicated; Use CompensationMode instead.")
+class OnTheFlyMode(Enum):
     Lateral = 0,
     Vertical = 1,
-    Both = 2,
-    ProbeCard = 3
+    Both =2,
+    ProbeCard =3,
 
     def toSentioAbbr(self):
         """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
-            CompensationMode.Lateral: "Lateral",
-            CompensationMode.Vertical: "Vertical",
-            CompensationMode.Both: "Both",
-            CompensationMode.ProbeCard: "ProbeCard"
+            OnTheFlyMode.Lateral: "AlignDie",
+            OnTheFlyMode.Vertical: "MapScan",
+            OnTheFlyMode.Both: "Topography",
+            OnTheFlyMode.ProbeCard: "ProbeCard",
         }
-        return switcher.get(self, "Invalid CompensationMode")
+        return switcher.get(self, "Invalid OTF mode")
 
 
+@deprecated(reason="duplicated; CompensationMode instead.")
 class Compensation(Enum):
     """ Represents a compensation type used by SENTIO. """
+
     Lateral = 0,
     """ Use lateral compensation """
+
     Vertical = 1,
     """ Use vertical compensation"""
+
     Both = 2,
     """ Use both lateral and vertical compensation. """
+
     ProbeCard = 3,
+    """ Use probe card compensation. """
+
     MapScan = 4,
+    """ Use map scan compensation. """
+
     Thermal = 5,
+    """ Use thermal compensation. """
+
     Topography =6,
+    """ Use Topography compensation. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             Compensation.Lateral: "lateral",
             Compensation.Vertical: "vertical",
@@ -43,17 +59,76 @@ class Compensation(Enum):
             Compensation.Topography: "topography"
         }
         return switcher.get(self, "Invalid compensation type")
+    
+
+class CompensationMode(Enum):
+    """ Represents a compensation mode used by SENTIO. 
+    
+        The compensation mode is a selector that defines what principal type of compensation shall be used.
+    """
+
+    Lateral = 0,
+    """ Use lateral compensation.
+     
+        The is an x,y copmensation performed based on the wafer and pre-trained patterns.  
+    """
+
+    Vertical = 1,
+    """ Use vertical compensation. 
+    
+        Activate vertical compensation. Can be implemented with different means. (i.e. Topography)
+    """
+
+    Both = 2,
+    """ Use both lateral and vertical compensation. 
+    """
+
+    ProbeCard = 3
+    """ Use probe card compensation. 
+    
+        For true Probe-To-Pad-Alignment. Takes the position of the probe card into account.
+        If you only use lateral compensation the wafer may be moved to the correct position
+        but due to probe card drift the probes may not be in the correct position.
+    """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            CompensationMode.Lateral: "Lateral",
+            CompensationMode.Vertical: "Vertical",
+            CompensationMode.Both: "Both",
+            CompensationMode.ProbeCard: "ProbeCard"
+        }
+        return switcher.get(self, "Invalid CompensationMode")
 
 
 class CompensationType(Enum):
+    """ Compensation Type """
+    
     DieAlign = 0,
+    """ Die Alignment. 
+
+        Use this for diced wafer with singulated dies on tape. 
+    """
+
     Topography = 1,
+    """ Topography scans the height og the wafer on chuck and created a height map.
+    """
+
     MapScan = 2,
+    """ MapScan scans the wafer once and created a x,y compensation table for later use. """
+
     AlignDie = 3,
+
     SkateDetection = 4
+    """ Skate detection will use the visible skate of RF-probes to automatically determine the probe contact height. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             CompensationType.DieAlign: "DieAlign",
             CompensationType.Topography: "Topography",
@@ -394,6 +469,7 @@ class AxisOrient(Enum):
         on the computer screen. For instance the axis orientation
         of the wafer map.
     """
+    
     DownRight = 0,
     """ Y axis pointing down; X axis pointing right. """
 
@@ -1292,21 +1368,6 @@ class ExecuteCompensation(Enum):
         return switcher.get(self, "Invalid compensation type")
 
 
-class OnTheFlyMode(Enum):
-    Lateral = 0,
-    Vertical = 1,
-    Both =2,
-    ProbeCard =3,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            OnTheFlyMode.Lateral: "AlignDie",
-            OnTheFlyMode.Vertical: "MapScan",
-            OnTheFlyMode.Both: "Topography",
-            OnTheFlyMode.ProbeCard: "ProbeCard",
-        }
-        return switcher.get(self, "Invalid OTF mode")
 
 class ExecuteAction(Enum):
     Execute = 0,

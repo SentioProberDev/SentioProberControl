@@ -18,16 +18,15 @@
     Most functionality is grouped into so called command groups that are accessible 
     through the member variables listed below. A command group is merely a class that groups a number 
     of prober related functions together. The available command groups are:
+    * aux (sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup.AuxCommandGroup)
     * map (sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup.WafermapCommandGroup)
-    * vis
-    * aux
-    * status
-    * loader
-    * siph
-    * service
+    * loader (sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.LoaderCommandGroup)
     * probe
-    * compensation
     * qalibria
+    * service
+    * siph
+    * status
+    * vis
 
     To access a function associated with a command group simply add the name of the command group to
     the prober call. The following example would call the switch_all_lights command from the 
@@ -38,6 +37,7 @@
 import base64
 import os
 from typing import Tuple
+from deprecated import deprecated
 
 from sentio_prober_control.Sentio.ProberBase import *
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import *
@@ -72,30 +72,48 @@ class SentioProber(ProberBase):
 
         self.__name = "SentioProber"
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
-        self.map : WafermapCommandGroup = WafermapCommandGroup(comm)
-        """ The wafermap command group provides access to the wafermap modules functionality.  """
 
         self.aux : AuxCommandGroup = AuxCommandGroup(comm)
-        """ The aux command group provides access the the aux site modules functionality. """
+        """ The aux command group provides access the the aux site modules functionality. 
+        
+            Example:
+            >>> from sentio_prober_control.Sentio.ProberSentio import *
+            >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
+            >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
+            >>> prober.aux.cleaning.enable_auto(True)
+        """
 
-        self.vision : VisionCommandGroup = VisionCommandGroup(comm)
-        """ The vision command group provides access to the vision modules functionality. """
+        self.compensation : CompensationCommandGroup = CompensationCommandGroup(comm)
+        """ Command group for accessing functionalitly for x,y and z-compensation. 
 
-        self.status : StatusCommandGroup = StatusCommandGroup(comm)
-        """ The status command group provides access to the dashboard modules functionality. (formerly called status module)"""
+            This command group is deprecated! Use prober.vis.compensation instead.
+
+            @private    
+        """
 
         self.loader : LoaderCommandGroup = LoaderCommandGroup(comm)
         """ The loader command group provides access to the loader modules functionality. """
 
-        self.siph : SiPHCommandGroup = SiPHCommandGroup(comm)
-        """ The siph command group provides access to the SiPH modules functionality. """
+        self.map : WafermapCommandGroup = WafermapCommandGroup(comm)
+        """ The wafermap command group provides access to the wafermap modules functionality.  """
+
+        self.probe : ProbeCommandGroup = ProbeCommandGroup(comm)
+        """ Command group for accessing functionalitly for motorized probes. """
+
+        self.qalibria : QAlibriaCommandGroup = QAlibriaCommandGroup(comm)
+        """ Command group for accessing the QAlibria modules functionality. """
 
         self.service : ServiceCommandGroup = ServiceCommandGroup(comm)
         """ The service command group provides access to the service modules functionality. """
 
-        self.probe : ProbeCommandGroup = ProbeCommandGroup(comm)
-        self.compensation : CompensationCommandGroup = CompensationCommandGroup(comm)
-        self.qalibria : QAlibriaCommandGroup = QAlibriaCommandGroup(comm)
+        self.siph : SiPHCommandGroup = SiPHCommandGroup(comm)
+        """ The siph command group provides access to the SiPH modules functionality. """
+
+        self.status : StatusCommandGroup = StatusCommandGroup(comm)
+        """ The status command group provides access to the dashboard modules functionality. (formerly called status module)"""
+
+        self.vision : VisionCommandGroup = VisionCommandGroup(comm)
+        """ The vision command group provides access to the vision modules functionality. """
 
 
     def abort_command(self, cmd_id: int) -> Response:
@@ -246,10 +264,13 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
+    @deprecated(reason="Duplicate functionality; Use get_chuck_xy instead")
     def get_chuck_xy_pos(self) -> Tuple[float, float]:
         """ Returns the current xy position of the chuck. 
 
-            Wraps SENTIO's "get_chuck_xy" remote command.
+            This function was marked as deprecated on 2023-09-04. 
+            Do not use it in new functionality and remove all calls to it.
+            It will be removed in a future version. Use get_chuck_xy instead.
 
             :return: The actual x,y position in micrometer from axis zero.
         """
@@ -266,7 +287,7 @@ class SentioProber(ProberBase):
         
             :param ref: The reference to use for the query.
             :raises: ProberException if an error occured.
-            :return: The actual z position in micrometer.
+            :return: The actual z position of the chuck in micrometer (from axis zero).
         """
         self.comm.send("get_chuck_z {0}".format(ref.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
@@ -601,6 +622,17 @@ class SentioProber(ProberBase):
         return resp
     
 
+    def save_config(self):
+        """ Save the SENTIO configuration file. 
+            
+            Wraps SENTIO's "save_config" remote command.
+
+            :raises: ProberException if an error occured.
+        """
+        self.comm.send("save_config")
+        Response.check_resp(self.comm.read_line())
+
+
     def save_project(self, project: str):
         """ Save the current SENTIO project. 
         
@@ -610,17 +642,6 @@ class SentioProber(ProberBase):
             :raises: ProberException if an error occured.
         """
         self.comm.send("save_project " + project)
-        Response.check_resp(self.comm.read_line())
-
-
-    def save_config(self):
-        """ Save the SENTIO configuration file. 
-            
-            Wraps SENTIO's "save_config" remote command.
-
-            :raises: ProberException if an error occured.
-        """
-        self.comm.send("save_config")
         Response.check_resp(self.comm.read_line())
 
 

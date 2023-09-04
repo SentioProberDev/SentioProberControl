@@ -1,3 +1,5 @@
+from deprecated import deprecated
+
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Sentio.Enumerations import *
@@ -18,8 +20,13 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         """ A subgroup to provide logic for probe cleaning. """
 
     # Ticket #13774 Remove this function. It is already present in the cleaning group!
+    @deprecated(reason="duplicated; Use the cleaning group instead.")
     def start_clean(self):
+        """ Start the cleaning process. 
         
+            This function was marked deprecated on 2023-09-04. It will be removed in a future version.
+            use the command from the cleaning group instead!
+        """
         self._comm.send("aux:cleaning:start")
         resp = Response.check_resp(self._comm.read_line())
         if not resp.ok():
