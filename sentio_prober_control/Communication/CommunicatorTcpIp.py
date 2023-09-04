@@ -10,6 +10,7 @@ class CommunicatorTcpIp(CommunicatorBase):
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
+
     @staticmethod
     def create(addr: str):
         """ Create an instance of a TCP/IP communicator.
@@ -19,6 +20,7 @@ class CommunicatorTcpIp(CommunicatorBase):
         c = CommunicatorTcpIp()
         c.connect(addr)
         return c
+
 
     def connect(self, address: str):
         """ Connect to a TCP/IP device at the specified address.
@@ -34,12 +36,14 @@ class CommunicatorTcpIp(CommunicatorBase):
 
         self.__socket.connect((self.__address, self.__port))
 
+
     def disconnect(self):
         """ Disconnect from the TCP/IP device."""
         if CommunicatorBase._verbose:
             print("Diconnecting comunicator to {0}".format(self.__address))
 
         self.__socket.close()
+
 
     def send(self, msg: str):
         """ Send a command to the TCP/IP device.
@@ -50,6 +54,7 @@ class CommunicatorTcpIp(CommunicatorBase):
             print("Sending \"{0}\"".format(msg))
 
         self.__socket.send((msg + "\n").encode())
+
 
     def read_line(self):
         """ Read a line from the TCP/IP device.

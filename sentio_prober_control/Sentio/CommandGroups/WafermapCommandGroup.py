@@ -173,10 +173,15 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         return int(resp.message())
 
 
-    @version(">=2.8.1")
     def get_die_seq(self) -> int:
         """ Returns the sequence number of the current die. 
         
+            The sequence number id the index of the die in the 
+            current stepping sequence. The stepping sequence 
+            contains the dies selected for test. 
+            The sequence number is zero based and is also displayed 
+            in the wafermap when zoomin into a die.
+
             Wraps Sentios "map:get_die_seq" remote command.
 
             :raises: ProberException if an error occured.

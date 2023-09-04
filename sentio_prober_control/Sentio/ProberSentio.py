@@ -384,6 +384,16 @@ class SentioProber(ProberBase):
                 raise ProberException("Initialization failed: {0}".format(resp.message()))
 
 
+    def local_mode(self):
+        """ Switch the prober back into local mode.
+
+            The probe station will automatically enter remote mode when a remote command is received. 
+            It will remian in remote mode even after the script is finished. This command can be used 
+            to switch the machine back into local mode and thus enable its UI.
+        """
+        self.comm.send("*LOCAL")
+
+
     def move_chuck_contact(self) -> float:
         """ Move the chuck to contact height. 
 
