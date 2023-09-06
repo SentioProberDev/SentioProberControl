@@ -15,13 +15,25 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 
 class WafermapCommandGroup(ModuleCommandGroupBase):
-    """ This class represents the SENTIO command group for wafermap related commands."""
+    """ This class represents the SENTIO command group for wafermap related commands. 
+    
+        You are not meant to instantiate objects of this class directly! This class
+        is instantiated by the prober implementation.
+
+        Example:
+        >>> from sentio_prober_control.Sentio.ProberSentio import *
+        >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
+        >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
+        >>> prober.map.create(200)
+    """
 
     def __init__(self, comm):
         """ Creates the wafermap command group. 
         
             The wafermap command group contains several other command groups that handle
             aspects of the wafermap and stepping.
+
+            @private
         """
         super().__init__(comm, 'map')
         self.__end_of_route: bool = False

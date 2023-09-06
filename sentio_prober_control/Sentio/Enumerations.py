@@ -2,24 +2,6 @@ from enum import Enum
 from deprecated import deprecated
 
 
-@deprecated(reason="duplicated; Use CompensationMode instead.")
-class OnTheFlyMode(Enum):
-    Lateral = 0,
-    Vertical = 1,
-    Both =2,
-    ProbeCard =3,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            OnTheFlyMode.Lateral: "AlignDie",
-            OnTheFlyMode.Vertical: "MapScan",
-            OnTheFlyMode.Both: "Topography",
-            OnTheFlyMode.ProbeCard: "ProbeCard",
-        }
-        return switcher.get(self, "Invalid OTF mode")
-
-
 @deprecated(reason="duplicated; CompensationMode instead.")
 class Compensation(Enum):
     """ Represents a compensation type used by SENTIO. """
@@ -139,26 +121,6 @@ class CompensationType(Enum):
         return switcher.get(self, "Invalid CompensationType")
 
 
-class ProjectFileInfo(Enum):
-    """ An enumerator containing the different aspects of retrieving current project info. """
-    
-    NameOnly = 0,
-    """ Return only the project name. """
-    
-    FullPath = 1,
-    """ Return the full path to the project file. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ProjectFileInfo.NameOnly: "Name",
-            ProjectFileInfo.FullPath: "FullPath"
-        }
-        return switcher.get(self, "Invalid ProjectFileInfo")
-
-
 class DefaultPattern(Enum):
     """ A list of slots for visual patterns used by SENTIO. 
     
@@ -200,6 +162,44 @@ class DefaultPattern(Enum):
             DefaultPattern.Ptpa: "ptpa",
         }
         return switcher.get(self, "Invalid default pattern id")
+    
+    
+@deprecated(reason="duplicated; Use CompensationMode instead.")
+class OnTheFlyMode(Enum):
+    Lateral = 0,
+    Vertical = 1,
+    Both =2,
+    ProbeCard =3,
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            OnTheFlyMode.Lateral: "AlignDie",
+            OnTheFlyMode.Vertical: "MapScan",
+            OnTheFlyMode.Both: "Topography",
+            OnTheFlyMode.ProbeCard: "ProbeCard",
+        }
+        return switcher.get(self, "Invalid OTF mode")
+    
+
+class ProjectFileInfo(Enum):
+    """ An enumerator containing the different aspects of retrieving current project info. """
+    
+    NameOnly = 0,
+    """ Return only the project name. """
+    
+    FullPath = 1,
+    """ Return the full path to the project file. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            ProjectFileInfo.NameOnly: "Name",
+            ProjectFileInfo.FullPath: "FullPath"
+        }
+        return switcher.get(self, "Invalid ProjectFileInfo")
 
 
 class SteppingContactMode(Enum):
@@ -257,7 +257,7 @@ class Stage(Enum):
     """ Fourth motorized probe. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the Stage enumerator into a string SENTIO understands. """
         switcher = {
             Stage.Chuck: "chuck",
             Stage.Scope: "scope",
@@ -277,6 +277,7 @@ class PoiReferenceXy(Enum):
         Each point of interest can either be defines with respect to the center of the stage.
         Or with respect to the center of the die.
     """
+
     DieCenter = 0,
     """ Use die center as the position reference. """
 

@@ -53,6 +53,9 @@ from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import *
 from sentio_prober_control.Sentio.Enumerations import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Communication.CommunicatorBase import *
+from sentio_prober_control.Communication.CommunicatorGpib import *
+from sentio_prober_control.Communication.CommunicatorTcpIp import *
+from sentio_prober_control.Communication.CommunicatorVisa import *
 
 
 class SentioProber(ProberBase):
@@ -141,6 +144,26 @@ class SentioProber(ProberBase):
 
         return Response.check_resp(self.comm.read_line())
     
+    @staticmethod
+    def create_prober(comm_type : str ="tcpip", arg1 = "127.0.0.1:35556", arg2 = None) -> 'SentioProber':
+        """ Create an instance of a SentioProber object with a certain type of communication.
+         
+            .. versionadded:: 23.2
+
+            :param comm_type: The type of communication to use. Valid values are "tcpip", "gpib" and "visa".
+            :param kwargs: The arguments to pass to the communicator constructor. For tcpip this is a single string specifying address and port like "127.0.0.1:35556". 
+            For gpib these are two parameters. The first one for specifying the type of card (NI/ADLINK), the second one being the gpib address string. 
+         """
+        
+        if comm_type == "tcpip":
+            return SentioProber(CommunicatorTcpIp.create(arg1))
+        elif comm_type == "gpib":
+            return SentioProber(CommunicatorGpib.create(arg1, arg2))
+        elif comm_type == "visa":        
+            return SentioProber(CommunicatorVisa.create(arg1))
+        else:
+            raise ValueError("Unknown prober type")
+
 
     def file_transfer(self, source: str, dest: str):
         """ Transfer a file to the prober. 
@@ -241,6 +264,7 @@ class SentioProber(ProberBase):
             :raises: ProberException if an error occured.            
             :return: The current angle of the chuck site in degrees.
         """
+
         self.comm.send("get_chuck_theta {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
@@ -254,6 +278,7 @@ class SentioProber(ProberBase):
             :raises: ProberException if an error occured.
             :return: The actual x,y position in micrometer.
         """
+
         if (site is None):
             self.comm.send(f"get_chuck_xy {site.toSentioAbbr()}")
         else:
@@ -268,12 +293,14 @@ class SentioProber(ProberBase):
     def get_chuck_xy_pos(self) -> Tuple[float, float]:
         """ Returns the current xy position of the chuck. 
 
-            This function was marked as deprecated on 2023-09-04. 
-            Do not use it in new functionality and remove all calls to it.
-            It will be removed in a future version. Use get_chuck_xy instead.
+            .. deprecated:: 23.2
+
+            Use get_chuck_xy instead.
 
             :return: The actual x,y position in micrometer from axis zero.
+           
         """
+
         self.comm.send('get_chuck_xy')
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -289,6 +316,7 @@ class SentioProber(ProberBase):
             :raises: ProberException if an error occured.
             :return: The actual z position of the chuck in micrometer (from axis zero).
         """
+
         self.comm.send("get_chuck_z {0}".format(ref.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
@@ -386,6 +414,8 @@ class SentioProber(ProberBase):
 
     def local_mode(self):
         """ Switch the prober back into local mode.
+
+            .. versionadded:: 23.2
 
             The probe station will automatically enter remote mode when a remote command is received. 
             It will remian in remote mode even after the script is finished. This command can be used 
