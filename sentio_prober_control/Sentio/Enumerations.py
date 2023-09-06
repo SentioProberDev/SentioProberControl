@@ -515,7 +515,9 @@ class ColorScheme(Enum):
     """ The color of the die is determined by a floating point value attached to a die. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ColorScheme.ColorFromBin: 0,
             ColorScheme.ColorFromValue: 1
@@ -540,7 +542,9 @@ class OrientationMarker(Enum):
     """ Wafer uses a flat. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             OrientationMarker.Notch: "Notch",
             OrientationMarker.Flat: "Flat"
@@ -554,13 +558,16 @@ class AutoFocusCmd(Enum):
     GoTo = 2
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             AutoFocusCmd.Calibration: "C",
             AutoFocusCmd.Focus: "F",
             AutoFocusCmd.GoTo: "G"
         }
         return switcher.get(self, "Invalid auto focus function")
+
 
 class AutoAlignCmd(Enum):
     AutoDieSize = 0,
@@ -569,7 +576,9 @@ class AutoAlignCmd(Enum):
     CurrentDieSize = 3,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             AutoAlignCmd.AutoDieSize: "auto",
             AutoAlignCmd.UpdateDieSize: "update",
