@@ -938,9 +938,27 @@ class ChuckPositionHint(Enum):
 
 
 class BinSelection(Enum):
+    """ An enumerator for selecting dies for binning. """
+
     All = 0,
+    """ Select dies and subsites. """
+
     DiesOnly = 1,
+    """ Select dies only. """
+
     SubsitesOnly = 2
+    """ Select subsites only.  """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            BinSelection.All: "a",
+            BinSelection.DiesOnly: "d",
+            BinSelection.SubsitesOnly: "s"
+        }
+        return switcher.get(self, "Invalid bin selection")
 
 
 class RoutingPriority(Enum):
@@ -1368,7 +1386,9 @@ class ExecuteCompensation(Enum):
     Topography =2,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ExecuteCompensation.AlignDie: "AlignDie",
             ExecuteCompensation.MapScan: "MapScan",
@@ -1379,11 +1399,18 @@ class ExecuteCompensation(Enum):
 
 
 class ExecuteAction(Enum):
+    """ Generic enumeration for execute actions. """
+
     Execute = 0,
+    """ Execute the action. """
+
     Abort = 1,
+    """ Abort an ongoing action. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             ExecuteAction.Execute: "execute",
             ExecuteAction.Abort: "abort",
@@ -1396,7 +1423,9 @@ class PtpaFindTipsMode(Enum):
     OffAxis = 1,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
         switcher = {
             PtpaFindTipsMode.OnAxis: "OnAxis",
             PtpaFindTipsMode.OffAxis: "OffAxis",

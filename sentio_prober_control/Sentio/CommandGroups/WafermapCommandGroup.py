@@ -26,23 +26,23 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         super().__init__(comm, 'map')
         self.__end_of_route: bool = False
 
-        self.subsites : WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
-        """ A group the handle subsites. """
-
-        self.path : WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
-        """ A group the handle setting up tests paths. """
-
         self.bins : WafermapBinsCommandGroup = WafermapBinsCommandGroup(comm)
         """ A group to set up the binning."""
+
+        self.compensation : WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
+        """ A command group with functions for setting up and executing x,y and z compensation."""
 
         self.die : WafermapDieCommandGroup = WafermapDieCommandGroup(comm)
         """ A group to set up the die."""
 
+        self.path : WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
+        """ A group the handle setting up tests paths. """
+
         self.poi : WafermapPoiCommandGroup = WafermapPoiCommandGroup(comm)
         """ A group for working with points of interest."""
 
-        self.compensation : WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
-        """ A command group with functions for setting up and executing x,y and z compensation."""
+        self.subsites : WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
+        """ A group the handle subsites. """
 
 
     def bin_step_next_die(self, bin_value: int, site: int = None) -> Tuple[int, int, int]:
@@ -129,7 +129,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
 
     def end_of_route(self):
-        """ Returns True if the last step command reached the end of the route. 
+        """ Returns True if the last stepping command reached the end of the route. 
 
             The end of route flag is checked and set by the stepping commands.
             They will evaluate and parse the end of route status from the remote 
