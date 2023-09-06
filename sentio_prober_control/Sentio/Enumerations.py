@@ -1383,12 +1383,19 @@ class ImagePattern(Enum):
 
 
 class ProbeXYReference(Enum):
+    """ Position reference for mororized probe movements. """
+
     Zero = 0,
+    """ Move relative to axis zero. """
+
     Home = 1,
+    """ Move relative to probe home. """
+
     Current = 2,
+    """ Move relative to current position. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the ProbeXYReference enumerator into a string SENTIO understands. """
         switcher = {
             ProbeXYReference.Zero: "Zero",
             ProbeXYReference.Home: "Home",
@@ -1398,14 +1405,22 @@ class ProbeXYReference(Enum):
 
 
 class ProbeZReference(Enum):
+    """ Position reference for probe z motions. """
+
     Zero = 0,
+    """ Move relative to axis zero. (absolute) """
+    
     Current = 1,
+    """ Move relative to Current position. """
+
     Contact = 2,
+    """ Move relative to contact height. """
+    
     Separation = 3
+    """ Move relative to separation height. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands.
-            @private
+        """ Convert the ProbeZReference enumerator into a string SENTIO understands.
         """
         switcher = {
             ProbeZReference.Zero: "Zero",
@@ -1417,13 +1432,22 @@ class ProbeZReference(Enum):
 
 
 class ProbeSentio(Enum):
+    """ An enumeration containing a list of position for motorized probes. """
+
     East = 0,
+    """ Probe is on the right side of the chuck. """
+
     West = 1,
+    """ Probe is on the left side of the chuck. """
+
     North = 2,
+    """ Probe is at the back side of the prober."""
+
     South = 3
+    """ Probe is on the front side of the prober. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the ProbeSentio enumerator into a string SENTIO understands. """
         switcher = {
             ProbeSentio.East: "East",
             ProbeSentio.West: "West",

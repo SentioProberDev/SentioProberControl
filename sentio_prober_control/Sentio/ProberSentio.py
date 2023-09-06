@@ -721,12 +721,12 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
     
 
-    def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_dist: float, hover_gap: float):
+    def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_dist: float, hover_gap: float) -> None:
         """ Sets z position information of a chuck site
         
             Example:
             
-            >>> set_chuck_site_height(ChuckSite.Wafer,16000,250,20,50)
+            >>> prober.set_chuck_site_height(ChuckSite.Wafer,16000,250,20,50)
 
             Will set the contact height of the wafer site to 16000 µm with a separation height of 250 µm an overtravel of 20 and a hover height of 50
 
@@ -760,7 +760,7 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def show_hint(self, msg : str, subtext: str):
+    def show_hint(self, msg : str, subtext: str) -> None:
         """ Show an on screen message (hint) and return immediately 
 
             Hints are on screen messages that pop up in SENTIO's lower left corner. This hint will 
@@ -774,10 +774,10 @@ class SentioProber(ProberBase):
             :return: None            
         """
         self.comm.send(f'status:show_hint \"{msg}\", \"{subtext}\"')
-        resp = Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def show_hint_and_wait(self, msg : str, subtext: str, button_caption: str, timeout: int = 180, lock_ui: bool = True):
+    def show_hint_and_wait(self, msg : str, subtext: str, button_caption: str, timeout: int = 180, lock_ui: bool = True) -> None:
         """ Show an on screen message with a button wait for a button to be pressed. 
 
             Hints pop up in SENTIO's lower left corner. This function will display a hint with a button 
