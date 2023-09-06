@@ -7,17 +7,22 @@ class WafermapBinsCommandGroup(CommandGroupBase):
     """ This command group bundles functions for setting up and using the binning table of the wafermap. """
 
 
-    def set_all(self, bin_val: int, selection: BinSelection) -> None:
-        """  Sets the bins of all dies on the wafermap to a specific value. 
-        
-            Wraps SENTIO's map:bins:set_all remote command.
-
-            :param bin_val: The bin value to set.
-            :param selection: The selection of dies to set the bin value for.
+    def clear_all(self) -> None:
+        """ Clear all bins. Remove the bin code from all dies and sibsites.
             :raises ProberException: if the command could not be executed successfully.
         """
-        self._comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
-        Response.check_resp(self._comm.read_line())#
+        self._comm.send("map:bins:clear_all")
+        Response.check_resp(self._comm.read_line())
+
+
+    def clear_all_values(self) -> None:
+        """  Removes all temporarily stored values from the dies.
+
+            Each die can store a single floating point value. This value can be used for 
+            visualizing parameters across the wafer. 
+        """
+        self._comm.send("map:bins:clear_all_values")
+        Response.check_resp(self._comm.read_line())
 
 
     def load(self, file: str) -> None:
@@ -30,6 +35,19 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         """
         self._comm.send(f"map:bins:load {file}")
         Response.check_resp(self._comm.read_line())
+
+
+    def set_all(self, bin_val: int, selection: BinSelection) -> None:
+        """  Sets the bins of all dies on the wafermap to a specific value. 
+        
+            Wraps SENTIO's map:bins:set_all remote command.
+
+            :param bin_val: The bin value to set.
+            :param selection: The selection of dies to set the bin value for.
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
+        Response.check_resp(self._comm.read_line())#
 
 
     def set_bin(self, bin_value: int, col: int, row: int, site=None) -> None:
@@ -47,24 +65,6 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             self._comm.send("map:bins:set_bin {0}, {1}, {2}".format(bin_value, col, row))
         else:
             self._comm.send("map:bins:set_bin {0}, {1}, {2}, {3}".format(bin_value, col, row, site))
-        Response.check_resp(self._comm.read_line())
-
-
-    def clear_all(self) -> None:
-        """ Clear all bins. Remove the bin code from all dies and sibsites.
-            :raises ProberException: if the command could not be executed successfully.
-        """
-        self._comm.send("map:bins:clear_all")
-        Response.check_resp(self._comm.read_line())
-
-
-    def clear_all_values(self) -> None:
-        """  Removes all temporarily stored values from the dies.
-
-            Each die can store a single floating point value. This value can be used for 
-            visualizing parameters across the wafer. 
-        """
-        self._comm.send("map:bins:clear_all_values")
         Response.check_resp(self._comm.read_line())
 
 

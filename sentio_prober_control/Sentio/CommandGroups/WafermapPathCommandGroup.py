@@ -1,50 +1,64 @@
+from typing import Tuple
+
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.Enumerations import *
 
 
 class WafermapPathCommandGroup(CommandGroupBase):
+    """ This command group bundles functions for setting up and using the test path of the wafermap. 
+    
+        A test path defines which dies are tested in which order.
+    """
 
-    def select_dies(self, selection: TestSelection):
-        switcher = {
-            TestSelection.Nothing: "n",
-            TestSelection.Good: "g",
-            TestSelection.GoodAndUgly: "u",
-            TestSelection.GoodUglyAndEdge: "e",
-            TestSelection.All: "a"
-        }
+    def create_from_bin(self, bin_val: int) -> None:
+        """ Create test path by using all dies with a specific bin.
+            
+            Wraps SENTIO's map:path:create_from_bin remote command.
 
-        what = switcher.get(selection, "Invalid die selection")
-        self._comm.send("map:path:select_dies {0}".format(what))
-        Response.check_resp(self._comm.read_line())
-
-    def create_from_bin(self, bin_val: int):
+            :param bin_val: The bin value to use.
+            :raises ProberException: if the command could not be executed successfully.
+           """
         self._comm.send("map:path:create_from_bins {0}".format(bin_val))
         Response.check_resp(self._comm.read_line())
 
-    def get_die(self, seq: int):
+
+    def get_die(self, seq: int) -> Tuple[int, int]:
+        """ Get die column and row coordinates from a sequence number.
+
+            Wraps SENTIO's map:path:get_die remote command.
+
+            :param seq: The sequence number of the die.
+            :raises ProberException: if the command could not be executed successfully.
+            :return: A tuple with the column and row coordinates of the die.
+        """
         self._comm.send("map:path:get_die {0}".format(seq))
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
 
-    def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority):
-        switcher1 = {
-            RoutingStartPoint.UpperLeft: "ul",
-            RoutingStartPoint.UpperRight: "ur",
-            RoutingStartPoint.LowerLeft: "ll",
-            RoutingStartPoint.LowerRight: "lr",
-        }
 
-        switcher2 = {
-            RoutingPriority.RowUniDir: "r",
-            RoutingPriority.ColUniDir: "c",
-            RoutingPriority.RowBiDir: "wr",
-            RoutingPriority.ColBiDir: "wc",
-        }
+    def select_dies(self, selection: TestSelection) -> None:
+        """ Select dies for testing.
 
-        wsp = switcher1.get(sp, "Invalid route start point!")
-        wpri = switcher2.get(pri, "Invalid routing priority!")
+            Wraps SENTIO's map:path:select_dies remote command.
 
-        self._comm.send("map:set_routing {0}, {1}".format(wsp, wpri))
+            :param selection: The selection of dies to select.
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
+        Response.check_resp(self._comm.read_line())
+
+
+    def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority)->None:
+        """ Set up path finnding for stepping by specifying a start point position
+            and a row or column priority for routing.
+
+            Wraps SENTIO's map:set_routing remote command.
+
+            :param sp: The start point of the routing.
+            :param pri: The priority of the routing (rows first, columns first).
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())

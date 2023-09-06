@@ -6,9 +6,11 @@ from sentio_prober_control.Sentio.ProberBase import ProberException
 
 @deprecated("Use VisionCompensationGroup instead")
 class WafermapCompensationCommandGroup(CommandGroupBase):
-    """ This command group bundles functions for setting up and using position compensation. """
+    """ This command group bundles functions for setting up and using position compensation. 
+        @private
+    """
 
-    @deprecated("Use vis.compensation.start_execute(CompensationType.CompensationType, CompensationMode.Vertical) instead")
+    @deprecated("Use vis.compensation.start_execute(CompensationType.Topography, CompensationMode.Vertical) instead")
     def topography(self, execute : ExecuteAction):
         """ Execute the topography compensation. This is an asynchronous command.
 

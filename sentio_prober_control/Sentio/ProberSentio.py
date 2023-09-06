@@ -19,8 +19,8 @@
     through the member variables listed below. A command group is merely a class that groups a number 
     of prober related functions together. The available command groups are:
     * aux (sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup.AuxCommandGroup)
-    * map (sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup.WafermapCommandGroup)
     * loader (sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.LoaderCommandGroup)
+    * map (sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup.WafermapCommandGroup)
     * probe
     * qalibria
     * service

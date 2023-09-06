@@ -344,6 +344,18 @@ class TestSelection(Enum):
     """ Select all dies for testing even those that are completely outside of the wafer map. """
 
 
+    def toSentioAbbr(self):
+        """ Convert the TestSelection enumerator into a string SENTIO understands. """
+        switcher = {
+            TestSelection.Nothing: "n",
+            TestSelection.Good: "g",
+            TestSelection.GoodAndUgly: "u",
+            TestSelection.GoodUglyAndEdge: "e",
+            TestSelection.All: "a"
+        }
+        return switcher.get(self, "Invalid TestSelection")
+    
+
 class DetectionCoordindates(Enum):
     """ Specifies the coordinate system used for reporting box detections. 
     
@@ -962,17 +974,57 @@ class BinSelection(Enum):
 
 
 class RoutingPriority(Enum):
+    """ Defines the stepping order """
+
     RowUniDir = 0,
+    """ Rows first always step in same direction. """
+
     ColUniDir = 1,
+    """ Columns first always step in same direction. """
+    
     RowBiDir = 2,
+    """ Rows first. Step odd rows backwards. """
+
     ColBiDir = 3
+    """ Columns first. Step odd columns backwards. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            RoutingPriority.RowUniDir: "r",
+            RoutingPriority.ColUniDir: "c",
+            RoutingPriority.RowBiDir: "wr",
+            RoutingPriority.ColBiDir: "wc",
+        }
+        return switcher.get(self, "Invalid RoutingPriority enumerator")
 
 
 class RoutingStartPoint(Enum):
+    """ Defines the starting point for routing (stepping commands). """
+
     UpperLeft = 0,
+    """ Stepping starts in upper left corner of the map. """
+
     UpperRight = 1,
+    """ Stepping starts in upper right corner of the map. """
+
     LowerLeft = 2,
+    """ Stepping stars in lower left corner of the map. """
+
     LowerRight = 3
+    """ Stepping starts in lower right corner of the map. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            RoutingStartPoint.UpperLeft: "ul",
+            RoutingStartPoint.UpperRight: "ur",
+            RoutingStartPoint.LowerLeft: "ll",
+            RoutingStartPoint.LowerRight: "lr",
+        }
+        return switcher.get(self, "Invalid RoutingStartPoint enumerator")
 
 
 class StatusBits:

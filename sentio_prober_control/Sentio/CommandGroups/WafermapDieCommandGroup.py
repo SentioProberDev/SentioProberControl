@@ -5,6 +5,59 @@ from sentio_prober_control.Sentio.Enumerations import *
 from sentio_prober_control.Sentio.ProberBase import ProberException
 
 class WafermapDieCommandGroup(CommandGroupBase):
-    def remove(self, x: int, y: int):
-        self._comm.send("map:die:remove {0}, {1}".format(x, y))
+    """ This Command group bundles commands for setting up dies on a wafermap. """
+
+
+    def add(self, x: int, y: int) -> None:
+        """ Add a die to the wafermap. If the die is already part of the map
+            nothing happens.
+            
+            Wraps SENTIO's map:die:add remote command.
+
+            :param x: The column of the die.
+            :param y: The row of the die.
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:die:add {x}, {y}")
+        Response.check_resp(self._comm.read_line())
+
+
+    def remove(self, x: int, y: int) -> None:
+        """ Remove a die from the wafermap.
+            This will mark the die as nonexistant and make it unavailable for stepping.
+            Removed dies are treated as if they were physically not present on the wafer.
+
+            Wraps SENTIO's map:die:remove remote command.
+
+            :param x: The column of the die.
+            :param y: The row of the die.
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:die:remove {x}, {y}")
+        Response.check_resp(self._comm.read_line())
+
+
+    def select(self, x: int, y: int) -> None:
+        """ Selects a die for testing by adding it to the test path.
+
+            Wraps SENTIO's map:die:select remote command.
+
+            :param x: The column of the die.
+            :param y: The row of the die.
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:die:add {x}, {y}")
+        Response.check_resp(self._comm.read_line())
+
+
+    def unselect(self, x: int, y: int) -> None:
+        """ Unselects a die from testing by removing it from the test path.
+            
+            Wraps SENTIO's map:die:unselect remote command.
+
+            :param x: The column of the die.
+            :param y: The row of the die.
+            :raises ProberException: if the command could not be executed successfully.
+        """
+        self._comm.send(f"map:die:unselect {x}, {y}")
         Response.check_resp(self._comm.read_line())

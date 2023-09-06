@@ -30,10 +30,12 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """ A group to set up the binning."""
 
         self.compensation : WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
-        """ A command group with functions for setting up and executing x,y and z compensation."""
+        """ A command group with functions for setting up and executing x,y and z compensation.
+            @private
+        """
 
         self.die : WafermapDieCommandGroup = WafermapDieCommandGroup(comm)
-        """ A group to set up the die."""
+        """ A group to set up specific dies on the wafermap (add/remove them)."""
 
         self.path : WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
         """ A group the handle setting up tests paths. """
