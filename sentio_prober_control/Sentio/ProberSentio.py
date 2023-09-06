@@ -440,7 +440,7 @@ class SentioProber(ProberBase):
     def move_chuck_home(self) -> Tuple[float, float]:
         """ Move chuck to its home position.
             :raises: ProberException if an error occured.
-            :return: The actual x,y position in micrometer (with respect to axis zero).   
+            :return: The actual x,y position after the move in micrometer (with respect to axis zero).   
         """
         self.comm.send("move_chuck_home ")
         resp = Response.check_resp(self.comm.read_line())
