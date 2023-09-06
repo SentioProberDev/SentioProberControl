@@ -708,6 +708,10 @@ class SentioProber(ProberBase):
             are not yet included in the python wrapper. It will send the command 
             and parse the respone from SENTIO.
 
+            Do NOT send low level commands that do not have a response (i.e. "*LOCAL"). 
+            This will lock the communication pipeline as it is waiting for a 
+            response that never arrives.
+
             It will then return a Response object with the extracted data from 
             SENTIO's response.
 

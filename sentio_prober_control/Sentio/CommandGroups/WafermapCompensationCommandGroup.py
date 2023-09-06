@@ -7,12 +7,15 @@ from sentio_prober_control.Sentio.ProberBase import ProberException
 @deprecated("Use VisionCompensationGroup instead")
 class WafermapCompensationCommandGroup(CommandGroupBase):
     """ This command group bundles functions for setting up and using position compensation. 
-        @private
+
+        .. deprecated:: 23.2 Use VisionCompensationGroup instead
     """
 
     @deprecated("Use vis.compensation.start_execute(CompensationType.Topography, CompensationMode.Vertical) instead")
     def topography(self, execute : ExecuteAction):
         """ Execute the topography compensation. This is an asynchronous command.
+
+             .. deprecated:: 23.2 Use vis.compensation.start_execute(CompensationType.Topography, CompensationMode.Vertical) instead
 
             Topography compensation is a height scan of the wafer based on focus height variations.
 

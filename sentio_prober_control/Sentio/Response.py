@@ -1,3 +1,5 @@
+from deprecated import deprecated
+
 from sentio_prober_control.Sentio.ProberBase import ProberException
 
 
@@ -105,9 +107,21 @@ class Response:
         """ Returns True if the response indicates no error."""
         return self.__errc == 0
 
-    def dump(self):
+    @deprecated("Use print() instead")
+    def dump(self) -> None:
         """ Prints the content of the response object to the console.
         
+            .. deprecated:: 23.2.0 Use print() instead
+            Used for debugging purposes.
+        """
+        print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))
+
+
+    def print(self) -> None:
+        """ Prints the content of the response object to the console.
+
+            .. versionadded:: 23.2.0
+
             Used for debugging purposes.
         """
         print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))
