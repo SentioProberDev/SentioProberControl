@@ -26,6 +26,17 @@ class ProbeCommandGroup(CommandGroupBase):
 
 
     def async_step_probe_site(self, probe: ProbeSentio, idx: int )  -> float:
+        """ Start the process of stepping to a positioner site. 
+         
+            Each positioner can define n a number of predefined positions called "sites". This command
+            initiates a step to such a site. This is an asynchronous command use in conjunction with 
+            ProberSentio.wait_complete().
+
+            :param probe: The probe to step.
+            :param idx: The index of the site to step to.
+            :raises ProberException: if the command could not be executed successfully.
+            :return: The async command id of the command. 
+        """
         self.__comm.send("start_step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))
         resp = Response.check_resp(self.__comm.read_line())
         if not resp.ok():
