@@ -17,7 +17,7 @@ class ServiceCommandGroup(ModuleCommandGroupBase):
             :param status: True to turn on, False to turn off.
             :raises: ProberException if an error occured. 
         """
-        
+
         self._comm.send(f"service:chuck_compensation {status}")
         Response.check_resp(self._comm.read_line())
 
@@ -25,7 +25,13 @@ class ServiceCommandGroup(ModuleCommandGroupBase):
     def set_software_fence(self, fence: SoftwareFence) -> None:
         """ Set the software fence.
          
-            :param fence: The type of fence to set.
+            The software fence is a virtual fence that is used to 
+            limit the movement of the chuck. The fences purpose
+            is to prevent the chuck from moving into physical 
+            obstructions such as the machine casing or other 
+            hardware.
+
+            :param fence: The type of fence to use.
             :raises: ProberException if an error occured.
         """
 

@@ -25,51 +25,73 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self.compensation = VisionCompensationGroup(comm)
         """ A subgroup to provide logic for compensation specific functions."""
 
-    def switch_all_lights(self, stat:bool):
-        """ Switch all camera lights on or off. 
-            
-            This function wraps the "vis:switch_all_lights" remote command.    
-        
-            :param stat: A flag indicating whether to switch the lights on or off.
+
+    def align_wafer(self, mode: AutoAlignCmd) -> None:
+        """ Perform a wafer alignment.
+
+            :param mode: The alignment procedure to use. 
             :raises: ProberException if an error occured.
         """
-        self._comm.send("vis:switch_all_lights {0}".format(stat))
+
+        self._comm.send(f"vis:align_wafer {mode.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
 
-    def find_home(self):
-        self._comm.send("vis:find_home")
+
+    def align_die(self, threshold: float = 0.05):
+        """ Perform a die alignment. 
+         
+            Die alignment compensates for positional differences when working with diced wafers
+            which contain single dies.
+
+            :raises: ProberException if an error occured.
+        """
+
+        self._comm.send("vis:align_die {0}".format(threshold))
         resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
-
-    # Note: Multiple patterns may be returned i'm only using the best one here
-    def find_pattern(self, name: str, threshold: float = 70, pattern_index: int = 0, reference: FindPatternReference = FindPatternReference.CenterOfRoi, can_fail_detection: bool = False):
-        self._comm.send("vis:find_pattern {0}, {1}, {2}, {3}".format(name, threshold, pattern_index, reference.toSentioAbbr()))
-        if can_fail_detection == False:
-            resp = Response.check_resp(self._comm.read_line())
-            tok = resp.message().split(",")
-            return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
-        else:
-            try:
-                resp = Response.check_resp_allow_error(self._comm.read_line())
-                ret = resp.errc()
-                return float(ret), resp.message()
-            except Exception as e:
-                print(str(e))
+        tok = resp.message().split(",")
+        return float(tok[0]), float(tok[1]), float(tok[2])
 
 
-    def remove_probetip_marker(self):
-        """ Remove probetip marker from the camera display.
+    def auto_focus(self, af_cmd: AutoFocusCmd = AutoFocusCmd.Focus):
+        """ Perform an auto focus operation.
+        
+            :param af_cmd: The auto focus command to execute.
             :raises: ProberException if an error occured.
+            :return: The focus height in micrometer
         """
-        self._comm.send("vis:remove_probetip_marker")
-        Response.check_resp(self._comm.read_line())
+
+        self._comm.send("vis:auto_focus {0}".format(af_cmd.toSentioAbbr()))
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(',')
+        return float(tok[0])
+
+
+    def detect_probepads(self, imgPath: str = None, minScore:float=0.7, startAngle:float=None, startExtend:float=None,maxOverlap:float=None): 
+        """ Execute pad pattern match with NCC. 
+
+            This command is not for public consumption! DO NOT USE IT!
+        
+            @private
+        """  
+
+        if startAngle==None:
+            self._comm.send("vis:detect_probepads {},{}".format(imgPath, minScore))
+        else:            
+            self._comm.send("vis:detect_probepads {},{},{},{},{}".format(imgPath, minScore, startAngle,  startExtend, maxOverlap))
+
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        return bool(tok[0]), float(tok[1]), tok[2]
 
 
     def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.ProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
-        """ Run probe tip detection.
+        """ Executes a built in detector on a given camera and return a list of detection results.
 
-            This function is for internal use only! The command may change in the future or be removed altogether. 
-            MPI will not maintain backwards compatibility or provide support. 
+            :param camera: The camera to use for detection.
+            :param detector: The detection algorithm to use.
+            :param coords: The coordinates to use for the returned detection results.
+            :raises: ProberException if an error occured.
+            :return: A list of detected tips. Each detection result is a tuply of 6 values: x, y, width, height, score, class_id.
         """        
 
         self._comm.send("vis:detect_probetips {0}, {1}, {2}".format(camera.toSentioAbbr(), detector.toSentioAbbr(), coords.toSentioAbbr(), coords.toSentioAbbr()))
@@ -95,6 +117,77 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         return found_tips
 
+
+    def enable_follow_mode(self, stat:bool) -> None:
+        """ Enable or disable the scope follow mode.
+
+            If scope follow mode is active the scope will move in sync with the chuck. This is useful for
+            keeping the image in focus while moving the chuck.
+
+            This function wraps the "vis:enable_follow_mode" remote command.
+
+            :param stat: A flag indicating whether to enable or disable the follow mode.
+            :raises: ProberException if an error occured.
+        """
+        self._comm.send("vis:enable_follow_mode {0}".format(stat))
+        Response.check_resp(self._comm.read_line())
+
+
+    def find_home(self) -> None:
+        """ Find home position.
+         
+            This function uses a pre-trained pattern to fully automatically find the home position.
+
+            :raises: ProberException if an error occured.  
+        """
+
+        self._comm.send("vis:find_home")
+        Response.check_resp(self._comm.read_line())
+
+
+    def find_pattern(self, name: str, threshold: float = 70, pattern_index: int = 0, reference: FindPatternReference = FindPatternReference.CenterOfRoi, can_fail_detection: bool = False):
+        """ Find a trained pattern in the camera image. 
+        
+            :param name: The name of the pattern to find.
+            :param threshold: The detection threshold. The higher the threshold, the more certain the detection must be.
+            :param pattern_index: The index of the pattern to find. In SENTIO each pattern may have up to 5 alternate patterns. This is the index of the alternate pattern.
+            :param reference: The reference point to use for the pattern detection.
+            :param can_fail_detection: 
+        """
+        self._comm.send("vis:find_pattern {0}, {1}, {2}, {3}".format(name, threshold, pattern_index, reference.toSentioAbbr()))
+        if can_fail_detection == False:
+            resp = Response.check_resp(self._comm.read_line())
+            tok = resp.message().split(",")
+            return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
+        else:
+            try:
+                resp = Response.check_resp_allow_error(self._comm.read_line())
+                ret = resp.errc()
+                return float(ret), resp.message()
+            except Exception as e:
+                print(str(e))
+
+
+    def switch_all_lights(self, stat:bool):
+        """ Switch all camera lights on or off. 
+            
+            This function wraps the "vis:switch_all_lights" remote command.    
+        
+            :param stat: A flag indicating whether to switch the lights on or off.
+            :raises: ProberException if an error occured.
+        """
+
+        self._comm.send("vis:switch_all_lights {0}".format(stat))
+        Response.check_resp(self._comm.read_line())
+
+
+    def remove_probetip_marker(self):
+        """ Remove probetip marker from the camera display.
+            :raises: ProberException if an error occured.
+        """
+        self._comm.send("vis:remove_probetip_marker")
+        Response.check_resp(self._comm.read_line())
+
     
     def match_tips(self, ptpa_type:PtpaType):
         """ For internal use only!
@@ -105,10 +198,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
-
-    def enable_follow_mode(self, stat:bool):
-        self._comm.send("vis:enable_follow_mode {0}".format(stat))
-        Response.check_resp(self._comm.read_line())
 
     def snap_image(self, file: str):
         self._comm.send("vis:snap_image {0}".format(file))
@@ -122,32 +211,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:switch_camera {0}".format(camera.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
 
-    def auto_focus(self, af_cmd: AutoFocusCmd = AutoFocusCmd.Focus):
-        self._comm.send("vis:auto_focus {0}".format(af_cmd.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(',')
-        return float(tok[0])
-
-    def align_wafer(self, timeout: float = 60000):
-        self._comm.send("vis:align_wafer {0}".format(timeout))
-        Response.check_resp(self._comm.read_line())
-
-
-    def align_wafer(self, mode: AutoAlignCmd) -> None:
-        """ Perform a wafer alignment.
-
-            :param mode: The alignment procedure to use. 
-            :raises: ProberException if an error occured.
-        """
-        self._comm.send("vis:align_wafer {0}".format(mode.toSentioAbbr()))
-        Response.check_resp(self._comm.read_line())
-
-
-    def align_die(self, threshold: float = 0.05):
-        self._comm.send("vis:align_die {0}".format(threshold))
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-        return float(tok[0]), float(tok[1]), float(tok[2])
 
     def has_camera(self, camera: CameraMountPoint) -> bool:
         self._comm.send("vis:has_camera {}".format(camera.toSentioAbbr()))
@@ -171,27 +234,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         print(resp)
         return tok 
-
-    def detect_probepads(self, imgPath: str = None, minScore:float=0.7, startAngle:float=None, startExtend:float=None,maxOverlap:float=None): 
-        '''
-        Execute pad pattern match with NCC 
-
-        Default parameters: minScore=0.7, startAngle=-1, startExtend=2, maxOverlap=0.5 
-
-        minScore is threshold. 
-
-        startAngle and startExtend define angle serach rangle. 
-        
-        maxOverlap is how long should it remove duplicate points.  
-        '''   
-        if(startAngle==None):
-            self._comm.send("vis:detect_probepads {},{}".format(imgPath, minScore))
-        else:            
-            self._comm.send("vis:detect_probepads {},{},{},{},{}".format(imgPath, minScore, startAngle,  startExtend, maxOverlap))
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-        print(resp)
-        return bool(tok[0]), float(tok[1]), tok[2]
 
     def camera_synchronize(self):
         self._comm.send("vis:camera_synchronize")

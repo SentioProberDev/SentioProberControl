@@ -49,13 +49,23 @@ class AutoFocusAlgorithm(Enum):
 
 
 class AutoFocusCmd(Enum):
+    """ A list of different AutoFocus functions. """
+
     Calibration = 0,
+    """ Execute focus calibration. """
+
     Focus = 1,
+    """ Measure Focus curve and determine maximum. """
+
     GoTo = 2
+    """ Simply move the scope to distance from the wafer 
+        that is known to be in focus.
+
+        This is fast but does not really determine the focus.
+    """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
+        """ Convert the AutoFocusCmd enumerator into a string SENTIO understands. 
         """
         switcher = {
             AutoFocusCmd.Calibration: "C",
@@ -731,11 +741,16 @@ class ExecuteCompensation(Enum):
    
 
 class FindPatternReference(Enum):
+    """ Reference point for coordinates than returning a pattern position. """
+
     DieHome = 0,
+    """ Use Die Home position as reference.  """
+
     CenterOfRoi = 1
+    """ Use Center of ROI as reference. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
+        """ Convert the FindPatternReference enumerator into a string SENTIO understands. """
         switcher = {
             FindPatternReference.DieHome: "DieHome",
             FindPatternReference.CenterOfRoi: "CenterOfRoi"
@@ -1174,60 +1189,6 @@ class ProbeZReference(Enum):
         return switcher.get(self, "Invalid chuck z reference")
 
 
-class RoutingPriority(Enum):
-    """ Defines the stepping order """
-
-    RowUniDir = 0,
-    """ Rows first always step in same direction. """
-
-    ColUniDir = 1,
-    """ Columns first always step in same direction. """
-    
-    RowBiDir = 2,
-    """ Rows first. Step odd rows backwards. """
-
-    ColBiDir = 3
-    """ Columns first. Step odd columns backwards. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-        """
-        switcher = {
-            RoutingPriority.RowUniDir: "r",
-            RoutingPriority.ColUniDir: "c",
-            RoutingPriority.RowBiDir: "wr",
-            RoutingPriority.ColBiDir: "wc",
-        }
-        return switcher.get(self, "Invalid RoutingPriority enumerator")
-
-
-class RoutingStartPoint(Enum):
-    """ Defines the starting point for routing (stepping commands). """
-
-    UpperLeft = 0,
-    """ Stepping starts in upper left corner of the map. """
-
-    UpperRight = 1,
-    """ Stepping starts in upper right corner of the map. """
-
-    LowerLeft = 2,
-    """ Stepping stars in lower left corner of the map. """
-
-    LowerRight = 3
-    """ Stepping starts in lower right corner of the map. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-        """
-        switcher = {
-            RoutingStartPoint.UpperLeft: "ul",
-            RoutingStartPoint.UpperRight: "ur",
-            RoutingStartPoint.LowerLeft: "ll",
-            RoutingStartPoint.LowerRight: "lr",
-        }
-        return switcher.get(self, "Invalid RoutingStartPoint enumerator")
-
-
 class ProbeSentio(Enum):
     """ An enumeration containing a list of position for motorized probes. """
 
@@ -1506,6 +1467,7 @@ class RemoteCommandError:
         LoaderWaferOnPrealigner = 169
 
         ThermalSoakingTimeIsNotCorrect = 200
+        """ Soaking time is not correct or unset. """
 
         SiPhMoveHoverFail = 300
         SiPhMoveSeparationFail = 301
@@ -1530,9 +1492,73 @@ class RemoteCommandError:
         QaExportCalDriftDataFail = 459
 
 
+class RoutingPriority(Enum):
+    """ Defines the stepping order """
+
+    RowUniDir = 0,
+    """ Rows first always step in same direction. """
+
+    ColUniDir = 1,
+    """ Columns first always step in same direction. """
+    
+    RowBiDir = 2,
+    """ Rows first. Step odd rows backwards. """
+
+    ColBiDir = 3
+    """ Columns first. Step odd columns backwards. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            RoutingPriority.RowUniDir: "r",
+            RoutingPriority.ColUniDir: "c",
+            RoutingPriority.RowBiDir: "wr",
+            RoutingPriority.ColBiDir: "wc",
+        }
+        return switcher.get(self, "Invalid RoutingPriority enumerator")
+
+
+class RoutingStartPoint(Enum):
+    """ Defines the starting point for routing (stepping commands). """
+
+    UpperLeft = 0,
+    """ Stepping starts in upper left corner of the map. """
+
+    UpperRight = 1,
+    """ Stepping starts in upper right corner of the map. """
+
+    LowerLeft = 2,
+    """ Stepping stars in lower left corner of the map. """
+
+    LowerRight = 3
+    """ Stepping starts in lower right corner of the map. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            RoutingStartPoint.UpperLeft: "ul",
+            RoutingStartPoint.UpperRight: "ur",
+            RoutingStartPoint.LowerLeft: "ll",
+            RoutingStartPoint.LowerRight: "lr",
+        }
+        return switcher.get(self, "Invalid RoutingStartPoint enumerator")
+    
+
 class StatusBits:
+    """ List of status codes used by SENTIO.
+
+        SENTIO will encode certain status information into the error code variable.
+        This status information does not represent an errors but rather a machine
+        status. 
+    """
+
     EndOfRoute = 1
+    """ A stepping command entered the last die of a wafer. """
+
     LastSite = 2
+    """ A stepping command entered the last site of a die. """
 
 
 class SoftwareFence(Enum):
@@ -1542,10 +1568,10 @@ class SoftwareFence(Enum):
     """ Fence is disabled. """
 
     Round = 1,
-    """ Use round fence.  """
+    """ A round fence around the chuck, excluding aux sites.  """
 
     Rectangle = 2,
-    """ Use rectangular fence.  """
+    """ A rectangular fence around the chuck, may include parts of the aux sites.  """
 
     SoftwareLimit = 3
     """ Use software limits on axis. 

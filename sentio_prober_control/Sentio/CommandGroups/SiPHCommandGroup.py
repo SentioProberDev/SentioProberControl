@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Sentio.Enumerations import *
@@ -10,32 +12,69 @@ class SiPHCommandGroup(CommandGroupBase):
         """ @private """
         super().__init__(comm)
 
-    def move_hover(self, probe: ProbeSentio) -> str:
-        self._comm.send("siph:move_hover {0}".format(probe.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
 
-    def move_separation(self, probe: ProbeSentio) -> str:
-        self._comm.send("siph:move_separation {0}".format(probe.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
+    def fast_alignment(self) -> None:
+        """ Perform fast fiber alignment. 
+        
+            :raises: ProberException if an error occured.
+        """
 
-    def fast_alignment(self) -> str:
         self._comm.send("siph:fast_alignment")
-        resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
+        Response.check_resp(self._comm.read_line())
 
-    def gradient_search(self) -> str:
-        self._comm.send("siph:gradient_search")
-        resp = Response.check_resp(self._comm.read_line())
-        return resp.message()
 
-    def get_intensity(self) -> int:
+    def get_cap_sensor(self) -> Tuple[float, float]:
+        """ Get the capacitance sensor value.
+        
+            :raises: ProberException if an error occured.
+            :return: A tuple with the values from the capacity sensors of probe 1 and probe 2.
+        """
+        self._comm.send("siph:get_cap_sensor")
+        resp = Response.check_resp(self._comm.read_line())
+        
+        tok = resp.message().split(",")
+        return float(tok[0]), float(tok[1])
+
+
+    def get_intensity(self) -> float:
+        """ Get the current intensity value. 
+        
+            :raises: ProberException if an error occured.
+            :returns: The intensity value.
+        """
+
         self._comm.send("siph:get_intensity")
         resp = Response.check_resp(self._comm.read_line())
         return int(resp.message())
 
-    def get_cap_sensor(self) -> int:
-        self._comm.send("siph:get_cap_sensor")
-        resp = Response.check_resp(self._comm.read_line())
-        return int(resp.message())
+
+    def gradient_search(self) -> None:
+        """ Execute SiPh gradient search.
+
+            :raises: ProberException if an error occured. 
+        """
+
+        self._comm.send("siph:gradient_search")
+        Response.check_resp(self._comm.read_line())
+
+
+    def move_hover(self, probe: ProbeSentio) -> None:
+        """ Move SiPh probe to hover height.
+
+            :param probe: The probe on which the SiPh probe is mounted.     
+            :raises: ProberException if an error occured.
+        """
+
+        self._comm.send(f"siph:move_hover {probe.toSentioAbbr()}")
+        Response.check_resp(self._comm.read_line())
+
+
+    def move_separation(self, probe: ProbeSentio) -> None:
+        """ Move SiPh probe to separation height.
+
+            :param probe: The probe on which the SiPh probe is mounted.     
+            :raises: ProberException if an error occured.
+        """
+
+        self._comm.send(f"siph:move_separation {probe.toSentioAbbr()}")
+        Response.check_resp(self._comm.read_line())
