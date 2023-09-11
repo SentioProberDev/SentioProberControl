@@ -66,6 +66,36 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         return float(tok[0])
 
 
+    def camera_synchronize(self):
+        self._comm.send("vis:camera_synchronize")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        return float(tok[0]), float(tok[1]), float(tok[2])
+
+
+    def create_probepad_model(self, angleStep: float = 0.1, imgPath: str = None, UL:tuple=None, LR:tuple=None):  
+        """ Creare probe pad model for NCC to matching pad from wafer. 
+        
+            Experimental functionality. DO NOT USE!
+
+            if one parameter 
+                create pad model from camera 
+            else 
+                create pad model from image file 
+
+            @private
+        """
+        if imgPath==None:
+            self._comm.send("vis:create_probepad_model {0}".format(angleStep))
+        else:            
+            self._comm.send("vis:create_probepad_model {0},{1},{2},{3},{4},{5}".format(angleStep,imgPath, UL[0],  UL[1], LR[0], LR[1]))
+
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        print(resp)
+        return tok 
+    
+
     def detect_probepads(self, imgPath: str = None, minScore:float=0.7, startAngle:float=None, startExtend:float=None,maxOverlap:float=None): 
         """ Execute pad pattern match with NCC. 
 
@@ -168,6 +198,21 @@ class VisionCommandGroup(ModuleCommandGroupBase):
                 print(str(e))
 
 
+    def has_camera(self, camera: CameraMountPoint) -> bool:
+        """ Check wether a given camera is present in the system.
+         
+            This function wraps the "vis:has_camera" remote command.
+
+            :param camera: The camera mount point to check.
+            :raises: ProberException if an error occured.
+            :return: True if the camera is present, False otherwise.  
+        """
+
+        self._comm.send(f"vis:has_camera {camera.toSentioAbbr()}")
+        resp = Response.check_resp(self._comm.read_line())
+        return resp.message().upper()=="1"
+
+
     def switch_all_lights(self, stat:bool):
         """ Switch all camera lights on or off. 
             
@@ -211,35 +256,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:switch_camera {0}".format(camera.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
 
-
-    def has_camera(self, camera: CameraMountPoint) -> bool:
-        self._comm.send("vis:has_camera {}".format(camera.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
-        return resp.message().upper()=="1"
-
-    def create_probepad_model(self, angleStep: float = 0.1, imgPath: str = None, UL:tuple=None, LR:tuple=None):  
-        '''
-        Creare probe pad model for NCC to matching pad from wafer. 
-        
-        if one parameter 
-            create pad model from camera 
-        else 
-            create pad model from image file 
-        '''        
-        if(imgPath==None):
-            self._comm.send("vis:create_probepad_model {0}".format(angleStep))
-        else:            
-            self._comm.send("vis:create_probepad_model {0},{1},{2},{3},{4},{5}".format(angleStep,imgPath, UL[0],  UL[1], LR[0], LR[1]))
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-        print(resp)
-        return tok 
-
-    def camera_synchronize(self):
-        self._comm.send("vis:camera_synchronize")
-        resp = Response.check_resp(self._comm.read_line())
-        tok = resp.message().split(",")
-        return float(tok[0]), float(tok[1]), float(tok[2])
 
     def ptpa_find_pads(self, row: int = 0, column: int = 0):
         self._comm.send("vis:execute_ptpa_find_pads {0},{1}".format(row, column))
