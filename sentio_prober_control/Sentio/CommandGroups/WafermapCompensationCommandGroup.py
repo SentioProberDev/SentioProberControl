@@ -9,6 +9,8 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
     """ This command group bundles functions for setting up and using position compensation. 
 
         .. deprecated:: 23.2 Use VisionCompensationGroup instead
+
+        @private
     """
 
     @deprecated("Use vis.compensation.start_execute(CompensationType.Topography, CompensationMode.Vertical) instead")
@@ -24,6 +26,8 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
             :param execute: Specifes what to do. Execute or abort the compensation.
             :raises ProberException: if the command could not be executed successfully.
             :returns: The async command id of the command.
+
+            @private            
         """
         self._comm.send(f"map:compensation:topography {execute.toSentioAbbr()}")
         resp = Response.check_resp(self._comm.read_line())

@@ -11,21 +11,6 @@ class VisionCompensationGroup(CommandGroupBase):
         super().__init__(comm)
 
 
-    def start_execute(self, type: CompensationType, mode: CompensationMode):
-        """ Start the execution of a compensation.
-
-            Wraps Sentios "vis:compensation:start_execute" remote command.
-
-            :param  type: The type of compensation to execute.
-            :param  mode: The mode of compensation to execute.
-            :raises: ProberException if an error occured.
-            :returns: A Response object.
-        """
-
-        self._comm.send(f'vis:compensation:start_execute {type.toSentioAbbr()}, {mode.toSentioAbbr()}')
-        return Response.check_resp(self._comm.read_line())
-    
-
     def set_compensation(self, comp:CompensationMode, enable:bool):
         """ Enable or disable compensation for a given subsystem. 
 
@@ -40,4 +25,19 @@ class VisionCompensationGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
+
+
+    def start_execute(self, type: CompensationType, mode: CompensationMode):
+        """ Start the execution of a compensation.
+
+            Wraps Sentios "vis:compensation:start_execute" remote command.
+
+            :param  type: The type of compensation to execute.
+            :param  mode: The mode of compensation to execute.
+            :raises: ProberException if an error occured.
+            :returns: A Response object.
+        """
+
+        self._comm.send(f'vis:compensation:start_execute {type.toSentioAbbr()}, {mode.toSentioAbbr()}')
+        return Response.check_resp(self._comm.read_line())
 

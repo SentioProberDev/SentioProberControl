@@ -21,12 +21,12 @@
     * aux (sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup.AuxCommandGroup)
     * loader (sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.LoaderCommandGroup)
     * map (sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup.WafermapCommandGroup)
-    * probe
-    * qalibria
-    * service
-    * siph
-    * status
-    * vis
+    * probe (sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup.ProbeCommandGroup)
+    * qalibria (sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup.QAlibriaCommandGroup)
+    * service (sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup.ServiceCommandGroup)
+    * siph (sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup.ServiceCommandGroup)
+    * status (sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.StatusCommandGroup)
+    * vis (sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup.VisionCommandGroup)
 
     To access a function associated with a command group simply add the name of the command group to
     the prober call. The following example would call the switch_all_lights command from the 

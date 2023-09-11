@@ -56,12 +56,14 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             except Exception as e:
                 print(str(e))
 
+
     def remove_probetip_marker(self):
         """ Remove probetip marker from the camera display.
             :raises: ProberException if an error occured.
         """
         self._comm.send("vis:remove_probetip_marker")
         Response.check_resp(self._comm.read_line())
+
 
     def detect_probetips(self, camera: CameraMountPoint, detector:  DetectionAlgorithm = DetectionAlgorithm.ProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi):
         """ Run probe tip detection.
@@ -130,9 +132,16 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self._comm.send("vis:align_wafer {0}".format(timeout))
         Response.check_resp(self._comm.read_line())
 
-    def align_wafer(self, mode: AutoAlignCmd):
+
+    def align_wafer(self, mode: AutoAlignCmd) -> None:
+        """ Perform a wafer alignment.
+
+            :param mode: The alignment procedure to use. 
+            :raises: ProberException if an error occured.
+        """
         self._comm.send("vis:align_wafer {0}".format(mode.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
+
 
     def align_die(self, threshold: float = 0.05):
         self._comm.send("vis:align_die {0}".format(threshold))

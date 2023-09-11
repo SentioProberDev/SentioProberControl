@@ -6,7 +6,10 @@ from sentio_prober_control.Sentio.Response import *
 
 
 class StatusCommandGroup(ModuleCommandGroupBase):
+    """ A command group for getting the status of the probe station and controlling the dashboard module. """
+
     def __init__(self, comm):
+        """ @private """
         super().__init__(comm, 'status')
 
     def get_machine_status(self) -> Tuple[bool, bool, bool]:

@@ -45,6 +45,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """ A command group with functions for setting up and executing x,y and z compensation.
             
             .. deprecated:: 23.2 Use VisionCompensationGroup instead
+
+            @private
         """
 
         self.die : WafermapDieCommandGroup = WafermapDieCommandGroup(comm)

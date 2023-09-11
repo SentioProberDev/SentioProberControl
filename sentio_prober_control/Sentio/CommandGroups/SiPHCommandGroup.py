@@ -2,8 +2,12 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Sentio.Enumerations import *
 
+
 class SiPHCommandGroup(CommandGroupBase):
+    """ This command group contains functions for working with SiPh applications. """
+
     def __init__(self, comm):
+        """ @private """
         super().__init__(comm)
 
     def move_hover(self, probe: ProbeSentio) -> str:

@@ -2,9 +2,324 @@ from enum import Enum
 from deprecated import deprecated
 
 
-@deprecated(reason="duplicated; CompensationMode instead.")
+class AutoAlignCmd(Enum):
+    """ Specifies an algorithm for performaing auto alignment. """
+
+    AutoDieSize = 0,
+    """ Perform auto alignment. Determine die size with zero prior knowledge. 
+    
+        This algorithm is slower since it needs to start checking with small step sizes.
+    """
+
+    UpdateDieSize = 1,
+    """ Perform auto alignment. Update die size based on current value. 
+    
+        This algorithm is faster because it assumes the new die size is close to the current value.
+    """
+
+    TwoPt = 2,
+    """ Use Two-Point alignment algorithm. """
+
+    def toSentioAbbr(self):
+        """ Convert the AutoAlignCmd enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            AutoAlignCmd.AutoDieSize: "auto",
+            AutoAlignCmd.UpdateDieSize: "update",
+            AutoAlignCmd.TwoPt: "2pt",
+        }
+        return switcher.get(self, "Invalid Auto Align function")
+
+
+class AutoFocusAlgorithm(Enum):
+    Gradient = 0,
+    Bandpass = 1,
+    Difference = 2,
+    AutoCorrelation = 3
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            AutoFocusAlgorithm.Gradient: "Gradient",
+            AutoFocusAlgorithm.Bandpass: "Bandpass",
+            AutoFocusAlgorithm.Difference: "Difference",
+            AutoFocusAlgorithm.AutoCorrelation: "AutoCorrelation"
+        }
+        return switcher.get(self, "Invalid focus measure")
+
+
+class AutoFocusCmd(Enum):
+    Calibration = 0,
+    Focus = 1,
+    GoTo = 2
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            AutoFocusCmd.Calibration: "C",
+            AutoFocusCmd.Focus: "F",
+            AutoFocusCmd.GoTo: "G"
+        }
+        return switcher.get(self, "Invalid auto focus function")
+
+
+class AxisOrient(Enum):
+    """ Represents an axis orientation. 
+
+        Thie enumeration is mostly used to describe axis orientations
+        on the computer screen. For instance the axis orientation
+        of the wafer map.
+    """
+    
+    DownRight = 0,
+    """ Y axis pointing down; X axis pointing right. """
+
+    DownLeft = 1,
+    """ Y axis pointing down; X axis pointing left. """
+
+    UpRight = 2,
+    """ Y-axis pointing up; X axis pointing right. """
+
+    UpLeft = 3
+    """ Y-axis pointing up; X axis pointing left. """
+
+    def toSentioAbbr(self):
+        """ Convert the AxisOrient enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            AxisOrient.DownRight: "DR",
+            AxisOrient.DownLeft: "DL",
+            AxisOrient.UpRight: "UR",
+            AxisOrient.UpLeft: "UL"
+        }
+        return switcher.get(self, "Invalid AxisOrient")
+
+
+class BinSelection(Enum):
+    """ An enumerator for selecting dies for binning. """
+
+    All = 0,
+    """ Select dies and subsites. """
+
+    DiesOnly = 1,
+    """ Select dies only. """
+
+    SubsitesOnly = 2
+    """ Select subsites only.  """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            BinSelection.All: "a",
+            BinSelection.DiesOnly: "d",
+            BinSelection.SubsitesOnly: "s"
+        }
+        return switcher.get(self, "Invalid bin selection")
+
+
+class CameraMountPoint(Enum):
+    """ Available camera mount points. 
+    
+        A camera mount point is a physical position in the prober where a camera can be located.
+        SENTIO refers to its camera via the camera mount point.
+    """
+
+    Scope = 0,
+    """ The downward looking microscope camera. """
+
+    Scope2 = 1,
+    """ Second scope camera. 
+        This camera is only used by IMag to provide a wider field of view in addition to the scope camera.
+    """
+
+    Chuck = 2,
+    """ The upward looking chuck camera. """
+
+    OffAxis = 3,
+    """ Downward looking platen camera."""
+
+    Vce = 4,
+    """ First Vce camera. """
+    
+    Vce2 = 5,
+    """ Second Vce camera. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            CameraMountPoint.Scope: "scope",
+            CameraMountPoint.Scope2: "scope2",
+            CameraMountPoint.Chuck: "chuck",
+            CameraMountPoint.OffAxis: "offaxis",
+            CameraMountPoint.Vce: "vce01",
+            CameraMountPoint.Vce2: "vce02"
+        }
+        return switcher.get(self, "Invalid camera mount point id")
+
+
+class ChuckPositionHint(Enum):
+    Center = 0,
+    FrontLoad = 1,
+    SideLoad = 2
+
+
+class ChuckSite(Enum):
+    """ An enumeration containing chuck sites. 
+    
+        A chuck site is a physical position that is attached to the 
+        chuck and is moving together with the chuck.
+    """
+    
+    Wafer = 0,
+    """ The wafer site. This is where your wafer is supposed to be. """
+
+    AuxRight = 1,
+    """ Right auxilliary site (if available)"""
+
+    AuxLeft = 2,
+    """ Left auxilliary site (if available)"""
+
+    AuxRight2 = 3,
+    """ Secondary right auxilliary site (if available)"""
+
+    AuxLeft2 = 4,
+    """ Secondary left auxilliary site (if available)"""
+
+    ChuckCamera = 5,
+    """ The chuck camera """
+
+    def toSentioAbbr(self):
+        """ Convert the ChuckSite enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            ChuckSite.Wafer: "Wafer",
+            ChuckSite.AuxLeft: "AuxLeft",
+            ChuckSite.AuxLeft2: "AuxLeft2",
+            ChuckSite.AuxRight: "AuxRight",
+            ChuckSite.AuxRight2: "AuxRight2",
+            ChuckSite.ChuckCamera: "ChuckCamera",
+        }
+        return switcher.get(self, "Invalid chuck site")
+
+
+class ChuckThetaReference(Enum):
+    """ Reference to use for chuck theat motions. """
+
+    Zero = 0,
+    """ Use zero of the theta axis."""
+
+    Site = 1,
+    """ Use the trained site of "home" angle as the reference. """
+
+    Relative = 2
+    """ Use the current theta position as reference. """
+
+    def toSentioAbbr(self):
+        """ Convert the ChuckThetaReference enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            ChuckThetaReference.Zero: "Z",
+            ChuckThetaReference.Site: "S",
+            ChuckThetaReference.Relative: "R"
+        }
+        return switcher.get(self, "Invalid chuck theta reference")
+    
+
+class ChuckXYReference(Enum):
+    """ Defines a reference for chuck xy motions. """
+
+    Zero = 0,
+    """ Use absolute chuck coordinates. """
+
+    Home = 1,
+    """ Use home position as reference. """
+
+    Relative = 2,
+    """ Use curent chuck position as reference. """
+
+    Center = 3,
+    """ Use chuck center position as reference. """
+
+    User = 4,
+    """ Use user defined coordinate system. """
+
+    def toSentioAbbr(self):
+        """ Convert the ChuckXYReference enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            ChuckXYReference.Zero: "Z",
+            ChuckXYReference.Home: "H",
+            ChuckXYReference.Relative: "R",
+            ChuckXYReference.Center: "C",
+            ChuckXYReference.User: "U",
+        }
+        return switcher.get(self, "Invalid chuck xy reference")
+
+
+class ChuckZReference(Enum):
+    """ Defines a position reference for chuck z-motions."""
+
+    Zero = 0,
+    """ Use absolute chuck z coordinates with respect the the physical axis zero positon. """
+
+    Relative = 1,
+    """ Use relative chuck z coordinated with respect to the current position. """
+
+    Contact = 2,
+    """ Use relative chuck z coordinated with respect to the chucks contact height. """
+    
+    Hover = 3,
+    """ Use relative chuck z coordinated with respect to the chucks hover height. """
+
+    Separation = 4
+    """ Use relative chuck z coordinated with respect to the chucks separation height. """
+
+    def toSentioAbbr(self):
+        """ Convert the ChuckZReference enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            ChuckZReference.Zero: "Z",
+            ChuckZReference.Relative: "R",
+            ChuckZReference.Contact: "C",
+            ChuckZReference.Hover: "H",
+            ChuckZReference.Separation: "S"
+        }
+        return switcher.get(self, "Invalid chuck z reference")
+    
+
+class ColorScheme(Enum):
+    """ The color scheme used by the wafer map.  """
+
+    ColorFromBin = 0,
+    """ The color of a die is determined by the bin code of the die. """
+
+    ColorFromValue = 1
+    """ The color of the die is determined by a floating point value attached to a die. """
+
+    def toSentioAbbr(self):
+        """ Convert the ColorScheme enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            ColorScheme.ColorFromBin: 0,
+            ColorScheme.ColorFromValue: 1
+        }
+        return switcher.get(self, "Invalid ColorScheme")
+    
+
+@deprecated(reason="duplicated; use DieCompensationMode instead.")
 class Compensation(Enum):
-    """ Represents a compensation type used by SENTIO. """
+    """ Represents a compensation type used by SENTIO. 
+    
+        .. deprecated:: 23.2.0
+
+        @private
+    """
 
     Lateral = 0,
     """ Use lateral compensation """
@@ -43,10 +358,15 @@ class Compensation(Enum):
         return switcher.get(self, "Invalid compensation type")
     
 
+@deprecated("use DieCompensationMode instead.")
 class CompensationMode(Enum):
     """ Represents a compensation mode used by SENTIO. 
     
         The compensation mode is a selector that defines what principal type of compensation shall be used.
+
+        .. deprecated:: 23.2.0
+
+        @private
     """
 
     Lateral = 0,
@@ -86,8 +406,14 @@ class CompensationMode(Enum):
         return switcher.get(self, "Invalid CompensationMode")
 
 
+@deprecated("Use DieCompensationType instead")
 class CompensationType(Enum):
-    """ Compensation Type """
+    """ Compensation Type.
+     
+        .. deprecated:: 23.2.0
+
+        @private  
+    """
     
     DieAlign = 0,
     """ Die Alignment. 
@@ -149,8 +475,7 @@ class DefaultPattern(Enum):
     """ A pattern used for probe to pad alignment. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
+        """ Convert the DefaultPattern enumerator into a string SENTIO understands. 
         """
         switcher = {
             DefaultPattern.Align: "align",
@@ -162,223 +487,6 @@ class DefaultPattern(Enum):
             DefaultPattern.Ptpa: "ptpa",
         }
         return switcher.get(self, "Invalid default pattern id")
-    
-    
-@deprecated(reason="duplicated; Use CompensationMode instead.")
-class OnTheFlyMode(Enum):
-    Lateral = 0,
-    Vertical = 1,
-    Both =2,
-    ProbeCard =3,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            OnTheFlyMode.Lateral: "AlignDie",
-            OnTheFlyMode.Vertical: "MapScan",
-            OnTheFlyMode.Both: "Topography",
-            OnTheFlyMode.ProbeCard: "ProbeCard",
-        }
-        return switcher.get(self, "Invalid OTF mode")
-    
-
-class ProjectFileInfo(Enum):
-    """ An enumerator containing the different aspects of retrieving current project info. """
-    
-    NameOnly = 0,
-    """ Return only the project name. """
-    
-    FullPath = 1,
-    """ Return the full path to the project file. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ProjectFileInfo.NameOnly: "Name",
-            ProjectFileInfo.FullPath: "FullPath"
-        }
-        return switcher.get(self, "Invalid ProjectFileInfo")
-
-
-class SteppingContactMode(Enum):
-    """ This mode defines how the chuck behaves during steeping. """
-
-    BackToContact = 0,
-    """ Chuck will move back to contact position after stepping. """
-
-    StepToSeparation = 1,
-    """ Chuck will move to separation position after stepping. """
-    
-    LockContact = 2,
-    """ Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            SteppingContactMode.BackToContact: "BackToContact",
-            SteppingContactMode.StepToSeparation: "StepToSeparation",
-            SteppingContactMode.LockContact:   "LockContact"
-        }
-        return switcher.get(self, "Invalid stepping mode")
-
-
-class Stage(Enum):
-    """ Represents a stage in SENTIO.
-     
-        A stage is a piece of hardware that can be controlled by motors and moved in x, y and
-        probably also z direction.  
-    """
-    Chuck = 0,
-    """ The chuck stage. This is where the wafer is placed. """
-
-    Scope = 1,
-    """ The scope stage controls the downward looking microscope. This is an optional stage but it will be present on most probe stations. """
-
-    Vce = 2,
-    """ First Vce stage. Vce Stages can only be moved in z-direction."""
-
-    Vce2 = 3,
-    """ Second Vce stage. Vce Stages can only be moved in z-direction."""
-
-    Probe1 = 4,
-    """ First motorized probe. """
-
-    Probe2 = 5,
-    """ Second motorized probe. """
-
-    Probe3 = 6,
-    """ Third motorized probe. """
-
-    Probe4 = 7
-    """ Fourth motorized probe. """
-
-    def toSentioAbbr(self):
-        """ Convert the Stage enumerator into a string SENTIO understands. """
-        switcher = {
-            Stage.Chuck: "chuck",
-            Stage.Scope: "scope",
-            Stage.Vce:   "vce01",
-            Stage.Vce2:  "vce02",            
-            Stage.Probe1: "Probe01",
-            Stage.Probe2: "Probe02",
-            Stage.Probe3: "Probe03",
-            Stage.Probe4: "Probe04"
-        }
-        return switcher.get(self, "Invalid stage")
-
-
-class PoiReferenceXy(Enum):
-    """ Referenc position for points of interest. 
-    
-        Each point of interest can either be defines with respect to the center of the stage.
-        Or with respect to the center of the die.
-    """
-
-    DieCenter = 0,
-    """ Use die center as the position reference. """
-
-    StageCenter = 1
-    """ Use stage center as the position reference. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """       
-        switcher = {
-            PoiReferenceXy.DieCenter: "DieCenter",
-            PoiReferenceXy.StageCenter: "StageCenter"
-        }
-        return switcher.get(self, "Invalid stage")
-
-
-class PtpaType(Enum):
-    """ Defines the type of Probe to Pad Alignment used by SENTIO. """
-    
-    OffAxis = 0,
-    """ Use off-axis PTPA with the platen camera and the chuck camera looking up to the probe tips. """
-
-    OnAxis = 1,
-    """ Use on axis PTPA with the scope camera looking down on the probe tips. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            PtpaType.OffAxis: "offaxis",
-            PtpaType.OnAxis: "onaxis"
-        }
-        return switcher.get(self, "Invalid ptpa type")
-
-
-class TestSelection(Enum):
-    """ Specifies which dies shall be selected for test. 
-    
-        If a die is selected for test it is activated in the wafer map.
-    """
-
-    Nothing = 0,
-    """ Select no dies. """
-
-    Good = 1,
-    """ Select only the good dies. 
-    
-        Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
-    """
-
-    GoodAndUgly = 2,
-    """ Select only the good dies. 
-    
-        Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
-        Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer
-        but may be damaged or have incomplete structures.
-    """
-
-    GoodUglyAndEdge = 3,
-    """ Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
-        Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer
-        but may be damaged or have incomplete structures. The dies with at leas one edge outside of the wafer are called 
-        edge dies. Those dies are incomplete.
-     """
-
-    All = 4
-    """ Select all dies for testing even those that are completely outside of the wafer map. """
-
-
-    def toSentioAbbr(self):
-        """ Convert the TestSelection enumerator into a string SENTIO understands. """
-        switcher = {
-            TestSelection.Nothing: "n",
-            TestSelection.Good: "g",
-            TestSelection.GoodAndUgly: "u",
-            TestSelection.GoodUglyAndEdge: "e",
-            TestSelection.All: "a"
-        }
-        return switcher.get(self, "Invalid TestSelection")
-    
-
-class DetectionCoordindates(Enum):
-    """ Specifies the coordinate system used for reporting box detections. 
-    
-        Used by SENTIO's built in DetectionAlgorithm
-    """
-    
-    Image = 0,
-    """ Use image coordinates. Results are returned as pixel coordinates. """
-
-    Fov = 1,
-    Roi = 2
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            DetectionCoordindates.Image: "Image",
-            DetectionCoordindates.Fov: "Fov",
-            DetectionCoordindates.Roi: "Roi"
-        }
-        return switcher.get(self, "Invalid DetectionCoordindates")
 
 
 class DetectionAlgorithm(Enum):
@@ -414,8 +522,7 @@ class DetectionAlgorithm(Enum):
     """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
+        """ Convert the DetectionAlgorithm enumerator into a string SENTIO understands. 
         """
         switcher = {
             DetectionAlgorithm.Keypoint: "Keypoint",
@@ -423,6 +530,318 @@ class DetectionAlgorithm(Enum):
             DetectionAlgorithm.WaferDetector: "WaferDetector"
         }
         return switcher.get(self, "Invalid ProbeTipDetector")
+
+
+class DetectionCoordindates(Enum):
+    """ Specifies the coordinate system used for reporting box detections. 
+    
+        Used by SENTIO's built in DetectionAlgorithm
+    """
+    
+    Image = 0,
+    """ Use image coordinates. Results are returned as pixel coordinates. """
+
+    Fov = 1,
+    """ Coordinates are in micrometer relative to the center of the field of view. """
+
+    Roi = 2
+    """ Coordinates are in micrometer relative to the center of the region of interest. """
+
+    def toSentioAbbr(self):
+        """ Convert the DetectionCoordindates enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            DetectionCoordindates.Image: "Image",
+            DetectionCoordindates.Fov: "Fov",
+            DetectionCoordindates.Roi: "Roi"
+        }
+        return switcher.get(self, "Invalid DetectionCoordindates")
+
+
+class DialogButtons(Enum):
+    """ A list of buttons that can be used in SENTIO's dialogs."""
+    Ok = 1,
+    """ An Ok button."""
+    
+    Yes = 2,
+    """ A Yes button."""
+
+    No = 3,
+    """ A No button."""
+
+    Cancel = 4,
+    """ The Cancel button. """
+
+    OkCancel = 5
+    """ Both the Ok and the Cancel button. """
+
+    YesNo = 6
+    """ Both a Yes and a No button. """
+
+    YesCancel = 7
+    """ Yes and cancel button. """
+
+    YesNoCancel = 8
+    """ Yes, No and Cancel button. """
+
+    def toSentioAbbr(self):
+        """ Convert the DialogButtons enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            DialogButtons.Ok: "Ok",
+            DialogButtons.Cancel: "Cancel",
+            DialogButtons.OkCancel: "OkCancel",
+            DialogButtons.Yes: "Yes",
+            DialogButtons.No: "No",            
+            DialogButtons.YesNo: "YesNo",
+            DialogButtons.YesCancel: "YesCancel",
+            DialogButtons.YesNoCancel: "YesNoCancel"                        
+        }
+        return switcher.get(self, "Invalid button id")
+    
+
+class DieCompensationMode(Enum):
+    """ Represents a compensation mode used by SENTIO. 
+    
+        The compensation mode is a selector that defines what principal type of compensation shall be used.
+    """
+
+    Lateral = 0,
+    """ Use lateral compensation.
+     
+        The is an x,y copmensation performed based on the wafer and pre-trained patterns.  
+    """
+
+    Vertical = 1,
+    """ Use vertical compensation. 
+    
+        Activate vertical compensation. Can be implemented with different means. (i.e. Topography)
+    """
+
+    Both = 2,
+    """ Use both lateral and vertical compensation. 
+    """
+
+    ProbeCard = 3,
+    """ Use probe card compensation. 
+    
+        For true Probe-To-Pad-Alignment. Takes the position of the probe card into account.
+        If you only use lateral compensation the wafer may be moved to the correct position
+        but due to probe card drift the probes may not be in the correct position.
+    """
+
+    SkateDetection = 4,
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            DieCompensationMode.Lateral: "Lateral",
+            DieCompensationMode.Vertical: "Vertical",
+            DieCompensationMode.Both: "Both",
+            DieCompensationMode.ProbeCard: "ProbeCard",
+            DieCompensationMode.SkateDetection: "SkateDetection",
+        }
+        return switcher.get(self, "Invalid DieCompensationMode function")
+    
+
+class DieCompensationType(Enum):
+    """ Compensation Type """
+
+    DieAlign = 0,
+    """ Die Alignment. 
+
+        Use this for diced wafer with singulated dies on tape. 
+    """
+
+    MapScan = 1,
+    """ MapScan scans the wafer once and created a x,y compensation table for later use. """
+
+    Topography = 2,
+    """ Topography scans the height og the wafer on chuck and created a height map. """
+
+    def toSentioAbbr(self):
+        """ Convert the DieCompensationType enumerator into a string SENTIO understands. """
+        switcher = {
+            DieCompensationType.DieAlign: "DieAlign",
+            DieCompensationType.MapScan: "MapScan",
+            DieCompensationType.Topography: "Topography",
+        }
+        return switcher.get(self, "Invalid Compensation_Type function")
+    
+
+class DieNumber(Enum):
+    """ Specifies how dies are numbered. """
+
+    Present = 1,
+    """ Number only dies that are present on the wafer. """
+
+    Selected = 2
+    """ Number only dies that are selected for test. """
+
+
+@deprecated("ExecuteAction is deprecated.")
+class ExecuteAction(Enum):
+    """ Legacy enum for specifying execute actions.
+
+        .. deprecated:: 23.2.0
+
+        @private 
+    """
+
+    Execute = 0,
+    """ Execute the action. """
+
+    Abort = 1,
+    """ Abort an ongoing action. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            ExecuteAction.Execute: "execute",
+            ExecuteAction.Abort: "abort",
+        }
+        return switcher.get(self, "Invalid ExecuteAction function")
+
+
+@deprecated("ExecuteCompensation is deprecated.")
+class ExecuteCompensation(Enum):
+    """ Legacy enum for specifying compensation methods.
+
+        .. deprecated:: 23.2.0
+        
+        @private     
+    """
+
+    AlignDie = 0,
+    MapScan = 1,
+    Topography =2,
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            ExecuteCompensation.AlignDie: "AlignDie",
+            ExecuteCompensation.MapScan: "MapScan",
+            ExecuteCompensation.Topography: "Topography",
+        }
+        return switcher.get(self, "Invalid compensation type")
+   
+
+class FindPatternReference(Enum):
+    DieHome = 0,
+    CenterOfRoi = 1
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            FindPatternReference.DieHome: "DieHome",
+            FindPatternReference.CenterOfRoi: "CenterOfRoi"
+        }
+        return switcher.get(self, "Invalid find pattern reference id")
+
+
+class ImagePattern(Enum):
+    align = 0,
+    home = 1,
+    diealignpos1 = 2,
+    diealignpos2 =3,
+    twoPt = 4,
+    calc = 5
+
+    def toSentioArg(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            ImagePattern.align: 'align',
+            ImagePattern.home: 'home',
+            ImagePattern.diealignpos1: 'diealignpos1',
+            ImagePattern.diealignpos2: 'diealignpos2',
+            ImagePattern.twoPt: '2pt',
+            ImagePattern.calc: 'calc'
+        }
+        return switcher.get(self, "Invalid image pattern parameter")
+
+
+class IMagProZReference(Enum):
+    Zero = 0,
+    Relative = 1,
+    Center = 2
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            IMagProZReference.Zero: "Zero",
+            IMagProZReference.Relative: "Relative",
+            IMagProZReference.Center: "Center"
+        }
+        return switcher.get(self, "Invalid image pro z reference")
+
+
+class LoaderStation(Enum):
+    """ An enumeration containing loader stations."""
+
+    Cassette1 = 0,
+    """ First cassette station. """
+
+    Cassette2 = 1,
+    """ Second cassette station."""
+
+    PreAligner = 2,
+    """ Prealigner Station for wafer prealignment. """
+    
+    Chuck = 3,
+    """ The chuck station. """
+    
+    ForkA = 4,
+    """ Robot fork A"""
+
+    ForkB = 5,
+    """ Roboit fork B"""
+
+    WaferWallet = 6,
+    """ 5 slow wafer wallet station"""
+
+    IdReader = 7
+    """ Id-reader station."""
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            LoaderStation.Cassette1: "cas1",
+            LoaderStation.Cassette2: "cas2",
+            LoaderStation.PreAligner: "pa",
+            LoaderStation.Chuck: "chuck",
+            LoaderStation.ForkA: "forka",
+            LoaderStation.ForkB: "forkb",
+            LoaderStation.WaferWallet: "ww"
+        }
+        return switcher.get(self, "Invalid loader station id")
+
+
+class LoadPosition(Enum):
+    """ An enumeration containing the possible load positions.
+     
+        Not all load positions are available on all probe stations.
+    """
+
+    Front = 0,
+    """ The Front Load position. All probe station have a front load position."""
+
+    Side = 1
+    """ The Side Load position. The side load position is optional and only present on systems with a side loader, a cassette loader or a wafer wallet. """
+
+    def toSentioAbbr(self):
+        """ Convert the LoadPosition enumerator into a string SENTIO understands. 
+        """
+        switcher = {
+            LoadPosition.Front: "front",
+            LoadPosition.Side: "side"
+        }
+        return switcher.get(self, "Invalid Load position")
 
 
 class Module(Enum):
@@ -473,69 +892,25 @@ class Module(Enum):
             Module.Dashboard: "Dashboard",
         }
         return switcher.get(self, "Invalid Module Name")
-
-
-class AxisOrient(Enum):
-    """ Represents an axis orientation. 
-
-        Thie enumeration is mostly used to describe axis orientations
-        on the computer screen. For instance the axis orientation
-        of the wafer map.
-    """
     
-    DownRight = 0,
-    """ Y axis pointing down; X axis pointing right. """
 
-    DownLeft = 1,
-    """ Y axis pointing down; X axis pointing left. """
-
-    UpRight = 2,
-    """ Y-axis pointing up; X axis pointing right. """
-
-    UpLeft = 3
-    """ Y-axis pointing up; X axis pointing left. """
+@deprecated(reason="duplicated; Use CompensationMode instead.")
+class OnTheFlyMode(Enum):
+    Lateral = 0,
+    Vertical = 1,
+    Both =2,
+    ProbeCard =3,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
+        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
-            AxisOrient.DownRight: "DR",
-            AxisOrient.DownLeft: "DL",
-            AxisOrient.UpRight: "UR",
-            AxisOrient.UpLeft: "UL"
+            OnTheFlyMode.Lateral: "AlignDie",
+            OnTheFlyMode.Vertical: "MapScan",
+            OnTheFlyMode.Both: "Topography",
+            OnTheFlyMode.ProbeCard: "ProbeCard",
         }
-        return switcher.get(self, "Invalid AxisOrient")
+        return switcher.get(self, "Invalid OTF mode")
 
-
-class DieNumber(Enum):
-    """ Specifies how dies are numbered. """
-
-    Present = 1,
-    """ Number only dies that are present on the wafer. """
-
-    Selected = 2
-    """ Number only dies that are selected for test. """
-
-
-class ColorScheme(Enum):
-    """ The color scheme used by the wafer map.  """
-
-    ColorFromBin = 0,
-    """ The color of a die is determined by the bin code of the die. """
-
-    ColorFromValue = 1
-    """ The color of the die is determined by a floating point value attached to a die. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ColorScheme.ColorFromBin: 0,
-            ColorScheme.ColorFromValue: 1
-        }
-        return switcher.get(self, "Invalid ColorScheme")
 
 class OrientationMarker(Enum):
     """ Defines the wafers orientation marker. 
@@ -565,41 +940,180 @@ class OrientationMarker(Enum):
         return switcher.get(self, "Invalid orientation marker")
 
 
-class AutoFocusCmd(Enum):
-    Calibration = 0,
-    Focus = 1,
-    GoTo = 2
+class PoiReferenceXy(Enum):
+    """ Referenc position for points of interest. 
+    
+        Each point of interest can either be defines with respect to the center of the stage.
+        Or with respect to the center of the die.
+    """
+
+    DieCenter = 0,
+    """ Use die center as the position reference. """
+
+    StageCenter = 1
+    """ Use stage center as the position reference. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """       
+        switcher = {
+            PoiReferenceXy.DieCenter: "DieCenter",
+            PoiReferenceXy.StageCenter: "StageCenter"
+        }
+        return switcher.get(self, "Invalid stage")
+
+
+class ProjectFileInfo(Enum):
+    """ An enumerator containing the different aspects of retrieving current project info. """
+    
+    NameOnly = 0,
+    """ Return only the project name. """
+    
+    FullPath = 1,
+    """ Return the full path to the project file. """
 
     def toSentioAbbr(self):
         """ Convert the enumerator into a string SENTIO understands. 
             @private
         """
         switcher = {
-            AutoFocusCmd.Calibration: "C",
-            AutoFocusCmd.Focus: "F",
-            AutoFocusCmd.GoTo: "G"
+            ProjectFileInfo.NameOnly: "Name",
+            ProjectFileInfo.FullPath: "FullPath"
         }
-        return switcher.get(self, "Invalid auto focus function")
+        return switcher.get(self, "Invalid ProjectFileInfo")
 
 
-class AutoAlignCmd(Enum):
-    AutoDieSize = 0,
-    UpdateDieSize = 1,
-    TwoPt = 2,
-    CurrentDieSize = 3,
+class PtpaType(Enum):
+    """ Defines the type of Probe to Pad Alignment used by SENTIO. """
+    
+    OffAxis = 0,
+    """ Use off-axis PTPA with the platen camera and the chuck camera looking up to the probe tips. """
+
+    OnAxis = 1,
+    """ Use on axis PTPA with the scope camera looking down on the probe tips. """
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. """
+        switcher = {
+            PtpaType.OffAxis: "offaxis",
+            PtpaType.OnAxis: "onaxis"
+        }
+        return switcher.get(self, "Invalid ptpa type")
+
+
+class Stage(Enum):
+    """ Represents a stage in SENTIO.
+     
+        A stage is a piece of hardware that can be controlled by motors and moved in x, y and
+        probably also z direction.  
+    """
+    Chuck = 0,
+    """ The chuck stage. This is where the wafer is placed. """
+
+    Scope = 1,
+    """ The scope stage controls the downward looking microscope. This is an optional stage but it will be present on most probe stations. """
+
+    Vce = 2,
+    """ First Vce stage. Vce Stages can only be moved in z-direction."""
+
+    Vce2 = 3,
+    """ Second Vce stage. Vce Stages can only be moved in z-direction."""
+
+    Probe1 = 4,
+    """ First motorized probe. """
+
+    Probe2 = 5,
+    """ Second motorized probe. """
+
+    Probe3 = 6,
+    """ Third motorized probe. """
+
+    Probe4 = 7
+    """ Fourth motorized probe. """
+
+    def toSentioAbbr(self):
+        """ Convert the Stage enumerator into a string SENTIO understands. """
+        switcher = {
+            Stage.Chuck: "chuck",
+            Stage.Scope: "scope",
+            Stage.Vce:   "vce01",
+            Stage.Vce2:  "vce02",            
+            Stage.Probe1: "Probe01",
+            Stage.Probe2: "Probe02",
+            Stage.Probe3: "Probe03",
+            Stage.Probe4: "Probe04"
+        }
+        return switcher.get(self, "Invalid stage")
+    
+
+class SteppingContactMode(Enum):
+    """ This mode defines how the chuck behaves during steeping. """
+
+    BackToContact = 0,
+    """ Chuck will move back to contact position after stepping. """
+
+    StepToSeparation = 1,
+    """ Chuck will move to separation position after stepping. """
+    
+    LockContact = 2,
+    """ Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command. """
 
     def toSentioAbbr(self):
         """ Convert the enumerator into a string SENTIO understands. 
             @private
         """
         switcher = {
-            AutoAlignCmd.AutoDieSize: "auto",
-            AutoAlignCmd.UpdateDieSize: "update",
-            AutoAlignCmd.TwoPt: "2pt",
-            AutoAlignCmd.CurrentDieSize: ""
+            SteppingContactMode.BackToContact: "BackToContact",
+            SteppingContactMode.StepToSeparation: "StepToSeparation",
+            SteppingContactMode.LockContact:   "LockContact"
         }
-        return switcher.get(self, "Invalid Auto Align function")
+        return switcher.get(self, "Invalid stepping mode")
 
+
+class TestSelection(Enum):
+    """ Specifies which dies shall be selected for test. 
+    
+        If a die is selected for test it is activated in the wafer map.
+    """
+
+    Nothing = 0,
+    """ Select no dies. """
+
+    Good = 1,
+    """ Select only the good dies. 
+    
+        Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
+    """
+
+    GoodAndUgly = 2,
+    """ Select only the good dies. 
+    
+        Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
+        Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer
+        but may be damaged or have incomplete structures.
+    """
+
+    GoodUglyAndEdge = 3,
+    """ Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
+        Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer
+        but may be damaged or have incomplete structures. The dies with at leas one edge outside of the wafer are called 
+        edge dies. Those dies are incomplete.
+     """
+
+    All = 4
+    """ Select all dies for testing even those that are completely outside of the wafer map. """
+
+
+    def toSentioAbbr(self):
+        """ Convert the TestSelection enumerator into a string SENTIO understands. """
+        switcher = {
+            TestSelection.Nothing: "n",
+            TestSelection.Good: "g",
+            TestSelection.GoodAndUgly: "u",
+            TestSelection.GoodUglyAndEdge: "e",
+            TestSelection.All: "a"
+        }
+        return switcher.get(self, "Invalid TestSelection")
+    
 
 class ScopeXYReference(Enum):
     """ Position reference for scope motions. """
@@ -645,248 +1159,6 @@ class ScopeZReference(Enum):
         return switcher.get(self, "Invalid scope z reference")
 
 
-# Wishlist, not supported by Sentio right now!
-class IMagProZReference(Enum):
-    Zero = 0,
-    Relative = 1,
-    Center = 2
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            IMagProZReference.Zero: "Zero",
-            IMagProZReference.Relative: "Relative",
-            IMagProZReference.Center: "Center"
-        }
-        return switcher.get(self, "Invalid image pro z reference")
-
-
-class AutoFocusAlgorithm(Enum):
-    Gradient = 0,
-    Bandpass = 1,
-    Difference = 2,
-    AutoCorrelation = 3
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            AutoFocusAlgorithm.Gradient: "Gradient",
-            AutoFocusAlgorithm.Bandpass: "Bandpass",
-            AutoFocusAlgorithm.Difference: "Difference",
-            AutoFocusAlgorithm.AutoCorrelation: "AutoCorrelation"
-        }
-        return switcher.get(self, "Invalid focus measure")
-
-
-class ChuckXYReference(Enum):
-    """ Defines a reference for chuck xy motions. """
-
-    Zero = 0,
-    """ Use absolute chuck coordinates. """
-
-    Home = 1,
-    """ Use home position as reference. """
-
-    Relative = 2,
-    """ Use curent chuck position as reference. """
-
-    Center = 3,
-    """ Use chuck center position as reference. """
-
-    User = 4,
-    """ Use user defined coordinate system. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ChuckXYReference.Zero: "Z",
-            ChuckXYReference.Home: "H",
-            ChuckXYReference.Relative: "R",
-            ChuckXYReference.Center: "C",
-            ChuckXYReference.User: "U",
-        }
-        return switcher.get(self, "Invalid chuck xy reference")
-
-
-class ChuckZReference(Enum):
-    """ Defines a position reference for chuck z-motions."""
-
-    Zero = 0,
-    """ Use absolute chuck z coordinates with respect the the physical axis zero positon. """
-
-    Relative = 1,
-    """ Use relative chuck z coordinated with respect to the current position. """
-
-    Contact = 2,
-    """ Use relative chuck z coordinated with respect to the chucks contact height. """
-    
-    Hover = 3,
-    """ Use relative chuck z coordinated with respect to the chucks hover height. """
-
-    Separation = 4
-    """ Use relative chuck z coordinated with respect to the chucks separation height. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ChuckZReference.Zero: "Z",
-            ChuckZReference.Relative: "R",
-            ChuckZReference.Contact: "C",
-            ChuckZReference.Hover: "H",
-            ChuckZReference.Separation: "S"
-        }
-        return switcher.get(self, "Invalid chuck z reference")
-
-
-class ChuckThetaReference(Enum):
-    """ Reference to use for chuck theat motions. """
-
-    Zero = 0,
-    """ Use zero of the theta axis."""
-
-    Site = 1,
-    """ Use the trained site of "home" angle as the reference. """
-
-    Relative = 2
-    """ Use the current theta position as reference. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ChuckThetaReference.Zero: "Z",
-            ChuckThetaReference.Site: "S",
-            ChuckThetaReference.Relative: "R"
-        }
-        return switcher.get(self, "Invalid chuck theta reference")
-
-
-class WorkArea(Enum):
-    """ An enumeration containing probe station work areas. """
-    Probing = 0,
-    """ The probing work are is the area in which the chuck is under the downward lookin microscope. This is where the wafer is probed. """
-    
-    Offaxis = 1,
-    """ The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            WorkArea.Probing: "Probing",
-            WorkArea.Offaxis: "Offaxis",
-        }
-        return switcher.get(self, "Invalid chuck site")
-
-
-class ChuckSite(Enum):
-    """ An enumeration containing chuck sites. 
-    
-        A chuck site is a physical position that is attached to the 
-        chuck and is moving together with the chuck.
-    """
-    
-    Wafer = 0,
-    """ The wafer site. This is where your wafer is supposed to be. """
-
-    AuxRight = 1,
-    """ Right auxilliary site (if available)"""
-
-    AuxLeft = 2,
-    """ Left auxilliary site (if available)"""
-
-    AuxRight2 = 3,
-    """ Secondary right auxilliary site (if available)"""
-
-    AuxLeft2 = 4,
-    """ Secondary left auxilliary site (if available)"""
-
-    ChuckCamera = 5,
-    """ The chuck camera """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ChuckSite.Wafer: "Wafer",
-            ChuckSite.AuxLeft: "AuxLeft",
-            ChuckSite.AuxLeft2: "AuxLeft2",
-            ChuckSite.AuxRight: "AuxRight",
-            ChuckSite.AuxRight2: "AuxRight2",
-            ChuckSite.ChuckCamera: "ChuckCamera",
-        }
-        return switcher.get(self, "Invalid chuck site")
-
-
-class LoaderStation(Enum):
-    """ An enumeration containing loader stations."""
-
-    Cassette1 = 0,
-    """ First cassette station. """
-
-    Cassette2 = 1,
-    """ Second cassette station."""
-
-    PreAligner = 2,
-    """ Prealigner Station for wafer prealignment. """
-    
-    Chuck = 3,
-    """ The chuck station. """
-    
-    ForkA = 4,
-    """ Robot fork A"""
-
-    ForkB = 5,
-    """ Roboit fork B"""
-
-    WaferWallet = 6,
-    """ 5 slow wafer wallet station"""
-
-    IdReader = 7
-    """ Id-reader station."""
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            LoaderStation.Cassette1: "cas1",
-            LoaderStation.Cassette2: "cas2",
-            LoaderStation.PreAligner: "pa",
-            LoaderStation.Chuck: "chuck",
-            LoaderStation.ForkA: "forka",
-            LoaderStation.ForkB: "forkb",
-            LoaderStation.WaferWallet: "ww"
-        }
-        return switcher.get(self, "Invalid loader station id")
-
-
-class ProbeXYReference(Enum):
-    Zero = 0,
-    Home = 1,
-    Relative = 2,
-    Center = 3,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ProbeXYReference.Zero: "Z",
-            ProbeXYReference.Home: "H",
-            ProbeXYReference.Relative: "R",
-            ProbeXYReference.Center: "C",
-        }
-        return switcher.get(self, "Invalid chuck xy reference")
-
-
 class ProbeZReference(Enum):
     Zero = 0,
     Relative = 1,
@@ -900,78 +1172,6 @@ class ProbeZReference(Enum):
             ProbeZReference.Relative: "R",
         }
         return switcher.get(self, "Invalid chuck z reference")
-
-
-class CameraMountPoint(Enum):
-    """ Available camera mount points. 
-    
-        A camera mount point is a physical position in the prober where a camera can be located.
-        SENTIO refers to its camera via the camera mount point.
-    """
-
-    Scope = 0,
-    """ The downward looking microscope camera. """
-
-    Scope2 = 1,
-    """ Second scope camera. 
-        This camera is only used by IMag to provide a wider field of view in addition to the scope camera.
-    """
-
-    Chuck = 2,
-    """ The upward looking chuck camera. """
-
-    OffAxis = 3,
-    """ Downward looking platen camera."""
-
-    Vce = 4,
-    """ First Vce camera. """
-    
-    Vce2 = 5,
-    """ Second Vce camera. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            CameraMountPoint.Scope: "scope",
-            CameraMountPoint.Scope2: "scope2",
-            CameraMountPoint.Chuck: "chuck",
-            CameraMountPoint.OffAxis: "offaxis",
-            CameraMountPoint.Vce: "vce01",
-            CameraMountPoint.Vce2: "vce02"
-        }
-        return switcher.get(self, "Invalid camera mount point id")
-
-
-class ChuckPositionHint(Enum):
-    Center = 0,
-    FrontLoad = 1,
-    SideLoad = 2
-
-
-class BinSelection(Enum):
-    """ An enumerator for selecting dies for binning. """
-
-    All = 0,
-    """ Select dies and subsites. """
-
-    DiesOnly = 1,
-    """ Select dies only. """
-
-    SubsitesOnly = 2
-    """ Select subsites only.  """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            BinSelection.All: "a",
-            BinSelection.DiesOnly: "d",
-            BinSelection.SubsitesOnly: "s"
-        }
-        return switcher.get(self, "Invalid bin selection")
 
 
 class RoutingPriority(Enum):
@@ -1028,9 +1228,94 @@ class RoutingStartPoint(Enum):
         return switcher.get(self, "Invalid RoutingStartPoint enumerator")
 
 
-class StatusBits:
-    EndOfRoute = 1
-    LastSite = 2
+class ProbeSentio(Enum):
+    """ An enumeration containing a list of position for motorized probes. """
+
+    East = 0,
+    """ Probe is on the right side of the chuck. """
+
+    West = 1,
+    """ Probe is on the left side of the chuck. """
+
+    North = 2,
+    """ Probe is at the back side of the prober."""
+
+    South = 3
+    """ Probe is on the front side of the prober. """
+
+    def toSentioAbbr(self):
+        """ Convert the ProbeSentio enumerator into a string SENTIO understands. """
+        switcher = {
+            ProbeSentio.East: "East",
+            ProbeSentio.West: "West",
+            ProbeSentio.North: "North",
+            ProbeSentio.South: "South"
+        }
+        return switcher.get(self, "Invalid ProbeSentio enumerator")
+
+
+class ProbeXYReference(Enum):
+    """ Position reference for mororized probe movements. """
+
+    Zero = 0,
+    """ Move relative to axis zero. """
+
+    Home = 1,
+    """ Move relative to probe home. """
+
+    Current = 2,
+    """ Move relative to current position. """
+
+    def toSentioAbbr(self):
+        """ Convert the ProbeXYReference enumerator into a string SENTIO understands. """
+        switcher = {
+            ProbeXYReference.Zero: "Zero",
+            ProbeXYReference.Home: "Home",
+            ProbeXYReference.Current: "Current",
+        }
+        return switcher.get(self, "Invalid probe xy reference")
+    
+
+class ProbeZReference(Enum):
+    """ Position reference for probe z motions. """
+
+    Zero = 0,
+    """ Move relative to axis zero. (absolute) """
+    
+    Current = 1,
+    """ Move relative to Current position. """
+
+    Contact = 2,
+    """ Move relative to contact height. """
+    
+    Separation = 3
+    """ Move relative to separation height. """
+
+    def toSentioAbbr(self):
+        """ Convert the ProbeZReference enumerator into a string SENTIO understands.
+        """
+        switcher = {
+            ProbeZReference.Zero: "Zero",
+            ProbeZReference.Current: "Current",
+            ProbeZReference.Contact: "Contact",
+            ProbeZReference.Separation: "Separation"
+        }
+        return switcher.get(self, "Invalid probe z reference")
+  
+
+class PtpaFindTipsMode(Enum):
+    OnAxis = 0,
+    OffAxis = 1,
+
+    def toSentioAbbr(self):
+        """ Convert the enumerator into a string SENTIO understands. 
+            @private
+        """
+        switcher = {
+            PtpaFindTipsMode.OnAxis: "OnAxis",
+            PtpaFindTipsMode.OffAxis: "OffAxis",
+        }
+        return switcher.get(self, "Invalid PTPA_Find_Tips_Mode function")
 
 
 class RemoteCommandError:
@@ -1245,84 +1530,42 @@ class RemoteCommandError:
         QaExportCalDriftDataFail = 459
 
 
-class FindPatternReference(Enum):
-    DieHome = 0,
-    CenterOfRoi = 1
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            FindPatternReference.DieHome: "DieHome",
-            FindPatternReference.CenterOfRoi: "CenterOfRoi"
-        }
-        return switcher.get(self, "Invalid find pattern reference id")
+class StatusBits:
+    EndOfRoute = 1
+    LastSite = 2
 
 
-class DialogButtons(Enum):
-    """ A list of buttons that can be used in SENTIO's dialogs."""
-    Ok = 1,
-    """ An Ok button."""
+class SoftwareFence(Enum):
+    """ An enumerator holding software fence implementations. """
     
-    Yes = 2,
-    """ A Yes button."""
+    Disabled = 0,
+    """ Fence is disabled. """
 
-    No = 3,
-    """ A No button."""
+    Round = 1,
+    """ Use round fence.  """
 
-    Cancel = 4,
-    """ The Cancel button. """
+    Rectangle = 2,
+    """ Use rectangular fence.  """
 
-    OkCancel = 5
-    """ Both the Ok and the Cancel button. """
-
-    YesNo = 6
-    """ Both a Yes and a No button. """
-
-    YesCancel = 7
-    """ Yes and cancel button. """
-
-    YesNoCancel = 8
-    """ Yes, No and Cancel button. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            DialogButtons.Ok: "Ok",
-            DialogButtons.Cancel: "Cancel",
-            DialogButtons.OkCancel: "OkCancel",
-            DialogButtons.Yes: "Yes",
-            DialogButtons.No: "No",            
-            DialogButtons.YesNo: "YesNo",
-            DialogButtons.YesCancel: "YesCancel",
-            DialogButtons.YesNoCancel: "YesNoCancel"                        
-        }
-        return switcher.get(self, "Invalid button id")
-
-
-class LoadPosition(Enum):
-    """ An enumeration containing the possible load positions.
-     
-        Not all load positions are available on all probe stations.
+    SoftwareLimit = 3
+    """ Use software limits on axis. 
+    
+        A Large rectangular fence around the chuck motion ares. Collisions with the prober housing are possible 
+        (TS-2000; tilted front door)
     """
 
-    Front = 0,
-    """ The Front Load position. All probe station have a front load position."""
-
-    Side = 1
-    """ The Side Load position. The side load position is optional and only present on systems with a side loader, a cassette loader or a wafer wallet. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
+    def toSentioArg(self):
+        """ Convert the SoftwareFence enumerator into a string SENTIO understands. 
+        
         """
         switcher = {
-            LoadPosition.Front: "front",
-            LoadPosition.Side: "side"
+            SoftwareFence.Disabled: 'Disable',
+            SoftwareFence.Rectangle: 'Rectangle',
+            SoftwareFence.Round: 'Round',
+            SoftwareFence.SoftwareLimit: 'SoftwareLimit',
         }
-        return switcher.get(self, "Invalid Load position")
-
+        return switcher.get(self, "Invalid SoftwareFence parameter")
+    
 
 class VceZReference(Enum):
     """ Reference for Vce z motions. """
@@ -1334,8 +1577,7 @@ class VceZReference(Enum):
     """ Move stage relative to current position. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
+        """ Convert the VceZReference enumerator into a string SENTIO understands. 
         """
         switcher = {
             VceZReference.Zero: "Z",
@@ -1344,204 +1586,22 @@ class VceZReference(Enum):
         return switcher.get(self, "Invalid vce z reference")
 
 
-class SoftwareFence(Enum):
-    Disabled = 0,
-    Round = 1,
-    Rectangle = 2,
-    SoftwareLimit = 3
-
-    def toSentioArg(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            SoftwareFence.Disabled: 'Disable',
-            SoftwareFence.Rectangle: 'Rectangle',
-            SoftwareFence.Round: 'Round',
-            SoftwareFence.SoftwareLimit: 'SoftwareLimit',
-        }
-        return switcher.get(self, "Invalid SoftwareFence parameter")
-
-
-class ImagePattern(Enum):
-    align = 0,
-    home = 1,
-    diealignpos1 = 2,
-    diealignpos2 =3,
-    twoPt = 4,
-    calc = 5
-
-    def toSentioArg(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            ImagePattern.align: 'align',
-            ImagePattern.home: 'home',
-            ImagePattern.diealignpos1: 'diealignpos1',
-            ImagePattern.diealignpos2: 'diealignpos2',
-            ImagePattern.twoPt: '2pt',
-            ImagePattern.calc: 'calc'
-        }
-        return switcher.get(self, "Invalid image pattern parameter")
-
-
-class ProbeXYReference(Enum):
-    """ Position reference for mororized probe movements. """
-
-    Zero = 0,
-    """ Move relative to axis zero. """
-
-    Home = 1,
-    """ Move relative to probe home. """
-
-    Current = 2,
-    """ Move relative to current position. """
-
-    def toSentioAbbr(self):
-        """ Convert the ProbeXYReference enumerator into a string SENTIO understands. """
-        switcher = {
-            ProbeXYReference.Zero: "Zero",
-            ProbeXYReference.Home: "Home",
-            ProbeXYReference.Current: "Current",
-        }
-        return switcher.get(self, "Invalid probe xy reference")
-
-
-class ProbeZReference(Enum):
-    """ Position reference for probe z motions. """
-
-    Zero = 0,
-    """ Move relative to axis zero. (absolute) """
+class WorkArea(Enum):
+    """ An enumeration containing probe station work areas. """
+    Probing = 0,
+    """ The probing work are is the area in which the chuck is under the downward lookin microscope. This is where the wafer is probed. """
     
-    Current = 1,
-    """ Move relative to Current position. """
-
-    Contact = 2,
-    """ Move relative to contact height. """
-    
-    Separation = 3
-    """ Move relative to separation height. """
+    Offaxis = 1,
+    """ The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card. """
 
     def toSentioAbbr(self):
-        """ Convert the ProbeZReference enumerator into a string SENTIO understands.
+        """ Convert the WorkArea enumerator into a string SENTIO understands. 
         """
         switcher = {
-            ProbeZReference.Zero: "Zero",
-            ProbeZReference.Current: "Current",
-            ProbeZReference.Contact: "Contact",
-            ProbeZReference.Separation: "Separation"
+            WorkArea.Probing: "Probing",
+            WorkArea.Offaxis: "Offaxis",
         }
-        return switcher.get(self, "Invalid probe z reference")
-
-
-class ProbeSentio(Enum):
-    """ An enumeration containing a list of position for motorized probes. """
-
-    East = 0,
-    """ Probe is on the right side of the chuck. """
-
-    West = 1,
-    """ Probe is on the left side of the chuck. """
-
-    North = 2,
-    """ Probe is at the back side of the prober."""
-
-    South = 3
-    """ Probe is on the front side of the prober. """
-
-    def toSentioAbbr(self):
-        """ Convert the ProbeSentio enumerator into a string SENTIO understands. """
-        switcher = {
-            ProbeSentio.East: "East",
-            ProbeSentio.West: "West",
-            ProbeSentio.North: "North",
-            ProbeSentio.South: "South"
-        }
-        return switcher.get(self, "Invalid Probe reference")
-
-
-class ExecuteCompensation(Enum):
-    AlignDie = 0,
-    MapScan = 1,
-    Topography =2,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ExecuteCompensation.AlignDie: "AlignDie",
-            ExecuteCompensation.MapScan: "MapScan",
-            ExecuteCompensation.Topography: "Topography",
-        }
-        return switcher.get(self, "Invalid compensation type")
-
-
-
-class ExecuteAction(Enum):
-    """ Generic enumeration for execute actions. """
-
-    Execute = 0,
-    """ Execute the action. """
-
-    Abort = 1,
-    """ Abort an ongoing action. """
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            ExecuteAction.Execute: "execute",
-            ExecuteAction.Abort: "abort",
-        }
-        return switcher.get(self, "Invalid ExecuteAction function")
-
-
-class PtpaFindTipsMode(Enum):
-    OnAxis = 0,
-    OffAxis = 1,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-            @private
-        """
-        switcher = {
-            PtpaFindTipsMode.OnAxis: "OnAxis",
-            PtpaFindTipsMode.OffAxis: "OffAxis",
-        }
-        return switcher.get(self, "Invalid PTPA_Find_Tips_Mode function")
-
-
-class DieCompensationType(Enum):
-    DieAlign = 0,
-    MapScan = 1,
-    Topography = 2,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            DieCompensationType.DieAlign: "DieAlign",
-            DieCompensationType.MapScan: "MapScan",
-            DieCompensationType.Topography: "Topography",
-        }
-        return switcher.get(self, "Invalid Compensation_Type function")
-
-
-class DieCompensationMode(Enum):
-    Lateral = 0,
-    Vertical = 1,
-    Both = 2,
-    ProbeCard = 3,
-    SkateDetection = 4,
-
-    def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
-        switcher = {
-            DieCompensationMode.Lateral: "Lateral",
-            DieCompensationMode.Vertical: "Vertical",
-            DieCompensationMode.Both: "Both",
-            DieCompensationMode.ProbeCard: "ProbeCard",
-            DieCompensationMode.SkateDetection: "SkateDetection",
-        }
-        return switcher.get(self, "Invalid DieCompensationMode function")
+        return switcher.get(self, "Invalid chuck site")
 
 
 class ZPositionHint(Enum):
@@ -1565,7 +1625,7 @@ class ZPositionHint(Enum):
     """ Chuck is at transfer position. This is used for the chuck only when the loader is doing a wafer transfer internally. """
 
     def toSentioAbbr(self):
-        """ Converts the enumerator into somthing a string SENTIO can understand. """
+        """ Converts the ZPositionHint enumerator into somthing a string SENTIO can understand. """
         switcher = {
             ZPositionHint.Default: "Default",
             ZPositionHint.Contact: "Contact",
