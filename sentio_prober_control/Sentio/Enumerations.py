@@ -418,7 +418,6 @@ class DetectionAlgorithm(Enum):
     WaferDetector = 2
 
     def toSentioAbbr(self):
-        """ Convert the DetectionAlgorithm enumerator into a string SENTIO understands. """
         switcher = {
             DetectionAlgorithm.Keypoint: "Keypoint",
             DetectionAlgorithm.ProbeDetector: "ProbeDetector",
@@ -698,7 +697,7 @@ class Module(Enum):
         wafermap and Vision module will also be present (unless you have a purely manual 
         station)
 
-        Arguments:
+        Attributes:
             Wafermap (0): The wafermap module. This module is used for wafer alignment and wafer mapping.
             Vision (1): The vision module. This module is used for die alignment and wafer inspection.
             Setup (2): The setup module. This module is used for setting up the probe station.
@@ -927,19 +926,19 @@ class TestSelection(Enum):
     
 
 class ScopeXYReference(Enum):
-    """ Position reference for scope motions. """
+    """ Position reference for scope motions. 
+    
+        Attributes:
+            Zero (0): Use absolute scope coordinates.
+            Home (1): Use coordinates with respect to the scope home position.
+            Relative (2): Use coordinates with respect to the current scope position.
+    """
     
     Zero = 0,
-    """ Use absolute scope coordinates. """
-
     Home = 1,
-    """ Use coordinates with respect to the scope home position."""
-
     Relative = 2
-    """ Use coordinates with respect to the current scope position."""
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             ScopeXYReference.Zero: "Z",
             ScopeXYReference.Home: "H",
@@ -949,16 +948,17 @@ class ScopeXYReference(Enum):
 
 
 class ScopeZReference(Enum):
-    """ Scope z reference for scoep motions. """
+    """ Scope z reference for scoep motions. 
+    
+        Attributes:
+            Zero (0): Use absolute scope coordinates.
+            Relative (1): Use coordinates with respect to the current scope position.
+    """
 
     Zero = 0,
-    """ Move relative to the physical axis zero position. """
-
     Relative = 1
-    """ Move relative to the current position. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             ScopeZReference.Zero: "Z",
             ScopeZReference.Relative: "R"
@@ -967,12 +967,17 @@ class ScopeZReference(Enum):
 
 
 class ProbeZReference(Enum):
+    """ Position reference for probe z motions.
+    
+        Attributes:
+            Zero (0): Use absolute probe coordinates.
+            Relative (1): Use coordinates with respect to the current probe position.
+    """
+
     Zero = 0,
     Relative = 1,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-        """
         switcher = {
             ProbeZReference.Zero: "Z",
             ProbeZReference.Relative: "R",
@@ -981,22 +986,21 @@ class ProbeZReference(Enum):
 
 
 class ProbeSentio(Enum):
-    """ An enumeration containing a list of position for motorized probes. """
+    """ An enumeration containing a list of position for motorized probes. 
+    
+        Attributes:
+            East (0): Probe is on the right side of the chuck.
+            West (1): Probe is on the left side of the chuck.
+            North (2): Probe is at the back side of the prober.
+            South (3): Probe is on the front side of the prober.
+    """
 
     East = 0,
-    """ Probe is on the right side of the chuck. """
-
     West = 1,
-    """ Probe is on the left side of the chuck. """
-
     North = 2,
-    """ Probe is at the back side of the prober."""
-
     South = 3
-    """ Probe is on the front side of the prober. """
 
     def toSentioAbbr(self):
-        """ Convert the ProbeSentio enumerator into a string SENTIO understands. """
         switcher = {
             ProbeSentio.East: "East",
             ProbeSentio.West: "West",
@@ -1007,19 +1011,19 @@ class ProbeSentio(Enum):
 
 
 class ProbeXYReference(Enum):
-    """ Position reference for mororized probe movements. """
+    """ Position reference for mororized probe movements. 
+    
+        Attributes:
+            Zero (0): Use absolute probe coordinates.
+            Home (1): Use coordinates with respect to the probe home position.
+            Current (2): Use coordinates with respect to the current probe position.
+    """
 
     Zero = 0,
-    """ Move relative to axis zero. """
-
     Home = 1,
-    """ Move relative to probe home. """
-
     Current = 2,
-    """ Move relative to current position. """
 
     def toSentioAbbr(self):
-        """ Convert the ProbeXYReference enumerator into a string SENTIO understands. """
         switcher = {
             ProbeXYReference.Zero: "Zero",
             ProbeXYReference.Home: "Home",
@@ -1029,23 +1033,21 @@ class ProbeXYReference(Enum):
     
 
 class ProbeZReference(Enum):
-    """ Position reference for probe z motions. """
+    """ Position reference for probe z motions. 
+    
+        Attributes:
+            Zero (0): Use absolute probe coordinates.
+            Current (1): Use coordinates with respect to the current probe position.
+            Contact (2): Use coordinates with respect to the contact height.
+            Separation (3): Use coordinates with respect to the separation height.
+    """
 
     Zero = 0,
-    """ Move relative to axis zero. (absolute) """
-    
     Current = 1,
-    """ Move relative to Current position. """
-
     Contact = 2,
-    """ Move relative to contact height. """
-    
     Separation = 3
-    """ Move relative to separation height. """
 
     def toSentioAbbr(self):
-        """ Convert the ProbeZReference enumerator into a string SENTIO understands.
-        """
         switcher = {
             ProbeZReference.Zero: "Zero",
             ProbeZReference.Current: "Current",
@@ -1056,11 +1058,17 @@ class ProbeZReference(Enum):
   
 
 class PtpaFindTipsMode(Enum):
+    """ Specifies the mode used by ptpa tip finding.
+
+        Attributes:
+            OnAxis (0): Use on axis tip finding.
+            OffAxis (1): Use off axis tip finding.
+    """
+
     OnAxis = 0,
     OffAxis = 1,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             PtpaFindTipsMode.OnAxis: "OnAxis",
             PtpaFindTipsMode.OffAxis: "OffAxis",
@@ -1077,144 +1085,103 @@ class RemoteCommandError:
 
             Have a look at the remote command specification to see which codes are
             supported by your version.
+
+            Attributes:
+                NoError (0): No error occured.
+                InternalError (1): An internal error occured in SENTIO. This is not supposed to happen and you can probably not fix the issue on your own. Please contact SENTIO support.
+                ExecutionError (2): A generic execution error. This is the most widely used error code to signal remote command failure.
+                CommandHandlerNotFound (3): A command handler for a certain subsystem of SENTIO was not found. This may happen when sending commands to a SENTIO module that is not available on a given machine.
+                InvalidCommand (4): not used by SENTIO's native remote command set.
+                InvalidCommandFormat (5): not used by SENTIO's native remote command set.
+                InvalidParameter (6): A remote command parameter is incoreect.
+                InvalidNumberOfParameters (7): The number of submitted remote command parameters is incorect.
+                ArgumentOutOfBounds (8): A submitted parameter exceeds the range of allowed values.
+                FileNotFound (9): A file that was supposed to be loaded by SENTIO was not found.
+                InvalidFileFormat (10): not used by SENTIO's native remote command set.
+                EndOfRoute (11): Stepping reached the end of the route.
+                InvalidOperation (12): The requested operation is not allowed in the current state.
+                NotSupported (13): The requested operation is not supported by the current version of SENTIO.
+                SubsiteNotRoutable (14): The requested subsite is not routable.
+                ProjectRequired (15): A requested operation require an active project.
+                Unused (16): This error code is unused.
+                PrealignmentFailed (17): Prealignment failed.
+                HomePositionNotSet (18): The home position is not set.
+                Timeout (19): A command or operation timed out.
+                PatternNotTrained (20): A required pattern is not trained
+                PatternNotFound (21): A pattern could not be found
+                TooManyPatternsFound (22): Too many patterns were found
+                ContactHeightNotSet (23): The contact height is not set.
+                AutoFocusFailed (24): Auto focus failed on the wafer.
+                TipFocusFailed (25): Auto focus failed on the tips.
+                TipNotFound (26): A tip could not be found.
+                OffsetOverTolerance (27): The offset is over tolerance.
+                CommandPending (30): Returned when the status of an async command is polled with query_command_status and the command is Running
+                AsyncCommandAborted (31): Returned when a async command was aborted prematurely
+                UnknownCommandId (32): Returned when an async command is queried but SENTIO does not know anything about this command id
+                CameraNotCalibrated (35): A camera required for a vision task is not calibrated
+                CameraDoesNotExist (36): A required camera is not installed in the system.
+                AlignAccuracyBad (37): Alignment accuracy over 10 µm
+                SteppingWithWrongZPosition (38): Stepping when Chuck is below Separation
+                FrontDoorOpen (60): The front load door is open
+                LoaderDoorOpen (61): The side door is open
+                FrontDoorLockFail (62): Front door lock cannot be engaged
+                LoaderDoorLockFail (63): Side door lock cannot be engaged
+                SlotOrStationOccupied (64): A slot or station that is the target of a wafer transfer is already occupied
+                SlotOrStationEmpty (65): A slot or station that is the origin of a wafer transfer does not have a wafer
+                ProbeBackDoorOpen (66): The probe back door is open
+                ProbeSideDoorOpen (67): The probe side door is open (Not loader door, only TS2500/SE has this door, the door near the probe back door)
+                VacuumFailed (68): Vacuum failed
+                LoaderTrayDoorOpen (69): The tray door is open
+                LoaderCassetteDoesNotExist (80): The cassette does not exist
+                LoaderSlotNumberError (81): The slot number is not correct
+                LoaderPreAlignerAngleError (83): The prealigner angle is not correct
         """
 
         NoError = 0
-        """ No error occured. """
-
         InternalError = 1
-        """ An internal error occured in SENTIO. This is not supposed to happen and you can probably not fix the issue on your own. Please contact SENTIO support. """
-
         ExecutionError = 2
-        """ A generic execution error. This is the most widely used error code to signal remote command failure. """
-
         CommandHandlerNotFound = 3
-        """ A command handler for a certain subsystem of SENTIO was not found. This may happen when sending commands to a SENTIO module that is not 
-            available on a given machine. """
-
         InvalidCommand = 4
-        """ not used by SENTIO's native remote command set. """
-
         InvalidCommandFormat = 5
-        """ not used by SENTIO's native remote command set. """
-
         InvalidParameter = 6
-        """ A remote command parameter is incoreect.  """
-
         InvalidNumberOfParameters = 7
-        """ The number of submitted remote command parameters is incoreect. """
-
         ArgumentOutOfBounds = 8
-        """ A submitted parameter exceeds the range of allowed values. """
-
         FileNotFound = 9
-        """ A file that was supposed to be loaded by SENTIO was not found. """
-
         InvalidFileFormat = 10
-        """ not used by SENTIO's native remote command set. """
-        
         EndOfRoute = 11
-        """ Stepping reached the end of the route. """
-
         InvalidOperation = 12
-        """ The requested operation is not allowed in the current state. """
-
         NotSupported = 13
-        """ A function is not supported by a specific type of probe station. """
-
         SubsiteNotRoutable = 14
-        """ The target of a stepping command is not marked for test and present. """
-
         ProjectRequired = 15
-        """ A requested operation require an active project."""
-        
         Unused = 16
-        """ This error code is unused. """
-
         PrealignmentFailed = 17
-        """ Prealignment failed. """
-
         HomePositionNotSet = 18
-        """ The home position is not set."""
-
         Timeout = 19
-        """ A command or operation timed out. """
-
         PatternNotTrained = 20
-        """ A required pattern is not trained """
-
         PatternNotFound = 21
-        """ A pattern could not be found """
-
         TooManyPatternsFound = 22
-        """ Too many patterns were found """
-
         ContactHeightNotSet = 23
-        """ The contact height is not set. """
-
         AutoFocusFailed = 24
-        """ Auto focus failed on the wafer. """
-
         TipFocusFailed = 25
-        """ Auto focus failed on the tips """
-
         TipNotFound = 26
-        """  Cound not detect any tip on the probe card needle. """
-
         OffsetOverTolerance = 27
-        """ The new Ptpa offset is gereter than tolerance z. """
-
         CommandPending = 30
-        """ Returned when the status of an async command is polled with query_command_status and the command is Running """
-
         AsyncCommandAborted = 31
-        """ Returned when a async command was aborted prematurely """
-
         UnknownCommandId = 32
-        """ Returned when an async command is queried but SENTIO does not know anything about this command id """
-
         CameraNotCalibrated = 35
-        """" A camera required for a vision task is not calibrated """
-
         CameraDoesNotExist = 36
-        """ A required camera is not installed in the system. """
-
         AlignAccuracyBad = 37
-        """ Alignment accuracy over 10 µm """
-
         SteppingWithWrongZPosition = 38
-        """ Stepping when Chuck is below Separation """
-
         FrontDoorOpen = 60
-        """ The front load door is open """
-
         LoaderDoorOpen = 61
-        """ The side door is open """
-
         FrontDoorLockFail = 62
-        """ Front door lock cannot be engaged """
-
         LoaderDoorLockFail = 63
-        """ Side door lock cannot be engaged """
-
         SlotOrStationOccupied = 64
-        """ A slot or station that is the target of a wafer transfer is already occupied """
-
         SlotOrStationEmpty = 65
-        """ A slot or station that is the origin of a wafer transfer does not have a wafer """
-
         ProbeBackDoorOpen = 66
-        """ The probe back door is open """
-
         ProbeSideDoorOpen = 67
-        """  The probe side door is open (Not loader door, only TS2500/SE has this door, the door near the probe back door) """
-
         VacuumFailed = 68
-        """ The vacuum failed """
-
         LoaderTrayDoorOpen = 69
-        """ The tray door is open """
-
         LoaderCassetteDoesNotExist = 80
         LoaderSlotNumberError = 81
         LoaderPreAlignerAngleError = 83
@@ -1256,7 +1223,6 @@ class RemoteCommandError:
         LoaderWaferOnPrealigner = 169
 
         ThermalSoakingTimeIsNotCorrect = 200
-        """ Soaking time is not correct or unset. """
 
         SiPhMoveHoverFail = 300
         SiPhMoveSeparationFail = 301
@@ -1282,23 +1248,21 @@ class RemoteCommandError:
 
 
 class RoutingPriority(Enum):
-    """ Defines the stepping order """
+    """ Defines the stepping order.
+
+        Attributes:
+            RowUniDir (0): Rows first always step in same direction.
+            ColUniDir (1): Columns first always step in same direction.
+            RowBiDir (2): Rows first. Step odd rows backwards.
+            ColBiDir (3): Columns first. Step odd columns backwards.
+    """
 
     RowUniDir = 0,
-    """ Rows first always step in same direction. """
-
     ColUniDir = 1,
-    """ Columns first always step in same direction. """
-    
     RowBiDir = 2,
-    """ Rows first. Step odd rows backwards. """
-
     ColBiDir = 3
-    """ Columns first. Step odd columns backwards. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-        """
         switcher = {
             RoutingPriority.RowUniDir: "r",
             RoutingPriority.ColUniDir: "c",
@@ -1309,23 +1273,21 @@ class RoutingPriority(Enum):
 
 
 class RoutingStartPoint(Enum):
-    """ Defines the starting point for routing (stepping commands). """
+    """ Defines the starting point for routing (stepping commands). 
+    
+        Attributes:
+            UpperLeft (0): Stepping starts in upper left corner of the map.
+            UpperRight (1): Stepping starts in upper right corner of the map.
+            LowerLeft (2): Stepping stars in lower left corner of the map.
+            LowerRight (3): Stepping starts in lower right corner of the map.
+    """
 
     UpperLeft = 0,
-    """ Stepping starts in upper left corner of the map. """
-
     UpperRight = 1,
-    """ Stepping starts in upper right corner of the map. """
-
     LowerLeft = 2,
-    """ Stepping stars in lower left corner of the map. """
-
     LowerRight = 3
-    """ Stepping starts in lower right corner of the map. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. 
-        """
         switcher = {
             RoutingStartPoint.UpperLeft: "ul",
             RoutingStartPoint.UpperRight: "ur",
@@ -1341,38 +1303,32 @@ class StatusBits:
         SENTIO will encode certain status information into the error code variable.
         This status information does not represent an errors but rather a machine
         status. 
+
+        Attributes:
+            EndOfRoute (1): Stepping reached the end of the route.
+            LastSite (2): Stepping reached the last site of a die.
     """
 
     EndOfRoute = 1
-    """ A stepping command entered the last die of a wafer. """
-
     LastSite = 2
-    """ A stepping command entered the last site of a die. """
 
 
 class SoftwareFence(Enum):
-    """ An enumerator holding software fence implementations. """
+    """ An enumerator holding software fence implementations. 
+    
+        Attributes:
+            Disabled (0): Fence is disabled.
+            Round (1): A round fence around the chuck, excluding aux sites.
+            Rectangle (2): A rectangular fence around the chuck, may include parts of the aux sites.
+            SoftwareLimit (3): Use software limits on axis. A Large rectangular fence around the chuck motion ares. Collisions with the prober housing are possible (TS-2000; tilted front door)
+    """
     
     Disabled = 0,
-    """ Fence is disabled. """
-
     Round = 1,
-    """ A round fence around the chuck, excluding aux sites.  """
-
     Rectangle = 2,
-    """ A rectangular fence around the chuck, may include parts of the aux sites.  """
-
     SoftwareLimit = 3
-    """ Use software limits on axis. 
-    
-        A Large rectangular fence around the chuck motion ares. Collisions with the prober housing are possible 
-        (TS-2000; tilted front door)
-    """
 
     def toSentioArg(self):
-        """ Convert the SoftwareFence enumerator into a string SENTIO understands. 
-        
-        """
         switcher = {
             SoftwareFence.Disabled: 'Disable',
             SoftwareFence.Rectangle: 'Rectangle',
@@ -1383,17 +1339,17 @@ class SoftwareFence(Enum):
     
 
 class VceZReference(Enum):
-    """ Reference for Vce z motions. """
+    """ Reference for Vce z motions. 
+    
+        Attributes:
+            Zero (0): Use absolute Vce coordinates.
+            Relative (1): Use coordinates with respect to the current Vce position.
+    """
 
     Zero = 0,
-    """ Move stage absolute. (relative to axis zero)"""
-
     Relative = 1
-    """ Move stage relative to current position. """
 
     def toSentioAbbr(self):
-        """ Convert the VceZReference enumerator into a string SENTIO understands. 
-        """
         switcher = {
             VceZReference.Zero: "Z",
             VceZReference.Relative: "R"
@@ -1402,16 +1358,17 @@ class VceZReference(Enum):
 
 
 class WorkArea(Enum):
-    """ An enumeration containing probe station work areas. """
-    Probing = 0,
-    """ The probing work are is the area in which the chuck is under the downward lookin microscope. This is where the wafer is probed. """
+    """ An enumeration containing probe station work areas. 
     
+        Attributes:
+            Probing (0): The probing work are is the area in which the chuck is under the downward lookin microscope. This is where the wafer is probed.
+            Offaxis (1): The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card.
+    """
+
+    Probing = 0,
     Offaxis = 1,
-    """ The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card. """
 
     def toSentioAbbr(self):
-        """ Convert the WorkArea enumerator into a string SENTIO understands. 
-        """
         switcher = {
             WorkArea.Probing: "Probing",
             WorkArea.Offaxis: "Offaxis",
@@ -1424,23 +1381,24 @@ class ZPositionHint(Enum):
     
         Not all values are used by all stages. A scope does not have a contact height
         and a chuck Hover height may be disabled by SENTIO.
+
+        Attributes:
+            Default (0): Used internally only. Essentially means the value is unset or undefined.
+            Contact (1): Stage is at contact position.
+            Hover (2): Stage is at hover position.
+            Separation (3): Stage is at separation position
+            Lift (4): Stage is at Lift position.
+            Transfer (5): Chuck is at transfer position. This is used for the chuck only when the loader is doing a wafer transfer internally.
     """
 
     Default = 0,
-    """ Used internally only. Essentially means the value is unset or undefined. """
     Contact = 1,
-    """ Stage is at contact position. """
     Hover = 2,
-    """ Stage is at hover position. """
     Separation = 3,
-    """ Stage is at separation position """
     Lift = 4,
-    """ Stage is at Lift position. """
     Transfer = 5
-    """ Chuck is at transfer position. This is used for the chuck only when the loader is doing a wafer transfer internally. """
 
     def toSentioAbbr(self):
-        """ Converts the ZPositionHint enumerator into somthing a string SENTIO can understand. """
         switcher = {
             ZPositionHint.Default: "Default",
             ZPositionHint.Contact: "Contact",

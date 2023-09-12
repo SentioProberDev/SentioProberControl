@@ -6,10 +6,17 @@ nav:
   - Probe Station Control: 
     - SentioProber: SentioProber.md
     - ProberException: ProberException.md
+    - Response: Response.md
   - CommandGroups:
      - AuxCommandGroup: AuxCommandGroup.md
      - LoaderCommandGroup: LoaderCommandGroup.md
-     - WafermapCommandGroup: WafermapCommandGroup.md
+     - Wafermap:
+        - WafermapCommandGroup: WafermapCommandGroup.md
+        - WafermapBinsCommandGroup: WafermapBinningCommandGroup.md
+        - WafermapDieCommandGroup: WafermapDieCommandGroup.md
+        - WafermapPathCommandGroup: WafermapPathCommandGroup.md
+        - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
+        - WafermapSubsiteGroup: WafermapSubsiteGroup.md                        
   - Enumerations: Enumerations.md
 
 theme:

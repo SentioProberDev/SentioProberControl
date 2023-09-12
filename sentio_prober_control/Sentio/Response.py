@@ -9,13 +9,17 @@ class Response:
         Sentio's remote command response is a comma separated string that contains three fields
         which represent 4 data items. (error code and status code are combined)
 
-        :param errc: The error code.
-        :param stat: The status code.
-        :param cmd_id: The async command id. (only used by async commands)
-        :param msg: The response message.
     """
+
     def __init__(self, errc: int, stat: int, cmd_id: int, msg: str):
-        """ Creates a new Response object. """
+        """ Creates a new Response object. 
+
+            Args:        
+                errc (int): The error code.
+                stat (int): The status code.
+                cmd_id (int): The async command id. (only used by async commands)
+                msg (str): The response message.
+        """
         self.__errc = errc
         self.__stat = stat
         self.__cmd_id = cmd_id
@@ -33,7 +37,8 @@ class Response:
             - an async command id (only used by async commands)
             - a response message
 
-            :return: A Response object created from the information in SENTIO's response string.
+            Returns:
+                response (Resppnse): A Response object created from the information in SENTIO's response string.
         """
         tok = resp.split(",", 2)
 
@@ -49,14 +54,20 @@ class Response:
         #resp.dump()
         return resp
 
+
     @staticmethod
     def check_resp(str_resp : str) -> 'Response':
         """ A static method that parses a response string and raises an exception if the response indicates an error. 
             
-            :param str_resp: The response string to parse.
-            :return: A Response object created from the information in SENTIO's response string. If the response represents 
-                    an error an exception is raised instead of returning a Response object.
-            :raises: ProberException if the response indicates an error.
+            Args:
+                str_resp (str): The response string to parse.
+
+            Returns:
+                response (Response): A Response object created from the information in SENTIO's response string. If the response represents 
+                                     an error an exception is raised instead of returning a Response object.
+            
+            Raises:
+                ProberException: If the response indicates an error.
         """
         resp = Response.parse_resp(str_resp)
         if not resp.ok():
@@ -64,22 +75,27 @@ class Response:
 
         return resp
 
+
     def check(self):
         """ Raises an exception if this response indicates an error.
         
-            :raises: ProberException if the response indicates an error.
+            Raises:
+                ProberException: If the response indicates an error.
         """
         if not self.ok():
             raise ProberException(self.message(), self.errc())
+
 
     def cmd_id(self) -> int:
         """ The async commans id returned by SENTIO. 
         
             If the remote command is not an async command 0 is returned.
 
-            :return: The async command id returned by SENTIO.
+            Returns:
+                cmd_id (int): The async command id returned by SENTIO.
         """
         return self.__cmd_id
+
 
     def errc(self) -> int:
         """ The error code returned by SENTIO. 
@@ -87,41 +103,44 @@ class Response:
             The meaning of the error code is documented in the SENTIO's remote command documentation.
             It is also used by the enumerator RemoteCommandError.
 
-            :return: The error code returned by SENTIO.
+            Returns:
+                errc (int): The error code returned by SENTIO.
         """
         return self.__errc
 
+
     def message(self) -> str:
         """ The response message returned by SENTIO.
-            :return: The response message returned by SENTIO.
+            
+            Returns:
+                msg (str): The response message returned by SENTIO.
         """
         return self.__msg
 
+
     def status(self):
         """ The status coode extracted from the response.
-            :return: The status code returned by SENTIO.
+
+            Returns:
+                stat (int): The status code returned by SENTIO.
         """
         return self.__stat
 
+
     def ok(self) -> str:
-        """ Returns True if the response indicates no error."""
+        """ Returns True if the response indicates no error.
+        
+            Returns:
+                ok (bool): True if the response indicates no error, False otherwise.
+        """
         return self.__errc == 0
+
 
     @deprecated("Use print() instead")
     def dump(self) -> None:
-        """ Prints the content of the response object to the console.
-        
-            .. deprecated:: 23.2.0 Use print() instead
-            Used for debugging purposes.
-        """
         print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))
 
 
     def print(self) -> None:
-        """ Prints the content of the response object to the console.
-
-            .. versionadded:: 23.2.0
-
-            Used for debugging purposes.
-        """
+        """ Prints the content of the response object to the console. """
         print("errc={0}; stat={1}; msg=\"{2}\"; id={3}".format(self.__errc, self.__stat, self.__msg, self.__cmd_id))

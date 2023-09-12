@@ -16,50 +16,38 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 class WafermapCommandGroup(ModuleCommandGroupBase):
     """ This class represents the SENTIO command group for wafermap related commands. 
-    
         You are not meant to instantiate objects of this class directly! This class
         is instantiated by the prober implementation.
 
-        Example:
-        >>> from sentio_prober_control.Sentio.ProberSentio import *
-        >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
-        >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
-        >>> prober.map.create(200)
+        Examples:
+
+        ```py
+        from sentio_prober_control.Sentio.ProberSentio import *
+        from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
+
+        prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
+        prober.map.create(200)
+        ```
+
+        Attributes:
+            bins (WafermapBinsCommandGroup): Commnd group with functions for setting up binning tables.
+            die (WafermapDieCommandGroup): A group to set up specific dies on the wafermap (add/remove them).
+            path (WafermapPathCommandGroup): A group to set up test paths.
+            poi (WafermapPoiCommandGroup): A group to set up points of interest.
+            subsites (WafermapSubsiteGroup): A group to set up subsites.
     """
 
     def __init__(self, comm):
-        """ Creates the wafermap command group. 
-        
-            The wafermap command group contains several other command groups that handle
-            aspects of the wafermap and stepping.
-
-            @private
-        """
         super().__init__(comm, 'map')
+
         self.__end_of_route: bool = False
 
         self.bins : WafermapBinsCommandGroup = WafermapBinsCommandGroup(comm)
-        """ A group to set up the binning."""
-
         self.compensation : WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
-        """ A command group with functions for setting up and executing x,y and z compensation.
-            
-            .. deprecated:: 23.2 Use VisionCompensationGroup instead
-
-            @private
-        """
-
         self.die : WafermapDieCommandGroup = WafermapDieCommandGroup(comm)
-        """ A group to set up specific dies on the wafermap (add/remove them)."""
-
         self.path : WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
-        """ A group the handle setting up tests paths. """
-
         self.poi : WafermapPoiCommandGroup = WafermapPoiCommandGroup(comm)
-        """ A group for working with points of interest."""
-
         self.subsites : WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
-        """ A group the handle subsites. """
 
 
     def bin_step_next_die(self, bin_value: int, site: int = None) -> Tuple[int, int, int]:
@@ -67,11 +55,16 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         
             This command wraps the "map:bin_step_next_die" remote command.
 
-            :param bin_value: The bin value to set for the current die.
-            :param site: The subsite index of the next die to move to. Defaults to None. By default the current subsite is retained.
-            :raises: ProberException if an error occured.
-            :return: A tuple with the column, row and site index representing the position after the step command.
+            Args:
+                bin_value (int): The bin value to set for the current die.
+                site (int): The subsite index of the next die to move to. Defaults to None. By default the current subsite is retained.
+            
+            Returns:
+                columns (int): The column index of the die after stepping
+                rows (int): The row index of the die after stepping
+                subsite (int): The subsite index of the die after stepping
         """
+
         # 2021-09-17: bugfix: when no site is given current site must be retained
         if site is None:
             self._comm.send(f'map:bin_step_next_die {bin_value}')
@@ -94,9 +87,10 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         
             Wraps Sentios "map:create" remote command.
 
-            :param diameter: The diameter of the wafer.
-            :raises: ProberException if an error occured.            
+            Args:
+                diameter (float): The diameter of the wafer.
         """
+
         self._comm.send(f"map:create {diameter}")
         Response.check_resp(self._comm.read_line())
 
@@ -106,10 +100,11 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:create_rect" remote command.
 
-            :param cols: The number of columns.
-            :param rows: The number of rows.
-            :raises: ProberException if an error occured.
+            Args:
+                cols (int): The number of columns.
+                rows (int): The number of rows.
         """
+
         self._comm.send("map:create_rect {0}, {1}".format(cols, rows))
         Response.check_resp(self._comm.read_line())
 
