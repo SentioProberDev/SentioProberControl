@@ -16,7 +16,6 @@ class AutoAlignCmd(Enum):
     TwoPt = 2,
 
     def toSentioAbbr(self):
-        """ Convert the AutoAlignCmd enumerator into a string SENTIO understands. """
         switcher = {
             AutoAlignCmd.AutoDieSize: "auto",
             AutoAlignCmd.UpdateDieSize: "update",
@@ -41,7 +40,6 @@ class AutoFocusAlgorithm(Enum):
     AutoCorrelation = 3 , 
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             AutoFocusAlgorithm.Gradient: "Gradient",
             AutoFocusAlgorithm.Bandpass: "Bandpass",
@@ -65,7 +63,6 @@ class AutoFocusCmd(Enum):
     GoTo = 2
 
     def toSentioAbbr(self):
-        """ Convert the AutoFocusCmd enumerator into a string SENTIO understands. """
         switcher = {
             AutoFocusCmd.Calibration: "C",
             AutoFocusCmd.Focus: "F",
@@ -94,7 +91,6 @@ class AxisOrient(Enum):
     UpLeft = 3
 
     def toSentioAbbr(self):
-        """ Convert the AxisOrient enumerator into a string SENTIO understands. """
         switcher = {
             AxisOrient.DownRight: "DR",
             AxisOrient.DownLeft: "DL",
@@ -118,7 +114,6 @@ class BinSelection(Enum):
     SubsitesOnly = 2
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             BinSelection.All: "a",
             BinSelection.DiesOnly: "d",
@@ -150,7 +145,6 @@ class CameraMountPoint(Enum):
     Vce2 = 5,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             CameraMountPoint.Scope: "scope",
             CameraMountPoint.Scope2: "scope2",
@@ -199,7 +193,6 @@ class ChuckSite(Enum):
     ChuckCamera = 5,
 
     def toSentioAbbr(self):
-        """ Convert the ChuckSite enumerator into a string SENTIO understands. """
         switcher = {
             ChuckSite.Wafer: "Wafer",
             ChuckSite.AuxLeft: "AuxLeft",
@@ -225,7 +218,6 @@ class ChuckThetaReference(Enum):
     Relative = 2
 
     def toSentioAbbr(self):
-        """ Convert the ChuckThetaReference enumerator into a string SENTIO understands. """
         switcher = {
             ChuckThetaReference.Zero: "Z",
             ChuckThetaReference.Site: "S",
@@ -252,7 +244,6 @@ class ChuckXYReference(Enum):
     User = 4,
 
     def toSentioAbbr(self):
-        """ Convert the ChuckXYReference enumerator into a string SENTIO understands. """
         switcher = {
             ChuckXYReference.Zero: "Z",
             ChuckXYReference.Home: "H",
@@ -281,7 +272,6 @@ class ChuckZReference(Enum):
     Separation = 4
 
     def toSentioAbbr(self):
-        """ Convert the ChuckZReference enumerator into a string SENTIO understands. """
         switcher = {
             ChuckZReference.Zero: "Z",
             ChuckZReference.Relative: "R",
@@ -304,7 +294,6 @@ class ColorScheme(Enum):
     ColorFromValue = 1
 
     def toSentioAbbr(self):
-        """ Convert the ColorScheme enumerator into a string SENTIO understands. """
         switcher = {
             ColorScheme.ColorFromBin: 0,
             ColorScheme.ColorFromValue: 1
@@ -376,7 +365,7 @@ class DefaultPattern(Enum):
     
         Each pattern is used for a specific purpose internally.
 
-        Arguments:
+        Attributes:
             Align (0): The pattern used for wafer alignment.
             Home (1): Pattern used for finding the home position
             DieAlignPos1 (3): First pattern used for the die alignment. (on diced and taped wafers)
@@ -395,7 +384,6 @@ class DefaultPattern(Enum):
     Ptpa = 7,
 
     def toSentioAbbr(self):
-        """ Convert the DefaultPattern enumerator into a string SENTIO understands. """
         switcher = {
             DefaultPattern.Align: "align",
             DefaultPattern.Home: "home",
@@ -419,7 +407,7 @@ class DetectionAlgorithm(Enum):
         far greater reliability than the outdated models based on haar 
         cascades.
 
-        Arguments:
+        Attributes:
             Keypoint (0): A Keypoint / ORB detector.
             ProbeDetector (1): Deep learning based AI model trained on various types of probe tips.
             WaferDetector (2): Deep learning based AI model trained on wafer structures.
@@ -455,7 +443,6 @@ class DetectionCoordindates(Enum):
     Roi = 2
 
     def toSentioAbbr(self):
-        """ Convert the DetectionCoordindates enumerator into a string SENTIO understands. """
         switcher = {
             DetectionCoordindates.Image: "Image",
             DetectionCoordindates.Fov: "Fov",
@@ -488,7 +475,6 @@ class DialogButtons(Enum):
     YesNoCancel = 8
 
     def toSentioAbbr(self):
-        """ Convert the DialogButtons enumerator into a string SENTIO understands. """
         switcher = {
             DialogButtons.Ok: "Ok",
             DialogButtons.Cancel: "Cancel",
@@ -522,7 +508,6 @@ class DieCompensationMode(Enum):
     SkateDetection = 4,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             DieCompensationMode.Lateral: "Lateral",
             DieCompensationMode.Vertical: "Vertical",
@@ -547,7 +532,6 @@ class DieCompensationType(Enum):
     Topography = 2,
 
     def toSentioAbbr(self):
-        """ Convert the DieCompensationType enumerator into a string SENTIO understands. """
         switcher = {
             DieCompensationType.DieAlign: "DieAlign",
             DieCompensationType.MapScan: "MapScan",
@@ -608,7 +592,6 @@ class FindPatternReference(Enum):
     CenterOfRoi = 1
 
     def toSentioAbbr(self):
-        """ Convert the FindPatternReference enumerator into a string SENTIO understands. """
         switcher = {
             FindPatternReference.DieHome: "DieHome",
             FindPatternReference.CenterOfRoi: "CenterOfRoi"
@@ -625,7 +608,6 @@ class ImagePattern(Enum):
     calc = 5
 
     def toSentioArg(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             ImagePattern.align: 'align',
             ImagePattern.home: 'home',
@@ -643,7 +625,6 @@ class IMagProZReference(Enum):
     Center = 2
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             IMagProZReference.Zero: "Zero",
             IMagProZReference.Relative: "Relative",
@@ -676,7 +657,6 @@ class LoaderStation(Enum):
     IdReader = 7
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             LoaderStation.Cassette1: "cas1",
             LoaderStation.Cassette2: "cas2",
@@ -703,7 +683,6 @@ class LoadPosition(Enum):
     Side = 1
 
     def toSentioAbbr(self):
-        """ Convert the LoadPosition enumerator into a string SENTIO understands. """
         switcher = {
             LoadPosition.Front: "front",
             LoadPosition.Side: "side"
@@ -740,7 +719,6 @@ class Module(Enum):
     Dashboard = 7
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             Module.Wafermap: "Wafermap",
             Module.Vision: "Vision",
@@ -762,7 +740,6 @@ class OnTheFlyMode(Enum):
     ProbeCard =3,
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             OnTheFlyMode.Lateral: "AlignDie",
             OnTheFlyMode.Vertical: "MapScan",
@@ -781,16 +758,16 @@ class OrientationMarker(Enum):
 
         Today mostly notches are used ar orientation markes as they reduce the 
         waste of wafer space.
+
+        Attributes:
+            Notch (0): Wafer uses a notch.
+            Flat (1): Wafer uses a flat.
     """
     
     Notch = 0,
-    """ Wafer uses a notch. """
-
     Flat = 1
-    """ Wafer uses a flat. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             OrientationMarker.Notch: "Notch",
             OrientationMarker.Flat: "Flat"
@@ -803,16 +780,16 @@ class PoiReferenceXy(Enum):
     
         Each point of interest can either be defines with respect to the center of the stage.
         Or with respect to the center of the die.
+
+        Attributes:
+            DieCenter (0): Use die center as the position reference.
+            StageCenter (1): Use stage center as the position reference.
     """
 
     DieCenter = 0,
-    """ Use die center as the position reference. """
-
     StageCenter = 1
-    """ Use stage center as the position reference. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """       
         switcher = {
             PoiReferenceXy.DieCenter: "DieCenter",
             PoiReferenceXy.StageCenter: "StageCenter"
@@ -821,16 +798,17 @@ class PoiReferenceXy(Enum):
 
 
 class ProjectFileInfo(Enum):
-    """ An enumerator containing the different aspects of retrieving current project info. """
+    """ An enumerator containing the different aspects of retrieving current project info. 
+    
+        Attributes:
+            NameOnly (0): Return only the project name.
+            FullPath (1): Return the full path to the project file.
+    """
     
     NameOnly = 0,
-    """ Return only the project name. """
-    
     FullPath = 1,
-    """ Return the full path to the project file. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             ProjectFileInfo.NameOnly: "Name",
             ProjectFileInfo.FullPath: "FullPath"
@@ -839,16 +817,17 @@ class ProjectFileInfo(Enum):
 
 
 class PtpaType(Enum):
-    """ Defines the type of Probe to Pad Alignment used by SENTIO. """
+    """ Defines the type of Probe to Pad Alignment used by SENTIO. 
+    
+        Attributes:
+            OffAxis (0): Use off-axis PTPA with the platen camera and the chuck camera looking up to the probe tips.
+            OnAxis (1): Use on axis PTPA with the scope camera looking down on the probe tips.
+    """
     
     OffAxis = 0,
-    """ Use off-axis PTPA with the platen camera and the chuck camera looking up to the probe tips. """
-
     OnAxis = 1,
-    """ Use on axis PTPA with the scope camera looking down on the probe tips. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             PtpaType.OffAxis: "offaxis",
             PtpaType.OnAxis: "onaxis"
@@ -861,33 +840,27 @@ class Stage(Enum):
      
         A stage is a piece of hardware that can be controlled by motors and moved in x, y and
         probably also z direction.  
+
+        Attributes:
+            Chuck (0): The chuck stage. This is where the wafer is placed.
+            Scope (1): The scope stage controls the downward looking microscope. This is an optional stage but it will be present on most probe stations.
+            Vce (2): First Vce stage. Vce Stages can only be moved in z-direction.
+            Vce2 (3): Second Vce stage. Vce Stages can only be moved in z-direction.
+            Probe1 (4): First motorized probe.
+            Probe2 (5): Second motorized probe.
+            Probe3 (6): Third motorized probe.
+            Probe4 (7): Fourth motorized probe.
     """
     Chuck = 0,
-    """ The chuck stage. This is where the wafer is placed. """
-
     Scope = 1,
-    """ The scope stage controls the downward looking microscope. This is an optional stage but it will be present on most probe stations. """
-
     Vce = 2,
-    """ First Vce stage. Vce Stages can only be moved in z-direction."""
-
     Vce2 = 3,
-    """ Second Vce stage. Vce Stages can only be moved in z-direction."""
-
     Probe1 = 4,
-    """ First motorized probe. """
-
     Probe2 = 5,
-    """ Second motorized probe. """
-
     Probe3 = 6,
-    """ Third motorized probe. """
-
     Probe4 = 7
-    """ Fourth motorized probe. """
 
     def toSentioAbbr(self):
-        """ Convert the Stage enumerator into a string SENTIO understands. """
         switcher = {
             Stage.Chuck: "chuck",
             Stage.Scope: "scope",
@@ -902,19 +875,19 @@ class Stage(Enum):
     
 
 class SteppingContactMode(Enum):
-    """ This mode defines how the chuck behaves during steeping. """
+    """ This mode defines how the chuck behaves during steeping. 
+    
+        Attributes:
+            BackToContact (0): Chuck will move back to contact position after stepping.
+            StepToSeparation (1): Chuck will move to separation position after stepping.
+            LockContact (2): Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command.
+    """
 
     BackToContact = 0,
-    """ Chuck will move back to contact position after stepping. """
-
     StepToSeparation = 1,
-    """ Chuck will move to separation position after stepping. """
-    
     LockContact = 2,
-    """ Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command. """
 
     def toSentioAbbr(self):
-        """ Convert the enumerator into a string SENTIO understands. """
         switcher = {
             SteppingContactMode.BackToContact: "BackToContact",
             SteppingContactMode.StepToSeparation: "StepToSeparation",
@@ -927,38 +900,22 @@ class TestSelection(Enum):
     """ Specifies which dies shall be selected for test. 
     
         If a die is selected for test it is activated in the wafer map.
+
+        Attributes:
+            Nothing (0): Select no dies.
+            Good (1): Select only the good dies.
+            GoodAndUgly (2): Select only the good dies. Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer but may be damaged or have incomplete structures.
+            GoodUglyAndEdge (3): Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map. Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer but may be damaged or have incomplete structures. The dies with at leas one edge outside of the wafer are called edge dies. Those dies are incomplete.                
+            All (4): Select all dies for testing.
     """
 
     Nothing = 0,
-    """ Select no dies. """
-
     Good = 1,
-    """ Select only the good dies. 
-    
-        Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
-    """
-
     GoodAndUgly = 2,
-    """ Select only the good dies. 
-    
-        Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
-        Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer
-        but may be damaged or have incomplete structures.
-    """
-
     GoodUglyAndEdge = 3,
-    """ Good dies are the dies that are completely within the wafer map with no edge lying in the edge area of the map.
-        Ugly dies are the dies with at least one corner in the edge area of the map. The are completely present on the wafer
-        but may be damaged or have incomplete structures. The dies with at leas one edge outside of the wafer are called 
-        edge dies. Those dies are incomplete.
-     """
-
     All = 4
-    """ Select all dies for testing even those that are completely outside of the wafer map. """
-
 
     def toSentioAbbr(self):
-        """ Convert the TestSelection enumerator into a string SENTIO understands. """
         switcher = {
             TestSelection.Nothing: "n",
             TestSelection.Good: "g",
