@@ -7,26 +7,23 @@ from sentio_prober_control.Sentio.CommandGroups.AuxCleaningGroup import  AuxClea
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
 
 class AuxCommandGroup(ModuleCommandGroupBase):
-    """ This command group contains functions for working with auxiliary sites of the chuck. """
+    """ This command group contains functions for working with auxiliary sites of the chuck. 
+        You are not meant to create instances of this class on your own. Instead use the aux property 
+        of the SentioProber class.
+        
+        Attributes:
+            cleaning (AuxCleaningGroup): A subgroup to provide logic for probe cleaning.
+    """
 
     def __init__(self, comm):
-        """ Create a new instance of AuxCommandGroup. 
-            @private
-        """
-
         super().__init__(comm, 'aux')
 
         self.cleaning : AuxCleaningGroup = AuxCleaningGroup(comm)
-        """ A subgroup to provide logic for probe cleaning. """
+
 
     # Ticket #13774 Remove this function. It is already present in the cleaning group!
     @deprecated(reason="duplicated; Use the cleaning group instead.")
     def start_clean(self):
-        """ Start the cleaning process. 
-        
-            This function was marked deprecated on 2023-09-04. It will be removed in a future version.
-            use the command from the cleaning group instead!
-        """
         self._comm.send("aux:cleaning:start")
         resp = Response.check_resp(self._comm.read_line())
         if not resp.ok():

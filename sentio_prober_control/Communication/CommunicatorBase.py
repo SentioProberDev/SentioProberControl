@@ -1,4 +1,3 @@
-""" @private """
 from abc import ABC
 
 class CommunicatorBase(ABC):
@@ -6,8 +5,6 @@ class CommunicatorBase(ABC):
     
         Communicators ore objects that implement different communication protocols
         for talking to the probe station. 
-
-        @private
     """
     _verbose = False
 
@@ -16,8 +13,6 @@ class CommunicatorBase(ABC):
         """ Connect to the probe station.
 
             Must be implemented by the derived class.
-
-            Raises: NotImplementedError
         """
         raise NotImplementedError("CommunicatorBase.connect is not implemented!")
 
@@ -26,8 +21,6 @@ class CommunicatorBase(ABC):
         """ Disconnect from the probe station.
         
             Must be implemented by the derived class.
-            
-            Raises: NotImplementedError
         """
         raise NotImplementedError("CommunicatorBase.disconnect is not implemented!")
 
@@ -36,8 +29,6 @@ class CommunicatorBase(ABC):
         """ Send a command to the probe station.
         
             Must be implemented by the derived class.
-
-            Raises: NotImplementedError
         """
         raise NotImplementedError("CommunicatorBase.send is not implemented!")
 
@@ -46,8 +37,6 @@ class CommunicatorBase(ABC):
         """ Read a line from the probe station.
         
             Must be implemented by the derived class.
-
-            Raises: NotImplementedError
         """
         raise NotImplementedError("CommunicatorBase.read_line is not implemented!")
 

@@ -1,0 +1,35 @@
+site_name: Sentio Prober Control
+
+nav:
+  - Home: index.md
+  - GettingStarted: GettingStarted.md  
+  - Probe Station Control: 
+    - SentioProber: SentioProber.md
+    - ProberException: ProberException.md
+  - CommandGroups:
+     - AuxCommandGroup: AuxCommandGroup.md
+     - LoaderCommandGroup: LoaderCommandGroup.md
+     - WafermapCommandGroup: WafermapCommandGroup.md
+  - Enumerations: Enumerations.md
+
+theme:
+     name: "material"
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  
+plugins: 
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+            paths: [sentio_prober_control]
+            options:
+                show_source: false

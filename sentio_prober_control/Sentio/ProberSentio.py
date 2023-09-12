@@ -1,39 +1,3 @@
-""" This package contains the implementation of the SentioProber class.
-
-    # Overview
-
-    The SentioProber class is your gateway to control a probe station running the MPI SENTIO 
-    Software suite.
-
-    Some functionality is provided directy via member functions of the class.
-    The following example triggers a switch of the active SENTIO module by using the 
-    select_module function:
-
-    >>> from sentio_prober_control.Sentio.ProberSentio import *
-    >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
-    >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
-    >>> prober.select_module(Module.Wafermap)
-
-
-    Most functionality is grouped into so called command groups that are accessible 
-    through the member variables listed below. A command group is merely a class that groups a number 
-    of prober related functions together. The available command groups are:
-    * aux (sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup.AuxCommandGroup)
-    * loader (sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.LoaderCommandGroup)
-    * map (sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup.WafermapCommandGroup)
-    * probe (sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup.ProbeCommandGroup)
-    * qalibria (sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup.QAlibriaCommandGroup)
-    * service (sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup.ServiceCommandGroup)
-    * siph (sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup.ServiceCommandGroup)
-    * status (sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.StatusCommandGroup)
-    * vis (sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup.VisionCommandGroup)
-
-    To access a function associated with a command group simply add the name of the command group to
-    the prober call. The following example would call the switch_all_lights command from the 
-    vision command group:
-
-    >>> prober.vis.switch_all_lights(False)
-"""
 import base64
 import os
 from typing import Tuple
@@ -61,6 +25,17 @@ from sentio_prober_control.Communication.CommunicatorVisa import *
 class SentioProber(ProberBase):
     """ This class represents the SENTIO probe station in python. 
         It provides wrapper for most of the remote commands exposed by SENTIO.
+
+        Attributes:
+            aux (sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup): The aux command group provides access the the aux site modules functionality. 
+            loader (LoaderCommandGroup): The loader command group provides access to the loader modules functionality.
+            map (WafermapCommandGroup): The wafermap command group provides access to the wafermap modules functionality.
+            probe (ProbeCommandGroup): The probe command group provides access to the probe modules functionality.
+            qalibria (QalibriCommandGroup): The qalibria command group provides access to the qalibria modules functionality.
+            service (ServiceCommandGroup): The service command group provides access to the service modules functionality.
+            siph (SiPHCommandGroup): The siph command group provides access to the SiPH modules functionality.
+            status (StatusCommandGroup): The status command group provides access to the dashboard modules functionality. (formerly called status module)
+            vision (VisionCommandGroup): The vision command group provides access to the vision modules functionality.
     """
 
     def __init__(self, comm : CommunicatorBase):
@@ -69,7 +44,8 @@ class SentioProber(ProberBase):
             The prober must be initialized with a communication object that 
             specifies how the system communicates with the probe station.
 
-            :param comm: The communicator to use for communication with the prober.
+            Args:
+                comm (CommunicatorBase): The communicator to use for communication with the prober.
         """
         ProberBase.__init__(self, comm)
 
@@ -77,54 +53,26 @@ class SentioProber(ProberBase):
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
 
         self.aux : AuxCommandGroup = AuxCommandGroup(comm)
-        """ The aux command group provides access the the aux site modules functionality. 
-        
-            Example:
-            >>> from sentio_prober_control.Sentio.ProberSentio import *
-            >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
-            >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
-            >>> prober.aux.cleaning.enable_auto(True)
-        """
-
         self.compensation : CompensationCommandGroup = CompensationCommandGroup(comm)
-        """ Command group for accessing functionalitly for x,y and z-compensation. 
-
-            This command group is deprecated! Use prober.vis.compensation instead.
-
-            @private    
-        """
-
         self.loader : LoaderCommandGroup = LoaderCommandGroup(comm)
-        """ The loader command group provides access to the loader modules functionality. """
-
         self.map : WafermapCommandGroup = WafermapCommandGroup(comm)
-        """ The wafermap command group provides access to the wafermap modules functionality.  """
-
         self.probe : ProbeCommandGroup = ProbeCommandGroup(comm)
-        """ Command group for accessing functionalitly for motorized probes. """
-
         self.qalibria : QAlibriaCommandGroup = QAlibriaCommandGroup(comm)
-        """ Command group for accessing the QAlibria modules functionality. """
-
         self.service : ServiceCommandGroup = ServiceCommandGroup(comm)
-        """ The service command group provides access to the service modules functionality. """
-
         self.siph : SiPHCommandGroup = SiPHCommandGroup(comm)
-        """ The siph command group provides access to the SiPH modules functionality. """
-
         self.status : StatusCommandGroup = StatusCommandGroup(comm)
-        """ The status command group provides access to the dashboard modules functionality. (formerly called status module)"""
-
         self.vision : VisionCommandGroup = VisionCommandGroup(comm)
-        """ The vision command group provides access to the vision modules functionality. """
 
 
     def abort_command(self, cmd_id: int) -> Response:
         """ Stop an ongoing asynchronous remote command.
 
-            :param cmd_id: The id of the async command to abort. 
-            :raises: ProberException if an error occured.            
-            :return: A response object with the result of the command.             
+
+            Args:
+                cmd_id (int): The id of the async command to abort. 
+            
+            Returns:
+                A response object with the result of the command.             
         """
         self.comm.send("abort_command {0}".format(cmd_id))
         return Response.check_resp(self.comm.read_line())
@@ -133,10 +81,13 @@ class SentioProber(ProberBase):
     def clear_contact(self, site: ChuckSite = None):
         """ Clear contact positions.
 
-            :param  site: The chuck site to clear. If None is given all sites will be cleared.
-            :raises: ProberException if an error occured.
-            :return: None
+            Args:
+                site (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
+
+            Returns:
+                A response object with the result of the command.
         """
+
         if site is None:
             self.comm.send("clear_contact")
         else:
@@ -148,11 +99,11 @@ class SentioProber(ProberBase):
     def create_prober(comm_type : str ="tcpip", arg1 = "127.0.0.1:35556", arg2 = None) -> 'SentioProber':
         """ Create an instance of a SentioProber object with a certain type of communication.
          
-            .. versionadded:: 23.2
-
-            :param comm_type: The type of communication to use. Valid values are "tcpip", "gpib" and "visa".
-            :param kwargs: The arguments to pass to the communicator constructor. For tcpip this is a single string specifying address and port like "127.0.0.1:35556". 
-            For gpib these are two parameters. The first one for specifying the type of card (NI/ADLINK), the second one being the gpib address string. 
+            Args:
+                comm_type (str): The type of communication to use. Valid values are "tcpip", "gpib" and "visa".
+                arg1 (object): The first argument to pass to the communicator constructor. For tcpip this is a single string specifying address and port like "127.0.0.1:35556". 
+                        For gpib this is the Card Type. For visa this is the address of the device like "GPIB0::20::INSTR".
+                arg2 (str): Second  argument for the communicator constructor. For gpib this is the address of the device like "GPIB0:20". 
          """
         
         if comm_type == "tcpip":
@@ -171,10 +122,9 @@ class SentioProber(ProberBase):
             This function will transfer a file to the prober. The file will be stored in the position specified by dast.
             The file will be transmitted in base64 encoding which can take some time.
             
-            :param source: The path to the file to transfer.
-            :param dest: The destination path on the prober. Must be a complete path including file name. Make sure that SENTIO has write access to the given destination.
-            :raises: ProberException if an error occured.            
-            :return: None
+            Args:
+                source (str): The path to the file to transfer.
+                dest (str): The destination path on the prober. Must be a complete path including file name. Make sure that SENTIO has write access to the given destination.
         """
         # open file and encode with base64
         if not os.path.isfile(source):
@@ -192,26 +142,23 @@ class SentioProber(ProberBase):
         
             Example: 
         
-            >>> contact, separation, overtravel_dist, hover_gap = get_chuck_site_height(ChuckSite.Wafer)
+                contact, separation, overtravel_dist, hover_gap = get_chuck_site_height(ChuckSite.Wafer)
         
             Gets for chuck site "Wafer" contact height, separation heights ,overtravel distance and hover height
 
-            :param site: The chuck site to query.
-            :raises: ProberException if an error occured.            
-            :return: A tuple with the contact height, separation height, overtravel distance and hover height in micrometer.
+            Args:
+                site (ChuckSite): The chuck site to query.
+                
+            Returns:
+                contact (float): contact height
+                separation (float): separation gap
+                overtravel_dist (float): overtravel distance
+                hover_gap (float): hover gap
         """
         self.comm.send("get_chuck_site_heights {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
-
-        def str_to_bool(v: str):
-            if (v=="0"):
-                return False
-            elif v=="1":
-                return True
-            else:
-                return None
 
         contact = float(tok[0])
         separation = float(tok[1])
@@ -226,13 +173,14 @@ class SentioProber(ProberBase):
          
             Wraps SENTIO's "get_chuck_site_status" remote command.
 
-            :param site: The chuck site to query.
-            :raises: ProberException if an error occured.
-            :return: A tuple with the status of the chuck site. The tuple contains the following values:
-            * hasHome: True if the chuck site has a home position.
-            * hasContact: True if the chuck site has a contact position.
-            * overtravelActive: True if the overtravel is active.
-            * vacuumOn: True if the vacuum is on.    
+            Args:
+                site (ChuckSite): The chuck site to query.
+
+            Returns:
+                hasHome (bool): True if the chuck site has a home position.
+                hasContact (bool): True if the chuck site has a contact position.
+                overtravelActive (bool): True if the overtravel is active.
+                vacuumOn (bool): True if the vacuum is on.    
         """
         self.comm.send("get_chuck_site_status {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
@@ -260,9 +208,14 @@ class SentioProber(ProberBase):
 
             Wraps SENTIO's "get_chuck_theta" remote command.
 
-            :param site: The chuck site to query.
-            :raises: ProberException if an error occured.            
-            :return: The current angle of the chuck site in degrees.
+            Args:
+                site (ChuckSite): The chuck site to query.
+
+            Raises:
+                ProberException: If no available port is found.
+
+            Returns:
+                angle (float): The current angle of the chuck site in degrees.
         """
 
         self.comm.send("get_chuck_theta {0}".format(site.toSentioAbbr()))
@@ -273,10 +226,13 @@ class SentioProber(ProberBase):
     def get_chuck_xy(self, site : ChuckSite, ref : ChuckXYReference) -> Tuple[float, float]:
         """ Get current chuck xy position with respect to a given reference.
 
-            :param site: The chuck site to query.
-            :param ref: The reference to use for the query.
-            :raises: ProberException if an error occured.
-            :return: The actual x,y position in micrometer.
+            Args:
+                site (ChuckSite): The chuck site to query.
+                ref (ChuckXYReference): The reference to use for the query.
+
+            Returns:
+                x (float): x position in micrometer.
+                y (float): y position in micrometer.
         """
 
         if (site is None):
@@ -291,16 +247,6 @@ class SentioProber(ProberBase):
 
     @deprecated(reason="Duplicate functionality; Use get_chuck_xy instead")
     def get_chuck_xy_pos(self) -> Tuple[float, float]:
-        """ Returns the current xy position of the chuck. 
-
-            .. deprecated:: 23.2
-
-            Use get_chuck_xy instead.
-
-            :return: The actual x,y position in micrometer from axis zero.
-           
-        """
-
         self.comm.send('get_chuck_xy')
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -312,22 +258,28 @@ class SentioProber(ProberBase):
     def get_chuck_z(self, ref : ChuckZReference) -> float:
         """ Get chuck z position. 
         
-            :param ref: The reference to use for the query.
-            :raises: ProberException if an error occured.
-            :return: The actual z position of the chuck in micrometer (from axis zero).
+            Args:
+                ref (ChuckZReference): The reference to use for the query.
+
+            Returns:
+                height (float): The actual z position of the chuck in micrometer (from axis zero).
         """
 
-        self.comm.send("get_chuck_z {0}".format(ref.toSentioAbbr()))
+        self.comm.send(f"get_chuck_z {ref.toSentioAbbr()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
     def get_project(self, pfi: ProjectFileInfo = ProjectFileInfo.FullPath) -> str:
         """ Get the name of the current project. 
-            
-            :raises: A ProberException is raised if no project is loaded.
-            :return The name of the current project.
+
+            Args:
+                pfi (ProjectFileInfo): The type of information to get.
+
+            Returns:            
+                project_name (str): The name of the current project.
         """
+
         self.comm.send(f'get_project {pfi.toSentioAbbr()}')
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
@@ -338,9 +290,11 @@ class SentioProber(ProberBase):
 
             The returned position is an absolute position with respect to the axis zero in micrometer.
 
-            :raises: ProberException if an error occured.                               
-            :return: The actual x,y position in micrometer.
+            Returns:
+                x (float): The current x position in micrometer.
+                y (float): The current y position in micrometer.
         """
+
         self.comm.send("get_scope_xy")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -350,9 +304,10 @@ class SentioProber(ProberBase):
     def get_scope_z(self) -> float:
         """ Get scope z position in micrometer from axis zero.
             
-            :raises: ProberException if an error occured.
-            :return: The actual z position in micrometer. 
+            Returns:
+                height (float): The z position in micrometer.
         """
+
         self.comm.send("get_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
@@ -360,9 +315,11 @@ class SentioProber(ProberBase):
 
     def has_chuck_xyz(self) -> bool:
         """ Returns True if the chuck has xyz axes.
-            :raises: ProberException if an error occured.       
-            :return: True if the chuck has xyz axes.
+
+            Returns:
+                has_xyz (bool): True if the chuck has xyz axes.
         """
+        
         self.comm.send("has_chuck_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
@@ -370,9 +327,11 @@ class SentioProber(ProberBase):
 
     def has_scope_xyz(self) -> bool:
         """ Returns True if the scope has xyz axes.
-            :raises: ProberException if an error occured.       
-            :return: True if the scope has xyz axes.
+
+            Returns:
+                has_xyz (bool): True if the scope has xyz axes.
         """
+
         self.comm.send("has_scope_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
@@ -383,6 +342,7 @@ class SentioProber(ProberBase):
             :raises: ProberException if an error occured.       
             :return: True if the scope has xyz axes.
         """
+
         self.comm.send("has_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper()=="YES"
@@ -395,9 +355,6 @@ class SentioProber(ProberBase):
             it will start the initialization process and wait for it to complete.
 
             You do not have to call waitcomplete after this function on your own!
-
-            :raises: ProberException if an error occured.       
-            :return: None
         """
         isInitialized, isMeasuring, isLoaderBusy = self.status.get_machine_status()
 
@@ -415,8 +372,6 @@ class SentioProber(ProberBase):
     def local_mode(self):
         """ Switch the prober back into local mode.
 
-            .. versionadded:: 23.2
-
             The probe station will automatically enter remote mode when a remote command is received. 
             It will remian in remote mode even after the script is finished. This command can be used 
             to switch the machine back into local mode and thus enable its UI.
@@ -429,9 +384,10 @@ class SentioProber(ProberBase):
 
             Wraps SENTIO's "move_chuck_contact" remote command.
 
-            :raises: ProberException if an error occured.
-            :return: The contact height in micrometer from chuck z axis zero.
+            Returns:
+                height (float): The contact height in micrometer from chuck z axis zero.
         """
+
         self.comm.send("move_chuck_contact")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
@@ -439,9 +395,12 @@ class SentioProber(ProberBase):
 
     def move_chuck_home(self) -> Tuple[float, float]:
         """ Move chuck to its home position.
-            :raises: ProberException if an error occured.
-            :return: The actual x,y position after the move in micrometer (with respect to axis zero).   
+
+            Returns:
+                x (float): The x position in micrometer.                    
+                y (float): The y position in micrometer.
         """
+
         self.comm.send("move_chuck_home ")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
