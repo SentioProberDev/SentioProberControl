@@ -29,7 +29,7 @@ dist/
   sentio-prober-control-23.1.2.tar.gz
 ```
 
-## Instructions for updating the documentation
+## Instructions for building the documentation
 
 The documentation needs to be build with MkDocs. The "material" theme is required to build the documentation.
 

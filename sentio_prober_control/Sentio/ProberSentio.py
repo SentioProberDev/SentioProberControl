@@ -339,8 +339,9 @@ class SentioProber(ProberBase):
 
     def has_scope_z(self) -> bool:
         """ Returns true if the microscope has a motorized z axis.
-            :raises: ProberException if an error occured.       
-            :return: True if the scope has xyz axes.
+
+            Returns:
+                True if the scope has z axes.
         """
 
         self.comm.send("has_scope_z")
@@ -407,14 +408,16 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
     
 
-    def move_chuck_load(self, pos: LoadPosition):
+    def move_chuck_load(self, pos: LoadPosition) -> Response:
         """ Move chuck to load position.
          
             Wraps SENTIO's "move_chuck_load" remote command.
 
-            :param  pos: The load position to move to.    
-            :raises: ProberException if an error occured.
-            :Return: A response object with the result of the command.
+            Args:
+                pos (LoadPosition): The load position to move to.    
+            
+            Returns:
+                A response object with the result of the command.
         """
         self.comm.send("move_chuck_load {0}".format(pos.toSentioAbbr()))
         return Response.check_resp(self.comm.read_line())
@@ -422,8 +425,9 @@ class SentioProber(ProberBase):
 
     def move_chuck_separation(self) -> float:
         """ Move the chuck to separation height. 
-            :raises: ProberException if an error occured.
-            :return: The separation height in micrometer from chuck z axis zero.
+            
+            Returns:
+                The separation height in micrometer from chuck z axis zero.
         """
         self.comm.send("move_chuck_separation ")
         resp = Response.check_resp(self.comm.read_line())
@@ -435,12 +439,11 @@ class SentioProber(ProberBase):
 
             Wraps SENTIO's "move_chuck_site" remote command.
 
-            :raises: ProberException if an error occured.
-            :return: A tuple consisting of 4 floating point values representing the chuck position after the move. The tuple contains the following values:
-            * x: The x position in micrometer.
-            * y: The y position in micrometer.
-            * z: The z height in micrometer.
-            * theta: The theta angle in degrees.
+            Returns:
+                x (float): The x position in micrometer.
+                y (float): The y position in micrometer.
+                z (float): The z height in micrometer.
+                theta (float): The theta angle in degrees.
         """
         self.comm.send("move_chuck_site {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
@@ -453,9 +456,9 @@ class SentioProber(ProberBase):
 
             Wraps SENTIO's "move_chuck_theta" remote command.
 
-            :param ref: The reference to use for the move.
-            :param angle: The angle to move to in degrees.
-            :raises: ProberException if an error occured.
+            Args:
+                ref: The reference to use for the move.
+                angle: The angle to move to in degrees.
         """
         self.comm.send("move_chuck_theta {0}, {1}".format(ref.toSentioAbbr(), angle))
         resp = Response.check_resp(self.comm.read_line())
@@ -467,11 +470,14 @@ class SentioProber(ProberBase):
 
             Wraps SENTIO's "move_chuck_xy" remote command.
 
-            :param ref: The reference to use for the move.
-            :param x: The x position to move to in micrometer.
-            :param y: The y position to move to in micrometer.
-            :raises: ProberException if an error occured.
-            :return: The actual x and y position in micrometer after the move.
+            Args:
+                ref: The reference to use for the move.
+                x: The x position to move to in micrometer.
+                y: The y position to move to in micrometer.
+
+            Returns:
+                x: The chuck x position after the move in micrometer (from zero)
+                y: The chuck y position after the move in micrometer (from zero)
         """
         self.comm.send("move_chuck_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
         resp = Response.check_resp(self.comm.read_line())
@@ -485,24 +491,28 @@ class SentioProber(ProberBase):
 
             Wraps SENTIO's "move_chuck_z" remote command.
 
-            :param ref: The z-reference to use for the move.
-            :param z: The z position to move to in micrometer.
-            :raises: ProberException if an error occured.
-            :return: The actual z position in micrometer after the move.
+            Args:
+                ref: The z-reference to use for the move.
+                z: The z position to move to in micrometer.
+            
+            Returns:
+                The actual z position in micrometer after the move.
         """
         self.comm.send("move_chuck_z {0}, {1}".format(ref.toSentioAbbr(), z))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
-    def move_chuck_work_area(self, site:WorkArea):
+    def move_chuck_work_area(self, site:WorkArea) -> Response:
         """ Move the chuck to a given work area.
          
             Wraps SENTIO's "move_chuck_work_area" remote command.   
 
-            :param site: The work area to move to.
-            :raises: ProberException if an error occured.
-            :return: A response object with the result of the command.
+            Args:
+                site: The work area to move to.
+            
+            Returns:
+                A response object with the result of the command.
         """
         self.comm.send("move_chuck_work_area {0}".format(site.toSentioAbbr()))
         return Response.check_resp(self.comm.read_line())
@@ -511,11 +521,14 @@ class SentioProber(ProberBase):
     def move_scope_xy(self, ref: ScopeXYReference, x:float, y:float) -> Tuple[float, float]:
         """ Move scope to a given xy position. 
 
-            :param ref: The reference to use for the move.
-            :param x: The x position to move to in micrometer.
-            :param y: The y position to move to in micrometer.
-            :raises: ProberException if an error occured.                   
-            :return The actual x,y position in micrometer after the move.
+            Args:
+                ref: The reference to use for the move.
+                x: The x position to move to in micrometer.
+                y: The y position to move to in micrometer.
+
+            Returns:
+                x: Scope x position after the move in micrometers (from zero)
+                y: Scope x position after the move in micrometers (from zero)
         """
         self.comm.send("move_scope_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
         resp = Response.check_resp(self.comm.read_line())
@@ -524,7 +537,7 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_scope_lift(self, state: bool) -> float:
+    def move_scope_lift(self, state: bool):
         """ Move scope to its lift position.
          
             The scope lift position is a position where the scope is
@@ -532,8 +545,8 @@ class SentioProber(ProberBase):
             possible are of unhindered operation when changing probe cards
             or other maintenance tasks.
 
-            :param state: True to move to the lift position, False to move away from the lift position.  
-            :return: None
+            Args:
+                state: True to move to the lift position, False to move away from the lift position.  
          """
         self.comm.send(f"move_scope_lift {state}")
         Response.check_resp(self.comm.read_line())
@@ -541,10 +554,13 @@ class SentioProber(ProberBase):
 
     def move_scope_z(self, ref: ScopeZReference, z: float) -> float:
         """ Move scope to a given z position. 
-            :param ref: The reference to use for the move.
-            :param z: The z position to move to in micrometer.
-            :raises: ProberException if an error occured.                               
-            :return: The actual z position in micrometer after the move.
+
+            Args:
+                ref: The reference to use for the move.
+                z: The z position to move to in micrometer.
+
+            Returns:
+                The actual z position in micrometer after the move.
         """
         self.comm.send("move_scope_z {0}, {1}".format(ref.toSentioAbbr(), z))
         resp = Response.check_resp(self.comm.read_line())
@@ -554,10 +570,12 @@ class SentioProber(ProberBase):
     def move_vce_z(self, stage:Stage, ref: VceZReference, z: float) -> float:
         """ Move VCE stage to a given z position.
          
-            :param ref: The reference to use for the move.
-            :param z: The z position to move to in micrometer.
-            :raises: ProberException if an error occured.
-            :return: The actual z position in micrometer after the move.
+            Args:
+                ref: The reference to use for the move.
+                z: The z position to move to in micrometer.
+            
+            Returns:
+                The actual z position in micrometer after the move.
         """
         if stage != Stage.Vce and stage != Stage.Vce2:
             raise ProberException(f"This command can only be applied to vce stages! (stage={0})")
@@ -567,10 +585,11 @@ class SentioProber(ProberBase):
         return float(resp.message())
 
 
-    def name(self):
+    def name(self) -> str:
         """ Returns the name of the prober. 
         
-            :return: This function will always return the string "SentioProber".
+            Returns:
+                This function will always return the string "SentioProber".
         """
         return self.__name
 
@@ -580,16 +599,15 @@ class SentioProber(ProberBase):
         
             Wraps SENTIO's "open_project" remote command.
 
-            :param project: The name or path of the project to open. If a full 
-            path to the trex project file is given SENTIO will try to open this file. 
-            If the argument does not contain a path SENTIO will look in its default
-            project folder for a matching project and open it.
-            :param restore_heights: If set to true SENTIO will restore the contact 
-            heights from the project. Be carefull when using this option because
-            the contact heights may have been become invalid since creating the project 
-            due to a probe card change.
-            :return: A response object with the result of the command.
-            :raises: ProberException if an error occured.
+            Args:
+                project: The name or path of the project to open. If a full 
+                         path to the trex project file is given SENTIO will try to open this file. 
+                         If the argument does not contain a path SENTIO will look in its default
+                         project folder for a matching project and open it.
+                restore_heights: If set to true SENTIO will restore the contact 
+                                 heights from the project. Be carefull when using this option because
+                                 the contact heights may have been become invalid since creating the project 
+                                 due to a probe card change.
         """
         self.comm.send(f"open_project {project}, {restore_heights}")
         Response.check_resp(self.comm.read_line())
@@ -614,7 +632,11 @@ class SentioProber(ProberBase):
                 if (resp.errc()!=RemoteCommandError.CommandPending):
                     break;</code></pre>
 
-            :param cmd_id: The id of the async command to query.
+            Args:
+                cmd_id: The id of the async command to query.
+
+            Returns:
+                A response object with the result of the command.            
         """
         self.comm.send("query_command_status {0}".format(cmd_id))
         resp = Response.parse_resp(self.comm.read_line())
@@ -625,8 +647,6 @@ class SentioProber(ProberBase):
         """ Save the SENTIO configuration file. 
             
             Wraps SENTIO's "save_config" remote command.
-
-            :raises: ProberException if an error occured.
         """
         self.comm.send("save_config")
         Response.check_resp(self.comm.read_line())
@@ -636,9 +656,6 @@ class SentioProber(ProberBase):
         """ Save the current SENTIO project. 
         
             Wraps SENTIO's "save_project" remote command.
-
-            :return: A response object with the result of the command.
-            :raises: ProberException if an error occured.
         """
         self.comm.send("save_project " + project)
         Response.check_resp(self.comm.read_line())
@@ -652,12 +669,11 @@ class SentioProber(ProberBase):
 
             This function wraps the "select_module" remote command of SENTIO.
 
-            :param module: The module to activate.
-            :raises: ProberException if an error occured.
-            :return: A response object with the result of the command.
+            Args:
+                module: The module to activate.
         """
         self.comm.send(f"select_module {module.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
     
 
     def send_cmd(self, cmd: str) -> Response:
@@ -674,7 +690,8 @@ class SentioProber(ProberBase):
             It will then return a Response object with the extracted data from 
             SENTIO's response.
 
-            :return: The response from the prober.
+            Returns:
+                A response object with the result of the command.
         """
         self.comm.send(cmd)
         return Response.check_resp(self.comm.read_line())
@@ -684,39 +701,38 @@ class SentioProber(ProberBase):
         """ Sets z position information of a chuck site
         
             Example:
-            
-            >>> prober.set_chuck_site_height(ChuckSite.Wafer,16000,250,20,50)
+
+                prober.set_chuck_site_height(ChuckSite.Wafer,16000,250,20,50)
 
             Will set the contact height of the wafer site to 16000 µm with a separation height of 250 µm an overtravel of 20 and a hover height of 50
 
-            :param site: The chuck site to query.
-            :param contact: The new contact height in micrometer.
-            :param separation: The new separation height in micrometer.
-            :param overtravel_dist: The new overtravel distance in micrometer.
-            :param hover_gap: The new hover gap in micrometer.
-            :raises: ProberException if an error occured.
-            :return: None
+            Args:
+                site: The chuck site to query.
+                contact: The new contact height in micrometer.
+                separation: The new separation height in micrometer.
+                overtravel_dist: The new overtravel distance in micrometer.
+                hover_gap: The new hover gap in micrometer.
         """
         par: str = "{},{},{},{},{}".format(site.toSentioAbbr(), contact, separation, overtravel_dist, hover_gap)
         self.comm.send("set_chuck_site_heights {0}".format(par))
         Response.check_resp(self.comm.read_line())
 
 
-    def set_stepping_contact_mode(self, mode: SteppingContactMode):
+    def set_stepping_contact_mode(self, mode: SteppingContactMode) -> None:
         """ Change the stepping contact mode.
          
             The stepping contact mode defines what happens during stepping over a wafer.
             The following modes are available:
+
             * BackToContact: The chuck will step into contact position
             * StepToSeparation: The chuck will step into separation position. You have to move into contact with a seaparate command.
             * LockContack: The Chuck is not allowed to leave contact position automatically as part of a stepping command. You have to move into separation with a separate command bevore being able to step to the next die..
 
-            :param mode: The stepping contact mode to set.
-            :raises: ProberException if an error occured.
-            :return: A response object with the result of the command.
+            Args:
+                 mode: The stepping contact mode to set.
          """
-        self.comm.send("set_stepping_contact_mode {0}".format(mode.toSentioAbbr()))
-        return Response.check_resp(self.comm.read_line())
+        self.comm.send(f"set_stepping_contact_mode {mode.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
 
 
     def show_hint(self, msg : str, subtext: str) -> None:
@@ -727,10 +743,9 @@ class SentioProber(ProberBase):
 
             This function wraps SENTIO's "status:show_hint" remote command.
 
-            :param msg: The message to display.
-            :param subtext: The subtext to display.
-            :raises: ProberException if an error occured.                        
-            :return: None            
+            Args:
+                msg: The message to display.
+                subtext: The subtext to display.
         """
         self.comm.send(f'status:show_hint \"{msg}\", \"{subtext}\"')
         Response.check_resp(self.comm.read_line())
@@ -742,14 +757,14 @@ class SentioProber(ProberBase):
             Hints pop up in SENTIO's lower left corner. This function will display a hint with a button 
             and only return once the button has been pressed.
 
-            :param msg: The message to display.
-            :param subtext: The subtext to display. Subtext is displayed in a second line with a slightly smaller font.
-            :param button_caption: The caption of the button.
-            :param timeout: An optional timeout in seconds after which the dialog will be closed automatically. (default = 180 s)
-            :param lock_ui: An optional flag that determines wether the UI shall be locked. Most of the UI is disabled in 
-            remote mode anyway. This button affects only the on screen interactions on the right side of the main module view. (default = True)
-            :raises: ProberException if an error occured.                        
-            :return: None
+            Args:
+                msg: The message to display.
+                subtext: The subtext to display. Subtext is displayed in a second line with a slightly smaller font.
+                button_caption: The caption of the button.
+                timeout: An optional timeout in seconds after which the dialog will be closed automatically. (default = 180 s)
+                lock_ui: An optional flag that determines wether the UI shall be locked. Most of the UI is disabled in 
+                         remote mode anyway. This button affects only the on screen interactions on the right side of the main 
+                         module view. (default = True)
         """
         self.comm.send(f'status:start_show_hint \"{msg}\", \"{subtext}\", \"{button_caption}\", \"{lock_ui}\"')
         resp = Response.check_resp(self.comm.read_line())
@@ -762,12 +777,14 @@ class SentioProber(ProberBase):
     def show_message(self, msg : str, buttons : DialogButtons,  caption : str, dialog_timeout : int = 180) -> DialogButtons:
         """ Pop up a message dialog in SENTIO and wait for the result.
 
-            :param msg: The message to display.
-            :param buttons: The buttons to display.
-            :param caption: The caption of the message box.
-            :param dialog_timeout: An optional dialog timeout in seconds after which the dialog will be closed automatically.
-            :raises: ProberException if an error occured.
-            :return: The button that was as an DialogButtons enum value.
+            Args:
+                msg: The message to display.
+                buttons: The buttons to display.
+                caption: The caption of the message box.
+                dialog_timeout: An optional dialog timeout in seconds after which the dialog will be closed automatically.
+            
+            Returns:
+                The button that was as an DialogButtons enum value.
         """
         self.comm.send('status:start_show_message {0}, {1}, {2}'.format(msg, buttons.toSentioAbbr(), caption))
         resp = Response.check_resp(self.comm.read_line())
@@ -791,7 +808,7 @@ class SentioProber(ProberBase):
         raise ProberException("Invalid dialog button return value")
     
     
-    def start_initialization(self) -> Response:
+    def start_initialization(self):
         """ Start the initialization of the probe station. 
         
             This function will start the initialization of the prober. This is an 
@@ -799,22 +816,19 @@ class SentioProber(ProberBase):
 
             The initialization process will take some time to complete. Use
             waitcomplete to wait for the initialization to complete.
-
-            :raises: ProberException if an error occured.
-            :return: A response object with the result of the command.
         """
         self.comm.send("start_initialization")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def wait_all(self, timeout: int = 90) -> Response:
         """ Wait until all async commands have finished.
 
-            added in SENTIO 3.6.2        
-
-            :param timeout: The timeout in seconds.
-            :raises: ProberException if an error occured.            
-            :return: A response object with the result of the command.
+            Args:
+                timeout: The timeout in seconds.
+            
+            Returns:
+                A response object with the result of the command.
         """
         self.comm.send(f"wait_all {timeout}")
         return Response.check_resp(self.comm.read_line())
@@ -822,13 +836,13 @@ class SentioProber(ProberBase):
 
     def wait_complete(self, cmd_id: int, timeout: int = 90) -> Response:
         """ Wait for a single async command to complete.
-            :param cmd_id: The id of the async command to wait for.
-            :param timeout: The timeout in seconds.
-            :raises: ProberException if an error occured.            
-            :return: A response object with the result of the command. 
+            
+            Args:
+                cmd_id: The id of the async command to wait for.
+                timeout: The timeout in seconds.
+            
+            Returns:                    
+                A response object with the result of the command. 
         """
         self.comm.send("wait_complete {0}, {1}".format(cmd_id, timeout))
         return Response.check_resp(self.comm.read_line())
-
-
-
