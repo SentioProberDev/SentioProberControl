@@ -28,3 +28,15 @@ dist/
   sentio-prober-control-23.1.2-py3-none-any.whl
   sentio-prober-control-23.1.2.tar.gz
 ```
+
+## Instructions for updating the documentation
+
+The documentation needs to be build with MkDocs. The "material" theme is required to build the documentation.
+
+```py -m pip install mkdocs mkdocstrings[python] mkdocs-material```
+
+If you have done this you can create a local server to host the documentation:
+
+ ```py -m mkdocs serve```
+
+To view the documentation open a browser and input "http://localhost:8000/" in the address line.
