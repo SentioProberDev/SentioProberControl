@@ -49,7 +49,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         Response.check_resp(self._comm.read_line())#
 
 
-    def set_bin(self, bin_value: int, col: int, row: int, site=None) -> None:
+    def set_bin(self, bin_value: int, col: int, row: int, site : int = None) -> None:
         """ Set a single bin.
 
             Wraps SENTIO's map:bins:set_bin remote command.
@@ -61,9 +61,10 @@ class WafermapBinsCommandGroup(CommandGroupBase):
                 site: The site of the die.
         """
         if site is None:
-            self._comm.send("map:bins:set_bin {0}, {1}, {2}".format(bin_value, col, row))
+            self._comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}")
         else:
-            self._comm.send("map:bins:set_bin {0}, {1}, {2}, {3}".format(bin_value, col, row, site))
+            self._comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}, {site}")
+
         Response.check_resp(self._comm.read_line())
 
 

@@ -16,7 +16,11 @@ nav:
         - WafermapDieCommandGroup: WafermapDieCommandGroup.md
         - WafermapPathCommandGroup: WafermapPathCommandGroup.md
         - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
-        - WafermapSubsiteGroup: WafermapSubsiteGroup.md                        
+        - WafermapSubsiteGroup: WafermapSubsiteGroup.md
+     - ProbeCommandGroup: ProbeCommandGroup.md
+     - ServiceCommandGroup: ServiceCommandGroup.md     
+     - Vísion:
+        - VisionCommandGroup: VisionCommandGroup.md
   - Enumerations: Enumerations.md
 
 theme:

@@ -16,8 +16,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
             
             Wraps SENTIO's map:path:create_from_bin remote command.
 
-            :param bin_val: The bin value to use.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                bin_val: The bin value to use.
            """
         self._comm.send("map:path:create_from_bins {0}".format(bin_val))
         Response.check_resp(self._comm.read_line())
@@ -28,9 +28,11 @@ class WafermapPathCommandGroup(CommandGroupBase):
 
             Wraps SENTIO's map:path:get_die remote command.
 
-            :param seq: The sequence number of the die.
-            :raises ProberException: if the command could not be executed successfully.
-            :return: A tuple with the column and row coordinates of the die.
+            Args:
+                seq: The sequence number of the die.
+            
+            Returns:
+                A tuple with the column and row coordinates of the die.
         """
         self._comm.send("map:path:get_die {0}".format(seq))
         resp = Response.check_resp(self._comm.read_line())
@@ -43,8 +45,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
 
             Wraps SENTIO's map:path:select_dies remote command.
 
-            :param selection: The selection of dies to select.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                selection: The selection of dies to select.
         """
         self._comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
@@ -56,9 +58,9 @@ class WafermapPathCommandGroup(CommandGroupBase):
 
             Wraps SENTIO's map:set_routing remote command.
 
-            :param sp: The start point of the routing.
-            :param pri: The priority of the routing (rows first, columns first).
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                sp: The start point of the routing.
+                pri: The priority of the routing (rows first, columns first).
         """
         self._comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())

@@ -13,13 +13,14 @@ class WafermapSubsiteGroup(CommandGroupBase):
 
     def __init__(self, comm, wafermap_command_group):
         """ Creates a new WafermapSubsiteGroup object. 
-            @private
+        
+            You are not meant to directly create objects of this class.
         """
         super().__init__(comm)
         self._parent_command_group = wafermap_command_group
 
 
-    def add(self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight):
+    def add(self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight) -> None:
         """ Add a single subsite to the wafermap.
 
             Creates a new subsite definition in SENTIO. The subsite position is defined
@@ -28,26 +29,26 @@ class WafermapSubsiteGroup(CommandGroupBase):
             
             Wraps the "map:subsite:add" remote command.      
 
-            :param id: The subsite id.
-            :param x: The x position of the subsite in micrometer as an offset to the die home position.
-            :param y: The y position of the subsite in micrometer as an offset to the die home position.            
-            :param orient: The axis orientation used fot the submitted values
-            :raises ProberException: if the remote command fails.            
-            :return: None
-
+            Args:
+                id: The subsite id.
+                x: The x position of the subsite in micrometer as an offset to the die home position.
+                y: The y position of the subsite in micrometer as an offset to the die home position.            
+                orient: The axis orientation used fot the submitted values
         """
         self._comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
 
 
-    def bin_step_next(self, bin : int):
+    def bin_step_next(self, bin : int) -> Tuple[int, int, int]:
         """ Step to the next active subsite and assign bin code to current subsite.  
         
             Wraps the "map:subsite:bin_step_next" remote command.   
 
-            :param bin: The bin code to assign to the current subsite.
-            :raises ProberException: if the remote command fails.            
-            :return: A tuple containing the wafermap row, column and subsite index after the step.
+            Args:
+                bin: The bin code to assign to the current subsite.
+
+            Returns:
+                A tuple containing the wafermap row, column and subsite index after the step.
         """        
         self._comm.send(f'map:subsite:bin_step_next {bin}')
 
@@ -58,15 +59,17 @@ class WafermapSubsiteGroup(CommandGroupBase):
         return int(tok[0]), int(tok[1]), int(tok[2])
     
 
-    def get(self, idx) -> Tuple[str, float, float]:
+    def get(self, idx : int) -> Tuple[str, float, float]:
         """ Returns the subsite definition for a subsite with a given index.
 
             Wraps the "map:subsite:get" remote command.
 
-            :param idx: The index of the subsite.
-            :raises ProberException: if the remote command fails.
-            :return: A tuple containing the subsite id, the x position and the y position of the subsite. 
-            X and y positions are relative to the die home position.
+            Args:
+                idx: The index of the subsite.
+
+            Returns:
+                A tuple containing the subsite id, the x position and the y position of the subsite. 
+                X and y positions are relative to the die home position.
         """
         self._comm.send("map:subsite:get {0}".format(idx))
         resp = Response.check_resp(self._comm.read_line())
@@ -80,8 +83,8 @@ class WafermapSubsiteGroup(CommandGroupBase):
 
             Wraps the "map:subsite:get_num" remote command.
          
-            :raises ProberException: if the remote command fails.
-            :return: The number of subsites in the wafermap.
+            Returns:
+                The number of subsites in the wafermap.
         """
         self._comm.send("map:subsite:get_num")
         resp = Response.check_resp(self._comm.read_line())
@@ -92,21 +95,18 @@ class WafermapSubsiteGroup(CommandGroupBase):
         """ Reset Sentios subsite definitions. 
         
             Wraps the "map:subsite:reset" remote command.
-
-            :raises ProberException: if the remote command fails.
-            :return: None
         """
         self._comm.send("map:subsite:reset")
         Response.check_resp(self._comm.read_line())
 
 
-    def step_next(self):
+    def step_next(self) -> Tuple[int, int, int]:
         """ Step to the next active subsite. 
         
             Wraps the "map:subsite:step_next" remote command.   
 
-            :raises ProberException: if the remote command fails.            
-            :return: A tuple containing the wafermap row, column and subsite index after the step.
+            Returns:
+                A tuple containing the wafermap row, column and subsite index after the step.
         """
         self._comm.send('map:subsite:step_next')
 

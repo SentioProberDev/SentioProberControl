@@ -67,7 +67,6 @@ class SentioProber(ProberBase):
     def abort_command(self, cmd_id: int) -> Response:
         """ Stop an ongoing asynchronous remote command.
 
-
             Args:
                 cmd_id (int): The id of the async command to abort. 
             
@@ -78,14 +77,11 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite = None):
+    def clear_contact(self, site: ChuckSite = None) -> Response:
         """ Clear contact positions.
 
             Args:
                 site (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
-
-            Returns:
-                A response object with the result of the command.
         """
 
         if site is None:
@@ -116,7 +112,7 @@ class SentioProber(ProberBase):
             raise ValueError("Unknown prober type")
 
 
-    def file_transfer(self, source: str, dest: str):
+    def file_transfer(self, source: str, dest: str) -> Response:
         """ Transfer a file to the prober. 
         
             This function will transfer a file to the prober. The file will be stored in the position specified by dast.
@@ -134,7 +130,7 @@ class SentioProber(ProberBase):
         encoded = base64.b64encode(file_bytes).decode('ascii')
 
         self.comm.send(f'file_transfer {dest}, {encoded}')
-        Response.check_resp(self.comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
     def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:

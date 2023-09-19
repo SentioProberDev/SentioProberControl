@@ -12,11 +12,9 @@ class WafermapDieCommandGroup(CommandGroupBase):
         """ Add a die to the wafermap. If the die is already part of the map
             nothing happens.
 
-            .. versionadded:: 23.2
-            
-            :param x: The column of the die.
-            :param y: The row of the die.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:            
+                x: The column of the die.
+                y: The row of the die.
         """
         self._comm.send(f"map:die:add {x}, {y}")
         Response.check_resp(self._comm.read_line())
@@ -30,9 +28,9 @@ class WafermapDieCommandGroup(CommandGroupBase):
 
             Wraps SENTIO's map:die:remove remote command.
 
-            :param x: The column of the die.
-            :param y: The row of the die.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                x: The column of the die.
+                y: The row of the die.
         """
         self._comm.send(f"map:die:remove {x}, {y}")
         Response.check_resp(self._comm.read_line())
@@ -41,11 +39,9 @@ class WafermapDieCommandGroup(CommandGroupBase):
     def select(self, x: int, y: int) -> None:
         """ Selects a die for testing by adding it to the test path.
 
-            .. versionadded:: 23.2
-
-            :param x: The column of the die.
-            :param y: The row of the die.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                x: The column of the die.
+                y: The row of the die.
         """
         self._comm.send(f"map:die:add {x}, {y}")
         Response.check_resp(self._comm.read_line())
@@ -54,11 +50,9 @@ class WafermapDieCommandGroup(CommandGroupBase):
     def unselect(self, x: int, y: int) -> None:
         """ Unselects a die from testing by removing it from the test path.
             
-            .. versionadded:: 23.2
-
-            :param x: The column of the die.
-            :param y: The row of the die.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                x: The column of the die.
+                y: The row of the die.
         """
         self._comm.send(f"map:die:unselect {x}, {y}")
         Response.check_resp(self._comm.read_line())

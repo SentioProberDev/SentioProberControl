@@ -1,7 +1,7 @@
 from abc import ABC
 
 class CommunicatorBase(ABC):
-    """Base class for all communicators.
+    """ Base class for all communicators.
     
         Communicators ore objects that implement different communication protocols
         for talking to the probe station. 
