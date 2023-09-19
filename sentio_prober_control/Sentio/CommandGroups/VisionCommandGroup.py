@@ -1,3 +1,4 @@
+import base64
 from typing import Tuple
 
 from sentio_prober_control.Communication import CommunicatorBase
@@ -242,18 +243,30 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def snap_image(self, file: str) -> Response:
+    def snap_image(self, file: str, include_overlays : bool = False, download : bool = False) -> Response:
         """ Save a snapshot of the current camera image to a file.
 
             Args:
                 file: The file name to save the image to.
+                overlays: If True, the image will contain overlays and will be a snapshot of the SENTIO window as seen on the operating system. This type of
+                          image may have a significantly reduced resolution. If False, the raw image will be saved as obtained from the camera.
+                download: If True, the image will be downloaded from the prober. If False, the image will be saved on the prober.
 
             Returns:
                 A Response object. 
         """
-
-        self._comm.send("vis:snap_image {0}".format(file))
-        return Response.check_resp(self._comm.read_line())
+        
+        if download:
+            self._comm.send(f"vis:snap_image **download**, {include_overlays}")
+            resp = Response.check_resp(self._comm.read_line())
+            jpeg_data = base64.b64decode(resp.message())
+            
+            # Save the file locally
+            with open(file, 'wb') as f:
+                f.write(jpeg_data)
+        else:
+            self._comm.send(f"vis:snap_image {file}, {include_overlays}")
+            return Response.check_resp(self._comm.read_line())
 
     def switch_light(self, camera: CameraMountPoint, stat: bool) -> Response:
         self._comm.send("vis:switch_light {0}, {1}".format(camera.toSentioAbbr(), stat))

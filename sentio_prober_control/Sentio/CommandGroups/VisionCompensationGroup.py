@@ -4,7 +4,10 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 
 class VisionCompensationGroup(CommandGroupBase):
-    """ This command group contains functions for working with x,y and z compensation. """
+    """ This command group contains functions for working with x,y and z compensation. 
+    
+    
+    """
 
     def __init__(self, comm):
         """ @private """
