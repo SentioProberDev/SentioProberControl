@@ -9,7 +9,6 @@ class WafermapBinsCommandGroup(CommandGroupBase):
 
     def clear_all(self) -> None:
         """ Clear all bins. Remove the bin code from all dies and sibsites.
-            :raises ProberException: if the command could not be executed successfully.
         """
         self._comm.send("map:bins:clear_all")
         Response.check_resp(self._comm.read_line())
@@ -30,8 +29,8 @@ class WafermapBinsCommandGroup(CommandGroupBase):
          
             Wraps SENTIO's map:bins:load remote command.
 
-            :param file: The file to load the binning table from.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                file: The file to load the binning table from.
         """
         self._comm.send(f"map:bins:load {file}")
         Response.check_resp(self._comm.read_line())
@@ -42,9 +41,9 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         
             Wraps SENTIO's map:bins:set_all remote command.
 
-            :param bin_val: The bin value to set.
-            :param selection: The selection of dies to set the bin value for.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                bin_val: The bin value to set.
+                selection: The selection of dies to set the bin value for.
         """
         self._comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())#
@@ -55,11 +54,11 @@ class WafermapBinsCommandGroup(CommandGroupBase):
 
             Wraps SENTIO's map:bins:set_bin remote command.
 
-            :param bin_value: The bin value to set.
-            :param col: The column of the die.#
-            :param row: The row of the die.
-            :param site: The site of the die.
-            :raises ProberException: if the command could not be executed successfully.
+            Args:
+                bin_value: The bin value to set.
+                col: The column of the die.#
+                row: The row of the die.
+                site: The site of the die.
         """
         if site is None:
             self._comm.send("map:bins:set_bin {0}, {1}, {2}".format(bin_value, col, row))
@@ -70,9 +69,11 @@ class WafermapBinsCommandGroup(CommandGroupBase):
 
     def set_value(self, value: float, col: int, row: int)->None:
         """ Set a value on a single die.
-            :param value: The value to set.
-            :param col: The column of the die.
-            :param row: The row of the die. 
+
+            Args:
+                value: The value to set.
+                col: The column of the die.
+                row: The row of the die. 
          """
         self._comm.send("map:bins:set_value {0}, {1}, {2}".format(value, col, row))
         Response.check_resp(self._comm.read_line())

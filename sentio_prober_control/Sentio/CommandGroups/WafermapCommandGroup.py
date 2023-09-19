@@ -30,7 +30,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         ```
 
         Attributes:
-            bins (WafermapBinsCommandGroup): Commnd group with functions for setting up binning tables.
+            bins (WafermapBinsCommandGroup): Command group with functions for setting up binning tables.
             die (WafermapDieCommandGroup): A group to set up specific dies on the wafermap (add/remove them).
             path (WafermapPathCommandGroup): A group to set up test paths.
             poi (WafermapPoiCommandGroup): A group to set up points of interest.
@@ -132,15 +132,15 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:get_prop die_reference_is_set" remote command.
 
-            :raises: ProberException if an error occured.
-            :return: True if the die reference offset is set.
+            Returns:
+                True if the die reference offset is set.
         """
         self._comm.send("map:get_prop die_reference_is_set")
         resp = Response.check_resp(self._comm.read_line())
         return resp.message().lower()=='true'
 
 
-    def end_of_route(self):
+    def end_of_route(self) -> bool: 
         """ Returns True if the last stepping command reached the end of the route. 
 
             The end of route flag is checked and set by the stepping commands.
@@ -149,7 +149,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Calling the function is only usefull after a step command was issued.
 
-            :return: True if the last step command reached the end of the route.
+            Returns:
+                True if the last step command reached the end of the route.
         """
         return self.__end_of_route
 
@@ -159,8 +160,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         
             Wraps Sentios "map:get_axis_orient" remote command.
 
-            :raises: ProberException if an error occured.
-            :return: The axis orientation.
+            Returns:
+                The axis orientation.
         """
 
         self._comm.send("map:get_axis_orient")
@@ -184,8 +185,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             
             Wraps Sentios "map:get_diameter" remote command.
         
-            :raises: ProberException if an error occured.
-            :returns: The diameter of the wafer map in millimeter.
+            Returns:
+                The diameter of the wafer map in millimeter.
         """
         self._comm.send("map:get_diameter")
         resp = Response.check_resp(self._comm.read_line())
@@ -217,8 +218,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps SENTIO's "map:get_prop die_reference" remote command.
 
-            :raises: ProberException if an error occured.
-            :returns: A tuple with the x and y offset in micrometer. 
+            Returns:
+                A tuple with the x and y offset in micrometer. 
         """
         self._comm.send("map:get_prop die_reference")
         resp = Response.check_resp(self._comm.read_line())
@@ -238,8 +239,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:get_die_seq" remote command.
 
-            :raises: ProberException if an error occured.
-            :return: The sequence number of the current die.
+            Returns:
+                The sequence number of the current die.
         """
         self._comm.send("map:get_die_seq")
         resp = Response.check_resp(self._comm.read_line())
@@ -251,8 +252,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:get_grid_origin" remote command.
 
-            :raises: ProberException if an error occured.
-            :returns: A tuple with the column and row indices of the origin. 
+            Returns:
+                A tuple with the column and row indices of the origin. 
          """
         self._comm.send("map:get_grid_origin")
         resp = Response.check_resp(self._comm.read_line())
@@ -264,8 +265,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
     def get_index_size(self) -> Tuple[float, float]:
         """ Return the die size set up in the wafer map.
          
-            :raises: ProberException if an error occured.
-            :returns: A tuple with the die width and height in micrometer.
+            Returns:
+                A tuple with the die width and height in micrometer.
          """
         self._comm.send("map:get_index_size")
         resp = Response.check_resp(self._comm.read_line())
@@ -276,9 +277,11 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
     def get_num_dies(self, selection: DieNumber) -> int:
         """ Returns the number of dies in the wafer map. 
         
-            :param selection: The selection of dies to count.
-            :raises: ProberException if an error occured.
-            :return: The number of dies.
+            Args:
+                selection: The selection of dies to count.
+            
+            Returns:
+                The number of dies.
         """
         switcher = {
             DieNumber.Present: "Present",
@@ -299,8 +302,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             any calculations. The only purpose is rendering the diese in a more
             realistic manner.
 
-            :raises: ProberException if an error occured.
-            :return: A tuple with the street width and height in micrometer.
+            Returns:
+                A tuple with the street width and height in micrometer.
         """
         self._comm.send("map:get_street_size")
         resp = Response.check_resp(self._comm.read_line())
@@ -318,8 +321,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:set_axis_orient" remote command.
 
-            :param orient: The axis orientation.
-            :raises: ProberException if an error occured.
+            Args:
+                orient: The axis orientation.
         """
         self._comm.send(f"map:set_axis_orient {orient.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
@@ -337,22 +340,22 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:set_color_scheme" remote command.
 
-            :param scheme: The color scheme.
-            :raises: ProberException if an error occured.
+            Args:
+                scheme: The color scheme.
         """
         self._comm.send(f'map:set_color_scheme {scheme.toSentioAbbr()}')
         Response.check_resp(self._comm.read_line())
 
 
-    def set_flat_params(self, angle: float, width: float):
+    def set_flat_params(self, angle: float, width: float) -> None:
         """ Set the flat parameters of the wafer map.
          
             Sets the parameters of the flat wafer orientation marker for 
             display in the wafermap.
 
-            :param angle: The angle of the flat in degrees.
-            :param width: The width of the flat in micrometer.
-            :raises: ProberException if an error occured.
+            Args:
+                angle: The angle of the flat in degrees.
+                width: The width of the flat in micrometer.
         """
         self._comm.send("map:set_flat_params {0}, {1}".format(angle, width))
         Response.check_resp(self._comm.read_line())
@@ -368,15 +371,15 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:set_grid_origin" remote command.
 
-            :param x: The x coordinate of the grid origin in SENTIO's native grid coordinate system.
-            :param y: The y coordinate of the grid origin in SENTIO's native grid coordinate system.
-            :raises: ProberException if an error occured.
+            Args:
+                x: The x coordinate of the grid origin in SENTIO's native grid coordinate system.
+                y: The y coordinate of the grid origin in SENTIO's native grid coordinate system.
         """
         self._comm.send(f"map:set_grid_origin {x}, {y}")
         Response.check_resp(self._comm.read_line())
 
 
-    def set_grid_params(self, ix: float, iy: float, offx: float, offy: float, edge: int):
+    def set_grid_params(self, ix: float, iy: float, offx: float, offy: float, edge: int) -> None:
         """ Set wafermap grid parameters. This function defines the wafermapo grid layout which means setting the 
             size of a die. Setting the grid offset and the size of the edge exclusion zone.
 
@@ -394,12 +397,12 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:set_grid_params" remote command.
 
-            :param ix: The width of a single die in micrometer.  
-            :param iy: The height of a single die in micrometer.  
-            :param offx: The x offset of the grid in micrometer.  
-            :param offy: The y offset of the grid in micrometer.  
-            :param edge: The size of the edge exclusion zone in micrometer.
-            :raises: ProberException if an error occured.
+            Args:
+                ix: The width of a single die in micrometer.  
+                iy: The height of a single die in micrometer.  
+                offx: The x offset of the grid in micrometer.  
+                offy: The y offset of the grid in micrometer.  
+                edge: The size of the edge exclusion zone in micrometer.
         """
         self._comm.send("map:set_grid_params {0}, {1}, {2}, {3}, {4}".format(ix, iy, offx, offy, edge))
         Response.check_resp(self._comm.read_line())
@@ -410,9 +413,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:set_home_die" remote command. 
 
-            :param x: The x coordinate of the home die in custom coordinates.
-            :param y: The y coordinate of the home die in custom coordinates.
-            :raises: ProberException if an error occured.     
+            Args:
+                x: The x coordinate of the home die in custom coordinates.
+                y: The y coordinate of the home die in custom coordinates.
         """
         self._comm.send(f"map:set_home_die {x}, {y}")
         Response.check_resp(self._comm.read_line())
@@ -423,9 +426,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
          
             Wraps Sentios "map:set_index_size" remote command.
 
-            :param x: The width of the die in micrometer.
-            :param y: The height of the die in micrometer.
-            :raises: ProberException if an error occured.
+            Args:
+                x: The width of the die in micrometer.
+                y: The height of the die in micrometer.
         """
         self._comm.send("map:set_index_size {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
@@ -438,8 +441,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             any calculations. The only purpose is rendering the diese in a more
             realistic manner.
 
-            :param x: The width of the street in micrometer.
-            :param y: The height of the street in micrometer.
+            Args:
+                x: The width of the street in micrometer.
+                y: The height of the street in micrometer.
         """
         self._comm.send("map:set_street_size {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
@@ -454,11 +458,13 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:step_die" remote command.
 
-            :param col: The column index of the die. 
-            :param row: The row index of the die.
-            :param site: The subsite index of the die. Defaults to 0. 
-            :raises: ProberException if an error occured.
-            :return: A tuple with the column, row and site index representing the position after the step command.
+            Args:
+                col: The column index of the die. 
+                row: The row index of the die.
+                site: The subsite index of the die. Defaults to 0. 
+            
+            Returns:
+                A tuple with the column, row and site index representing the position after the step command.
         """
         self._comm.send("map:step_die {0}, {1}, {2}".format(col, row, site))
         resp = Response.parse_resp(self._comm.read_line())
@@ -477,10 +483,12 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:step_die_seq" remote command.
 
-            :param seq: The sequence number of the die to step to.
-            :param site: The subsite index of the die.     
-            :raises: ProberException if an error occured.
-            :return: A tuple with the column, row and site index representing the position after the step command.
+            Args:
+                seq: The sequence number of the die to step to.
+                site: The subsite index of the die.     
+            
+            Returns:
+                A tuple with the column, row and site index representing the position after the step command.
         """
 
         self._comm.send("map:step_die_seq {}, {}".format(seq, site))
@@ -499,9 +507,11 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
             Wraps Sentios "map:step_first_die" remote command.
 
-            :param site: The subsite index of the die. If omitted SENTIO will step to the first active site.
-            :raises: ProberException if an error occured.
-            :return: A tuple with the column, row and site index representing the position after the step command.
+            Args:
+                site: The subsite index of the die. If omitted SENTIO will step to the first active site.
+            
+            Returns:
+                A tuple with the column, row and site index representing the position after the step command.
         """
 
         if site == None:
@@ -526,8 +536,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
          
             Sentio will stay on the current subsite.
 
-            :raises: ProberException if an error occured.
-            :return: A tuple with the column, row and site index representing the position after the step command.
+            Returns:
+                A tuple with the column, row and site index representing the position after the step command.
         """
 
         # 2021-09-17: bugfix: when no site is given current site must be retained
@@ -545,5 +555,3 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
-
-
