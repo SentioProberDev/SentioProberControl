@@ -4,23 +4,26 @@ nav:
   - Home: index.md
   - GettingStarted: GettingStarted.md  
   - Probe Station Control: 
-    - SentioProber: SentioProber.md
+    - Prober Operations: SentioProber.md
+    - Sentio Modules:
+        - Aux Sites: AuxCommandGroup.md
+        - Loader: LoaderCommandGroup.md
+        - Wafermap:
+            - WafermapCommandGroup: WafermapCommandGroup.md
+            - WafermapBinsCommandGroup: WafermapBinningCommandGroup.md
+            - WafermapDieCommandGroup: WafermapDieCommandGroup.md
+            - WafermapPathCommandGroup: WafermapPathCommandGroup.md
+            - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
+            - WafermapSubsiteGroup: WafermapSubsiteGroup.md
+        - Probe Handling: ProbeCommandGroup.md
+        - Service: ServiceCommandGroup.md     
+        - Vísion:
+            - VisionCommandGroup: VisionCommandGroup.md
+            - VisionCameraCommandGroup: VisionCameraCommandGroup.md
+            - VisionCompensationGroup: VisionCompensationGroup.md
+            - VisionIMagProCommandGroup: VisionIMagProCommandGroup.md
     - ProberException: ProberException.md
     - Response: Response.md
-  - CommandGroups:
-     - AuxCommandGroup: AuxCommandGroup.md
-     - LoaderCommandGroup: LoaderCommandGroup.md
-     - Wafermap:
-        - WafermapCommandGroup: WafermapCommandGroup.md
-        - WafermapBinsCommandGroup: WafermapBinningCommandGroup.md
-        - WafermapDieCommandGroup: WafermapDieCommandGroup.md
-        - WafermapPathCommandGroup: WafermapPathCommandGroup.md
-        - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
-        - WafermapSubsiteGroup: WafermapSubsiteGroup.md
-     - ProbeCommandGroup: ProbeCommandGroup.md
-     - ServiceCommandGroup: ServiceCommandGroup.md     
-     - Vísion:
-        - VisionCommandGroup: VisionCommandGroup.md
   - Enumerations: Enumerations.md
 
 theme:

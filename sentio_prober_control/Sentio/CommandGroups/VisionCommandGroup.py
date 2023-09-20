@@ -88,9 +88,9 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
     def create_probepad_model(self, angleStep: float = 0.1, imgPath: str = None, UL:tuple=None, LR:tuple=None):  
         if imgPath==None:
-            self._comm.send("vis:create_probepad_model {0}".format(angleStep))
+            self._comm.send(f"vis:create_probepad_model {angleStep}")
         else:            
-            self._comm.send("vis:create_probepad_model {0},{1},{2},{3},{4},{5}".format(angleStep,imgPath, UL[0],  UL[1], LR[0], LR[1]))
+            self._comm.send(f"vis:create_probepad_model {angleStep},{imgPath},{UL[0]},{UL[1]},{LR[0]},{LR[1]}")
 
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
@@ -158,6 +158,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             Returns:
                 A Response object.
         """
+
         self._comm.send("vis:enable_follow_mode {0}".format(stat))
         return Response.check_resp(self._comm.read_line())
 
@@ -184,6 +185,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
                 pattern_index: The index of the pattern to find. In SENTIO each pattern may have up to 5 alternate patterns. This is the index of the alternate pattern.
                 reference: The reference point to use for the pattern detection.
         """
+
         self._comm.send(f"vis:find_pattern {name}, {threshold}, {pattern_index}, {reference.toSentioAbbr()}")
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
@@ -229,6 +231,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             Returns:
                 A Response object.
         """
+
         self._comm.send("vis:remove_probetip_marker")
         return Response.check_resp(self._comm.read_line())
 
@@ -243,21 +246,22 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def snap_image(self, file: str, include_overlays : bool = False, download : bool = False) -> Response:
+
+    def snap_image(self, file: str, what : SnapshotType = SnapshotType.CameraRaw, where : SnapshotLocation = SnapshotLocation.Prober) -> Response:
         """ Save a snapshot of the current camera image to a file.
 
             Args:
                 file: The file name to save the image to.
-                overlays: If True, the image will contain overlays and will be a snapshot of the SENTIO window as seen on the operating system. This type of
-                          image may have a significantly reduced resolution. If False, the raw image will be saved as obtained from the camera.
-                download: If True, the image will be downloaded from the prober. If False, the image will be saved on the prober.
+                what: The type of snapshot to take.
+                where: The location where to store the snapshot. By default this is the prober control computer. If SnapshotLocation.Local
+                       is specified the image is download from the probe computer and stored loacally.
 
             Returns:
                 A Response object. 
         """
         
-        if download:
-            self._comm.send(f"vis:snap_image **download**, {include_overlays}")
+        if where == SnapshotLocation.Local:
+            self._comm.send(f"vis:snap_image **download**, {what.toSentioAbbr()}")
             resp = Response.check_resp(self._comm.read_line())
             jpeg_data = base64.b64decode(resp.message())
             
@@ -265,15 +269,36 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             with open(file, 'wb') as f:
                 f.write(jpeg_data)
         else:
-            self._comm.send(f"vis:snap_image {file}, {include_overlays}")
+            self._comm.send(f"vis:snap_image {file}, {what.toSentioAbbr()}")
             return Response.check_resp(self._comm.read_line())
 
+
     def switch_light(self, camera: CameraMountPoint, stat: bool) -> Response:
-        self._comm.send("vis:switch_light {0}, {1}".format(camera.toSentioAbbr(), stat))
+        """  Switch the light of a given camera on or off. 
+        
+            Args:
+                camera: The camera to switch the light for.
+                stat: A flag indicating whether to switch the light on or off.
+
+            Returns:
+                A Response object.
+        """
+
+        self._comm.send(f"vis:switch_light {camera.toSentioAbbr()}, {stat}")
         return Response.check_resp(self._comm.read_line())
 
+
     def switch_camera(self, camera: CameraMountPoint) -> Response:
-        self._comm.send("vis:switch_camera {0}".format(camera.toSentioAbbr()))
+        """ Switch the camera to use for the vision module. 
+        
+            Args:
+                camera: The camera to switch to.
+
+            Returns:
+                A Response object.
+        """
+
+        self._comm.send(f"vis:switch_camera {camera.toSentioAbbr()}")
         return Response.check_resp(self._comm.read_line())
 
 
@@ -283,12 +308,15 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
+
     def ptpa_find_tips(self, ptpa_mode: PtpaFindTipsMode):
         self._comm.send("vis:ptpa_find_tips {0}".format(ptpa_mode.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
+
+    @deprecated("use vision.compensation.start_execute(...) instead!")
     def start_execute_compensation(self, comp_type: DieCompensationType, comp_mode: DieCompensationMode):
         self._comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.toSentioAbbr(), comp_mode.toSentioAbbr()))
         resp = Response.check_resp(self._comm.read_line())

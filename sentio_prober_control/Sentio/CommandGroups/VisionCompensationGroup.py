@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Sentio.Enumerations import *
@@ -6,22 +8,34 @@ from sentio_prober_control.Sentio.Enumerations import *
 class VisionCompensationGroup(CommandGroupBase):
     """ This command group contains functions for working with x,y and z compensation. 
     
-    
+        You are not meant to instantiate this class directly. Access it via the compensation attribute 
+        of the vision attribute of the [SentioProber](SentioProber.md) class.
     """
 
     def __init__(self, comm):
-        """ @private """
         super().__init__(comm)
 
 
-    def set_compensation(self, comp:CompensationMode, enable:bool):
+    @deprecated("Use vision.compensation.enable() instead")
+    def set_compensation(self, comp:CompensationMode, enable:bool) -> Tuple[str, str]:
+        self._comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
+        resp = Response.check_resp(self._comm.read_line())
+        tok = resp.message().split(",")
+        return tok[0], tok[1]
+
+
+    def enable(self, comp:CompensationMode, enable:bool) -> Tuple[str, str]:
         """ Enable or disable compensation for a given subsystem. 
 
             Wraps Sentios "vis:compensation:enable" command.
 
-            :param comp: The compensation to enable or disable.
-            :param enable: True to enable, False to disable.
-            :returns: A tuple with the current state of the compensation and the current mode.
+            Args:
+                comp: The compensation to enable or disable.
+                enable: True to enable, False to disable.
+
+            Returns:
+                XY-Mode: State of the XY compensation.
+                Z-Mode: State of the Z compensation.
         """
 
         self._comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
@@ -30,15 +44,17 @@ class VisionCompensationGroup(CommandGroupBase):
         return tok[0], tok[1]
 
 
-    def start_execute(self, type: CompensationType, mode: CompensationMode):
+    def start_execute(self, type: CompensationType, mode: CompensationMode) -> Response:
         """ Start the execution of a compensation.
 
             Wraps Sentios "vis:compensation:start_execute" remote command.
 
-            :param  type: The type of compensation to execute.
-            :param  mode: The mode of compensation to execute.
-            :raises: ProberException if an error occured.
-            :returns: A Response object.
+            Args:
+                type: The type of compensation to execute.
+                mode: The mode of compensation to execute.
+            
+            Returns:
+                A Response object.
         """
 
         self._comm.send(f'vis:compensation:start_execute {type.toSentioAbbr()}, {mode.toSentioAbbr()}')

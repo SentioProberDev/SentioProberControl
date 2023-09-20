@@ -11,11 +11,12 @@ class ProbeCommandGroup(CommandGroupBase):
 
         Example:
 
-            from sentio_prober_control.Sentio.ProberSentio import *
+        ```py
+        from sentio_prober_control.Sentio.ProberSentio import *
             
-            prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-            prober.probe.move_probe_xy(ProbeSentio.East, ProbeXYReference.Current, 1000, 2000)
-
+        prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
+        prober.probe.move_probe_xy(ProbeSentio.East, ProbeXYReference.Current, 1000, 2000)
+        ```
     """
 
     def __init__(self, comm : CommunicatorBase):

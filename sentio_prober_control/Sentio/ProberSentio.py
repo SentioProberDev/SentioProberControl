@@ -82,6 +82,9 @@ class SentioProber(ProberBase):
 
             Args:
                 site (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
+
+            Returns:
+                A response object with the result of the command.
         """
 
         if site is None:
@@ -111,6 +114,76 @@ class SentioProber(ProberBase):
         else:
             raise ValueError("Unknown prober type")
 
+
+    def enable_chuck_overtravel(self, stat : bool) -> Response:
+        """ Enable chuck overtravel.
+
+            This function wraps SENTIO's "enable_chuck_overtravel" remote command.
+
+            Args:
+                stat (bool): True to enable, False to disable.
+
+            Returns:
+                A response object with the result of the command.
+        """
+
+        self.comm.send(f"enable_chuck_overtravel {stat}")
+        return Response.check_resp(self.comm.read_line())
+
+
+    def enable_chuck_hover(self, stat : bool) -> Response:
+        """ Enable chuck hover height.
+
+            The Hover height is a height that is significantly closer to the chuck compared to the separation height.
+            It is closer to the wafer but it is not safe for fast or long chuck moves as the chuck may be slightly 
+            tilted. 
+
+            This function wraps SENTIO's "enable_chuck_hover" remote command.
+
+            Args:
+                stat (bool): True to enable, False to disable.
+
+            Returns:
+                A response object with the result of the command.
+        """
+
+        self.comm.send(f"enable_chuck_hover {stat}")
+        return Response.check_resp(self.comm.read_line())
+
+
+    def enable_chuck_site_hover(self, site: ChuckSite, stat : bool) -> Response:
+        """ Enable chuck site hover height.
+
+            The Hover height is a height that is significantly closer to the chuck compared to the separation height.
+            It is closer to the wafer but it is not safe for fast or long chuck moves as the chuck may be slightly 
+            tilted. 
+
+            Args:
+                site (ChuckSite): The chuck site to enable hover height for.
+                stat (bool): True to enable, False to disable.
+
+            Returns:
+                A response object with the result of the command.
+        """
+
+        self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
+        return Response.check_resp(self.comm.read_line())
+    
+
+    def enable_chuck_site_overtravel(self, site: ChuckSite, stat : bool) -> Response:
+        """ Enable overtravel distance for a specific chuck site.
+
+            Args:
+                site (ChuckSite): The chuck site to enable overtravel distance for.
+                stat (bool): True to enable, False to disable.
+
+            Returns:
+                A response object with the result of the command.
+        """
+
+        self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
+        return Response.check_resp(self.comm.read_line())
+    
 
     def file_transfer(self, source: str, dest: str) -> Response:
         """ Transfer a file to the prober. 
@@ -726,9 +799,24 @@ class SentioProber(ProberBase):
 
             Args:
                  mode: The stepping contact mode to set.
-         """
+        """
+
         self.comm.send(f"set_stepping_contact_mode {mode.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
+
+
+    def set_vacuum(self, site : ChuckSite, stat : bool) -> Response:
+        """ Switches the vacuum of a chuck site on or off.
+         
+            Args:
+                site: The chuck site to switch the vacuum for.
+                stat: True to switch the vacuum on, False to switch it off.
+
+            Returns:
+        """
+
+        self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def show_hint(self, msg : str, subtext: str) -> None:

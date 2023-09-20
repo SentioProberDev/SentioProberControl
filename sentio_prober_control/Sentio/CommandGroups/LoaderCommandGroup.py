@@ -4,16 +4,16 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 class LoaderCommandGroup(CommandGroupBase):
     """ This command group contains functions for working with the loader. 
-        You are not meant to create instances of this class on your own.
-        Instead use the loader property of the SentioProber class.
+        You are not meant to instantiate this class directly. Access it via the loader attribute
+        of the [SentioProber](SentioProber.md) class.
 
         Example:
             
         ```py
-            from sentio_prober_control.Sentio.ProberSentio import *
+        from sentio_prober_control.Sentio.ProberSentio import *
 
-            prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-            scan_result = prober.loader.scan_station(LoaderStation.Cassette1)
+        prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
+        scan_result = prober.loader.scan_station(LoaderStation.Cassette1)
         ```    
     """
 

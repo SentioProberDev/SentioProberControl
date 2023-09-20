@@ -309,7 +309,7 @@ class Compensation(Enum):
     ProbeCard = 3,
     MapScan = 4,
     Thermal = 5,
-    Topography =6,
+    Topography = 6,
 
     def toSentioAbbr(self):
         switcher = {
@@ -324,30 +324,57 @@ class Compensation(Enum):
         return switcher.get(self, "Invalid compensation type")
     
 
-@deprecated("use DieCompensationMode instead.")
 class CompensationMode(Enum):
+    """ A list with available compensation modes. 
+        
+        Attributes:
+            Lateral (0): Lateral (XY) compensation.
+            Vertical (1): Vertical (Z) compensation.
+            Both (2): Both lateral and vertical compensation.
+            ProbeCard (3): Probe card compensation.
+            MapScan (4): MapScan compensation.
+            Topography (5): Topography compensation.
+    """
+    
     Lateral = 0,
     Vertical = 1,
     Both = 2,
-    ProbeCard = 3
+    ProbeCard = 3,
+    MapScan = 4,
+    Thermal = 5,
+    Topography = 6,
 
     def toSentioAbbr(self):
         switcher = {
             CompensationMode.Lateral: "Lateral",
             CompensationMode.Vertical: "Vertical",
             CompensationMode.Both: "Both",
-            CompensationMode.ProbeCard: "ProbeCard"
+            CompensationMode.ProbeCard: "ProbeCard",
+            CompensationMode.MapScan: "mapscan",
+            CompensationMode.Thermal: "thermal",
+            CompensationMode.Topography: "topography"
         }
         return switcher.get(self, "Invalid CompensationMode")
 
 
-@deprecated("Use DieCompensationType instead")
 class CompensationType(Enum):
+    """ A list of compensation types.
+     
+        Attributes:
+            DieAlign (0): 
+            Topography (1): Vertical (Z) compensation.
+            MapScan (2): Both lateral and vertical compensation.
+            AlignDie (3): Probe card compensation.
+            SkateDetection (4): MapScan compensation.
+    """
+
     DieAlign = 0,
     Topography = 1,
     MapScan = 2,
     AlignDie = 3,
-    SkateDetection = 4
+    SkateDetection = 4,
+    OnTheFly = 5,
+    OffAxis = 6
 
     def toSentioAbbr(self):
         switcher = {
@@ -355,7 +382,9 @@ class CompensationType(Enum):
             CompensationType.Topography: "Topography",
             CompensationType.MapScan: "MapScan",
             CompensationType.AlignDie: "AlignDie",
-            CompensationType.SkateDetection: "SkateDetection"
+            CompensationType.SkateDetection: "SkateDetection",
+            CompensationType.OnTheFly: "OnTheFly",
+            CompensationType.OffAxis: "OffAxis"
         }
         return switcher.get(self, "Invalid CompensationType")
 
@@ -487,6 +516,7 @@ class DialogButtons(Enum):
         return switcher.get(self, "Invalid button id")
     
 
+@deprecated("Use CompensationMode instead")
 class DieCompensationMode(Enum):
     """ Represents a compensation mode used by SENTIO. 
     
@@ -832,6 +862,38 @@ class PtpaType(Enum):
             PtpaType.OnAxis: "onaxis"
         }
         return switcher.get(self, "Invalid ptpa type")
+
+
+class SnapshotType(Enum):
+    """ Specifies the type of image snapshot to be taken """
+    
+    CameraRaw = 0,
+    """ The snapshot is the raw image from the camera in original resolution """
+
+    WithOverlays = 1,
+    """ The snapshot consists of a screenshot of the vision module inside SENTIO. This method 
+        will also contain the overlays displayed by the vision module but the image resolution
+        will be whatever the current resolution of SENTIO's vision module is. """
+
+    def toSentioAbbr(self):
+        """ Turn the SnapshotType into a string that can be used as a parameter for SENTIO's snap_image command. """
+        switcher = {
+            SnapshotType.CameraRaw: "0",
+            SnapshotType.WithOverlays: "1"
+        }
+        return switcher.get(self, "Invalid SnapshotType type")
+
+
+class SnapshotLocation(Enum):
+    """ Specifies where a snapshot shall be saved. """
+    
+    Prober = 0,
+    """ The snapshot is the raw image from the camera in original resolution """
+
+    Local = 1,
+    """ The snapshot consists of a screenshot of the vision module inside SENTIO. This method 
+        will also contain the overlays displayed by the vision module but the image resolution
+        will be whatever the current resolution of SENTIO's vision module is. """
 
 
 class Stage(Enum):

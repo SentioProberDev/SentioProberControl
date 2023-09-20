@@ -2,14 +2,30 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.Response import *
 from sentio_prober_control.Sentio.Enumerations import *
 from typing import Tuple
-import time
+
 
 class VisionIMagProCommandGroup(CommandGroupBase):
+    """ This command group contains functions for working with an IMag pro microscope. 
+    
+        You are not meant to instantiate this class directly. Access it via the imagpro attribute 
+        of the vision attribute of the [SentioProber](SentioProber.md) class.
+    """
+
     def __init__(self, comm):
         super().__init__(comm)
 
-    """ Move imagpro's internal z-axis """
-    def move_z(self, ref: IMagProZReference, pos: float ):
+    
+    def move_z(self, ref: IMagProZReference, pos: float) -> float:
+        """ Move imagpro's internal z-axis 
+        
+            Args:
+                ref: The position reference for the motion command.
+                pos: The position to move to.
+
+            Returns:
+                The actual position of the z-axis after the move command.
+        """
+
         #
         # the imag pro axis is showing hysteresis behavior. z position seems to be only
         # reproducable when the axis is moved from one of its endpoints! If you remove
@@ -21,22 +37,36 @@ class VisionIMagProCommandGroup(CommandGroupBase):
 
         self._comm.send("vis:imagpro:move_z {0}, {1}".format(ref.toSentioAbbr(), pos))
         resp = Response.check_resp(self._comm.read_line())
-        #time.sleep(0.5)
         return float(resp.message())
 
-    """ Get the position od imagpro's internal axis """
-    def get_z(self, ref: IMagProZReference):
+    
+    def get_z(self, ref: IMagProZReference) -> float:
+        """ Get the position od imagpro's internal axis. 
+        
+            Args:
+                ref: The position reference for the returned value.
+
+            Returns:
+                The position of the z-axis.
+        """
+
         par:str = ref.toSentioAbbr()
-        self._comm.send("vis:imagpro:get_z {0}".format(par))
+        self._comm.send(f"vis:imagpro:get_z {par}")
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
 
-    """ Get the xy compensation value for a certain z-position of imagpro's internal axis 
-    
-        !!! UNTESTED !!!
-    """
-    def get_xy_comp(self, imag_pro_z: float):
-        self._comm.send("vis:imagpro:get_xy_comp {0}".format(imag_pro_z))
+
+    def get_xy_comp(self, imag_pro_z: float) -> Tuple[float, float]:
+        """ Get the xy compensation value for a certain z-position of imagpro's internal axis 
+
+            Args:
+                imag_pro_z: The z-position of imagpro's internal axis.
+
+            Returns:
+                The xy compensation value
+        """
+
+        self._comm.send(f"vis:imagpro:get_xy_comp {imag_pro_z}")
 
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")

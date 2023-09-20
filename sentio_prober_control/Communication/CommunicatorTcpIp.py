@@ -50,6 +50,7 @@ class CommunicatorTcpIp(CommunicatorBase):
         
             :param msg: The command to send.
         """
+        
         if CommunicatorBase._verbose:
             print("Sending \"{0}\"".format(msg))
 

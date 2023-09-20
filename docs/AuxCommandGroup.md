@@ -1,3 +1,5 @@
+# AuxCommandGroup
+
 ::: sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup.AuxCommandGroup
 
 ## AuxCleaningGroup
