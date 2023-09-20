@@ -766,7 +766,7 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
     
 
-    def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_dist: float, hover_gap: float) -> None:
+    def set_chuck_site_height(self, site: ChuckSite, contact: float, separation: float, overtravel_dist: float, hover_gap: float) -> Response:
         """ Sets z position information of a chuck site
         
             Example:
@@ -784,10 +784,10 @@ class SentioProber(ProberBase):
         """
         par: str = "{},{},{},{},{}".format(site.toSentioAbbr(), contact, separation, overtravel_dist, hover_gap)
         self.comm.send("set_chuck_site_heights {0}".format(par))
-        Response.check_resp(self.comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
-    def set_stepping_contact_mode(self, mode: SteppingContactMode) -> None:
+    def set_stepping_contact_mode(self, mode: SteppingContactMode) -> Response:
         """ Change the stepping contact mode.
          
             The stepping contact mode defines what happens during stepping over a wafer.
@@ -802,7 +802,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"set_stepping_contact_mode {mode.toSentioAbbr()}")
-        Response.check_resp(self.comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
     def set_vacuum(self, site : ChuckSite, stat : bool) -> Response:
@@ -813,13 +813,14 @@ class SentioProber(ProberBase):
                 stat: True to switch the vacuum on, False to switch it off.
 
             Returns:
+                A response object with the result of the command.
         """
 
         self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
         return Response.check_resp(self.comm.read_line())
 
 
-    def show_hint(self, msg : str, subtext: str) -> None:
+    def show_hint(self, msg : str, subtext: str) -> Response:
         """ Show an on screen message (hint) and return immediately 
 
             Hints are on screen messages that pop up in SENTIO's lower left corner. This hint will 
@@ -832,7 +833,7 @@ class SentioProber(ProberBase):
                 subtext: The subtext to display.
         """
         self.comm.send(f'status:show_hint \"{msg}\", \"{subtext}\"')
-        Response.check_resp(self.comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
     def show_hint_and_wait(self, msg : str, subtext: str, button_caption: str, timeout: int = 180, lock_ui: bool = True) -> None:
@@ -850,6 +851,7 @@ class SentioProber(ProberBase):
                          remote mode anyway. This button affects only the on screen interactions on the right side of the main 
                          module view. (default = True)
         """
+        
         self.comm.send(f'status:start_show_hint \"{msg}\", \"{subtext}\", \"{button_caption}\", \"{lock_ui}\"')
         resp = Response.check_resp(self.comm.read_line())
 
@@ -892,7 +894,7 @@ class SentioProber(ProberBase):
         raise ProberException("Invalid dialog button return value")
     
     
-    def start_initialization(self):
+    def start_initialization(self) -> Response:
         """ Start the initialization of the probe station. 
         
             This function will start the initialization of the prober. This is an 
@@ -902,7 +904,7 @@ class SentioProber(ProberBase):
             waitcomplete to wait for the initialization to complete.
         """
         self.comm.send("start_initialization")
-        Response.check_resp(self.comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
     def wait_all(self, timeout: int = 90) -> Response:

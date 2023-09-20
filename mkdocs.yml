@@ -5,7 +5,7 @@ nav:
   - GettingStarted: GettingStarted.md  
   - Probe Station Control: 
     - Prober Operations: SentioProber.md
-    - Sentio Modules:
+    - Modules:
         - Aux Sites: AuxCommandGroup.md
         - Loader: LoaderCommandGroup.md
         - Wafermap:
@@ -16,6 +16,9 @@ nav:
             - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
             - WafermapSubsiteGroup: WafermapSubsiteGroup.md
         - Probe Handling: ProbeCommandGroup.md
+        - Qalibria: QalibriaCommandGroup.md
+        - SiPH: SiPHCommandGroup.md
+        - Dashboard: StatusCommandGroup.md
         - Service: ServiceCommandGroup.md     
         - Vísion:
             - VisionCommandGroup: VisionCommandGroup.md

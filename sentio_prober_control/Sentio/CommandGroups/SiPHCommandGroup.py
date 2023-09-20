@@ -6,21 +6,21 @@ from sentio_prober_control.Sentio.Enumerations import *
 
 
 class SiPHCommandGroup(CommandGroupBase):
-    """ This command group contains functions for working with SiPh applications. """
+    """ This command group contains functions for working with SiPH applications. 
+        You are not meant to instantiate this class directly. Access it via the siph attribute
+        of the [SentioProber](SentioProber.md) class.
+    """
 
     def __init__(self, comm):
-        """ @private """
         super().__init__(comm)
 
 
-    def fast_alignment(self) -> None:
+    def fast_alignment(self) -> Response:
         """ Perform fast fiber alignment. 
-        
-            :raises: ProberException if an error occured.
         """
 
         self._comm.send("siph:fast_alignment")
-        Response.check_resp(self._comm.read_line())
+        return Response.check_resp(self._comm.read_line())
 
 
     def get_cap_sensor(self) -> Tuple[float, float]:
