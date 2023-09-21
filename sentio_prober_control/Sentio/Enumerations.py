@@ -1400,6 +1400,29 @@ class SoftwareFence(Enum):
         return switcher.get(self, "Invalid SoftwareFence parameter")
     
 
+class ThermoChuckState(Enum):
+    """ The state of a thermo chuck.
+     
+        Attributes:
+            Soaking (0): The chuck is in soaking state,
+            Cooling (1): The chuck is in cooling state,
+            Heating (2): The chuck is in heating state,
+            Uncontrolled (3): The chuck is in uncontrolled state,
+            Standby (4): The chuck is in standby state,
+            Error (5): The chuck is in error state,
+            Controlling (6): The chuck is in controlling state,
+    """
+
+    Soaking = 0,
+    Cooling = 1,
+    Heating = 2,
+    Uncontrolled = 3,
+    Standby = 4,
+    Error = 5,
+    Controlling = 6,
+    Unknown = 7
+
+
 class VceZReference(Enum):
     """ Reference for Vce z motions. 
     
