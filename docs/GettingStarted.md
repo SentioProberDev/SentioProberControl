@@ -7,8 +7,28 @@ package simply type:
 
 ```py -m pip install sentio-prober-control```
 
+## Overview
+
+All functionality is accessed via an object of type [SentioProber](SentioProber.md) . You should only have a single instance of this class in your 
+python script. This class is your gateway to control a probe station running the MPI SENTIO Software suite. Naturally a script 
+should start with initializing the prober.
+
+The following minimal example creates an instance of the prober class and triggers a switch of the active SENTIO 
+module by using its select_module function:
+
+```python
+from sentio_prober_control.Sentio.ProberSentio import *
+
+prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
+prober.select_module(Module.Wafermap)
+```
+
+Some functionality is provided directy via member functions of the ProberSentio class. Functionality of SENTIO modules
+can be accessed via the [module attributes](SentioProber.md) class. 
 
 ## Example
+
+The following example will set up a wafer map. [Wafermap functionality](WafermapCommandGroup.md) is accessed via the map attribute of the prober class.
 
 ``` py
 from sentio_prober_control.Sentio.ProberSentio import *
@@ -53,20 +73,3 @@ if __name__ == "__main__":
     main()
 ```
 		
-
-## Overview
-
-The SentioProber class is your gateway to control a probe station running the MPI SENTIO 
-Software suite.
-
-Some functionality is provided directy via member functions of the class.
-The following example triggers a switch of the active SENTIO module by using the 
-select_module function:
-
-```python
-from sentio_prober_control.Sentio.ProberSentio import *
-from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
-
-prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
-prober.select_module(Module.Wafermap)
-```

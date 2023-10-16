@@ -1443,10 +1443,10 @@ class VceZReference(Enum):
 
 
 class WorkArea(Enum):
-    """ An enumeration containing probe station work areas. 
+    """ An enumeration containing probe station work areas. The OffAxis work area is only present if the specific model of probe station supports it.
     
         Attributes:
-            Probing (0): The probing work are is the area in which the chuck is under the downward lookin microscope. This is where the wafer is probed.
+            Probing (0): The probing work area is the area in which the chuck is under the downward looking microscope. This is where the wafer is probed.
             Offaxis (1): The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card.
     """
 

@@ -27,11 +27,11 @@ class SentioProber(ProberBase):
         It provides wrapper for most of the remote commands exposed by SENTIO.
 
         Attributes:
-            aux (sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup): The aux command group provides access the the aux site modules functionality. 
+            aux (AuxCommandGroup): The aux command group provides access the the aux site modules functionality. 
             loader (LoaderCommandGroup): The loader command group provides access to the loader modules functionality.
             map (WafermapCommandGroup): The wafermap command group provides access to the wafermap modules functionality.
             probe (ProbeCommandGroup): The probe command group provides access to the probe modules functionality.
-            qalibria (QalibriCommandGroup): The qalibria command group provides access to the qalibria modules functionality.
+            qalibria (QAlibriaCommandGroup): The qalibria command group provides access to the qalibria modules functionality.
             service (ServiceCommandGroup): The service command group provides access to the service modules functionality.
             siph (SiPHCommandGroup): The siph command group provides access to the SiPH modules functionality.
             status (StatusCommandGroup): The status command group provides access to the dashboard modules functionality. (formerly called status module)
@@ -188,8 +188,8 @@ class SentioProber(ProberBase):
     def file_transfer(self, source: str, dest: str) -> Response:
         """ Transfer a file to the prober. 
         
-            This function will transfer a file to the prober. The file will be stored in the position specified by dast.
-            The file will be transmitted in base64 encoding which can take some time.
+            This function will transfer a file to the prober. The file will be stored in the position specified by 
+            the dest argument. Transmission of the file may take some time. 
             
             Args:
                 source (str): The path to the file to transfer.
@@ -572,18 +572,25 @@ class SentioProber(ProberBase):
         return float(resp.message())
 
 
-    def move_chuck_work_area(self, site:WorkArea) -> Response:
+    def move_chuck_work_area(self, area:WorkArea) -> Response:
         """ Move the chuck to a given work area.
-         
-            Wraps SENTIO's "move_chuck_work_area" remote command.   
+
+            A SENTIO probe station can have different work areas. One area is for probing. This is the default
+            work area and present on all probe stations. When the chuck is at probing position is is roughly
+            centered with respect to the platen and located in a space were probes can go into contact.
+            Depending on the machine type a prober may be equipped with a second work area. This
+            area is located under an optional off-axis camera. The off-axis camera allows 
+            inspection of the wafer when the scope camera view is blocked by certain probe card types.
+                      
+            This function wraps SENTIO's "move_chuck_work_area" remote command.   
 
             Args:
-                site: The work area to move to.
+                area: The work area to move to.
             
             Returns:
                 A response object with the result of the command.
         """
-        self.comm.send("move_chuck_work_area {0}".format(site.toSentioAbbr()))
+        self.comm.send(f"move_chuck_work_area {area.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
     
 
