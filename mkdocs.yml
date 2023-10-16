@@ -2,7 +2,7 @@ site_name: Sentio Prober Control
 
 nav:
   - Home: index.md
-  - GettingStarted: GettingStarted.md  
+#  - GettingStarted: GettingStarted.md  
   - Probe Station Control: 
     - Prober Operations: SentioProber.md
     - Modules:
@@ -30,7 +30,10 @@ nav:
   - Enumerations: Enumerations.md
 
 theme:
-     name: "material"
+    name: "material"
+    logo: images/mpilogo.png
+    palette:
+      primary: custom
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -40,7 +43,13 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
-  
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  homepage: https://www.mpi-corporation.com/ast/
+
 plugins: 
   - search
   - mkdocstrings:
