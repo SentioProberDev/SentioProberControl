@@ -1,52 +1,50 @@
 from typing import Tuple
 
 from sentio_prober_control.Sentio.Enumerations import ThermoChuckState
-from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
+    ModuleCommandGroupBase,
+)
 from sentio_prober_control.Sentio.Response import Response
 
 
 class StatusCommandGroup(ModuleCommandGroupBase):
-    """ A command group for getting the status of the probe station and controlling the dashboard module. """
-
+    """A command group for getting the status of the probe station and controlling the dashboard module."""
 
     def __init__(self, comm):
-        super().__init__(comm, 'status')
-
+        super().__init__(comm, "status")
 
     def get_chuck_temp(self) -> float:
-        """ Get current chuck temperature.
+        """Get current chuck temperature.
 
-            Returns:
-                The chuck temperature in degrees Celsius.
+        Returns:
+            The chuck temperature in degrees Celsius.
         """
 
         self._comm.send("status:get_chuck_temp")
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         temp = float(tok[0])
-        return temp 
-
+        return temp
 
     def get_chuck_temp_setpoint(self) -> float:
-        """ Get current chuck temperature setpoint.
-            
-            Returns:
-                The chuck temperature setpoint in degrees Celsius. 
+        """Get current chuck temperature setpoint.
+
+        Returns:
+            The chuck temperature setpoint in degrees Celsius.
         """
 
         self._comm.send("status:get_chuck_temp_setpoint")
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         temp = float(tok[0])
-        return temp 
-
+        return temp
 
     # CR#13889: StatusCommandGroup.get_chuck_thermo_state returns 6 boolean values instead of an enumerator
     # def get_chuck_thermo_state(self) -> Tuple[bool, bool, bool, bool, bool, bool]:
-    #     """ Return thermo chuck state. 
+    #     """ Return thermo chuck state.
 
     #         Returns:
-    #             A tuple with the current state of the thermo chuck. Contains six boolean variables: 
+    #             A tuple with the current state of the thermo chuck. Contains six boolean variables:
     #             isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled.
     #     """
 
@@ -58,21 +56,20 @@ class StatusCommandGroup(ModuleCommandGroupBase):
     #     isControlling = "Controlling" in tok
     #     isStandby = "Standby" in tok
     #     isError = "Error" in tok
-    #     isUncontrolled = "Uncontrolled" in tok 
-    #     return isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled 
-
+    #     isUncontrolled = "Uncontrolled" in tok
+    #     return isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled
 
     def get_chuck_thermo_state(self) -> ThermoChuckState:
-        """ Return thermo chuck state. 
+        """Return thermo chuck state.
 
-            Returns:
-                A tuple with the current state of the thermo chuck. Contains six boolean variables: 
-                isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled.
+        Returns:
+            A tuple with the current state of the thermo chuck. Contains six boolean variables:
+            isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled.
         """
 
         self._comm.send("status:get_chuck_thermo_state")
         resp = Response.check_resp(self._comm.read_line())
-        
+
         if "soaking" in resp.message().lower():
             return ThermoChuckState.Soaking
         elif "cooling" in resp.message().lower():
@@ -88,14 +85,13 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         elif "uncontrolled" in resp.message().lower():
             return ThermoChuckState.Uncontrolled
         else:
-            return ThermoChuckState.Unknown       
-
+            return ThermoChuckState.Unknown
 
     def get_machine_status(self) -> Tuple[bool, bool, bool]:
-        """ Get machine status. 
-        
-            Returns:
-                A tuple with the current status of the machine. Contains three boolean variables: isInitialized, isMeasuring, LoaderBusy.
+        """Get machine status.
+
+        Returns:
+            A tuple with the current status of the machine. Contains three boolean variables: isInitialized, isMeasuring, LoaderBusy.
         """
 
         self._comm.send("status:get_machine_status")
@@ -106,33 +102,31 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         LoaderBusy = "LoaderBusy" in tok
         return isInitialized, isMeasuring, LoaderBusy
 
+    def get_soaking_time(self, temperature: float):
+        """Get the thermochuck soaking time in seconds that is set up for a certain temperature in the dashboard.
 
-    def get_soaking_time(self, temperature:float):
-        """ Get the thermochuck soaking time in seconds that is set up for a certain temperature in the dashboard.
+        Args:
+            temperature: The temperature. This temperature value must be one of the predefined temperature
+                  values set up in the dashboard.
 
-            Args:
-                temperature: The temperature. This temperature value must be one of the predefined temperature 
-                      values set up in the dashboard.
+        Raises:
+            ProberException: With error code 200 is thrown when the temperature is not a predefined value set up in the dashboard.
+            May also raise an an exception when other errors occur.
 
-            Raises:
-                ProberException: With error code 200 is thrown when the temperature is not a predefined value set up in the dashboard. 
-                May also raise an an exception when other errors occur.
-            
-            Returns:
-                The soaking time in seconds.
+        Returns:
+            The soaking time in seconds.
         """
 
         self._comm.send(f"status:get_soaking_time {temperature:.2f}")
         resp = Response.check_resp(self._comm.read_line())
         temp = float(resp.message())
         return temp
-    
 
-    def set_chuck_temp(self, temp:float) -> Response:
-        """ Set chuck temperature setpoint. 
-            
-            Args:
-                temp: The chuck temperature setpoint in degrees Celsius.
+    def set_chuck_temp(self, temp: float) -> Response:
+        """Set chuck temperature setpoint.
+
+        Args:
+            temp: The chuck temperature setpoint in degrees Celsius.
         """
 
         self._comm.send(f"status:set_chuck_temp {temp:.2f}")

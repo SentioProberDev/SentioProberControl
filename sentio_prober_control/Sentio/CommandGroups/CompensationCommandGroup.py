@@ -2,30 +2,35 @@ from deprecated import deprecated
 
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.Response import Response
-from sentio_prober_control.Sentio.Enumerations import Compensation, ExecuteCompensation, OnTheFlyMode
+from sentio_prober_control.Sentio.Enumerations import (
+    Compensation,
+    ExecuteCompensation,
+    OnTheFlyMode,
+)
 
 
-@deprecated(reason="duplicated; This command group is already a subgroup of the vision command group.")
+@deprecated(
+    reason="duplicated; This command group is already a subgroup of the vision command group."
+)
 class CompensationCommandGroup(CommandGroupBase):
-    """ This command group contains functions for working with x,y and z compensation. 
-    
-        This command group was marked deprecated on 2023-09-04. It will be removed in a future version.
-        Use the SentioProber.vis.compensation group instead!
+    """This command group contains functions for working with x,y and z compensation.
+
+    This command group was marked deprecated on 2023-09-04. It will be removed in a future version.
+    Use the SentioProber.vis.compensation group instead!
     """
 
     def __init__(self, comm):
-        """ @private """
+        """@private"""
         super().__init__(comm)
 
-
     @deprecated(reason="Use prober.vis.compensation.set_compensation instead.")
-    def set_compensation(self, comp:Compensation, enable:bool):
-        """ Enable or disable compensation for a given subsystem. 
+    def set_compensation(self, comp: Compensation, enable: bool):
+        """Enable or disable compensation for a given subsystem.
 
-            This command was marked deprecated on 2023-09-04. It will be removed in a future version.
-            Use the command in the visioncompensation group instead:
+        This command was marked deprecated on 2023-09-04. It will be removed in a future version.
+        Use the command in the visioncompensation group instead:
 
-            >>> prober.vis.compensation.set_compensation(comp, enable)            
+        >>> prober.vis.compensation.set_compensation(comp, enable)
         """
 
         self._comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
@@ -33,15 +38,18 @@ class CompensationCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return tok[0], tok[1]
 
-
     @deprecated(reason="Use prober.vis.compensation.start_execute instead.")
-    def execute_compensation(self, comp:ExecuteCompensation, mode:OnTheFlyMode):
-        """ Execute compensation.
+    def execute_compensation(self, comp: ExecuteCompensation, mode: OnTheFlyMode):
+        """Execute compensation.
 
-            This command was marked deprecated on 2023-09-04. It will be removed in a future version.
-            use prober.vis.compensation.start_execute instead.
-            
+        This command was marked deprecated on 2023-09-04. It will be removed in a future version.
+        use prober.vis.compensation.start_execute instead.
+
         """
-        self._comm.send("vis:compensation:start_execute {},{}".format(comp.toSentioAbbr(), mode.toSentioAbbr()))
+        self._comm.send(
+            "vis:compensation:start_execute {},{}".format(
+                comp.toSentioAbbr(), mode.toSentioAbbr()
+            )
+        )
         resp = Response.check_resp(self._comm.read_line())
         return resp

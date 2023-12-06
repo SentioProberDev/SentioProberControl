@@ -5,11 +5,11 @@ from ctypes import byref, c_byte, c_char_p, c_int, c_ushort, c_void_p, c_wchar_p
 
 
 class GpibAdlinkDriver:
-    """ A python wrapper for the ADLINK gpib-32.dll. 
-    
-        This class is used internally only.
+    """A python wrapper for the ADLINK gpib-32.dll.
 
-        @private
+    This class is used internally only.
+
+    @private
     """
 
     def __init__(self):
@@ -42,10 +42,9 @@ class GpibAdlinkDriver:
         self._gpibGetGlobalsImpl.restype = c_int
         self._gpibGetGlobalsImpl.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
 
-
     def connect(self, board_name: str, address: int):
         # init
-        self._board = self._gpibIbfind(board_name) #"GPIB0")
+        self._board = self._gpibIbfind(board_name)  # "GPIB0")
         if self._board < 0:
             raise Exception(f"Board {board_name} does not exist!")
 
@@ -55,17 +54,18 @@ class GpibAdlinkDriver:
         self._addr = address
         self._max_len = 1000
 
-
     def get_globals(self):
         ibsta = c_int()
         iberr = c_int()
         ibcnt = c_int()
         ibcntl = c_int()
-        self._gpibGetGlobalsImpl(byref(ibsta), byref(iberr), byref(ibcnt), byref(ibcntl))
+        self._gpibGetGlobalsImpl(
+            byref(ibsta), byref(iberr), byref(ibcnt), byref(ibcntl)
+        )
         return ibsta.value, iberr.value, ibcnt.value, ibcntl.value
 
     def send(self, str):
-        self._gpibSendImpl(self._board, self._addr, str.encode('utf-8'), len(str), 1)
+        self._gpibSendImpl(self._board, self._addr, str.encode("utf-8"), len(str), 1)
 
     def receive(self):
         byteArr = (c_byte * self._max_len)()

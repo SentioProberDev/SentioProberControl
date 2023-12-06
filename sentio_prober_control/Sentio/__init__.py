@@ -12,4 +12,4 @@
     >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
     >>> prober.select_module(Module.Wafermap)
 """
-print(f'Initializing package {__name__}')
+print(f"Initializing package {__name__}")

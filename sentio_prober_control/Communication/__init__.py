@@ -22,5 +22,4 @@
     'MPI Corporation,Sentio - Probe System Software Suite,0,23.2.99.0'
     
 """
-print(f'Initializing package {__name__}')
-
+print(f"Initializing package {__name__}")
