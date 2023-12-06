@@ -1,4 +1,5 @@
 import base64
+from deprecated import deprecated
 from typing import Tuple
 
 from sentio_prober_control.Communication import CommunicatorBase
