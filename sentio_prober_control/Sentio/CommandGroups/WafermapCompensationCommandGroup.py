@@ -1,6 +1,6 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from sentio_prober_control.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.Enumerations import ExecuteAction
 
 from sentio_prober_control.Sentio.ProberBase import ProberException
 

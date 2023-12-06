@@ -1,7 +1,7 @@
 from abc import ABC
 
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from sentio_prober_control.Sentio.Response import *
+from sentio_prober_control.Sentio.Response import Response
 
 class ModuleCommandGroupBase(CommandGroupBase):
     """ Base class for all command groups. """

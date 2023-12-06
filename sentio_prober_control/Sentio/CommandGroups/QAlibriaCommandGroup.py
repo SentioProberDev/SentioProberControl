@@ -1,6 +1,5 @@
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
-from sentio_prober_control.Sentio.Response import *
-from sentio_prober_control.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.Response import Response
 
 class QAlibriaCommandGroup(CommandGroupBase):
     """ This command group contains functions for working with Qalibria. """

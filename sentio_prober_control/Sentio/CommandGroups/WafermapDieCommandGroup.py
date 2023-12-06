@@ -1,8 +1,6 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from sentio_prober_control.Sentio.Enumerations import *
 
-from sentio_prober_control.Sentio.ProberBase import ProberException
 
 class WafermapDieCommandGroup(CommandGroupBase):
     """ This Command group bundles commands for setting up dies on a wafermap. """

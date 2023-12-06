@@ -2,13 +2,18 @@ import base64
 from typing import Tuple
 
 from sentio_prober_control.Communication import CommunicatorBase
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
+from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
 from sentio_prober_control.Sentio.CommandGroups.VisionCameraCommandGroup import VisionCameraCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionIMagProCommandGroup import VisionIMagProCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionCompensationGroup import VisionCompensationGroup
-from sentio_prober_control.Sentio.Response import *
-from sentio_prober_control.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.Enumerations import (AutoAlignCmd, AutoFocusCmd, CameraMountPoint, 
+                                                       DetectionAlgorithm, DetectionCoordindates,
+                                                       DieCompensationMode, DieCompensationType,
+                                                       FindPatternReference,
+                                                       PtpaFindTipsMode, PtpaType,
+                                                       SnapshotLocation, SnapshotType)
 
 
 class VisionCommandGroup(ModuleCommandGroupBase):

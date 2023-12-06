@@ -1,9 +1,8 @@
 from typing import Tuple
 
 from sentio_prober_control.Sentio.Enumerations import ThermoChuckState
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
-from sentio_prober_control.Sentio.Response import *
+from sentio_prober_control.Sentio.Response import Response
 
 
 class StatusCommandGroup(ModuleCommandGroupBase):

@@ -1,7 +1,6 @@
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
-from sentio_prober_control.Sentio.Response import *
-from sentio_prober_control.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.Enumerations import SoftwareFence
 
 
 class ServiceCommandGroup(ModuleCommandGroupBase):

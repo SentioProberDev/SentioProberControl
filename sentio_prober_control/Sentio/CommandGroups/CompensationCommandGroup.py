@@ -1,8 +1,8 @@
 from deprecated import deprecated
 
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import *
-from sentio_prober_control.Sentio.Response import *
-from sentio_prober_control.Sentio.Enumerations import *
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.Enumerations import Compensation, ExecuteCompensation, OnTheFlyMode
 
 
 @deprecated(reason="duplicated; This command group is already a subgroup of the vision command group.")
