@@ -12,7 +12,7 @@ class ProbeCommandGroup(CommandGroupBase):
         Example:
 
         ```py
-        from sentio_prober_control.Sentio.ProberSentio import *
+        from sentio_prober_control.Sentio.ProberSentio import SentioProber
             
         prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
         prober.probe.move_probe_xy(ProbeSentio.East, ProbeXYReference.Current, 1000, 2000)

@@ -20,7 +20,7 @@ The following minimal example creates an instance of the prober class and initia
 SENTIO running on the local PC on port 35555:
 
 ```python
-from sentio_prober_control.Sentio.ProberSentio import *
+from sentio_prober_control.Sentio.ProberSentio import SentioProber
 prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
 prober.select_module(Module.Wafermap)
 ```
@@ -33,7 +33,7 @@ can be accessed via the [module attributes](SentioProber.md) class.
 The following example will set up a wafer map. [Wafermap functionality](WafermapCommandGroup.md) is accessed via the map attribute of the prober class.
 
 ``` py
-from sentio_prober_control.Sentio.ProberSentio import *
+from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
 
 def main():

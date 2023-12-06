@@ -7,7 +7,7 @@
 
     The following example will Connect to a probe station and switch to SENTIO's wafermap module.
 
-    >>> from sentio_prober_control.Sentio.ProberSentio import *
+    >>> from sentio_prober_control.Sentio.ProberSentio import SentioProber
     >>> from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
     >>> prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
     >>> prober.select_module(Module.Wafermap)

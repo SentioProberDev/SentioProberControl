@@ -21,7 +21,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         Examples:
 
         ```py
-        from sentio_prober_control.Sentio.ProberSentio import *
+        from sentio_prober_control.Sentio.ProberSentio import SentioProber
         from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
 
         prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))

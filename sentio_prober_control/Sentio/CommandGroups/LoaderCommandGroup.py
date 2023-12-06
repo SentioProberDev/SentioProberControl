@@ -10,7 +10,7 @@ class LoaderCommandGroup(CommandGroupBase):
         Example:
             
         ```py
-        from sentio_prober_control.Sentio.ProberSentio import *
+        from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
         prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
         scan_result = prober.loader.scan_station(LoaderStation.Cassette1)

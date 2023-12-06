@@ -10,7 +10,7 @@ class AuxCleaningGroup(CommandGroupBase):
         Example:
             
         ```py
-            from sentio_prober_control.Sentio.ProberSentio import *
+            from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
             prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
             prober.aux.cleaning.enable_auto(True)
