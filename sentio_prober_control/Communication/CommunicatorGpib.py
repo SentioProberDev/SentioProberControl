@@ -1,7 +1,7 @@
 from enum import Enum
 
-from sentio_prober_control.Devices.GpibAdlinkDriver import *
-from sentio_prober_control.Devices.GpibNiDriver import *
+from sentio_prober_control.Devices.GpibAdlinkDriver import GpibAdlinkDriver
+from sentio_prober_control.Devices.GpibNiDriver import GpibNiDriver
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase;
 
 
