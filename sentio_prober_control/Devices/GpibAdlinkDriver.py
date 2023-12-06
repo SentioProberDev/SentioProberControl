@@ -1,7 +1,7 @@
 """ @private """
 
 import ctypes
-from ctypes import *
+from ctypes import byref, c_byte, c_char_p, c_int, c_ushort, c_void_p, c_wchar_p
 
 
 class GpibAdlinkDriver:
