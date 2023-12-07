@@ -1,7 +1,5 @@
 from typing import Tuple
 
-from deprecated import deprecated
-
 from sentio_prober_control.Sentio.Enumerations import (
     AxisOrient,
     ColorScheme,
