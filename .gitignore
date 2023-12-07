@@ -9,3 +9,4 @@ sentio_prober_control/Python-Test-Scripts
 sentio_prober_control/Test/*
 sentio_prober_control.egg-info/*
 site/*
+.vscode/*

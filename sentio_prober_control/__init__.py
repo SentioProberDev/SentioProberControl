@@ -18,16 +18,13 @@ A set of example scripts for python is maintained in a separate archive at GitHu
 https://github.com/SentioProberDev/Examples-Python
 
 """
-#from .Sentio.ProberSentio import SentioProber, Module
-#from .Communication.CommunicatorTcpIp import CommunicatorTcpIp
-#from .Communication.CommunicatorGpib import CommunicatorGpib
+# from .Sentio.ProberSentio import SentioProber, Module
+# from .Communication.CommunicatorTcpIp import CommunicatorTcpIp
+# from .Communication.CommunicatorGpib import CommunicatorGpib
 
-print(f'Initializing package {__name__}')
+print(f"Initializing package {__name__}")
 
 name = "sentio_prober_control"
 """ The name of the package. 
     @private
 """
-
-
-
