@@ -1,13 +1,26 @@
 from typing import Tuple
+
 from deprecated import deprecated
 
+from sentio_prober_control.Sentio.Enumerations import (
+    AxisOrient,
+    ColorScheme,
+    DieNumber,
+    StatusBits,
+)
+from sentio_prober_control.Sentio.ProberBase import ProberException
+from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
     ModuleCommandGroupBase,
 )
-from sentio_prober_control.Sentio.Response import Response
-from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.WafermapBinsCommandGroup import (
     WafermapBinsCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.WafermapCompensationCommandGroup import (
+    WafermapCompensationCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.WafermapDieCommandGroup import (
+    WafermapDieCommandGroup,
 )
 from sentio_prober_control.Sentio.CommandGroups.WafermapPathCommandGroup import (
     WafermapPathCommandGroup,
@@ -17,18 +30,6 @@ from sentio_prober_control.Sentio.CommandGroups.WafermapPoiCommandGroup import (
 )
 from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup import (
     WafermapSubsiteGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapCompensationCommandGroup import (
-    WafermapCompensationCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapDieCommandGroup import (
-    WafermapDieCommandGroup,
-)
-from sentio_prober_control.Sentio.Enumerations import (
-    AxisOrient,
-    ColorScheme,
-    DieNumber,
-    StatusBits,
 )
 
 

@@ -1,35 +1,9 @@
 import base64
 import os
 from typing import Tuple
+
 from deprecated import deprecated
 
-from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
-from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import (
-    WafermapCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import (
-    VisionCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import (
-    StatusCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import (
-    LoaderCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHCommandGroup
-from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import (
-    ServiceCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import (
-    ProbeCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup import AuxCommandGroup
-from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import (
-    CompensationCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import (
-    QAlibriaCommandGroup,
-)
 from sentio_prober_control.Sentio.Enumerations import (
     ChuckSite,
     ChuckXYReference,
@@ -46,11 +20,38 @@ from sentio_prober_control.Sentio.Enumerations import (
     VceZReference,
     WorkArea,
 )
+from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 from sentio_prober_control.Communication.CommunicatorGpib import CommunicatorGpib
 from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
 from sentio_prober_control.Communication.CommunicatorVisa import CommunicatorVisa
+from sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup import AuxCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import (
+    CompensationCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import (
+    LoaderCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import (
+    ProbeCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import (
+    QAlibriaCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import (
+    ServiceCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import (
+    StatusCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import (
+    VisionCommandGroup,
+)
+from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import (
+    WafermapCommandGroup,
+)
 
 
 class SentioProber(ProberBase):

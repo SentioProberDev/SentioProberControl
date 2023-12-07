@@ -1,7 +1,8 @@
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from sentio_prober_control.Sentio.Response import Response
-from sentio_prober_control.Sentio.Enumerations import IMagProZReference
 from typing import Tuple
+
+from sentio_prober_control.Sentio.Enumerations import IMagProZReference
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 
 class VisionIMagProCommandGroup(CommandGroupBase):

@@ -1,11 +1,12 @@
-from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from sentio_prober_control.Sentio.Response import Response
+from typing import Tuple
+
 from sentio_prober_control.Sentio.Enumerations import (
     AutoFocusAlgorithm,
     CameraMountPoint,
     DefaultPattern,
 )
-from typing import Tuple
+from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 
 class VisionCameraCommandGroup(CommandGroupBase):
