@@ -171,6 +171,20 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return float(resp.message())
 
+    def move_probe_separation(self, probe: ProbeSentio) -> float:
+        """Move a probe to its separation position.
+
+        Args:
+            probe: The probe to move.
+
+        Returns:
+            The z position after the move in micrometer (from zero).
+        """
+
+        self.__comm.send("move_positioner_separation {0}".format(probe.toSentioAbbr()))
+        resp = Response.check_resp(self.__comm.read_line())
+        return float(resp.message())
+
     def move_probe_home(self, probe: ProbeSentio) -> Tuple[float, float]:
         """Move probe to its home position.
 
