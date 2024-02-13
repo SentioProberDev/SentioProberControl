@@ -4,6 +4,8 @@ from sentio_prober_control.Sentio.Enumerations import CompensationMode, Compensa
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
+from deprecated import deprecated
+
 
 class VisionCompensationGroup(CommandGroupBase):
     """This command group contains functions for working with x,y and z compensation.

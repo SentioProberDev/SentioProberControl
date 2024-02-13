@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from sentio_prober_control.Communication import CommunicatorBase
-from sentio_prober_control.Sentio.Enumerations import ProbeSentio
+from sentio_prober_control.Sentio.Enumerations import ProbeSentio, ProbeXYReference, ProbeZReference, ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 

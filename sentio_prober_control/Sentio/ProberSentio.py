@@ -110,13 +110,13 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
     @staticmethod
-    def create_prober(comm_type : str ="tcpip", arg1 : str | GpibCardVendor = "127.0.0.1:35556", arg2 : str = "") -> 'SentioProber':
+    def create_prober(comm_type : str ="tcpip", arg1 : str | GpibCardVendor = "127.0.0.1:35555", arg2 : str = "") -> 'SentioProber':
         """ Create an instance of a SentioProber object that is bound to a certain communication method. Your choices of communication are tcpip, gpib and visa.
          
             Args:
                 comm_type (str): The type of communication to use. Valid values are "tcpip", "gpib" and "visa".
                 arg1 (object): For tcpip this is a single string specifying address and port 
-                               like "127.0.0.1:35556". For visa this is the address of the device like "GPIB0::20::INSTR". For gpib two parameters are needed. 
+                               like "127.0.0.1:35555". For visa this is the address of the device like "GPIB0::20::INSTR". For gpib two parameters are needed. 
                                The first one is the [type of driver/card](/Communication/GpibCardVendor) installed in the system, the second parameter is the address of the device like "GPIB0:20".
                 arg2 (str): Only used for gpib communication. This is the GPIB address of the prober i.e. "GPIB0:20". 
          """
@@ -128,7 +128,7 @@ class SentioProber(ProberBase):
         elif comm_type == "visa":
             return SentioProber(CommunicatorVisa.create(arg1))
         else:
-            raise ValueError("Unknown prober type")
+            raise ValueError(f'Unknown prober type: "{comm_type}"')
 
     def enable_chuck_overtravel(self, stat: bool) -> Response:
         """Enable chuck overtravel.
