@@ -72,4 +72,20 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-		
+
+## Quickstart
+
+The [SentioProber](/SentioProber/) class is your gateway to control a probe station running the MPI SENTIO 
+Software suite. In order to use it you need to create a SentioProber instance.
+
+Some functionality is provided directly via member functions of the class.
+The following example triggers a switch of the active SENTIO module by using the 
+select_module function:
+
+```python
+from sentio_prober_control.Sentio.ProberSentio import *
+from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
+
+prober = SentioProber(CommunicatorTcpIp.create("127.0.0.1:35555"))
+prober.select_module(Module.Wafermap)
+```

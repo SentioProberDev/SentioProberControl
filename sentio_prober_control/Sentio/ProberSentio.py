@@ -20,38 +20,23 @@ from sentio_prober_control.Sentio.Enumerations import (
     VceZReference,
     WorkArea,
 )
+
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
-from sentio_prober_control.Communication.CommunicatorGpib import CommunicatorGpib
+from sentio_prober_control.Communication.CommunicatorGpib import CommunicatorGpib, GpibCardVendor
 from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
 from sentio_prober_control.Communication.CommunicatorVisa import CommunicatorVisa
 from sentio_prober_control.Sentio.CommandGroups.AuxCommandGroup import AuxCommandGroup
-from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import (
-    CompensationCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import (
-    LoaderCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import (
-    ProbeCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import (
-    QAlibriaCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import (
-    ServiceCommandGroup,
-)
+from sentio_prober_control.Sentio.CommandGroups.CompensationCommandGroup import CompensationCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import LoaderCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import ProbeCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import QAlibriaCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.ServiceCommandGroup import ServiceCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHCommandGroup
-from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import (
-    StatusCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import (
-    VisionCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import (
-    WafermapCommandGroup,
-)
+from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import StatusCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
 
 
 class SentioProber(ProberBase):
@@ -125,18 +110,17 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
     @staticmethod
-    def create_prober(
-        comm_type: str = "tcpip", arg1="127.0.0.1:35556", arg2=None
-    ) -> "SentioProber":
-        """Create an instance of a SentioProber object with a certain type of communication.
-
-        Args:
-            comm_type (str): The type of communication to use. Valid values are "tcpip", "gpib" and "visa".
-            arg1 (object): The first argument to pass to the communicator constructor. For tcpip this is a single string specifying address and port like "127.0.0.1:35556".
-                    For gpib this is the Card Type. For visa this is the address of the device like "GPIB0::20::INSTR".
-            arg2 (str): Second  argument for the communicator constructor. For gpib this is the address of the device like "GPIB0:20".
-        """
-
+    def create_prober(comm_type : str ="tcpip", arg1 : str | GpibCardVendor = "127.0.0.1:35556", arg2 : str = "") -> 'SentioProber':
+        """ Create an instance of a SentioProber object that is bound to a certain communication method. Your choices of communication are tcpip, gpib and visa.
+         
+            Args:
+                comm_type (str): The type of communication to use. Valid values are "tcpip", "gpib" and "visa".
+                arg1 (object): For tcpip this is a single string specifying address and port 
+                               like "127.0.0.1:35556". For visa this is the address of the device like "GPIB0::20::INSTR". For gpib two parameters are needed. 
+                               The first one is the [type of driver/card](/Communication/GpibCardVendor) installed in the system, the second parameter is the address of the device like "GPIB0:20".
+                arg2 (str): Only used for gpib communication. This is the GPIB address of the prober i.e. "GPIB0:20". 
+         """
+        
         if comm_type == "tcpip":
             return SentioProber(CommunicatorTcpIp.create(arg1))
         elif comm_type == "gpib":
