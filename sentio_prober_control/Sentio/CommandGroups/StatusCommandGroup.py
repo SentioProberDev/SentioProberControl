@@ -10,7 +10,7 @@ from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
 class StatusCommandGroup(ModuleCommandGroupBase):
     """A command group for getting the status of the probe station and controlling the dashboard module."""
 
-    def __init__(self, comm):
+    def __init__(self, comm) -> None:
         super().__init__(comm, "status")
 
 

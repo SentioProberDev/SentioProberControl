@@ -17,7 +17,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cleaning (AuxCleaningGroup): A subgroup to provide logic for probe cleaning.
     """
 
-    def __init__(self, comm):
+    def __init__(self, comm) -> None:
         super().__init__(comm, "aux")
 
         self.cleaning : AuxCleaningGroup = AuxCleaningGroup(comm)

@@ -13,7 +13,7 @@ class CompensationCommandGroup(CommandGroupBase):
     Use the SentioProber.vis.compensation group instead!
     """
 
-    def __init__(self, comm):
+    def __init__(self, comm) -> None:
         """@private"""
         super().__init__(comm)
 

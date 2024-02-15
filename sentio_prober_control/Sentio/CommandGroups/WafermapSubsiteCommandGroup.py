@@ -50,26 +50,34 @@ class WafermapSubsiteGroup(CommandGroupBase):
         self._comm.send(f"map:subsite:bin_step_next {bin}")
 
         resp = Response.check_resp(self._comm.read_line())
-        self._parent_command_group.__end_of_route = (
-            resp.status() & StatusBits.EndOfRoute
-        ) == StatusBits.EndOfRoute
+        self._parent_command_group.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def get(self, idx: int) -> Tuple[str, float, float]:
+
+    def get(self, idx: int, orient: AxisOrient | None = None) -> Tuple[str, float, float]:
         """Returns the subsite definition for a subsite with a given index.
 
         Wraps the "map:subsite:get" remote command.
 
         Args:
             idx: The index of the subsite.
+            orient: The axis orientation used for the returned subsite coordinates. If this parameter is omitted the axis orientation of the wafer map is used.
 
         Returns:
             A tuple containing the subsite id, the x position and the y position of the subsite.
             X and y positions are relative to the die home position.
         """
-        self._comm.send("map:subsite:get {0}".format(idx))
+
+        # If no orientation is given use the map axis orientation. The SENTIO remote command would always default to UpRight which may 
+        # not be correct if the map has a different orientation.
+        if orient is None:
+            orient_str = "MAP"
+        else:
+            orient_str = orient.toSentioAbbr()
+
+        self._comm.send(f"map:subsite:get {idx}, {orient_str}")
         resp = Response.check_resp(self._comm.read_line())
 
         tok = resp.message().split(",")

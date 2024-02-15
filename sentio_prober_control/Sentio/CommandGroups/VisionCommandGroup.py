@@ -37,7 +37,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         compensation (VisionCompensationGroup): A subgroup to provide logic for compensation specific functions.
     """
 
-    def __init__(self, comm: CommunicatorBase):
+    def __init__(self, comm: CommunicatorBase) -> None:
         super().__init__(comm, "vis")
 
         self.camera = VisionCameraCommandGroup(comm)

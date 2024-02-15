@@ -21,7 +21,7 @@ class ProbeCommandGroup(CommandGroupBase):
     ```
     """
 
-    def __init__(self, comm: CommunicatorBase):
+    def __init__(self, comm: CommunicatorBase) -> None:
         self.__comm = comm
 
 

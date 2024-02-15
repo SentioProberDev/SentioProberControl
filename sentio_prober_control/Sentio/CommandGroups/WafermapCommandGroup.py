@@ -1,34 +1,15 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import (
-    AxisOrient,
-    ColorScheme,
-    DieNumber,
-    StatusBits,
-)
+from sentio_prober_control.Sentio.Enumerations import AxisOrient, ColorScheme, DieNumber, StatusBits
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Response import Response
-from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
-    ModuleCommandGroupBase,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapBinsCommandGroup import (
-    WafermapBinsCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapCompensationCommandGroup import (
-    WafermapCompensationCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapDieCommandGroup import (
-    WafermapDieCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapPathCommandGroup import (
-    WafermapPathCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapPoiCommandGroup import (
-    WafermapPoiCommandGroup,
-)
-from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup import (
-    WafermapSubsiteGroup,
-)
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
+from sentio_prober_control.Sentio.CommandGroups.WafermapBinsCommandGroup import WafermapBinsCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapCompensationCommandGroup import WafermapCompensationCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapDieCommandGroup import WafermapDieCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapPathCommandGroup import WafermapPathCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapPoiCommandGroup import WafermapPoiCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup import WafermapSubsiteGroup
 
 
 class WafermapCommandGroup(ModuleCommandGroupBase):
@@ -54,7 +35,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         subsites (WafermapSubsiteGroup): A group to set up subsites.
     """
 
-    def __init__(self, comm):
+    def __init__(self, comm) -> None:
         super().__init__(comm, "map")
 
         self.__end_of_route: bool = False
@@ -65,6 +46,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.path: WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
         self.poi: WafermapPoiCommandGroup = WafermapPoiCommandGroup(comm)
         self.subsites: WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
+
 
     def bin_step_next_die(self, bin_value: int, site: int | None = None) -> Tuple[int, int, int]:
         """Bin the current die and step to the naxt die.
@@ -99,7 +81,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def create(self, diameter: float):
+
+    def create(self, diameter: float) -> None:
         """Create a new round wafer map.
 
         Wraps Sentios "map:create" remote command.
@@ -111,7 +94,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self._comm.send(f"map:create {diameter}")
         Response.check_resp(self._comm.read_line())
 
-    def create_rect(self, cols: int, rows: int):
+
+    def create_rect(self, cols: int, rows: int) -> None:
         """Create a new rectangular wafer map.
 
         Wraps Sentios "map:create_rect" remote command.
@@ -123,6 +107,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         self._comm.send("map:create_rect {0}, {1}".format(cols, rows))
         Response.check_resp(self._comm.read_line())
+
 
     def die_reference_is_set(self) -> bool:
         """Returns true if the die reference offset is set.
@@ -153,6 +138,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self._comm.send("map:get_prop die_reference_is_set")
         resp = Response.check_resp(self._comm.read_line())
         return resp.message().lower() == "true"
+
 
     def end_of_route(self) -> bool:
         """Returns True if the last stepping command reached the end of the route.
@@ -209,6 +195,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         dia = int(resp.message())
         return dia
+
 
     def get_die_reference(self) -> Tuple[float, float]:
         """Get the die reference offset.
@@ -276,6 +263,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         return int(tok[0]), int(tok[1])
 
+
     def get_index_size(self) -> Tuple[float, float]:
         """Return the die size set up in the wafer map.
 
@@ -286,6 +274,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
+
 
     def get_num_dies(self, selection: DieNumber) -> int:
         """Returns the number of dies in the wafer map.
@@ -304,6 +293,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return int(resp.message())
 
+
     def get_street_size(self) -> Tuple[int, int]:
         """Returns the street size set up in the wafer map.
 
@@ -320,6 +310,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         return int(tok[0]), int(tok[1])
 
+
     def set_axis_orient(self, orient: AxisOrient) -> None:
         """Set the acis orientation of the custom coordinate system.
 
@@ -334,6 +325,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """
         self._comm.send(f"map:set_axis_orient {orient.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
+
 
     def set_color_scheme(self, scheme: ColorScheme) -> None:
         """Set color scheme of the wafermap.
@@ -353,6 +345,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self._comm.send(f"map:set_color_scheme {scheme.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
 
+
     def set_flat_params(self, angle: float, width: float) -> None:
         """Set the flat parameters of the wafer map.
 
@@ -365,6 +358,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """
         self._comm.send("map:set_flat_params {0}, {1}".format(angle, width))
         Response.check_resp(self._comm.read_line())
+
 
     def set_grid_origin(self, x: int, y: int) -> None:
         """Set a user defined grid origin.
@@ -383,9 +377,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self._comm.send(f"map:set_grid_origin {x}, {y}")
         Response.check_resp(self._comm.read_line())
 
-    def set_grid_params(
-        self, ix: float, iy: float, offx: float, offy: float, edge: int
-    ) -> None:
+
+    def set_grid_params(self, ix: float, iy: float, offx: float, offy: float, edge: int) -> None:
         """Set wafermap grid parameters. This function defines the wafermapo grid layout which means setting the
         size of a die. Setting the grid offset and the size of the edge exclusion zone.
 
@@ -410,12 +403,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             offy: The y offset of the grid in micrometer.
             edge: The size of the edge exclusion zone in micrometer.
         """
-        self._comm.send(
-            "map:set_grid_params {0}, {1}, {2}, {3}, {4}".format(
-                ix, iy, offx, offy, edge
-            )
-        )
+        self._comm.send(f"map:set_grid_params {ix}, {iy}, {offx}, {offy}, {edge}")
         Response.check_resp(self._comm.read_line())
+
 
     def set_home_die(self, x: int, y: int) -> None:
         """ " Sets the home die coordinates in custom coordinates.
@@ -429,6 +419,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self._comm.send(f"map:set_home_die {x}, {y}")
         Response.check_resp(self._comm.read_line())
 
+
     def set_index_size(self, x: float, y: float) -> None:
         """Set the size of a die.
 
@@ -440,6 +431,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """
         self._comm.send("map:set_index_size {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
+
 
     def set_street_size(self, x: float, y: float) -> None:
         """Set size of streetlines.
@@ -454,6 +446,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """
         self._comm.send("map:set_street_size {0}, {1}".format(x, y))
         Response.check_resp(self._comm.read_line())
+
 
     def step_die(self, col: int, row: int, site: int = 0) -> Tuple[int, int, int]:
         """Step to a specific die (or subsite) which is identified by its column,
@@ -485,6 +478,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
+
     def step_die_seq(self, seq: int, site: int) -> Tuple[int, int, int]:
         """Step to a specific die in the stepping sequence.
 
@@ -508,6 +502,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         return int(tok[0]), int(tok[1]), int(tok[2])
 
+
     def step_first_die(self, site: int | None = None) -> Tuple[int, int, int]:
         """Step to the first die in the stepping sequence.
 
@@ -527,9 +522,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         resp = Response.parse_resp(self._comm.read_line())
 
-        self.__end_of_route = (
-            resp.status() & StatusBits.EndOfRoute
-        ) == StatusBits.EndOfRoute
+        self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         if not resp.ok():
             raise ProberException(resp.message(), resp.errc())
@@ -537,6 +530,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
 
         return int(tok[0]), int(tok[1]), int(tok[2])
+
 
     def step_next_die(self, site: int | None = None) -> Tuple[int, int, int]:
         """Step to the next die in the stepping sequence.
@@ -554,9 +548,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
             self._comm.send(f"map:step_next_die {site}")
 
         resp = Response.parse_resp(self._comm.read_line())
-        self.__end_of_route = (
-            resp.status() & StatusBits.EndOfRoute
-        ) == StatusBits.EndOfRoute
+        self.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         # i.e. Stepping while at the end of the route
         if not resp.ok():

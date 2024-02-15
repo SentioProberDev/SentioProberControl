@@ -11,7 +11,7 @@ class SiPHCommandGroup(CommandGroupBase):
     of the [SentioProber](SentioProber.md) class.
     """
 
-    def __init__(self, comm):
+    def __init__(self, comm) -> None:
         super().__init__(comm)
 
 

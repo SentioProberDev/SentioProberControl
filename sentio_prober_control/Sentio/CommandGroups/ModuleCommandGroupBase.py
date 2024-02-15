@@ -7,7 +7,7 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 class ModuleCommandGroupBase(CommandGroupBase):
     """Base class for all command groups."""
 
-    def __init__(self, comm, abbr):
+    def __init__(self, comm, abbr) -> None:
         super().__init__(comm)
         self._groupAbbr = abbr
 

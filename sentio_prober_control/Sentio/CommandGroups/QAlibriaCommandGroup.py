@@ -7,7 +7,7 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 class QAlibriaCommandGroup(CommandGroupBase):
     """This command group contains functions for working with Qalibria."""
 
-    def __init__(self, comm):
+    def __init__(self, comm) -> None:
         super().__init__(comm)
 
 
