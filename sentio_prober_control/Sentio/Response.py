@@ -25,6 +25,7 @@ class Response:
         self.__cmd_id = cmd_id
         self.__msg = msg
 
+
     @staticmethod
     def parse_resp(resp):
         """A static method that parses a SENTIO remote command response string and returns a Response object.
@@ -53,6 +54,7 @@ class Response:
         resp = Response(errc, stat, cmd_id, msg)
         # resp.dump()
         return resp
+    
 
     @staticmethod
     def check_resp(str_resp: str) -> "Response":
@@ -74,6 +76,7 @@ class Response:
 
         return resp
 
+
     def check(self):
         """Raises an exception if this response indicates an error.
 
@@ -82,6 +85,7 @@ class Response:
         """
         if not self.ok():
             raise ProberException(self.message(), self.errc())
+
 
     def cmd_id(self) -> int:
         """The async commans id returned by SENTIO.
@@ -92,6 +96,7 @@ class Response:
             cmd_id (int): The async command id returned by SENTIO.
         """
         return self.__cmd_id
+
 
     def errc(self) -> int:
         """The error code returned by SENTIO.
@@ -104,6 +109,7 @@ class Response:
         """
         return self.__errc
 
+
     def message(self) -> str:
         """The response message returned by SENTIO.
 
@@ -111,6 +117,7 @@ class Response:
             msg (str): The response message returned by SENTIO.
         """
         return self.__msg
+
 
     def status(self):
         """The status coode extracted from the response.
@@ -120,7 +127,8 @@ class Response:
         """
         return self.__stat
 
-    def ok(self) -> str:
+
+    def ok(self) -> bool:
         """Returns True if the response indicates no error.
 
         Returns:
@@ -128,18 +136,12 @@ class Response:
         """
         return self.__errc == 0
 
+
     @deprecated("Use print() instead")
     def dump(self) -> None:
-        print(
-            'errc={0}; stat={1}; msg="{2}"; id={3}'.format(
-                self.__errc, self.__stat, self.__msg, self.__cmd_id
-            )
-        )
+        print('errc={0}; stat={1}; msg="{2}"; id={3}'.format(self.__errc, self.__stat, self.__msg, self.__cmd_id))
+
 
     def print(self) -> None:
         """Prints the content of the response object to the console."""
-        print(
-            'errc={0}; stat={1}; msg="{2}"; id={3}'.format(
-                self.__errc, self.__stat, self.__msg, self.__cmd_id
-            )
-        )
+        print('errc={0}; stat={1}; msg="{2}"; id={3}'.format(self.__errc, self.__stat, self.__msg, self.__cmd_id))

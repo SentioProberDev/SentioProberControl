@@ -10,6 +10,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm)
 
+
     def calibration_execute(self) -> None:
         """Execute VNA calibration.
 
@@ -18,9 +19,8 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self._comm.send("qal:calibration_execute")
         Response.check_resp(self._comm.read_line())
 
-    def calibration_drift_verify(
-        self, dut_name: str = "", auto_exec: bool = True
-    ) -> None:
+
+    def calibration_drift_verify(self, dut_name: str = "", auto_exec: bool = True) -> None:
         """Calibration Drift verification.
 
         Wraps SENTIO's "qal:calibration_drift_verify" remote command.
@@ -35,28 +35,25 @@ class QAlibriaCommandGroup(CommandGroupBase):
     # Inconsistent API filed as CR#13887. This function should not exist!
     # the use of the "start_" prefix implies it is an async function. It is not or
     # if it is where it the command id return value?
-    @deprecated(
-        reason="use calibration_execute instead!; this function violates naming conventions since its name is different from the remote command; filed as CR#13887"
-    )
+    @deprecated(reason="use calibration_execute instead!; this function violates naming conventions since its name is different from the remote command; filed as CR#13887")
     def start_calibration(self) -> None:
         self._comm.send("qal:calibration_execute")
         Response.check_resp(self._comm.read_line())
 
+
     # Inconsistent API filed as CR#13887. This function should not exist!
-    @deprecated(
-        reason="use calibration_drift_verify instead!; this function violates naming conventions since its name is different from the remote command; filed as CR#13887"
-    )
+    @deprecated(reason="use calibration_drift_verify instead!; this function violates naming conventions since its name is different from the remote command; filed as CR#13887")
     def verify_calibration_drift(self) -> None:
         self._comm.send("qal:calibration_drift_verify")
         Response.check_resp(self._comm.read_line())
 
+
     # Inconsistent API filed as CR#13887. This function should not exist!
-    @deprecated(
-        reason="use calibration_drift_verify instead!; this function violates naming conventions since its name is different from the remote command; filed as CR#13887"
-    )
+    @deprecated(reason="use calibration_drift_verify instead!; this function violates naming conventions since its name is different from the remote command; filed as CR#13887")
     def verify_calibration_drift_dut(self, dut) -> None:
         self._comm.send("qal:calibration_drift_verify {}".format(dut))
         Response.check_resp(self._comm.read_line())
+
 
     # Inconsistent API filed as CR#13887. This function should not exist!
     @deprecated(reason="oddly specific function name; filed as CR#13887")

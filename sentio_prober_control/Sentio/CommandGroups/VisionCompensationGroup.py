@@ -17,12 +17,14 @@ class VisionCompensationGroup(CommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm)
 
+
     @deprecated("Use vision.compensation.enable() instead")
     def set_compensation(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:
         self._comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
+
 
     def enable(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:
         """Enable or disable compensation for a given subsystem.
@@ -43,6 +45,7 @@ class VisionCompensationGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return tok[0], tok[1]
 
+
     def start_execute(self, type: CompensationType, mode: CompensationMode) -> Response:
         """Start the execution of a compensation.
 
@@ -56,7 +59,5 @@ class VisionCompensationGroup(CommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(
-            f"vis:compensation:start_execute {type.toSentioAbbr()}, {mode.toSentioAbbr()}"
-        )
+        self._comm.send(f"vis:compensation:start_execute {type.toSentioAbbr()}, {mode.toSentioAbbr()}")
         return Response.check_resp(self._comm.read_line())

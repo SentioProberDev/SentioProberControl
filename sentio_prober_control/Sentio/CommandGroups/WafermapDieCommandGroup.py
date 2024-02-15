@@ -16,6 +16,7 @@ class WafermapDieCommandGroup(CommandGroupBase):
         self._comm.send(f"map:die:add {x}, {y}")
         Response.check_resp(self._comm.read_line())
 
+
     def remove(self, x: int, y: int) -> None:
         """Remove a die from the wafermap.
 
@@ -31,6 +32,7 @@ class WafermapDieCommandGroup(CommandGroupBase):
         self._comm.send(f"map:die:remove {x}, {y}")
         Response.check_resp(self._comm.read_line())
 
+
     def select(self, x: int, y: int) -> None:
         """Selects a die for testing by adding it to the test path.
 
@@ -40,6 +42,7 @@ class WafermapDieCommandGroup(CommandGroupBase):
         """
         self._comm.send(f"map:die:add {x}, {y}")
         Response.check_resp(self._comm.read_line())
+
 
     def unselect(self, x: int, y: int) -> None:
         """Unselects a die from testing by removing it from the test path.

@@ -20,6 +20,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm, "aux")
 
-        self.cleaning: AuxCleaningGroup = AuxCleaningGroup(comm)
+        self.cleaning : AuxCleaningGroup = AuxCleaningGroup(comm)
 
 

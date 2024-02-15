@@ -60,17 +60,13 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.__end_of_route: bool = False
 
         self.bins: WafermapBinsCommandGroup = WafermapBinsCommandGroup(comm)
-        self.compensation: WafermapCompensationCommandGroup = (
-            WafermapCompensationCommandGroup(comm)
-        )
+        self.compensation: WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
         self.die: WafermapDieCommandGroup = WafermapDieCommandGroup(comm)
         self.path: WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
         self.poi: WafermapPoiCommandGroup = WafermapPoiCommandGroup(comm)
         self.subsites: WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
 
-    def bin_step_next_die(
-        self, bin_value: int, site: int = None
-    ) -> Tuple[int, int, int]:
+    def bin_step_next_die(self, bin_value: int, site: int | None = None) -> Tuple[int, int, int]:
         """Bin the current die and step to the naxt die.
 
         This command wraps the "map:bin_step_next_die" remote command.
@@ -172,6 +168,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """
         return self.__end_of_route
 
+
     def get_axis_orient(self) -> AxisOrient:
         """Get axis orientation of the wafer map.
 
@@ -195,6 +192,9 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         if resp.message().upper() == "DL":
             return AxisOrient.DownLeft
+        
+        raise ProberException(f"Unknown axis orientation: {resp.message()}")
+
 
     def get_diameter(self) -> float:
         """Get diameter of the wafer map im millimeter.
@@ -242,6 +242,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def get_die_seq(self) -> int:
         """Returns the sequence number of the current die.
 
@@ -258,7 +259,8 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """
         self._comm.send("map:get_die_seq")
         resp = Response.check_resp(self._comm.read_line())
-        return resp.message()  # 0:Result+status, 1:Command ID, 2:Response
+        return int(resp.message())  # 0:Result+status, 1:Command ID, 2:Response
+
 
     def get_grid_origin(self) -> Tuple[int, int]:
         """Get origin of the wafermap grid.
@@ -506,7 +508,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def step_first_die(self, site: int = None) -> Tuple[int, int, int]:
+    def step_first_die(self, site: int | None = None) -> Tuple[int, int, int]:
         """Step to the first die in the stepping sequence.
 
         Wraps Sentios "map:step_first_die" remote command.
@@ -536,7 +538,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
 
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def step_next_die(self, site: int = None) -> Tuple[int, int, int]:
+    def step_next_die(self, site: int | None = None) -> Tuple[int, int, int]:
         """Step to the next die in the stepping sequence.
 
         Sentio will stay on the current subsite.

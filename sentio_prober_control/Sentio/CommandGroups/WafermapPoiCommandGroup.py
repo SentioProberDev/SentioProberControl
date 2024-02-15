@@ -19,6 +19,7 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self._comm.send(f"map:poi:add {x}, {y}, {desc}")
         Response.check_resp(self._comm.read_line())
 
+
     def get_num(self) -> int:
         """Returns the number of POIs in the list.
 
@@ -31,6 +32,7 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return int(resp.message())
 
+
     def reset(self, stage: Stage, refXy: PoiReferenceXy) -> None:
         """Reset the list of POIs.
 
@@ -42,10 +44,9 @@ class WafermapPoiCommandGroup(CommandGroupBase):
             stage: The stage to reset the POIs for.
             refXy: The reference point for the POIs.
         """
-        self._comm.send(
-            "map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr())
-        )
+        self._comm.send("map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
+
 
     def step(self, target: int) -> None:
         """Step to a POI in the list.
@@ -58,6 +59,7 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self._comm.send(f"map:poi:step {target}")
         Response.check_resp(self._comm.read_line())
 
+
     def step_first(self) -> None:
         """Step to the first POI in the list.
 
@@ -65,6 +67,7 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         """
         self._comm.send("map:poi:step_first")
         Response.check_resp(self._comm.read_line())
+
 
     def step_next(self) -> None:
         """Step to the next POI in the list.

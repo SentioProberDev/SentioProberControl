@@ -18,9 +18,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         super().__init__(comm)
         self._parent_command_group = wafermap_command_group
 
-    def add(
-        self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight
-    ) -> None:
+    def add(self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight) -> None:
         """Add a single subsite to the wafermap.
 
         Creates a new subsite definition in SENTIO. The subsite position is defined
@@ -35,9 +33,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
             y: The y position of the subsite in micrometer as an offset to the die home position.
             orient: The axis orientation used fot the submitted values
         """
-        self._comm.send(
-            "map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr())
-        )
+        self._comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
 
     def bin_step_next(self, bin: int) -> Tuple[int, int, int]:

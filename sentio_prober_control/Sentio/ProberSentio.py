@@ -80,6 +80,7 @@ class SentioProber(ProberBase):
         self.status: StatusCommandGroup = StatusCommandGroup(comm)
         self.vision: VisionCommandGroup = VisionCommandGroup(comm)
 
+
     def abort_command(self, cmd_id: int) -> Response:
         """Stop an ongoing asynchronous remote command.
 
@@ -92,7 +93,8 @@ class SentioProber(ProberBase):
         self.comm.send("abort_command {0}".format(cmd_id))
         return Response.check_resp(self.comm.read_line())
 
-    def clear_contact(self, site: ChuckSite = None) -> Response:
+
+    def clear_contact(self, site: ChuckSite | None = None) -> Response:
         """Clear contact positions.
 
         Args:
@@ -108,6 +110,7 @@ class SentioProber(ProberBase):
             self.comm.send(f"clear_contact {site.toSentioAbbr()}")
 
         return Response.check_resp(self.comm.read_line())
+
 
     @staticmethod
     def create_prober(comm_type : str ="tcpip", arg1 : str | GpibCardVendor = "127.0.0.1:35555", arg2 : str = "") -> 'SentioProber':
@@ -130,6 +133,7 @@ class SentioProber(ProberBase):
         else:
             raise ValueError(f'Unknown prober type: "{comm_type}"')
 
+
     def enable_chuck_overtravel(self, stat: bool) -> Response:
         """Enable chuck overtravel.
 
@@ -144,6 +148,7 @@ class SentioProber(ProberBase):
 
         self.comm.send(f"enable_chuck_overtravel {stat}")
         return Response.check_resp(self.comm.read_line())
+
 
     def enable_chuck_hover(self, stat: bool) -> Response:
         """Enable chuck hover height.
@@ -164,6 +169,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"enable_chuck_hover {stat}")
         return Response.check_resp(self.comm.read_line())
 
+
     def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> Response:
         """Enable chuck site hover height.
 
@@ -182,6 +188,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
         return Response.check_resp(self.comm.read_line())
 
+
     def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> Response:
         """Enable overtravel distance for a specific chuck site.
 
@@ -195,6 +202,7 @@ class SentioProber(ProberBase):
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
         return Response.check_resp(self.comm.read_line())
+
 
     def file_transfer(self, source: str, dest: str) -> Response:
         """Transfer a file to the prober.
@@ -216,9 +224,8 @@ class SentioProber(ProberBase):
         self.comm.send(f"file_transfer {dest}, {encoded}")
         return Response.check_resp(self.comm.read_line())
 
-    def get_chuck_site_height(
-        self, site: ChuckSite
-    ) -> Tuple[float, float, float, float]:
+
+    def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:
         """Retrieves height information of a chuck site
 
         Example:
@@ -248,6 +255,7 @@ class SentioProber(ProberBase):
 
         return contact, separation, overtravel_gap, hover_gap
 
+
     def get_chuck_site_status(self, site: ChuckSite) -> Tuple[bool, bool, bool, bool]:
         """Get status of a chuck site.
 
@@ -273,7 +281,7 @@ class SentioProber(ProberBase):
             elif v == "1":
                 return True
             else:
-                return None
+                raise ProberException(f"get_chuck_site_status: Invalid boolean value ({v})")
 
         hasHome = str_to_bool(tok[0])
         hasContact = str_to_bool(tok[1])
@@ -281,6 +289,7 @@ class SentioProber(ProberBase):
         vacuumOn = str_to_bool(tok[3])
 
         return hasHome, hasContact, overtravelActive, vacuumOn
+
 
     def get_chuck_theta(self, site: ChuckSite) -> float:
         """Get the current angle of the chuck.
@@ -301,9 +310,8 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def get_chuck_xy(
-        self, site: ChuckSite, ref: ChuckXYReference
-    ) -> Tuple[float, float]:
+
+    def get_chuck_xy(self, site: ChuckSite, ref: ChuckXYReference) -> Tuple[float, float]:
         """Get current chuck xy position with respect to a given reference.
 
         Args:
@@ -324,6 +332,7 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     @deprecated(reason="Duplicate functionality; Use get_chuck_xy instead")
     def get_chuck_xy_pos(self) -> Tuple[float, float]:
         self.comm.send("get_chuck_xy")
@@ -332,6 +341,7 @@ class SentioProber(ProberBase):
         curX = float(tok[0])
         curY = float(tok[1])
         return curX, curY
+
 
     def get_chuck_z(self, ref: ChuckZReference) -> float:
         """Get chuck z position.

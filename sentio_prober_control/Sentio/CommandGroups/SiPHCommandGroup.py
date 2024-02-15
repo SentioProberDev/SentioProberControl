@@ -14,11 +14,13 @@ class SiPHCommandGroup(CommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm)
 
+
     def fast_alignment(self) -> Response:
         """Perform fast fiber alignment."""
 
         self._comm.send("siph:fast_alignment")
         return Response.check_resp(self._comm.read_line())
+
 
     def get_cap_sensor(self) -> Tuple[float, float]:
         """Get the capacitance sensor value.
@@ -32,6 +34,7 @@ class SiPHCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def get_intensity(self) -> float:
         """Get the current intensity value.
 
@@ -43,6 +46,7 @@ class SiPHCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return int(resp.message())
 
+
     def gradient_search(self) -> None:
         """Execute SiPh gradient search.
 
@@ -51,6 +55,7 @@ class SiPHCommandGroup(CommandGroupBase):
 
         self._comm.send("siph:gradient_search")
         Response.check_resp(self._comm.read_line())
+
 
     def move_hover(self, probe: ProbeSentio) -> None:
         """Move SiPh probe to hover height.
@@ -61,6 +66,7 @@ class SiPHCommandGroup(CommandGroupBase):
 
         self._comm.send(f"siph:move_hover {probe.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
+
 
     def move_separation(self, probe: ProbeSentio) -> None:
         """Move SiPh probe to separation height.

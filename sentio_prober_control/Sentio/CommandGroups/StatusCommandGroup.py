@@ -13,6 +13,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm, "status")
 
+
     def get_chuck_temp(self) -> float:
         """Get current chuck temperature.
 
@@ -25,6 +26,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         temp = float(tok[0])
         return temp
+
 
     def get_chuck_temp_setpoint(self) -> float:
         """Get current chuck temperature setpoint.
@@ -39,25 +41,6 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         temp = float(tok[0])
         return temp
 
-    # CR#13889: StatusCommandGroup.get_chuck_thermo_state returns 6 boolean values instead of an enumerator
-    # def get_chuck_thermo_state(self) -> Tuple[bool, bool, bool, bool, bool, bool]:
-    #     """ Return thermo chuck state.
-
-    #         Returns:
-    #             A tuple with the current state of the thermo chuck. Contains six boolean variables:
-    #             isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled.
-    #     """
-
-    #     self._comm.send("status:get_chuck_thermo_state")
-    #     resp = Response.check_resp(self._comm.read_line())
-    #     tok = resp.message().split(",")
-    #     isCooling = "Cooling" in tok
-    #     isHeating = "Heating" in tok
-    #     isControlling = "Controlling" in tok
-    #     isStandby = "Standby" in tok
-    #     isError = "Error" in tok
-    #     isUncontrolled = "Uncontrolled" in tok
-    #     return isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled
 
     def get_chuck_thermo_state(self) -> ThermoChuckState:
         """Return thermo chuck state.
@@ -87,6 +70,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         else:
             return ThermoChuckState.Unknown
 
+
     def get_machine_status(self) -> Tuple[bool, bool, bool]:
         """Get machine status.
 
@@ -101,6 +85,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         isMeasuring = "IsMeasuring" in tok
         LoaderBusy = "LoaderBusy" in tok
         return isInitialized, isMeasuring, LoaderBusy
+
 
     def get_soaking_time(self, temperature: float):
         """Get the thermochuck soaking time in seconds that is set up for a certain temperature in the dashboard.
@@ -121,6 +106,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         temp = float(resp.message())
         return temp
+
 
     def set_chuck_temp(self, temp: float) -> Response:
         """Set chuck temperature setpoint.

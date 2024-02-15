@@ -1,17 +1,11 @@
 from deprecated import deprecated
 
 from sentio_prober_control.Sentio.Response import Response
-from sentio_prober_control.Sentio.Enumerations import (
-    Compensation,
-    ExecuteCompensation,
-    OnTheFlyMode,
-)
+from sentio_prober_control.Sentio.Enumerations import Compensation, ExecuteCompensation, OnTheFlyMode
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 
-@deprecated(
-    reason="duplicated; This command group is already a subgroup of the vision command group."
-)
+@deprecated(reason="duplicated; This command group is already a subgroup of the vision command group.")
 class CompensationCommandGroup(CommandGroupBase):
     """This command group contains functions for working with x,y and z compensation.
 
@@ -22,6 +16,7 @@ class CompensationCommandGroup(CommandGroupBase):
     def __init__(self, comm):
         """@private"""
         super().__init__(comm)
+
 
     @deprecated(reason="Use prober.vis.compensation.set_compensation instead.")
     def set_compensation(self, comp: Compensation, enable: bool):
@@ -37,6 +32,7 @@ class CompensationCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
+
 
     @deprecated(reason="Use prober.vis.compensation.start_execute instead.")
     def execute_compensation(self, comp: ExecuteCompensation, mode: OnTheFlyMode):

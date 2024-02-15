@@ -19,7 +19,7 @@ class AuxCleaningGroup(CommandGroupBase):
 
     """
 
-    def enable_auto(self, stat: bool):
+    def enable_auto(self, stat: bool) -> None:
         """Enable automatic probe cleaning.
 
         Args:
@@ -29,7 +29,8 @@ class AuxCleaningGroup(CommandGroupBase):
         self._comm.send(f"aux:cleaning:enable_auto {stat}")
         Response.check_resp(self._comm.read_line())
 
-    def start(self, touchdowns: int = None):
+
+    def start(self, touchdowns: int | None = None) -> None:
         """Start the cleaning procedure.
 
         Args:
@@ -40,9 +41,4 @@ class AuxCleaningGroup(CommandGroupBase):
         else:
             self._comm.send(f"aux:cleaning:start {touchdowns}")
 
-        resp = Response.check_resp(self._comm.read_line())
-        if not resp.ok():
-            raise ProberException(resp.message())
-
-        return resp.message()
-
+        Response.check_resp(self._comm.read_line())

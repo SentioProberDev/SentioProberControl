@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Communication import CommunicatorBase
+from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 from sentio_prober_control.Sentio.Enumerations import ProbeSentio, ProbeXYReference, ProbeZReference, ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -24,6 +24,7 @@ class ProbeCommandGroup(CommandGroupBase):
     def __init__(self, comm: CommunicatorBase):
         self.__comm = comm
 
+
     def async_step_probe_site(self, probe: ProbeSentio, idx: int) -> int:
         """Start the process of stepping to a positioner site.
 
@@ -39,11 +40,10 @@ class ProbeCommandGroup(CommandGroupBase):
             The async command id of the command.
         """
 
-        self.__comm.send(
-            "start_step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx)
-        )
+        self.__comm.send("start_step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))
         resp = Response.check_resp(self.__comm.read_line())
         return resp.cmd_id()
+
 
     def async_step_probe_site_next(self, probe: ProbeSentio) -> int:
         """Step to next probe site.
@@ -65,6 +65,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return resp.cmd_id()
 
+
     def async_step_probe_site_first(self, probe: ProbeSentio) -> int:
         """Step to first probe site.
 
@@ -85,9 +86,8 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return resp.cmd_id()
 
-    def get_probe_site(
-        self, probe: ProbeSentio, idx: int
-    ) -> Tuple[int, str, float, float]:
+
+    def get_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[int, str, float, float]:
         """Get information for a probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -107,6 +107,7 @@ class ProbeCommandGroup(CommandGroupBase):
 
         return int(tok[0]), str(tok[1]), float(tok[2]), float(tok[3])
 
+
     def get_probe_site_number(self, probe: ProbeSentio) -> int:
         """Returns the total number of probe sites set up.
 
@@ -121,9 +122,8 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return int(resp.message())
 
-    def get_probe_xy(
-        self, probe: ProbeSentio, ref: ProbeXYReference
-    ) -> Tuple[float, float]:
+
+    def get_probe_xy(self, probe: ProbeSentio, ref: ProbeXYReference) -> Tuple[float, float]:
         """Get probe xy position in micrometer.
 
         Args:
@@ -141,6 +141,7 @@ class ProbeCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def get_probe_z(self, probe: ProbeSentio, ref: ProbeZReference) -> float:
         """Get probe z position in micrometer.
 
@@ -157,6 +158,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return float(resp.message())
 
+
     def move_probe_contact(self, probe: ProbeSentio) -> float:
         """Move a probe to its contact position.
 
@@ -171,6 +173,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         return float(resp.message())
 
+
     def move_probe_separation(self, probe: ProbeSentio) -> float:
         """Move a probe to its separation position.
 
@@ -184,6 +187,7 @@ class ProbeCommandGroup(CommandGroupBase):
         self.__comm.send("move_positioner_separation {0}".format(probe.toSentioAbbr()))
         resp = Response.check_resp(self.__comm.read_line())
         return float(resp.message())
+
 
     def move_probe_home(self, probe: ProbeSentio) -> Tuple[float, float]:
         """Move probe to its home position.
@@ -200,9 +204,8 @@ class ProbeCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def move_probe_xy(
-        self, probe: ProbeSentio, ref: ProbeXYReference, x: float, y: float
-    ) -> Tuple[float, float]:
+
+    def move_probe_xy(self, probe: ProbeSentio, ref: ProbeXYReference, x: float, y: float) -> Tuple[float, float]:
         """Move probe to a given position.
 
         Args:
@@ -215,14 +218,11 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position after the move.
         """
 
-        self.__comm.send(
-            "move_positioner_xy {0},{1},{2},{3}".format(
-                probe.toSentioAbbr(), ref.toSentioAbbr(), x, y
-            )
-        )
+        self.__comm.send(f"move_positioner_xy {probe.toSentioAbbr()},{ref.toSentioAbbr()},{x},{y}")
         resp = Response.check_resp(self.__comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
+
 
     def move_probe_z(self, probe: ProbeSentio, ref: ProbeZReference, z: float) -> float:
         """Move probe to a given z position.
@@ -236,15 +236,12 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        self.__comm.send(
-            "move_positioner_z {0}, {1}, {2}".format(
-                probe.toSentioAbbr(), ref.toSentioAbbr(), z
-            )
-        )
+        self.__comm.send(f"move_positioner_z {probe.toSentioAbbr()}, {ref.toSentioAbbr()}, {z}")
         resp = Response.check_resp(self.__comm.read_line())
         return float(resp.message())
 
-    def set_probe_contact(self, probe: ProbeSentio, z: float = None) -> None:
+
+    def set_probe_contact(self, probe: ProbeSentio, z: float | None = None) -> None:
         """Set contact position of a positioner.
 
         Args:
@@ -255,19 +252,12 @@ class ProbeCommandGroup(CommandGroupBase):
         if z == None:
             self.__comm.send("set_positioner_contact {0}".format(probe.toSentioAbbr()))
         else:
-            self.__comm.send(
-                "set_positioner_contact {0},{1}".format(probe.toSentioAbbr(), z)
-            )
+            self.__comm.send("set_positioner_contact {0},{1}".format(probe.toSentioAbbr(), z))
 
         Response.check_resp(self.__comm.read_line())
 
-    def set_probe_home(
-        self,
-        probe: ProbeSentio,
-        site: ChuckSite = None,
-        x: float = None,
-        y: float = None,
-    ) -> None:
+
+    def set_probe_home(self, probe: ProbeSentio, site: ChuckSite | None = None, x: float | None = None, y: float | None = None) -> None:
         """Set home position of a probe.
 
         Args:
@@ -276,16 +266,13 @@ class ProbeCommandGroup(CommandGroupBase):
             x: The x position in micrometer. If not specified, the current x position is used.
             y: The y position in micrometer. If not specified, the current y position is used.
         """
-        if site == None:
-            self.__comm.send("set_positioner_home {0}".format(probe.toSentioAbbr()))
+        if site is None:
+            self.__comm.send(f"set_positioner_home {probe.toSentioAbbr()}")
         else:
-            self.__comm.send(
-                "set_positioner_home {0},{1},{2},{3}".format(
-                    probe.toSentioAbbr(), site.toSentioAbbr(), x, y
-                )
-            )
+            self.__comm.send(f"set_positioner_home {probe.toSentioAbbr()}, {site.toSentioAbbr()}, {x}, {y}")
 
         Response.check_resp(self.__comm.read_line())
+
 
     def step_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[str, float, float]:
         """Step to a specific probe site.
@@ -301,12 +288,12 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the site id, the x position in micrometer and the y position in micrometer.
         """
 
-        self.__comm.send(
-            "step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx)
-        )
+        self.__comm.send("step_positioner_site {0},{1}".format(probe.toSentioAbbr(), idx))
+
         resp = Response.check_resp(self.__comm.read_line())
         tok = resp.message().split(",")
         return tok[0], float(tok[1]), float(tok[2])
+
 
     def step_probe_site_first(self, probe: ProbeSentio) -> Tuple[str, float, float]:
         """Step to the first probe site.
@@ -325,6 +312,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.__comm.read_line())
         tok = resp.message().split(",")
         return tok[0], float(tok[1]), float(tok[2])
+
 
     def step_probe_site_next(self, probe: ProbeSentio) -> Tuple[str, float, float]:
         """Step to the next probe site.

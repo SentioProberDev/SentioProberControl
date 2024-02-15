@@ -11,6 +11,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         self._comm.send("map:bins:clear_all")
         Response.check_resp(self._comm.read_line())
 
+
     def clear_all_values(self) -> None:
         """Removes all temporarily stored values from the dies.
 
@@ -19,6 +20,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         """
         self._comm.send("map:bins:clear_all_values")
         Response.check_resp(self._comm.read_line())
+
 
     def load(self, file: str) -> None:
         """Load a binning table from file.
@@ -30,6 +32,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         """
         self._comm.send(f"map:bins:load {file}")
         Response.check_resp(self._comm.read_line())
+
 
     def set_all(self, bin_val: int, selection: BinSelection) -> None:
         """Sets the bins of all dies on the wafermap to a specific value.
@@ -43,7 +46,8 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         self._comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())  #
 
-    def set_bin(self, bin_value: int, col: int, row: int, site: int = None) -> None:
+
+    def set_bin(self, bin_value: int, col: int, row: int, site: int | None = None) -> None:
         """Set a single bin.
 
         Wraps SENTIO's map:bins:set_bin remote command.
@@ -60,6 +64,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             self._comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}, {site}")
 
         Response.check_resp(self._comm.read_line())
+
 
     def set_value(self, value: float, col: int, row: int) -> None:
         """Set a value on a single die.

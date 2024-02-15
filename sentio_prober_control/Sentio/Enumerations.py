@@ -12,9 +12,9 @@ class AutoAlignCmd(Enum):
         TwoPt (2): Use Two-Point alignment algorithm.
     """
 
-    AutoDieSize = (0,)
-    UpdateDieSize = (1,)
-    TwoPt = (2,)
+    AutoDieSize = 0
+    UpdateDieSize = 1
+    TwoPt = 2
 
     def toSentioAbbr(self):
         switcher = {
@@ -35,10 +35,10 @@ class AutoFocusAlgorithm(Enum):
         AutoCorrelation (3): Auto Correlation
     """
 
-    Gradient = (0,)
-    Bandpass = (1,)
-    Difference = (2,)
-    AutoCorrelation = (3,)
+    Gradient = 0
+    Bandpass = 1
+    Difference = 2
+    AutoCorrelation = 3
 
     def toSentioAbbr(self):
         switcher = {
@@ -59,8 +59,8 @@ class AutoFocusCmd(Enum):
         GoTo (2): Simply move the scope to distance from the wafer that is known to be in focus.
     """
 
-    Calibration = (0,)
-    Focus = (1,)
+    Calibration = 0
+    Focus = 1
     GoTo = 2
 
     def toSentioAbbr(self):
@@ -86,9 +86,9 @@ class AxisOrient(Enum):
         UpLeft (3): Y-axis pointing up; X axis pointing left.
     """
 
-    DownRight = (0,)
-    DownLeft = (1,)
-    UpRight = (2,)
+    DownRight = 0
+    DownLeft = 1
+    UpRight = 2
     UpLeft = 3
 
     def toSentioAbbr(self):
@@ -110,8 +110,8 @@ class BinSelection(Enum):
         SubsitesOnly (2): Select subsites only.
     """
 
-    All = (0,)
-    DiesOnly = (1,)
+    All = 0
+    DiesOnly = 1
     SubsitesOnly = 2
 
     def toSentioAbbr(self):
@@ -138,12 +138,12 @@ class CameraMountPoint(Enum):
         Vce2 (5): Second Vce camera.
     """
 
-    Scope = (0,)
-    Scope2 = (1,)
-    Chuck = (2,)
-    OffAxis = (3,)
-    Vce = (4,)
-    Vce2 = (5,)
+    Scope = 0
+    Scope2 = 1
+    Chuck = 2
+    OffAxis = 3
+    Vce = 4
+    Vce2 = 5
 
     def toSentioAbbr(self):
         switcher = {
@@ -166,8 +166,8 @@ class ChuckPositionHint(Enum):
         SideLoad (2): Chuck is at Side Load Position
     """
 
-    Center = (0,)
-    FrontLoad = (1,)
+    Center = 0
+    FrontLoad = 1
     SideLoad = 2
 
 
@@ -186,12 +186,12 @@ class ChuckSite(Enum):
         ChuckCamera (5): The chuck camera
     """
 
-    Wafer = (0,)
-    AuxRight = (1,)
-    AuxLeft = (2,)
-    AuxRight2 = (3,)
-    AuxLeft2 = (4,)
-    ChuckCamera = (5,)
+    Wafer = 0
+    AuxRight = 1
+    AuxLeft = 2
+    AuxRight2 = 3
+    AuxLeft2 = 4
+    ChuckCamera = 5
 
     def toSentioAbbr(self):
         switcher = {
@@ -214,8 +214,8 @@ class ChuckThetaReference(Enum):
         Relative (2): Use the current theta position as reference.
     """
 
-    Zero = (0,)
-    Site = (1,)
+    Zero = 0
+    Site = 1
     Relative = 2
 
     def toSentioAbbr(self):
@@ -238,11 +238,11 @@ class ChuckXYReference(Enum):
         User (4): Use user defined coordinate system.
     """
 
-    Zero = (0,)
-    Home = (1,)
-    Relative = (2,)
-    Center = (3,)
-    User = (4,)
+    Zero = 0
+    Home = 1
+    Relative = 2
+    Center = 3
+    User = 4
 
     def toSentioAbbr(self):
         switcher = {
@@ -266,10 +266,10 @@ class ChuckZReference(Enum):
         Separation (4): Use relative chuck z coordinated with respect to the chucks separation height.
     """
 
-    Zero = (0,)
-    Relative = (1,)
-    Contact = (2,)
-    Hover = (3,)
+    Zero = 0
+    Relative = 1
+    Contact = 2
+    Hover = 3
     Separation = 4
 
     def toSentioAbbr(self):
@@ -291,7 +291,7 @@ class ColorScheme(Enum):
         ColorFromValue (1): The color of the die is determined by a floating point value attached to a die.
     """
 
-    ColorFromBin = (0,)
+    ColorFromBin = 0
     ColorFromValue = 1
 
     def toSentioAbbr(self):
@@ -301,13 +301,13 @@ class ColorScheme(Enum):
 
 @deprecated(reason="duplicated; use DieCompensationMode instead.")
 class Compensation(Enum):
-    Lateral = (0,)
-    Vertical = (1,)
-    Both = (2,)
-    ProbeCard = (3,)
-    MapScan = (4,)
-    Thermal = (5,)
-    Topography = (6,)
+    Lateral = 0
+    Vertical = 1
+    Both = 2
+    ProbeCard = 3
+    MapScan = 4
+    Thermal = 5
+    Topography = 6
 
     def toSentioAbbr(self):
         switcher = {
@@ -334,13 +334,13 @@ class CompensationMode(Enum):
         Topography (5): Topography compensation.
     """
 
-    Lateral = (0,)
-    Vertical = (1,)
-    Both = (2,)
-    ProbeCard = (3,)
-    MapScan = (4,)
-    Thermal = (5,)
-    Topography = (6,)
+    Lateral = 0
+    Vertical = 1
+    Both = 2
+    ProbeCard = 3
+    MapScan = 4
+    Thermal = 5
+    Topography = 6
 
     def toSentioAbbr(self):
         switcher = {
@@ -366,12 +366,12 @@ class CompensationType(Enum):
         SkateDetection (4): MapScan compensation.
     """
 
-    DieAlign = (0,)
-    Topography = (1,)
-    MapScan = (2,)
-    AlignDie = (3,)
-    SkateDetection = (4,)
-    OnTheFly = (5,)
+    DieAlign = 0
+    Topography = 1
+    MapScan = 2
+    AlignDie = 3
+    SkateDetection = 4
+    OnTheFly = 5
     OffAxis = 6
 
     def toSentioAbbr(self):
@@ -402,13 +402,13 @@ class DefaultPattern(Enum):
         Ptpa (7): A pattern used for probe to pad alignment.
     """
 
-    Align = (0,)
-    Home = (1,)
-    DieAlignPos1 = (3,)
-    DieAlignPos2 = (4,)
-    TwoPoint = (5,)
-    Vce = (6,)
-    Ptpa = (7,)
+    Align = 0
+    Home = 1
+    DieAlignPos1 = 3
+    DieAlignPos2 = 4
+    TwoPoint = 5
+    Vce = 6
+    Ptpa = 7
 
     def toSentioAbbr(self):
         switcher = {
@@ -440,8 +440,8 @@ class DetectionAlgorithm(Enum):
         WaferDetector (2): Deep learning based AI model trained on wafer structures.
     """
 
-    Keypoint = (0,)
-    ProbeDetector = (1,)
+    Keypoint = 0
+    ProbeDetector = 1
     WaferDetector = 2
 
     def toSentioAbbr(self):
@@ -464,8 +464,8 @@ class DetectionCoordindates(Enum):
         Roi (2): Coordinates are in micrometer relative to the center of the region of interest.
     """
 
-    Image = (0,)
-    Fov = (1,)
+    Image = 0
+    Fov = 1
     Roi = 2
 
     def toSentioAbbr(self):
@@ -491,10 +491,10 @@ class DialogButtons(Enum):
         YesNoCancel (8): Yes, No and Cancel button.
     """
 
-    Ok = (1,)
-    Yes = (2,)
-    No = (3,)
-    Cancel = (4,)
+    Ok = 1
+    Yes = 2
+    No = 3
+    Cancel = 4
     OkCancel = 5
     YesNo = 6
     YesCancel = 7
@@ -528,11 +528,11 @@ class DieCompensationMode(Enum):
         SkateDetection (4): Use skate detection
     """
 
-    Lateral = (0,)
-    Vertical = (1,)
-    Both = (2,)
-    ProbeCard = (3,)
-    SkateDetection = (4,)
+    Lateral = 0
+    Vertical = 1
+    Both = 2
+    ProbeCard = 3
+    SkateDetection = 4
 
     def toSentioAbbr(self):
         switcher = {
@@ -554,9 +554,9 @@ class DieCompensationType(Enum):
         Topography (2): Topography scans the height og the wafer on chuck and created a height map.
     """
 
-    DieAlign = (0,)
-    MapScan = (1,)
-    Topography = (2,)
+    DieAlign = 0
+    MapScan = 1
+    Topography = 2
 
     def toSentioAbbr(self):
         switcher = {
@@ -575,14 +575,14 @@ class DieNumber(Enum):
         Selected (2): Number only dies that are selected for test.
     """
 
-    Present = (1,)
+    Present = 1
     Selected = 2
 
 
 @deprecated("ExecuteAction is deprecated.")
 class ExecuteAction(Enum):
-    Execute = (0,)
-    Abort = (1,)
+    Execute = 0
+    Abort = 1
 
     def toSentioAbbr(self):
         switcher = {
@@ -594,9 +594,9 @@ class ExecuteAction(Enum):
 
 @deprecated("ExecuteCompensation is deprecated.")
 class ExecuteCompensation(Enum):
-    AlignDie = (0,)
-    MapScan = (1,)
-    Topography = (2,)
+    AlignDie = 0
+    MapScan = 1
+    Topography = 2
 
     def toSentioAbbr(self):
         switcher = {
@@ -615,7 +615,7 @@ class FindPatternReference(Enum):
         CenterOfRoi (1): Use Center of ROI as reference.
     """
 
-    DieHome = (0,)
+    DieHome = 0
     CenterOfRoi = 1
 
     def toSentioAbbr(self):
@@ -627,11 +627,11 @@ class FindPatternReference(Enum):
 
 
 class ImagePattern(Enum):
-    align = (0,)
-    home = (1,)
-    diealignpos1 = (2,)
-    diealignpos2 = (3,)
-    twoPt = (4,)
+    align = 0
+    home = 1
+    diealignpos1 = 2
+    diealignpos2 = 3
+    twoPt = 4
     calc = 5
 
     def toSentioArg(self):
@@ -647,8 +647,8 @@ class ImagePattern(Enum):
 
 
 class IMagProZReference(Enum):
-    Zero = (0,)
-    Relative = (1,)
+    Zero = 0
+    Relative = 1
     Center = 2
 
     def toSentioAbbr(self):
@@ -674,13 +674,13 @@ class LoaderStation(Enum):
         IdReader (7): Id-reader station.
     """
 
-    Cassette1 = (0,)
-    Cassette2 = (1,)
-    PreAligner = (2,)
-    Chuck = (3,)
-    ForkA = (4,)
-    ForkB = (5,)
-    WaferWallet = (6,)
+    Cassette1 = 0
+    Cassette2 = 1
+    PreAligner = 2
+    Chuck = 3
+    ForkA = 4
+    ForkB = 5
+    WaferWallet = 6
     IdReader = 7
 
     def toSentioAbbr(self):
@@ -706,7 +706,7 @@ class LoadPosition(Enum):
         Side (1): The Side Load position. The side load position is optional and only present on systems with a side loader, a cassette loader or a wafer wallet.
     """
 
-    Front = (0,)
+    Front = 0
     Side = 1
 
     def toSentioAbbr(self):
@@ -733,13 +733,13 @@ class Module(Enum):
         Dashboard (7): The dashboard module. This module is used for dashboard integration.
     """
 
-    Wafermap = (0,)
-    Vision = (1,)
-    Setup = (2,)
-    Service = (3,)
-    Qalibria = (4,)
-    AuxSites = (5,)
-    Loader = (6,)
+    Wafermap = 0
+    Vision = 1
+    Setup = 2
+    Service = 3
+    Qalibria = 4
+    AuxSites = 5
+    Loader = 6
     Dashboard = 7
 
     def toSentioAbbr(self):
@@ -758,10 +758,10 @@ class Module(Enum):
 
 @deprecated(reason="duplicated; Use CompensationMode instead.")
 class OnTheFlyMode(Enum):
-    Lateral = (0,)
-    Vertical = (1,)
-    Both = (2,)
-    ProbeCard = (3,)
+    Lateral = 0
+    Vertical = 1
+    Both = 2
+    ProbeCard = 3
 
     def toSentioAbbr(self):
         switcher = {
@@ -788,7 +788,7 @@ class OrientationMarker(Enum):
         Flat (1): Wafer uses a flat.
     """
 
-    Notch = (0,)
+    Notch = 0
     Flat = 1
 
     def toSentioAbbr(self):
@@ -807,7 +807,7 @@ class PoiReferenceXy(Enum):
         StageCenter (1): Use stage center as the position reference.
     """
 
-    DieCenter = (0,)
+    DieCenter = 0
     StageCenter = 1
 
     def toSentioAbbr(self):
@@ -826,8 +826,8 @@ class ProjectFileInfo(Enum):
         FullPath (1): Return the full path to the project file.
     """
 
-    NameOnly = (0,)
-    FullPath = (1,)
+    NameOnly = 0
+    FullPath = 1
 
     def toSentioAbbr(self):
         switcher = {
@@ -845,8 +845,8 @@ class PtpaType(Enum):
         OnAxis (1): Use on axis PTPA with the scope camera looking down on the probe tips.
     """
 
-    OffAxis = (0,)
-    OnAxis = (1,)
+    OffAxis = 0
+    OnAxis = 1
 
     def toSentioAbbr(self):
         switcher = {PtpaType.OffAxis: "offaxis", PtpaType.OnAxis: "onaxis"}
@@ -856,10 +856,10 @@ class PtpaType(Enum):
 class SnapshotType(Enum):
     """Specifies the type of image snapshot to be taken"""
 
-    CameraRaw = (0,)
+    CameraRaw = 0
     """ The snapshot is the raw image from the camera in original resolution """
 
-    WithOverlays = (1,)
+    WithOverlays = 1
     """ The snapshot consists of a screenshot of the vision module inside SENTIO. This method 
         will also contain the overlays displayed by the vision module but the image resolution
         will be whatever the current resolution of SENTIO's vision module is. """
@@ -873,10 +873,10 @@ class SnapshotType(Enum):
 class SnapshotLocation(Enum):
     """Specifies where a snapshot shall be saved."""
 
-    Prober = (0,)
+    Prober = 0
     """ The snapshot is the raw image from the camera in original resolution """
 
-    Local = (1,)
+    Local = 1
     """ The snapshot consists of a screenshot of the vision module inside SENTIO. This method 
         will also contain the overlays displayed by the vision module but the image resolution
         will be whatever the current resolution of SENTIO's vision module is. """
@@ -899,13 +899,13 @@ class Stage(Enum):
         Probe4 (7): Fourth motorized probe.
     """
 
-    Chuck = (0,)
-    Scope = (1,)
-    Vce = (2,)
-    Vce2 = (3,)
-    Probe1 = (4,)
-    Probe2 = (5,)
-    Probe3 = (6,)
+    Chuck = 0
+    Scope = 1
+    Vce = 2
+    Vce2 = 3
+    Probe1 = 4
+    Probe2 = 5
+    Probe3 = 6
     Probe4 = 7
 
     def toSentioAbbr(self):
@@ -931,9 +931,9 @@ class SteppingContactMode(Enum):
         LockContact (2): Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command.
     """
 
-    BackToContact = (0,)
-    StepToSeparation = (1,)
-    LockContact = (2,)
+    BackToContact = 0
+    StepToSeparation = 1
+    LockContact = 2
 
     def toSentioAbbr(self):
         switcher = {
@@ -957,10 +957,10 @@ class TestSelection(Enum):
         All (4): Select all dies for testing.
     """
 
-    Nothing = (0,)
-    Good = (1,)
-    GoodAndUgly = (2,)
-    GoodUglyAndEdge = (3,)
+    Nothing = 0
+    Good = 1
+    GoodAndUgly = 2
+    GoodUglyAndEdge = 3
     All = 4
 
     def toSentioAbbr(self):
@@ -983,8 +983,8 @@ class ScopeXYReference(Enum):
         Relative (2): Use coordinates with respect to the current scope position.
     """
 
-    Zero = (0,)
-    Home = (1,)
+    Zero = 0
+    Home = 1
     Relative = 2
 
     def toSentioAbbr(self):
@@ -1004,31 +1004,12 @@ class ScopeZReference(Enum):
         Relative (1): Use coordinates with respect to the current scope position.
     """
 
-    Zero = (0,)
+    Zero = 0
     Relative = 1
 
     def toSentioAbbr(self):
         switcher = {ScopeZReference.Zero: "Z", ScopeZReference.Relative: "R"}
         return switcher.get(self, "Invalid scope z reference")
-
-
-class ProbeZReference(Enum):
-    """Position reference for probe z motions.
-
-    Attributes:
-        Zero (0): Use absolute probe coordinates.
-        Relative (1): Use coordinates with respect to the current probe position.
-    """
-
-    Zero = (0,)
-    Relative = (1,)
-
-    def toSentioAbbr(self):
-        switcher = {
-            ProbeZReference.Zero: "Z",
-            ProbeZReference.Relative: "R",
-        }
-        return switcher.get(self, "Invalid chuck z reference")
 
 
 class ProbeSentio(Enum):
@@ -1041,9 +1022,9 @@ class ProbeSentio(Enum):
         South (3): Probe is on the front side of the prober.
     """
 
-    East = (0,)
-    West = (1,)
-    North = (2,)
+    East = 0
+    West = 1
+    North = 2
     South = 3
 
     def toSentioAbbr(self):
@@ -1065,9 +1046,9 @@ class ProbeXYReference(Enum):
         Current (2): Use coordinates with respect to the current probe position.
     """
 
-    Zero = (0,)
-    Home = (1,)
-    Current = (2,)
+    Zero = 0
+    Home = 1
+    Current = 2
 
     def toSentioAbbr(self):
         switcher = {
@@ -1088,9 +1069,9 @@ class ProbeZReference(Enum):
         Separation (3): Use coordinates with respect to the separation height.
     """
 
-    Zero = (0,)
-    Current = (1,)
-    Contact = (2,)
+    Zero = 0
+    Current = 1
+    Contact = 2
     Separation = 3
 
     def toSentioAbbr(self):
@@ -1111,8 +1092,8 @@ class PtpaFindTipsMode(Enum):
         OffAxis (1): Use off axis tip finding.
     """
 
-    OnAxis = (0,)
-    OffAxis = (1,)
+    OnAxis = 0
+    OffAxis = 1
 
     def toSentioAbbr(self):
         switcher = {

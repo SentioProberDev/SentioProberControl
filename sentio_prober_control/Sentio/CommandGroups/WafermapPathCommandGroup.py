@@ -1,10 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import (
-    RoutingPriority,
-    RoutingStartPoint,
-    TestSelection,
-)
+from sentio_prober_control.Sentio.Enumerations import RoutingPriority, RoutingStartPoint, TestSelection
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -26,6 +22,7 @@ class WafermapPathCommandGroup(CommandGroupBase):
         self._comm.send("map:path:create_from_bins {0}".format(bin_val))
         Response.check_resp(self._comm.read_line())
 
+
     def get_die(self, seq: int) -> Tuple[int, int]:
         """Get die column and row coordinates from a sequence number.
 
@@ -40,7 +37,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
         self._comm.send("map:path:get_die {0}".format(seq))
         resp = Response.check_resp(self._comm.read_line())
         tok = resp.message().split(",")
-        return tok[0], tok[1]
+        return int(tok[0]), int(tok[1])
+
 
     def select_dies(self, selection: TestSelection) -> None:
         """Select dies for testing.
@@ -52,6 +50,7 @@ class WafermapPathCommandGroup(CommandGroupBase):
         """
         self._comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
         Response.check_resp(self._comm.read_line())
+
 
     def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority) -> None:
         """Set up path finnding for stepping by specifying a start point position

@@ -15,6 +15,7 @@ class VisionIMagProCommandGroup(CommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm)
 
+
     def move_z(self, ref: IMagProZReference, pos: float) -> float:
         """Move imagpro's internal z-axis
 
@@ -39,6 +40,7 @@ class VisionIMagProCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
 
+
     def get_z(self, ref: IMagProZReference) -> float:
         """Get the position od imagpro's internal axis.
 
@@ -53,6 +55,7 @@ class VisionIMagProCommandGroup(CommandGroupBase):
         self._comm.send(f"vis:imagpro:get_z {par}")
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
+
 
     def get_xy_comp(self, imag_pro_z: float) -> Tuple[float, float]:
         """Get the xy compensation value for a certain z-position of imagpro's internal axis

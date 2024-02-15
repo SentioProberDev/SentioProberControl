@@ -23,9 +23,8 @@ class LoaderCommandGroup(CommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm)
 
-    def start_prepare_station(
-        self, station: LoaderStation, angle: float = None
-    ) -> Response:
+
+    def start_prepare_station(self, station: LoaderStation, angle: float | None = None) -> Response:
         """Prepare a loader station for wafer processing.
 
         This command will trigger a scan of all wafers in a station. This command is an async
@@ -44,11 +43,10 @@ class LoaderCommandGroup(CommandGroupBase):
         if angle == None:
             self._comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}")
         else:
-            self._comm.send(
-                f"loader:start_prepare_station {station.toSentioAbbr()}, {angle}"
-            )
+            self._comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}, {angle}")
 
         return Response.check_resp(self._comm.read_line())
+
 
     def scan_station(self, station: LoaderStation) -> str:
         """Scans a loader station for wafers.
@@ -64,6 +62,7 @@ class LoaderCommandGroup(CommandGroupBase):
         self._comm.send(f"loader:scan_station {station.toSentioAbbr()}")
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()
+
 
     def has_station(self, station: LoaderStation) -> bool:
         """Check wether a certain loader station is present.
@@ -81,12 +80,13 @@ class LoaderCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return resp.message() == "1"
 
+
     def transfer_wafer(
         self,
         src_station: LoaderStation,
         src_slot: int,
         dst_station: LoaderStation,
-        dst_slot: int,
+        dst_slot: int
     ):
         """Transfer a wafer from one loader station to another.
 
@@ -102,6 +102,7 @@ class LoaderCommandGroup(CommandGroupBase):
         )
         return Response.check_resp(self._comm.read_line())
 
+
     def load_wafer(self, src_station: LoaderStation, src_slot: int, angle: int):
         """Load a wafer onto the chuck with optional prealignment.
 
@@ -114,10 +115,9 @@ class LoaderCommandGroup(CommandGroupBase):
             response (Response): A Response object.
         """
 
-        self._comm.send(
-            f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}"
-        )
+        self._comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
         return Response.check_resp(self._comm.read_line())
+
 
     def prealign(self, marker: OrientationMarker, angle: int):
         """Prealign a wafer.
@@ -135,11 +135,13 @@ class LoaderCommandGroup(CommandGroupBase):
         self._comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
         return Response.check_resp(self._comm.read_line())
 
+
     @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):
         self._comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self._comm.read_line())
         return resp.message()
+
 
     def unload_wafer(self):
         """Unload the current wafer from the chuck.

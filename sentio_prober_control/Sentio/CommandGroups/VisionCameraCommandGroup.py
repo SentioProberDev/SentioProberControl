@@ -1,10 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import (
-    AutoFocusAlgorithm,
-    CameraMountPoint,
-    DefaultPattern,
-)
+from sentio_prober_control.Sentio.Enumerations import AutoFocusAlgorithm, CameraMountPoint, DefaultPattern
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -19,6 +15,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
     def __init__(self, comm):
         super().__init__(comm)
 
+
     def set_light(self, mp: CameraMountPoint, value: int) -> Response:
         """Set intensity of the light.
 
@@ -29,6 +26,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
 
         self._comm.send(f"vis:set_prop light, {mp.toSentioAbbr()}, {value}")
         return Response.check_resp(self._comm.read_line())
+
 
     def set_exposure(self, mp: CameraMountPoint, value: int) -> Response:
         """Set exposure time of the camera.
@@ -44,6 +42,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         self._comm.send(f"vis:set_prop exposure, {mp.toSentioAbbr()}, {value}")
         return Response.check_resp(self._comm.read_line())
 
+
     def set_gain(self, mp: CameraMountPoint, value: float) -> Response:
         """Set gain of the camera.
 
@@ -55,6 +54,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         self._comm.send(f"vis:set_prop gain, {mp.toSentioAbbr()}, {value}")
         return Response.check_resp(self._comm.read_line())
 
+
     def get_light(self, mp: CameraMountPoint) -> float:
         """Get light intensity.
 
@@ -65,6 +65,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         self._comm.send(f"vis:get_prop light, {mp.toSentioAbbr()}")
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
+
 
     def get_exposure(self, mp: CameraMountPoint) -> float:
         """Get exposure time.
@@ -79,6 +80,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         self._comm.send(f"vis:get_prop exposure, {mp.toSentioAbbr()}")
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
+
 
     def get_focus_value(self, mp: CameraMountPoint, alg: AutoFocusAlgorithm) -> float:
         """Get the focus value of the camera.
@@ -99,6 +101,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
 
+
     def get_gain(self, mp: CameraMountPoint) -> float:
         """Get gain of the camera.
 
@@ -112,6 +115,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         self._comm.send(f"vis:get_prop gain, {mp.toSentioAbbr()}")
         resp = Response.check_resp(self._comm.read_line())
         return float(resp.message())
+
 
     def get_calib(self, mp: CameraMountPoint) -> Tuple[float, float]:
         """Get the calibration data of the camera.
@@ -132,6 +136,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
+
     def get_image_size(self, mp: CameraMountPoint) -> Tuple[int, int]:
         """Get size of the image.
 
@@ -148,7 +153,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1])
 
-    def is_pattern_trained(self, mp: CameraMountPoint, pat: any) -> bool:
+
+    def is_pattern_trained(self, mp: CameraMountPoint, pat) -> bool:
         """Check if a pattern is trained.
 
         This command wraps the vis:pattern:is_trained remote command.
