@@ -22,12 +22,4 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         self.cleaning: AuxCleaningGroup = AuxCleaningGroup(comm)
 
-    # Ticket #13774 Remove this function. It is already present in the cleaning group!
-    @deprecated(reason="duplicated; Use the cleaning group instead.")
-    def start_clean(self):
-        self._comm.send("aux:cleaning:start")
-        resp = Response.check_resp(self._comm.read_line())
-        if not resp.ok():
-            raise ProberException(resp.message())
 
-        return resp.message()

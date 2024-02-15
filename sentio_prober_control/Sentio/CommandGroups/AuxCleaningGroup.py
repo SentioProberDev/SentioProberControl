@@ -1,4 +1,5 @@
 from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 
@@ -28,12 +29,20 @@ class AuxCleaningGroup(CommandGroupBase):
         self._comm.send(f"aux:cleaning:enable_auto {stat}")
         Response.check_resp(self._comm.read_line())
 
-    def start(self, touchdowns: int):
+    def start(self, touchdowns: int = None):
         """Start the cleaning procedure.
 
         Args:
             touchdowns (int): The number of touchdowns to perform.
         """
+        if touchdowns is None:
+            self._comm.send(f"aux:cleaning:start")
+        else:
+            self._comm.send(f"aux:cleaning:start {touchdowns}")
 
-        self._comm.send(f"aux:cleaning:start {touchdowns}")
-        Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self._comm.read_line())
+        if not resp.ok():
+            raise ProberException(resp.message())
+
+        return resp.message()
+
