@@ -10,13 +10,14 @@ class WafermapSubsiteGroup(CommandGroupBase):
     functionality for setting up und stepping over subsites.
     """
 
-    def __init__(self, comm, wafermap_command_group):
+    def __init__(self, comm, wafermap_command_group) -> None:
         """Creates a new WafermapSubsiteGroup object.
 
         You are not meant to directly create objects of this class.
         """
         super().__init__(comm)
         self._parent_command_group = wafermap_command_group
+
 
     def add(self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight) -> None:
         """Add a single subsite to the wafermap.
@@ -35,6 +36,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         """
         self._comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
         Response.check_resp(self._comm.read_line())
+
 
     def bin_step_next(self, bin: int) -> Tuple[int, int, int]:
         """Step to the next active subsite and assign bin code to current subsite.
@@ -83,6 +85,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return str(tok[0]), float(tok[1]), float(tok[2])
 
+
     def get_num(self) -> int:
         """Retrieve the number of subsites per die defined in the wafermap.
 
@@ -95,6 +98,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         resp = Response.check_resp(self._comm.read_line())
         return int(resp.message())
 
+
     def reset(self) -> None:
         """Reset Sentios subsite definitions.
 
@@ -102,6 +106,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         """
         self._comm.send("map:subsite:reset")
         Response.check_resp(self._comm.read_line())
+
 
     def step_next(self) -> Tuple[int, int, int]:
         """Step to the next active subsite.
@@ -114,9 +119,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         self._comm.send("map:subsite:step_next")
 
         resp = Response.check_resp(self._comm.read_line())
-        self._parent_command_group.__end_of_route = (
-            resp.status() & StatusBits.EndOfRoute
-        ) == StatusBits.EndOfRoute
+        self._parent_command_group.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])

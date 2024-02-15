@@ -1284,9 +1284,9 @@ class RoutingPriority(Enum):
         ColBiDir (3): Columns first. Step odd columns backwards.
     """
 
-    RowUniDir = (0,)
-    ColUniDir = (1,)
-    RowBiDir = (2,)
+    RowUniDir = 0
+    ColUniDir = 1
+    RowBiDir = 2
     ColBiDir = 3
 
     def toSentioAbbr(self):
@@ -1309,9 +1309,9 @@ class RoutingStartPoint(Enum):
         LowerRight (3): Stepping starts in lower right corner of the map.
     """
 
-    UpperLeft = (0,)
-    UpperRight = (1,)
-    LowerLeft = (2,)
+    UpperLeft = 0
+    UpperRight = 1
+    LowerLeft =  2
     LowerRight = 3
 
     def toSentioAbbr(self):
@@ -1350,9 +1350,9 @@ class SoftwareFence(Enum):
         SoftwareLimit (3): Use software limits on axis. A Large rectangular fence around the chuck motion ares. Collisions with the prober housing are possible (TS-2000; tilted front door)
     """
 
-    Disabled = (0,)
-    Round = (1,)
-    Rectangle = (2,)
+    Disabled = 0
+    Round = 1
+    Rectangle = 2
     SoftwareLimit = 3
 
     def toSentioArg(self):
@@ -1378,13 +1378,13 @@ class ThermoChuckState(Enum):
         Controlling (6): The chuck is in controlling state,
     """
 
-    Soaking = (0,)
-    Cooling = (1,)
-    Heating = (2,)
-    Uncontrolled = (3,)
-    Standby = (4,)
-    Error = (5,)
-    Controlling = (6,)
+    Soaking = 0
+    Cooling = 1
+    Heating = 2
+    Uncontrolled = 3
+    Standby = 4
+    Error = 5
+    Controlling = 6
     Unknown = 7
 
 
@@ -1396,7 +1396,7 @@ class VceZReference(Enum):
         Relative (1): Use coordinates with respect to the current Vce position.
     """
 
-    Zero = (0,)
+    Zero = 0
     Relative = 1
 
     def toSentioAbbr(self):
@@ -1412,8 +1412,8 @@ class WorkArea(Enum):
         Offaxis (1): The off axis work area is the area in which the chuck is under the off axis camera. This is where off axis ptpa is performed. The wafer cannot be probed here because there is no probe card.
     """
 
-    Probing = (0,)
-    Offaxis = (1,)
+    Probing = 0
+    Offaxis = 1
 
     def toSentioAbbr(self):
         switcher = {
@@ -1438,11 +1438,11 @@ class ZPositionHint(Enum):
         Transfer (5): Chuck is at transfer position. This is used for the chuck only when the loader is doing a wafer transfer internally.
     """
 
-    Default = (0,)
-    Contact = (1,)
-    Hover = (2,)
-    Separation = (3,)
-    Lift = (4,)
+    Default = 0
+    Contact = 1
+    Hover = 2
+    Separation = 3
+    Lift = 4
     Transfer = 5
 
     def toSentioAbbr(self):
