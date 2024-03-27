@@ -3,7 +3,7 @@ from deprecated import deprecated
 from sentio_prober_control.Sentio.Enumerations import LoaderStation, OrientationMarker
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-
+from sentio_prober_control.Sentio.CommandGroups.LoaderVirtualCarrierCommandGroup import LoaderVirtualCarrierCommandGroup
 
 class LoaderCommandGroup(CommandGroupBase):
     """This command group contains functions for working with the loader.
@@ -22,6 +22,8 @@ class LoaderCommandGroup(CommandGroupBase):
 
     def __init__(self, comm) -> None:
         super().__init__(comm)
+
+        self.vc: LoaderVirtualCarrierCommandGroup = LoaderVirtualCarrierCommandGroup(comm)
 
 
     def start_prepare_station(self, station: LoaderStation, angle: float | None = None) -> Response:
