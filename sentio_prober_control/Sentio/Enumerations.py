@@ -1180,7 +1180,7 @@ class RemoteCommandError:
     NotSupported = 13
     SubsiteNotRoutable = 14
     ProjectRequired = 15
-    Unused = 16
+    EndOfList = 16
     PrealignmentFailed = 17
     HomePositionNotSet = 18
     Timeout = 19

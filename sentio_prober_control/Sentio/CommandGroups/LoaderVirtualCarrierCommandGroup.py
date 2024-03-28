@@ -67,6 +67,21 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         return resp
 
 
+    def load_first(self, cleanup : bool = False, timeout : int = 90) -> None:
+        """Loads the first wafer of the virtual carrier. This is a blocking version of the start_load_first method.
+            
+            Wraps Sentios "loader:vc:start_load_first" remote command.
+
+            Args:
+                cleanup (bool): A boolean flag to indicate the wafer on the chuck shall be returned to its origin
+                timeour (int): The timeout in seconds. (default is 90 seconds
+        """
+
+        resp : Response = self.start_load_first(cleanup)
+        self._comm.send(f"wait_complete {resp.cmd_id()}, {timeout}")
+        Response.check_resp(self._comm.read_line())
+
+
     def start_load_next(self) -> Response:
         """Start loading the next wafer in the selected virtual carrier.
             
@@ -79,6 +94,21 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
             resp (Response): A response object.
         """
 
-        self._comm.send(f"loader:vc:start_load_first {cleanup}")
+        self._comm.send(f"loader:vc:start_load_next")
         resp = Response.check_resp(self._comm.read_line())
         return resp
+    
+    
+    def load_next(self, timeout : int = 90) -> None:
+        """Loads the first wafer of the virtual carrier. This is a blocking version of the start_load_first method.
+            
+            Wraps Sentios "loader:vc:start_load_first" remote command.
+
+            Args:
+                cleanup (bool): A boolean flag to indicate the wafer on the chuck shall be returned to its origin
+                timeour (int): The timeout in seconds. (default is 90 seconds
+        """
+
+        resp : Response = self.start_load_next()
+        self._comm.send(f"wait_complete {resp.cmd_id()}, {timeout}")
+        Response.check_resp(self._comm.read_line())

@@ -960,5 +960,5 @@ class SentioProber(ProberBase):
         Returns:
             A response object with the result of the command.
         """
-        self.comm.send("wait_complete {0}, {1}".format(cmd_id, timeout))
+        self.comm.send(f"wait_complete {cmd_id}, {timeout}")
         return Response.check_resp(self.comm.read_line())
