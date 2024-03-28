@@ -739,7 +739,8 @@ class SentioProber(ProberBase):
         self.comm.send("save_project " + project)
         Response.check_resp(self.comm.read_line())
 
-    def select_module(self, module: Module):
+
+    def select_module(self, module: Module, tabSheet: str | None = None):
         """Activate a given SENTIO module.
 
         In response to this function SENTIO will switch its user interface to make
@@ -749,9 +750,15 @@ class SentioProber(ProberBase):
 
         Args:
             module: The module to activate.
+            tabSheet: The name of the module tab to activate. If None is given the default tab will be activated.
         """
-        self.comm.send(f"select_module {module.toSentioAbbr()}")
+        if tabSheet is not None:
+            self.comm.send(f"select_module {module.toSentioAbbr()}, {tabSheet}")
+        else:
+            self.comm.send(f"select_module {module.toSentioAbbr()}")
+
         Response.check_resp(self.comm.read_line())
+
 
     def send_cmd(self, cmd: str) -> Response:
         """Sends a command to the prober and return a response object.
