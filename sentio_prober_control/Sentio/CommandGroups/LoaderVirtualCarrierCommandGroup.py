@@ -83,10 +83,8 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
                 A List of steps to execute.
         """
 
-        self.comm.send(f"loader:vc:start_initialize {carrier_name}, {mode.toSentioAbbr()}")
-        resp : Response = Response.check_resp(self.comm.read_line())
-
-        self.prober.wait_complete(resp.cmd_id())
+        resp : Response = self.prober.send_cmd(f"loader:vc:start_initialize {carrier_name}, {mode.toSentioAbbr()}")
+        resp = self.prober.wait_complete(resp.cmd_id())
 
         # parse processing steps into a list of tuples
         steps : List[Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]] = []
@@ -115,11 +113,8 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
             A tuple with the processing step information.
         """
 
-        self.comm.send("loader:vc:start_next_step")
-        resp : Response = Response.check_resp(self.comm.read_line())
-
-        self.comm.send(f"wait_complete {resp.cmd_id()}, {timeout}")
-        Response.check_resp(self.comm.read_line())
+        resp : Response = self.prober.send_cmd("loader:vc:start_next_step")
+        resp = self.prober.wait_complete(resp)
 
         col = resp.message().split(',')
         state = VirtualCarrierStepProcessingState[col[0]]
@@ -130,50 +125,4 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         probecard_idx = int(col[5])
 
         return (state, id, station, slot, temp, probecard_idx)
-    
 
-    def load_first(self, cleanup : bool = False, timeout : int = 90) -> None:
-        """Loads the first wafer of the virtual carrier. This is a blocking version of the start_load_first method.
-            
-            Wraps Sentios "loader:vc:start_load_first" remote command.
-
-            Args:
-                cleanup (bool): A boolean flag to indicate the wafer on the chuck shall be returned to its origin
-                timeour (int): The timeout in seconds. (default is 90 seconds
-        """
-
-        resp : Response = self.start_load_first(cleanup)
-        self.comm.send(f"wait_complete {resp.cmd_id()}, {timeout}")
-        Response.check_resp(self.comm.read_line())
-
-
-    def start_load_next(self) -> Response:
-        """Start loading the next wafer in the selected virtual carrier.
-            
-            This is an async command. You need to wait for the command to 
-            complete.
-
-            Wraps Sentios "loader:vc:start_load_next" remote command.
-
-        Returns:
-            resp (Response): A response object.
-        """
-
-        self.comm.send(f"loader:vc:start_load_next")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp
-    
-    
-    def load_next(self, timeout : int = 90) -> None:
-        """Loads the first wafer of the virtual carrier. This is a blocking version of the start_load_first method.
-            
-            Wraps Sentios "loader:vc:start_load_first" remote command.
-
-            Args:
-                cleanup (bool): A boolean flag to indicate the wafer on the chuck shall be returned to its origin
-                timeour (int): The timeout in seconds. (default is 90 seconds
-        """
-
-        resp : Response = self.start_load_next()
-        self.comm.send(f"wait_complete {resp.cmd_id()}, {timeout}")
-        Response.check_resp(self.comm.read_line())

@@ -967,7 +967,8 @@ class SentioProber(ProberBase):
         self.comm.send(f"wait_all {timeout}")
         return Response.check_resp(self.comm.read_line())
 
-    def wait_complete(self, cmd_id: int, timeout: int = 90) -> Response:
+
+    def wait_complete(self, id_or_resp: int | Response, timeout: int = 90) -> Response:
         """Wait for a single async command to complete.
 
         Args:
@@ -977,5 +978,9 @@ class SentioProber(ProberBase):
         Returns:
             A response object with the result of the command.
         """
-        self.comm.send(f"wait_complete {cmd_id}, {timeout}")
+        if isinstance(id_or_resp, Response):
+            self.comm.send(f"wait_complete {id_or_resp.cmd_id()}, {timeout}")    
+        else:
+            self.comm.send(f"wait_complete {id_or_resp}, {timeout}")
+
         return Response.check_resp(self.comm.read_line())
