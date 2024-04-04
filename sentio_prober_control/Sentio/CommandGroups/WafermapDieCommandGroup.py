@@ -13,8 +13,8 @@ class WafermapDieCommandGroup(CommandGroupBase):
             x: The column of the die.
             y: The row of the die.
         """
-        self._comm.send(f"map:die:add {x}, {y}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:die:add {x}, {y}")
+        Response.check_resp(self.comm.read_line())
 
 
     def remove(self, x: int, y: int) -> None:
@@ -29,8 +29,8 @@ class WafermapDieCommandGroup(CommandGroupBase):
             x: The column of the die.
             y: The row of the die.
         """
-        self._comm.send(f"map:die:remove {x}, {y}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:die:remove {x}, {y}")
+        Response.check_resp(self.comm.read_line())
 
 
     def select(self, x: int, y: int) -> None:
@@ -40,8 +40,8 @@ class WafermapDieCommandGroup(CommandGroupBase):
             x: The column of the die.
             y: The row of the die.
         """
-        self._comm.send(f"map:die:add {x}, {y}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:die:add {x}, {y}")
+        Response.check_resp(self.comm.read_line())
 
 
     def unselect(self, x: int, y: int) -> None:
@@ -51,5 +51,5 @@ class WafermapDieCommandGroup(CommandGroupBase):
             x: The column of the die.
             y: The row of the die.
         """
-        self._comm.send(f"map:die:unselect {x}, {y}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:die:unselect {x}, {y}")
+        Response.check_resp(self.comm.read_line())

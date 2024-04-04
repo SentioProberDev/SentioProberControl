@@ -1,5 +1,3 @@
-from abc import ABC
-
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -7,8 +5,8 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 class ModuleCommandGroupBase(CommandGroupBase):
     """Base class for all command groups."""
 
-    def __init__(self, comm, abbr) -> None:
-        super().__init__(comm)
+    def __init__(self, parent : 'SentioProber', abbr) -> None:
+        super().__init__(parent)
         self._groupAbbr = abbr
 
 
@@ -28,11 +26,11 @@ class ModuleCommandGroupBase(CommandGroupBase):
         :raises: ProberException if an error occured.
         """
         if arg1 == None:
-            self._comm.send("{0}:get_prop {1}".format(self._groupAbbr, prop_name))
+            self.comm.send("{0}:get_prop {1}".format(self._groupAbbr, prop_name))
         else:
-            self._comm.send("{0}:get_prop {1}, {2}".format(self._groupAbbr, prop_name, arg1))
+            self.comm.send("{0}:get_prop {1}, {2}".format(self._groupAbbr, prop_name, arg1))
 
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
 
         values = resp.message().split(",")
 
@@ -76,5 +74,5 @@ class ModuleCommandGroupBase(CommandGroupBase):
         for n in range(0, len(argv)):
             cmd += ", {0}".format(argv[n])
 
-        self._comm.send(cmd.format(prop_name))
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(cmd.format(prop_name))
+        Response.check_resp(self.comm.read_line())

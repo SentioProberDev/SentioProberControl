@@ -55,8 +55,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(f"vis:align_wafer {mode.toSentioAbbr()}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:align_wafer {mode.toSentioAbbr()}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def align_die(self, threshold: float = 0.05) -> Tuple[float, float, float]:
@@ -72,8 +72,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A tuple with the x, y and theta offset in micrometer.
         """
 
-        self._comm.send(f"vis:align_die {threshold}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:align_die {threshold}")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
@@ -88,37 +88,37 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             The focus height in micrometer
         """
 
-        self._comm.send("vis:auto_focus {0}".format(af_cmd.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
+        self.commend("vis:auto_focus {0}".format(af_cmd.toSentioAbbr()))
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0])
 
 
     def camera_synchronize(self) -> Tuple[float, float, float]:
-        self._comm.send("vis:camera_synchronize")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:camera_synchronize")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
 
     def create_probepad_model(self, angleStep: float = 0.1, imgPath: str | None = None, UL: tuple | None = None, LR: tuple | None = None):
         if imgPath == None or UL == None or LR == None:
-            self._comm.send(f"vis:create_probepad_model {angleStep}")
+            self.comm.send(f"vis:create_probepad_model {angleStep}")
         else:
-            self._comm.send(f"vis:create_probepad_model {angleStep}, {imgPath}, {UL[0]}, {UL[1]}, {LR[0]}, {LR[1]}")
+            self.comm.send(f"vis:create_probepad_model {angleStep}, {imgPath}, {UL[0]}, {UL[1]}, {LR[0]}, {LR[1]}")
 
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok
 
 
     def detect_probepads(self, imgPath: str | None = None, minScore: float = 0.7, startAngle: float | None = None, startExtend: float | None = None, maxOverlap: float | None  = None) -> Tuple[bool, float, str]:
         if startAngle == None:
-            self._comm.send("vis:detect_probepads {},{}".format(imgPath, minScore))
+            self.comm.send("vis:detect_probepads {},{}".format(imgPath, minScore))
         else:
-            self._comm.send("vis:detect_probepads {},{},{},{},{}".format(imgPath, minScore, startAngle, startExtend, maxOverlap))
+            self.comm.send("vis:detect_probepads {},{},{},{},{}".format(imgPath, minScore, startAngle, startExtend, maxOverlap))
 
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return bool(tok[0]), float(tok[1]), tok[2]
 
@@ -135,8 +135,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A list of detected tips. Each detection result is a tuply of 6 values: x, y, width, height, score, class_id.
         """
 
-        self._comm.send(f"vis:detect_probetips {camera.toSentioAbbr()}, {detector.toSentioAbbr()}, {coords.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:detect_probetips {camera.toSentioAbbr()}, {detector.toSentioAbbr()}, {coords.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         str_tips = resp.message().split(",")
 
         found_tips = []
@@ -174,8 +174,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send("vis:enable_follow_mode {0}".format(stat))
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:enable_follow_mode {0}".format(stat))
+        return Response.check_resp(self.comm.read_line())
 
 
     def find_home(self) -> Response:
@@ -187,8 +187,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send("vis:find_home")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:find_home")
+        return Response.check_resp(self.comm.read_line())
 
 
     def find_pattern(self, name: str, threshold: float = 70, pattern_index: int = 0, reference: FindPatternReference = FindPatternReference.CenterOfRoi) -> Tuple[float, float, float, float]:
@@ -201,8 +201,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             reference: The reference point to use for the pattern detection.
         """
 
-        self._comm.send(f"vis:find_pattern {name}, {threshold}, {pattern_index}, {reference.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:find_pattern {name}, {threshold}, {pattern_index}, {reference.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
 
@@ -219,8 +219,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             True if the camera is present, False otherwise.
         """
 
-        self._comm.send(f"vis:has_camera {camera.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:has_camera {camera.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "1"
 
 
@@ -236,8 +236,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send("vis:switch_all_lights {0}".format(stat))
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:switch_all_lights {0}".format(stat))
+        return Response.check_resp(self.comm.read_line())
 
 
     def remove_probetip_marker(self) -> Response:
@@ -247,8 +247,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send("vis:remove_probetip_marker")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:remove_probetip_marker")
+        return Response.check_resp(self.comm.read_line())
 
 
     def match_tips(self, ptpa_type: PtpaType) -> Tuple[float, float]:
@@ -256,8 +256,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         This function is subject to change without any prior warning. MPI will not maintain backwards
         compatibility or provide support."""
 
-        self._comm.send("vis:match_tips {0}".format(ptpa_type.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:match_tips {0}".format(ptpa_type.toSentioAbbr()))
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
@@ -276,16 +276,16 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         """
 
         if where == SnapshotLocation.Local:
-            self._comm.send(f"vis:snap_image **download**, {what.toSentioAbbr()}")
-            resp = Response.check_resp(self._comm.read_line())
+            self.comm.send(f"vis:snap_image **download**, {what.toSentioAbbr()}")
+            resp = Response.check_resp(self.comm.read_line())
             jpeg_data = base64.b64decode(resp.message())
 
             # Save the file locally
             with open(file, "wb") as f:
                 f.write(jpeg_data)
         else:
-            self._comm.send(f"vis:snap_image {file}, {what.toSentioAbbr()}")
-            Response.check_resp(self._comm.read_line())
+            self.comm.send(f"vis:snap_image {file}, {what.toSentioAbbr()}")
+            Response.check_resp(self.comm.read_line())
 
 
     def switch_light(self, camera: CameraMountPoint, stat: bool) -> Response:
@@ -299,8 +299,8 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(f"vis:switch_light {camera.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:switch_light {camera.toSentioAbbr()}, {stat}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def switch_camera(self, camera: CameraMountPoint) -> Response:
@@ -313,28 +313,28 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(f"vis:switch_camera {camera.toSentioAbbr()}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:switch_camera {camera.toSentioAbbr()}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def ptpa_find_pads(self, row: int = 0, column: int = 0):
-        self._comm.send("vis:execute_ptpa_find_pads {0},{1}".format(row, column))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:execute_ptpa_find_pads {0},{1}".format(row, column))
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
 
     def ptpa_find_tips(self, ptpa_mode: PtpaFindTipsMode):
-        self._comm.send("vis:ptpa_find_tips {0}".format(ptpa_mode.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:ptpa_find_tips {0}".format(ptpa_mode.toSentioAbbr()))
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
 
     @deprecated("use vision.compensation.start_execute(...) instead!")
     def start_execute_compensation(self, comp_type: DieCompensationType, comp_mode: DieCompensationMode):
-        self._comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.toSentioAbbr(), comp_mode.toSentioAbbr()))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.toSentioAbbr(), comp_mode.toSentioAbbr()))
+        resp = Response.check_resp(self.comm.read_line())
 
         if not resp.ok():
             raise ProberException(resp.message())

@@ -1404,6 +1404,46 @@ class VceZReference(Enum):
         return switcher.get(self, "Invalid vce z reference")
 
 
+class VirtualCarrierInitFlags(Enum):
+    """Flags for initializing a virtual carrier measurement.
+
+    Attributes:
+        Start (0): Start a new virtual carrier measurement.
+        Continue (1): Continue an existing virtual carrier measurement. If no measurement is running, this will start a new one.
+    """
+
+    Start = 0
+    Continue = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            VirtualCarrierInitFlags.Start: "Start",
+            VirtualCarrierInitFlags.Continue: "Continue",
+        }
+        return switcher.get(self, "Invalid VirtualCarrierInitFlags")
+
+
+class VirtualCarrierStepProcessingState(Enum):
+    """State of a single virtual carrier processing step. 
+    
+    Attributes:
+        Skip (0): The step is skipped.
+        Done (1): The step is done.
+        Ready (2): The step is ready to be executed.
+    """
+    Skip = 0
+    Done = 1
+    Ready = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            VirtualCarrierStepProcessingState.Skip: "Skip",
+            VirtualCarrierStepProcessingState.Done: "Done",
+            VirtualCarrierStepProcessingState.Ready: "Ready",
+        }
+        return switcher.get(self, "Invalid VirtualCarrierStepProcessingState")
+
+
 class WorkArea(Enum):
     """An enumeration containing probe station work areas. The OffAxis work area is only present if the specific model of probe station supports it.
 

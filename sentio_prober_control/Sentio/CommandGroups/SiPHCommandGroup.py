@@ -18,8 +18,8 @@ class SiPHCommandGroup(CommandGroupBase):
     def fast_alignment(self) -> Response:
         """Perform fast fiber alignment."""
 
-        self._comm.send("siph:fast_alignment")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send("siph:fast_alignment")
+        return Response.check_resp(self.comm.read_line())
 
 
     def get_cap_sensor(self) -> Tuple[float, float]:
@@ -28,8 +28,8 @@ class SiPHCommandGroup(CommandGroupBase):
         :raises: ProberException if an error occured.
         :return: A tuple with the values from the capacity sensors of probe 1 and probe 2.
         """
-        self._comm.send("siph:get_cap_sensor")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("siph:get_cap_sensor")
+        resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -42,8 +42,8 @@ class SiPHCommandGroup(CommandGroupBase):
         :returns: The intensity value.
         """
 
-        self._comm.send("siph:get_intensity")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("siph:get_intensity")
+        resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
 
 
@@ -53,8 +53,8 @@ class SiPHCommandGroup(CommandGroupBase):
         :raises: ProberException if an error occured.
         """
 
-        self._comm.send("siph:gradient_search")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("siph:gradient_search")
+        Response.check_resp(self.comm.read_line())
 
 
     def move_hover(self, probe: ProbeSentio) -> None:
@@ -64,8 +64,8 @@ class SiPHCommandGroup(CommandGroupBase):
         :raises: ProberException if an error occured.
         """
 
-        self._comm.send(f"siph:move_hover {probe.toSentioAbbr()}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"siph:move_hover {probe.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
 
 
     def move_separation(self, probe: ProbeSentio) -> None:
@@ -75,5 +75,5 @@ class SiPHCommandGroup(CommandGroupBase):
         :raises: ProberException if an error occured.
         """
 
-        self._comm.send(f"siph:move_separation {probe.toSentioAbbr()}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"siph:move_separation {probe.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())

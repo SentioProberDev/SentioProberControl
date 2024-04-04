@@ -34,8 +34,8 @@ class WafermapSubsiteGroup(CommandGroupBase):
             y: The y position of the subsite in micrometer as an offset to the die home position.
             orient: The axis orientation used fot the submitted values
         """
-        self._comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
+        Response.check_resp(self.comm.read_line())
 
 
     def bin_step_next(self, bin: int) -> Tuple[int, int, int]:
@@ -49,9 +49,9 @@ class WafermapSubsiteGroup(CommandGroupBase):
         Returns:
             A tuple containing the wafermap row, column and subsite index after the step.
         """
-        self._comm.send(f"map:subsite:bin_step_next {bin}")
+        self.comm.send(f"map:subsite:bin_step_next {bin}")
 
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         self._parent_command_group.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         tok = resp.message().split(",")
@@ -79,8 +79,8 @@ class WafermapSubsiteGroup(CommandGroupBase):
         else:
             orient_str = orient.toSentioAbbr()
 
-        self._comm.send(f"map:subsite:get {idx}, {orient_str}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:subsite:get {idx}, {orient_str}")
+        resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
         return str(tok[0]), float(tok[1]), float(tok[2])
@@ -94,8 +94,8 @@ class WafermapSubsiteGroup(CommandGroupBase):
         Returns:
             The number of subsites in the wafermap.
         """
-        self._comm.send("map:subsite:get_num")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("map:subsite:get_num")
+        resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
 
 
@@ -104,8 +104,8 @@ class WafermapSubsiteGroup(CommandGroupBase):
 
         Wraps the "map:subsite:reset" remote command.
         """
-        self._comm.send("map:subsite:reset")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:subsite:reset")
+        Response.check_resp(self.comm.read_line())
 
 
     def step_next(self) -> Tuple[int, int, int]:
@@ -116,9 +116,9 @@ class WafermapSubsiteGroup(CommandGroupBase):
         Returns:
             A tuple containing the wafermap row, column and subsite index after the step.
         """
-        self._comm.send("map:subsite:step_next")
+        self.comm.send("map:subsite:step_next")
 
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         self._parent_command_group.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
 
         tok = resp.message().split(",")

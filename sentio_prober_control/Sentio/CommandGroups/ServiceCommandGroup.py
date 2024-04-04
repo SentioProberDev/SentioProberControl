@@ -20,8 +20,8 @@ class ServiceCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(f"service:chuck_compensation {status}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"service:chuck_compensation {status}")
+        Response.check_resp(self.comm.read_line())
 
 
     def set_software_fence(self, fence: SoftwareFence) -> None:
@@ -40,5 +40,5 @@ class ServiceCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(f"service:chuck_fence {fence.toSentioArg()}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"service:chuck_fence {fence.toSentioArg()}")
+        Response.check_resp(self.comm.read_line())

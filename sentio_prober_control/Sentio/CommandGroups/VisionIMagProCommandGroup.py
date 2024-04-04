@@ -32,12 +32,12 @@ class VisionIMagProCommandGroup(CommandGroupBase):
         # reproducable when the axis is moved from one of its endpoints! If you remove
         # the next three lines. The z-position will become very inaccurate!
         #
-        # self._comm.send("vis:imagpro:move_z center, -1000")
-        # Response.check_resp(self._comm.read_line())
+        # self.comm.send("vis:imagpro:move_z center, -1000")
+        # Response.check_resp(self.comm.read_line())
         # time.sleep(0.5)
 
-        self._comm.send("vis:imagpro:move_z {0}, {1}".format(ref.toSentioAbbr(), pos))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("vis:imagpro:move_z {0}, {1}".format(ref.toSentioAbbr(), pos))
+        resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
@@ -52,8 +52,8 @@ class VisionIMagProCommandGroup(CommandGroupBase):
         """
 
         par: str = ref.toSentioAbbr()
-        self._comm.send(f"vis:imagpro:get_z {par}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:imagpro:get_z {par}")
+        resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
@@ -67,8 +67,8 @@ class VisionIMagProCommandGroup(CommandGroupBase):
             The xy compensation value
         """
 
-        self._comm.send(f"vis:imagpro:get_xy_comp {imag_pro_z}")
+        self.comm.send(f"vis:imagpro:get_xy_comp {imag_pro_z}")
 
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])

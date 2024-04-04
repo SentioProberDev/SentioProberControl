@@ -21,8 +21,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             The chuck temperature in degrees Celsius.
         """
 
-        self._comm.send("status:get_chuck_temp")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("status:get_chuck_temp")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         temp = float(tok[0])
         return temp
@@ -35,8 +35,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             The chuck temperature setpoint in degrees Celsius.
         """
 
-        self._comm.send("status:get_chuck_temp_setpoint")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("status:get_chuck_temp_setpoint")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         temp = float(tok[0])
         return temp
@@ -50,8 +50,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             isCooling, isHeating, isControlling, isStandby, isError, isUncontrolled.
         """
 
-        self._comm.send("status:get_chuck_thermo_state")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("status:get_chuck_thermo_state")
+        resp = Response.check_resp(self.comm.read_line())
 
         if "soaking" in resp.message().lower():
             return ThermoChuckState.Soaking
@@ -78,8 +78,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             A tuple with the current status of the machine. Contains three boolean variables: isInitialized, isMeasuring, LoaderBusy.
         """
 
-        self._comm.send("status:get_machine_status")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("status:get_machine_status")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         isInitialized = "Ready" in tok
         isMeasuring = "IsMeasuring" in tok
@@ -102,8 +102,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             The soaking time in seconds.
         """
 
-        self._comm.send(f"status:get_soaking_time {temperature:.2f}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"status:get_soaking_time {temperature:.2f}")
+        resp = Response.check_resp(self.comm.read_line())
         temp = float(resp.message())
         return temp
 
@@ -115,5 +115,5 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             temp: The chuck temperature setpoint in degrees Celsius.
         """
 
-        self._comm.send(f"status:set_chuck_temp {temp:.2f}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"status:set_chuck_temp {temp:.2f}")
+        return Response.check_resp(self.comm.read_line())

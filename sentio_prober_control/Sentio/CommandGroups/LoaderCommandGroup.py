@@ -4,6 +4,7 @@ from sentio_prober_control.Sentio.Enumerations import LoaderStation, Orientation
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.CommandGroups.LoaderVirtualCarrierCommandGroup import LoaderVirtualCarrierCommandGroup
+from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 
 class LoaderCommandGroup(CommandGroupBase):
     """This command group contains functions for working with the loader.
@@ -20,10 +21,10 @@ class LoaderCommandGroup(CommandGroupBase):
     ```
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, parent : 'SentioProber') -> None:
+        super().__init__(parent)
 
-        self.vc: LoaderVirtualCarrierCommandGroup = LoaderVirtualCarrierCommandGroup(comm)
+        self.vc: LoaderVirtualCarrierCommandGroup = LoaderVirtualCarrierCommandGroup(self)
 
 
     def start_prepare_station(self, station: LoaderStation, angle: float | None = None) -> Response:
@@ -43,11 +44,11 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         if angle == None:
-            self._comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}")
+            self.comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}")
         else:
-            self._comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}, {angle}")
+            self.comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}, {angle}")
 
-        return Response.check_resp(self._comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
     def scan_station(self, station: LoaderStation) -> str:
@@ -61,8 +62,8 @@ class LoaderCommandGroup(CommandGroupBase):
             result (str): A string with the scan result.
         """
 
-        self._comm.send(f"loader:scan_station {station.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"loader:scan_station {station.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
 
@@ -78,8 +79,8 @@ class LoaderCommandGroup(CommandGroupBase):
             has_station (bool): True if the station is present, False otherwise.
         """
 
-        self._comm.send(f"loader:has_station {station.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"loader:has_station {station.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         return resp.message() == "1"
 
 
@@ -99,10 +100,10 @@ class LoaderCommandGroup(CommandGroupBase):
             dst_slot (int): The destination slot.
         """
 
-        self._comm.send(
+        self.comm.send(
             f"loader:transfer_wafer {src_station.toSentioAbbr()}, {src_slot}, {dst_station.toSentioAbbr()}, {dst_slot}"
         )
-        return Response.check_resp(self._comm.read_line())
+        return Response.check_resp(self.comm.read_line())
 
 
     def load_wafer(self, src_station: LoaderStation, src_slot: int, angle: int):
@@ -117,8 +118,8 @@ class LoaderCommandGroup(CommandGroupBase):
             response (Response): A Response object.
         """
 
-        self._comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def prealign(self, marker: OrientationMarker, angle: int):
@@ -134,25 +135,22 @@ class LoaderCommandGroup(CommandGroupBase):
             response (Response): A Response object.
         """
 
-        self._comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
+        return Response.check_resp(self.comm.read_line())
 
 
     @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):
-        self._comm.send("move_chuck_work_area {0}".format(area))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("move_chuck_work_area {0}".format(area))
+        resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
 
-    def unload_wafer(self):
+    def unload_wafer(self) -> None:
         """Unload the current wafer from the chuck.
 
         Wraps Sentios "loader:unload_wafer" remote command.
-
-        Returns:
-            response (Response): A Response object.
         """
 
-        self._comm.send("loader:unload_wafer")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send("loader:unload_wafer")
+        Response.check_resp(self.comm.read_line())

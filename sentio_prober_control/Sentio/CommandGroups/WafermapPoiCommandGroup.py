@@ -16,8 +16,8 @@ class WafermapPoiCommandGroup(CommandGroupBase):
             y: The y coordinate of the POI.
             desc: The description of the POI.
         """
-        self._comm.send(f"map:poi:add {x}, {y}, {desc}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:poi:add {x}, {y}, {desc}")
+        Response.check_resp(self.comm.read_line())
 
 
     def get_num(self) -> int:
@@ -28,8 +28,8 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         Returns:
             The number of POIs in the list.
         """
-        self._comm.send("map:poi:get_num")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("map:poi:get_num")
+        resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
 
 
@@ -44,8 +44,8 @@ class WafermapPoiCommandGroup(CommandGroupBase):
             stage: The stage to reset the POIs for.
             refXy: The reference point for the POIs.
         """
-        self._comm.send("map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr()))
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr()))
+        Response.check_resp(self.comm.read_line())
 
 
     def step(self, target: str | int) -> None:
@@ -56,8 +56,8 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         Args:
             target: The target POI to step to. This is either the index of the poi or the id of the poi.
         """
-        self._comm.send(f"map:poi:step {target}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:poi:step {target}")
+        Response.check_resp(self.comm.read_line())
 
 
     def step_first(self) -> None:
@@ -65,8 +65,8 @@ class WafermapPoiCommandGroup(CommandGroupBase):
 
         Wraps SENTIO's map:poi:step_first remote command.
         """
-        self._comm.send("map:poi:step_first")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:poi:step_first")
+        Response.check_resp(self.comm.read_line())
 
 
     def step_next(self) -> None:
@@ -74,5 +74,5 @@ class WafermapPoiCommandGroup(CommandGroupBase):
 
         Wrap SENTIO's map:poi:step_next remote command.
         """
-        self._comm.send("map:poi:step_next")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:poi:step_next")
+        Response.check_resp(self.comm.read_line())

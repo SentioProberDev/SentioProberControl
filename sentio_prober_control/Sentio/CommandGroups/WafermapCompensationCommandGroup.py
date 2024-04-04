@@ -11,8 +11,8 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
 
     @deprecated("Use vis.compensation.start_execute(CompensationType.Topography, CompensationMode.Vertical) instead")
     def topography(self, execute: ExecuteAction):
-        self._comm.send(f"map:compensation:topography {execute.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:compensation:topography {execute.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
 
         # i.e. Stepping while at the end of the route
         if not resp.ok():

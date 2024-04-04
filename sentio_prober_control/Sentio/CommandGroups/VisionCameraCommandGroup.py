@@ -24,8 +24,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             value: The intensity of the light.
         """
 
-        self._comm.send(f"vis:set_prop light, {mp.toSentioAbbr()}, {value}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:set_prop light, {mp.toSentioAbbr()}, {value}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def set_exposure(self, mp: CameraMountPoint, value: int) -> Response:
@@ -39,8 +39,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             A Response object.
         """
 
-        self._comm.send(f"vis:set_prop exposure, {mp.toSentioAbbr()}, {value}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:set_prop exposure, {mp.toSentioAbbr()}, {value}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def set_gain(self, mp: CameraMountPoint, value: float) -> Response:
@@ -51,8 +51,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             value: The gain value.
         """
 
-        self._comm.send(f"vis:set_prop gain, {mp.toSentioAbbr()}, {value}")
-        return Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:set_prop gain, {mp.toSentioAbbr()}, {value}")
+        return Response.check_resp(self.comm.read_line())
 
 
     def get_light(self, mp: CameraMountPoint) -> float:
@@ -62,8 +62,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             mp: The mount point of the camera.
         """
 
-        self._comm.send(f"vis:get_prop light, {mp.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:get_prop light, {mp.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
@@ -77,8 +77,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             The exposure time in microseconds.
         """
 
-        self._comm.send(f"vis:get_prop exposure, {mp.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:get_prop exposure, {mp.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
@@ -95,10 +95,10 @@ class VisionCameraCommandGroup(CommandGroupBase):
             The focus value.
         """
 
-        self._comm.send(
+        self.comm.send(
             f"vis:get_focus_value {mp.toSentioAbbr()}, {alg.toSentioAbbr()}"
         )
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
@@ -112,8 +112,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             The gain value.
         """
 
-        self._comm.send(f"vis:get_prop gain, {mp.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:get_prop gain, {mp.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
@@ -131,8 +131,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             height: Get height of a camera pixel in micrometers.
         """
 
-        self._comm.send(f"vis:get_prop calib, {mp.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:get_prop calib, {mp.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
@@ -148,8 +148,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
             height: The height of the image in pixels.
         """
 
-        self._comm.send(f"vis:get_prop image_size, {mp.toSentioAbbr()}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:get_prop image_size, {mp.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1])
 
@@ -171,7 +171,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         else:
             pattern_name = pat
 
-        self._comm.send(f"vis:pattern:is_trained {mp.toSentioAbbr()}, {pattern_name}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:pattern:is_trained {mp.toSentioAbbr()}, {pattern_name}")
+        resp = Response.check_resp(self.comm.read_line())
         is_trained = resp.message() == "1"
         return is_trained

@@ -37,7 +37,7 @@ from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHComm
 from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import StatusCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
-
+from sentio_prober_control.Sentio.Enumerations import ChuckSite, LoaderStation
 
 class SentioProber(ProberBase):
     """This class represents the SENTIO probe station in python.
@@ -69,16 +69,16 @@ class SentioProber(ProberBase):
         self.__name = "SentioProber"
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
 
-        self.aux: AuxCommandGroup = AuxCommandGroup(comm)
-        self.compensation: CompensationCommandGroup = CompensationCommandGroup(comm)
-        self.loader: LoaderCommandGroup = LoaderCommandGroup(comm)
-        self.map: WafermapCommandGroup = WafermapCommandGroup(comm)
-        self.probe: ProbeCommandGroup = ProbeCommandGroup(comm)
-        self.qalibria: QAlibriaCommandGroup = QAlibriaCommandGroup(comm)
-        self.service: ServiceCommandGroup = ServiceCommandGroup(comm)
-        self.siph: SiPHCommandGroup = SiPHCommandGroup(comm)
-        self.status: StatusCommandGroup = StatusCommandGroup(comm)
-        self.vision: VisionCommandGroup = VisionCommandGroup(comm)
+        self.aux: AuxCommandGroup = AuxCommandGroup(self)
+        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
+        self.loader: LoaderCommandGroup = LoaderCommandGroup(self)
+        self.map: WafermapCommandGroup = WafermapCommandGroup(self)
+        self.probe: ProbeCommandGroup = ProbeCommandGroup(self)
+        self.qalibria: QAlibriaCommandGroup = QAlibriaCommandGroup(self)
+        self.service: ServiceCommandGroup = ServiceCommandGroup(self)
+        self.siph: SiPHCommandGroup = SiPHCommandGroup(self)
+        self.status: StatusCommandGroup = StatusCommandGroup(self)
+        self.vision: VisionCommandGroup = VisionCommandGroup(self)
 
 
     def abort_command(self, cmd_id: int) -> Response:
@@ -429,6 +429,23 @@ class SentioProber(ProberBase):
         self.comm.send("has_scope_z")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "YES"
+
+    def has_wafer(self, station : LoaderStation, slot : int = 1) -> bool:
+        """Returns true if the slot of a given station is occupied.
+
+        Args:
+            station (LoaderStation): The station to check.
+            slot (int): The slot to check. The slot index is 1-based. If no slot is given 1 is assumed.
+
+        Returns:
+            True if the there is a wafer in the specified slot of the station.
+        """
+
+        self.comm.send(f"has_wafer {station.toSentioAbbr()}, {slot}")
+        resp = Response.check_resp(self.comm.read_line())
+        has_wafer : bool = resp.message().upper() == "TRUE"
+        return has_wafer
+
 
     def initialize_if_needed(self):
         """Initialize the prober if it is not already initialized.

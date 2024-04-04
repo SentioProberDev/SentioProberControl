@@ -26,8 +26,8 @@ class AuxCleaningGroup(CommandGroupBase):
             stat (bool): A flag indicating whether to enable or disable cleaning.
         """
 
-        self._comm.send(f"aux:cleaning:enable_auto {stat}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"aux:cleaning:enable_auto {stat}")
+        Response.check_resp(self.comm.read_line())
 
 
     def start(self, touchdowns: int | None = None) -> None:
@@ -37,8 +37,8 @@ class AuxCleaningGroup(CommandGroupBase):
             touchdowns (int): The number of touchdowns to perform.
         """
         if touchdowns is None:
-            self._comm.send(f"aux:cleaning:start")
+            self.comm.send(f"aux:cleaning:start")
         else:
-            self._comm.send(f"aux:cleaning:start {touchdowns}")
+            self.comm.send(f"aux:cleaning:start {touchdowns}")
 
-        Response.check_resp(self._comm.read_line())
+        Response.check_resp(self.comm.read_line())

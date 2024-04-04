@@ -28,8 +28,8 @@ class CompensationCommandGroup(CommandGroupBase):
         >>> prober.vis.compensation.set_compensation(comp, enable)
         """
 
-        self._comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
 
@@ -42,10 +42,10 @@ class CompensationCommandGroup(CommandGroupBase):
         use prober.vis.compensation.start_execute instead.
 
         """
-        self._comm.send(
+        self.comm.send(
             "vis:compensation:start_execute {},{}".format(
                 comp.toSentioAbbr(), mode.toSentioAbbr()
             )
         )
-        resp = Response.check_resp(self._comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
         return resp

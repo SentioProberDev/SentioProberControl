@@ -8,8 +8,8 @@ class WafermapBinsCommandGroup(CommandGroupBase):
 
     def clear_all(self) -> None:
         """Clear all bins. Remove the bin code from all dies and sibsites."""
-        self._comm.send("map:bins:clear_all")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:bins:clear_all")
+        Response.check_resp(self.comm.read_line())
 
 
     def clear_all_values(self) -> None:
@@ -18,8 +18,8 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         Each die can store a single floating point value. This value can be used for
         visualizing parameters across the wafer.
         """
-        self._comm.send("map:bins:clear_all_values")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:bins:clear_all_values")
+        Response.check_resp(self.comm.read_line())
 
 
     def load(self, file: str) -> None:
@@ -30,8 +30,8 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         Args:
             file: The file to load the binning table from.
         """
-        self._comm.send(f"map:bins:load {file}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:bins:load {file}")
+        Response.check_resp(self.comm.read_line())
 
 
     def set_all(self, bin_val: int, selection: BinSelection) -> None:
@@ -43,8 +43,8 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             bin_val: The bin value to set.
             selection: The selection of dies to set the bin value for.
         """
-        self._comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
-        Response.check_resp(self._comm.read_line())  #
+        self.comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())  #
 
 
     def set_bin(self, bin_value: int, col: int, row: int, site: int | None = None) -> None:
@@ -59,11 +59,11 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             site: The site of the die.
         """
         if site is None:
-            self._comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}")
+            self.comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}")
         else:
-            self._comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}, {site}")
+            self.comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}, {site}")
 
-        Response.check_resp(self._comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def set_value(self, value: float, col: int, row: int) -> None:
@@ -74,5 +74,5 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             col: The column of the die.
             row: The row of the die.
         """
-        self._comm.send("map:bins:set_value {0}, {1}, {2}".format(value, col, row))
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:bins:set_value {0}, {1}, {2}".format(value, col, row))
+        Response.check_resp(self.comm.read_line())

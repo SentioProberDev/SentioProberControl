@@ -50,10 +50,21 @@ class ProberBase(ABC):
             comm (CommunicatorBase): The communication object used to communicate with the probe station.
         """
 
-        self.comm = comm
+        self.__comm = comm
+
+
+    @property
+    def comm(self) -> CommunicatorBase:
+        """Get the communicator object.
+
+        Returns:
+            comm (CommunicatorBase): The communicator object.
+        """
+        return self.__comm
+    
 
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         """Returns the name of the probe station.
 
         Must be implemented by derived classes.

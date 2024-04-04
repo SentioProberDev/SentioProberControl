@@ -19,8 +19,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
         Args:
             bin_val: The bin value to use.
         """
-        self._comm.send("map:path:create_from_bins {0}".format(bin_val))
-        Response.check_resp(self._comm.read_line())
+        self.comm.send("map:path:create_from_bins {0}".format(bin_val))
+        Response.check_resp(self.comm.read_line())
 
 
     def get_die(self, seq: int) -> Tuple[int, int]:
@@ -34,8 +34,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
         Returns:
             A tuple with the column and row coordinates of the die.
         """
-        self._comm.send("map:path:get_die {0}".format(seq))
-        resp = Response.check_resp(self._comm.read_line())
+        self.comm.send("map:path:get_die {0}".format(seq))
+        resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1])
 
@@ -48,8 +48,8 @@ class WafermapPathCommandGroup(CommandGroupBase):
         Args:
             selection: The selection of dies to select.
         """
-        self._comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
 
 
     def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority) -> None:
@@ -62,5 +62,5 @@ class WafermapPathCommandGroup(CommandGroupBase):
             sp: The start point of the routing.
             pri: The priority of the routing (rows first, columns first).
         """
-        self._comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
-        Response.check_resp(self._comm.read_line())
+        self.comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
