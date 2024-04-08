@@ -1,10 +1,12 @@
 from deprecated import deprecated
+from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import LoaderStation, OrientationMarker
+from sentio_prober_control.Sentio.Enumerations import LoaderStation, OrientationMarker, RemoteCommandError
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.CommandGroups.LoaderVirtualCarrierCommandGroup import LoaderVirtualCarrierCommandGroup
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
+from sentio_prober_control.Sentio.ProberBase import ProberException
 
 class LoaderCommandGroup(CommandGroupBase):
     """This command group contains functions for working with the loader.
@@ -138,6 +140,38 @@ class LoaderCommandGroup(CommandGroupBase):
         self.comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
         return Response.check_resp(self.comm.read_line())
 
+    def query_wafer_status(self, station : LoaderStation, slot : int) -> Tuple[LoaderStation, int, int, int, float] | None:
+        """Query the status of a wafer in a loader station.
+
+        Wraps Sentios "loader:query_wafer_status" remote command.
+
+        Args:
+            station (LoaderStation): The station to query.
+            slot (int): The slot to query.
+
+        Returns:
+            status (Tuple[LoaderStation, int, int, int, float]): A tuple with the following elements: OriginStation, OriginSlot, Wafer Size, Wafer Orientation, Progress Value.
+        """
+
+        self.comm.send(f"loader:query_wafer_status {station.toSentioAbbr()}, {slot}")
+        
+        try:
+            resp = Response.check_resp(self.comm.read_line())
+        except ProberException as e: 
+            if e.error() == RemoteCommandError.SlotOrStationEmpty:
+                return None
+            else:
+                raise
+        
+        tok = resp.message().split(',')
+        origin_station = LoaderStation[tok[0]]
+        origin_slot = int(tok[1])
+        size = int(tok[2])
+        orient = int(tok[3])
+        progress = float(tok[4])
+
+        return (origin_station, origin_slot, size, orient, progress)
+    
 
     @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):

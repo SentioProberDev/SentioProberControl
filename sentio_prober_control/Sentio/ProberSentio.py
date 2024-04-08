@@ -430,22 +430,6 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "YES"
 
-    def has_wafer(self, station : LoaderStation, slot : int = 1) -> bool:
-        """Returns true if the slot of a given station is occupied.
-
-        Args:
-            station (LoaderStation): The station to check.
-            slot (int): The slot to check. The slot index is 1-based. If no slot is given 1 is assumed.
-
-        Returns:
-            True if the there is a wafer in the specified slot of the station.
-        """
-
-        self.comm.send(f"has_wafer {station.toSentioAbbr()}, {slot}")
-        resp = Response.check_resp(self.comm.read_line())
-        has_wafer : bool = resp.message().upper() == "TRUE"
-        return has_wafer
-
 
     def initialize_if_needed(self):
         """Initialize the prober if it is not already initialized.

@@ -88,8 +88,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             The focus height in micrometer
         """
 
-        self.commend("vis:auto_focus {0}".format(af_cmd.toSentioAbbr()))
-        resp = Response.check_resp(self.comm.read_line())
+        resp = self.prober.send_cmd(f"vis:auto_focus {af_cmd.toSentioAbbr()}")
         tok = resp.message().split(",")
         return float(tok[0])
 
@@ -329,6 +328,20 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
+
+
+    def start_fast_track(self) -> Response:
+        """Start the fast track process as defined in SENTIO.
+
+        FastTrack is a feature that combines multiple preparation steps into one command.
+        You need to have set up FastTrack in the VisionModule/Automation/FastTrack side 
+        panel editor to use this command.
+        
+        Returns:
+            A Response object.
+        """
+
+        return self.prober.send_cmd("vis:start_fast_track")
 
 
     @deprecated("use vision.compensation.start_execute(...) instead!")
