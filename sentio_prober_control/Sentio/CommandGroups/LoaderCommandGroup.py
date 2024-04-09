@@ -108,7 +108,7 @@ class LoaderCommandGroup(CommandGroupBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def load_wafer(self, src_station: LoaderStation, src_slot: int, angle: int):
+    def load_wafer(self, src_station: LoaderStation, src_slot: int, angle: int | None = None):
         """Load a wafer onto the chuck with optional prealignment.
 
         Args:
@@ -120,7 +120,11 @@ class LoaderCommandGroup(CommandGroupBase):
             response (Response): A Response object.
         """
 
-        self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
+        if angle is None:
+            self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}")
+        else:
+            self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
+
         return Response.check_resp(self.comm.read_line())
 
 
