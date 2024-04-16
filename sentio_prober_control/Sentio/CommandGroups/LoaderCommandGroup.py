@@ -170,7 +170,13 @@ class LoaderCommandGroup(CommandGroupBase):
         tok = resp.message().split(',')
         origin_station = LoaderStation[tok[0]]
         origin_slot = int(tok[1])
-        size = int(tok[2])
+        
+        try:
+           # SENTIO may return NaN for unknown size
+           size = int(tok[2])
+        except:
+            size = -1
+
         orient = int(tok[3])
         progress = float(tok[4])
 
