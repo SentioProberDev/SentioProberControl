@@ -1,7 +1,10 @@
+import re
+
 from typing import List, Tuple
 
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.Helper import Helper
 from sentio_prober_control.Sentio.Enumerations import VirtualCarrierInitFlags, VirtualCarrierStepProcessingState, LoaderStation
 
 
@@ -68,6 +71,10 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         return resp
 
 
+#    def __split_string(self, s : str) -> List[str]:
+#        matches = re.findall(r'"[^"]*"|[^,]+', s)
+#        return [match.strip('"') for match in matches]
+
     def initialize(self, carrier_name : str, mode : VirtualCarrierInitFlags = VirtualCarrierInitFlags.Start, timeout : int = 90) -> List[Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]]:
         """Initializes the selected virtual carrier.
         
@@ -89,10 +96,13 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         # parse processing steps into a list of tuples
         steps : List[Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]] = []
 
-        steps_as_str : List[str] = resp.message().split(',')
+        steps_as_str : List[str] = Helper.split_string(resp.message(), ',')
+#        steps_as_str : List[str] = resp.message().split(',')
+
         for it in steps_as_str:
-            col = it.split(' ')
-            
+#            col = it.split(' ')
+            col = Helper.split_string(it, ' ')
+
             state = VirtualCarrierStepProcessingState[col[0]]
             id = col[1]
             station = LoaderStation[col[2]]
