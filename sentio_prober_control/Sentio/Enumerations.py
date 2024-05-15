@@ -123,6 +123,28 @@ class BinSelection(Enum):
         return switcher.get(self, "Invalid bin selection")
 
 
+class BinQuality(Enum):
+    """An enumerator dor defining the quality parameter of a certain bin code.
+
+    Attributes:
+        All (0): Select dies and subsites.
+        DiesOnly (1): Select dies only.
+        SubsitesOnly (2): Select subsites only.
+    """
+
+    Pass = 0
+    Fail = 1
+    Undefined = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            BinQuality.Pass: 0,
+            BinQuality.Fail: 1,
+            BinQuality.Undefined: 2,
+        }
+        return switcher.get(self, "Invalid bin quality identifier")
+
+
 class CameraMountPoint(Enum):
     """Available camera mount points.
 
