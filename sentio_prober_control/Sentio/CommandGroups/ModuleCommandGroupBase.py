@@ -38,8 +38,11 @@ class ModuleCommandGroupBase(CommandGroupBase):
         if len(values) == 1:
             # Test 1: Check if the returned value is a boolean. Do not use bool(...) because this
             #         would also convert numeric values
-            if resp.message().lower() == "true" or resp.message().lower() == "false":
-                return bool(resp.message())
+            #
+            if resp.message().lower() == "true":
+                return True
+            elif resp.message().lower() == "false":
+                return False
 
             # Test 2: Try to convert the return value into a number
             try:
