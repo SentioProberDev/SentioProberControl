@@ -896,12 +896,12 @@ class SnapshotLocation(Enum):
     """Specifies where a snapshot shall be saved."""
 
     Prober = 0
-    """ The snapshot is the raw image from the camera in original resolution """
+    """ The snapshot is stored remotely on the prober PC that is executing SENTIO. """
 
     Local = 1
-    """ The snapshot consists of a screenshot of the vision module inside SENTIO. This method 
-        will also contain the overlays displayed by the vision module but the image resolution
-        will be whatever the current resolution of SENTIO's vision module is. """
+    """ The snapshot will be transferred to the PC that is running the python control script. 
+        This option only makes sense if the prober and the control PC are different and 
+        connected via a network. """
 
 
 class Stage(Enum):
