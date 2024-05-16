@@ -900,8 +900,7 @@ class SnapshotLocation(Enum):
 
     Local = 1
     """ The snapshot will be transferred to the PC that is running the python control script. 
-        This option only makes sense if the prober and the control PC are different and 
-        connected via a network. """
+        This option only makes sense if the prober and the control PC are different. """
 
 
 class Stage(Enum):
