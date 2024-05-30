@@ -1,6 +1,7 @@
 import base64
 import os
 from typing import Tuple
+from enum import Enum
 
 from deprecated import deprecated
 
@@ -18,7 +19,7 @@ from sentio_prober_control.Sentio.Enumerations import (
     Stage,
     SteppingContactMode,
     VceZReference,
-    WorkArea,
+    WorkArea
 )
 
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
@@ -37,7 +38,22 @@ from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHComm
 from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import StatusCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
-from sentio_prober_control.Sentio.Enumerations import ChuckSite, LoaderStation
+from sentio_prober_control.Sentio.Enumerations import ChuckSite
+
+
+class SentioCommunicationType(Enum):
+    """This enum defines different types of prober communication.
+
+    Attributes:
+        BackToContact (0): Chuck will move back to contact position after stepping.
+        StepToSeparation (1): Chuck will move to separation position after stepping.
+        LockContact (2): Chuck cannot step when at contact. You will have to manually move it away from its contact position before issuing the next step command.
+    """
+
+    TcpIp = 0
+    Gpib = 1
+    Visa = 2
+
 
 class SentioProber(ProberBase):
     """This class represents the SENTIO probe station in python.
@@ -113,7 +129,7 @@ class SentioProber(ProberBase):
 
 
     @staticmethod
-    def create_prober(comm_type : str ="tcpip", arg1 : str | GpibCardVendor = "127.0.0.1:35555", arg2 : str = "") -> 'SentioProber':
+    def create_prober(comm_type : str | SentioCommunicationType, arg1 : str | GpibCardVendor = "127.0.0.1:35555", arg2 : str = "") -> 'SentioProber':
         """ Create an instance of a SentioProber object that is bound to a certain communication method. Your choices of communication are tcpip, gpib and visa.
          
             Args:
@@ -124,11 +140,11 @@ class SentioProber(ProberBase):
                 arg2 (str): Only used for gpib communication. This is the GPIB address of the prober i.e. "GPIB0:20". 
          """
         
-        if comm_type == "tcpip":
+        if comm_type == "tcpip" or comm_type == SentioCommunicationType.TcpIp:
             return SentioProber(CommunicatorTcpIp.create(arg1))
-        elif comm_type == "gpib":
+        elif comm_type == "gpib" or comm_type == SentioCommunicationType.Gpib:
             return SentioProber(CommunicatorGpib.create(arg1, arg2))
-        elif comm_type == "visa":
+        elif comm_type == "visa" or comm_type == SentioCommunicationType.Visa:
             return SentioProber(CommunicatorVisa.create(arg1))
         else:
             raise ValueError(f'Unknown prober type: "{comm_type}"')
