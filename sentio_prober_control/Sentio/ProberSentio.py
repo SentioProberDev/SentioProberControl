@@ -852,13 +852,25 @@ class SentioProber(ProberBase):
             overtravel_dist: The new overtravel distance in micrometer.
             hover_gap: The new hover gap in micrometer.
         """
-        par: str = "{},{},{},{},{}".format(
-            site.toSentioAbbr(), contact, separation, overtravel_dist, hover_gap
-        )
+        par: str = f"{site.toSentioAbbr()},{contact},{separation},{overtravel_dist},{hover_gap}"
         self.comm.send("set_chuck_site_heights {0}".format(par))
         return Response.check_resp(self.comm.read_line())
 
-    def set_stepping_contact_mode(self, mode: SteppingContactMode) -> Response:
+
+    def set_ink(self, idx_inker : int) -> None:
+        """ Trigger the inker device.
+
+            Wraps SENTIO's "set_ink" remote command.
+
+        Args:
+            idx_inker: The index of the inker to trigger. The index is one based (use either 1 or 2). 
+        """
+
+        self.comm.send(f"set_ink {idx_inker}")
+        Response.check_resp(self.comm.read_line())
+
+
+    def set_stepping_contact_mode(self, mode: SteppingContactMode) -> None:
         """Change the stepping contact mode.
 
         The stepping contact mode defines what happens during stepping over a wafer.
@@ -873,7 +885,8 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"set_stepping_contact_mode {mode.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
+
 
     def set_vacuum(self, site: ChuckSite, stat: bool) -> Response:
         """Switches the vacuum of a chuck site on or off.
@@ -889,6 +902,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
         return Response.check_resp(self.comm.read_line())
 
+
     def show_hint(self, msg: str, subtext: str) -> Response:
         """Show an on screen message (hint) and return immediately
 
@@ -903,6 +917,7 @@ class SentioProber(ProberBase):
         """
         self.comm.send(f'status:show_hint "{msg}", "{subtext}"')
         return Response.check_resp(self.comm.read_line())
+
 
     def show_hint_and_wait(
         self,
@@ -935,6 +950,7 @@ class SentioProber(ProberBase):
         # wait for button press
         self.comm.send(f"wait_complete {resp.cmd_id()}, {timeout}")
         Response.check_resp(self.comm.read_line())
+
 
     def show_message(
         self, msg: str, buttons: DialogButtons, caption: str, dialog_timeout: int = 180
@@ -975,6 +991,7 @@ class SentioProber(ProberBase):
 
         raise ProberException("Invalid dialog button return value")
 
+
     def start_initialization(self) -> Response:
         """Start the initialization of the probe station.
 
@@ -986,6 +1003,7 @@ class SentioProber(ProberBase):
         """
         self.comm.send("start_initialization")
         return Response.check_resp(self.comm.read_line())
+
 
     def wait_all(self, timeout: int = 90) -> Response:
         """Wait until all async commands have finished.
