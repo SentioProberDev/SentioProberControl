@@ -397,6 +397,49 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+
+    def get_scope_site(self, idx : int) -> Tuple[str, float, float, bool]:
+        """ Get scope site data.
+
+            This command queries the name and position of a scope site. The index is zero based.
+
+        Args:
+            idx (int): The index of the site to query.
+
+        Returns:
+            num (int): The number of defined scope sites.
+        """
+
+        self.comm.send(f"get_scope_site {idx}")
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+
+        id = tok[0]
+        x = float(tok[1])
+        y = float(tok[2])
+
+        # tok[3] is the reference which should always be "home"
+
+        enabled = tok[4].upper() == "TRUE"
+
+        return (id, x, y, enabled)
+    
+
+    def get_scope_site_num(self) -> int:
+        """Get total number of scope sites.
+
+        The scope stage can store a list of sites. Each site has a position and a name.
+        This function returns the number of defined scope sites.
+
+        Returns:
+            num (int): The number of defined scope sites.
+        """
+
+        self.comm.send("get_scope_site_num")
+        resp = Response.check_resp(self.comm.read_line())
+        return int(resp.message())
+
+
     def has_chuck_xyz(self) -> bool:
         """Returns True if the chuck has xyz axes.
 
@@ -408,6 +451,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "YES"
 
+
     def has_scope_xyz(self) -> bool:
         """Returns True if the scope has xyz axes.
 
@@ -418,6 +462,7 @@ class SentioProber(ProberBase):
         self.comm.send("has_scope_xyz")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "YES"
+
 
     def has_scope_z(self) -> bool:
         """Returns true if the microscope has a motorized z axis.
@@ -445,15 +490,12 @@ class SentioProber(ProberBase):
             resp = self.start_initialization()
 
             if not resp.ok():
-                raise ProberException(
-                    "Cannot start initialization: {0}".format(resp.message())
-                )
+                raise ProberException(f"Cannot start initialization: {resp.message()}")
 
             resp = self.wait_complete(resp.cmd_id(), 180)
             if not resp.ok():
-                raise ProberException(
-                    "Initialization failed: {0}".format(resp.message())
-                )
+                raise ProberException(f"Initialization failed: {resp.message()}")
+
 
     def local_mode(self):
         """Switch the prober back into local mode.
@@ -463,6 +505,7 @@ class SentioProber(ProberBase):
         to switch the machine back into local mode and thus enable its UI.
         """
         self.comm.send("*LOCAL")
+
 
     def move_chuck_contact(self) -> float:
         """Move the chuck to contact height.
@@ -477,6 +520,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+
     def move_chuck_home(self) -> Tuple[float, float]:
         """Move chuck to its home position.
 
@@ -489,6 +533,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
+
 
     def move_chuck_load(self, pos: LoadPosition) -> Response:
         """Move chuck to load position.
@@ -504,6 +549,7 @@ class SentioProber(ProberBase):
         self.comm.send("move_chuck_load {0}".format(pos.toSentioAbbr()))
         return Response.check_resp(self.comm.read_line())
 
+
     def move_chuck_separation(self) -> float:
         """Move the chuck to separation height.
 
@@ -513,6 +559,7 @@ class SentioProber(ProberBase):
         self.comm.send("move_chuck_separation ")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
+
 
     def move_chuck_site(self, site: ChuckSite) -> Tuple[float, float, float, float]:
         """Moves chuck to the last active position of the selected chuck site.
@@ -530,6 +577,7 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
 
+
     def move_chuck_theta(self, ref: ChuckThetaReference, angle: float) -> float:
         """Move chuck theta axis to a given angle.
 
@@ -543,9 +591,8 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_chuck_xy(
-        self, ref: ChuckXYReference, x: float, y: float
-    ) -> Tuple[float, float]:
+
+    def move_chuck_xy(self, ref: ChuckXYReference, x: float, y: float) -> Tuple[float, float]:
         """Move chuck to a given xy position.
 
         Wraps SENTIO's "move_chuck_xy" remote command.
@@ -616,7 +663,8 @@ class SentioProber(ProberBase):
             x: Scope x position after the move in micrometers (from zero)
             y: Scope x position after the move in micrometers (from zero)
         """
-        self.comm.send("move_scope_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
+
+        self.comm.send(f"move_scope_xy {ref.toSentioAbbr()}, {x}, {y}")
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
