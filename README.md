@@ -12,6 +12,10 @@ package simply type:
 
 ```python -m pip install sentio-prober-control```
 
+If you already have a version of the package installed you can update the existing package with this command:
+
+```python -m pip install sentio-prober-control --upgrade```
+
 You no longer need to download the package by yourself, just use pip. If you cannot access the internet from your machine you can still download the archives from [the release section of this project](https://github.com/SentioProberDev/SentioProberControl/releases/).
 
 ## Example-Scripts
