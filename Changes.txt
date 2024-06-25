@@ -1,5 +1,11 @@
 Changes:
 
+Version 24.0.1
+=============
+Modifications:
+	+ default timeout of the waitcomplete command increased to 300 seconds.
+	+ map.bins.set_bin parameters col, row and site are now optional as in the corresponding remote command.
+
 Version 23.1.x
 =============
 Bugfixes:

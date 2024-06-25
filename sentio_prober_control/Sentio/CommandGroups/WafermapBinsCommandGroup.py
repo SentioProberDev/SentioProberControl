@@ -101,7 +101,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())  #
 
 
-    def set_bin(self, bin_value: int, col: int, row: int, site: int | None = None) -> None:
+    def set_bin(self, bin_value: int, col: int | None = None, row: int | None = None, site: int | None = None) -> None:
         """Set a single bin.
 
         Wraps SENTIO's map:bins:set_bin remote command.
@@ -112,10 +112,14 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             row: The row of the die.
             site: The site of the die.
         """
-        if site is None:
+        if col is None and row is None and site is None:
+            self.comm.send(f"map:bins:set_bin {bin_value}")
+        elif site is None and col is not None and row is not None:
             self.comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}")
-        else:
+        elif site is not None and col is not None and row is not None:
             self.comm.send(f"map:bins:set_bin {bin_value}, {col}, {row}, {site}")
+        else:
+            raise ValueError("set_bin command requires either no parameter or column and row or column, row and site.")
 
         Response.check_resp(self.comm.read_line())
 
