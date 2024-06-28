@@ -25,5 +25,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://www.mpi-corporation.com/ast/engineering-probe-systems/mpi-sentio-software-suite/"
+"Homepage" = "https://sentio.atv-systems.de/"
 "Bug Tracker" = "https://github.com/SentioProberDev/SentioProberControl/issues"

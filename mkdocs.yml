@@ -1,4 +1,7 @@
 site_name: Sentio Prober Control
+repo_url: https://github.com/SentioProberDev/SentioProberControl
+site_url: https://sentio.atv-systems.de/
+#use_directory_urls: false
 
 nav:
   - Home: index.md
