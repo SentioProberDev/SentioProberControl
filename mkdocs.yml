@@ -1,7 +1,10 @@
 site_name: Sentio Prober Control
 repo_url: https://github.com/SentioProberDev/SentioProberControl
 site_url: https://sentio.atv-systems.de/
-#use_directory_urls: false
+use_directory_urls: false
+
+# this is required by law in germany if we host the content at the atv servers.
+copyright: <a href="https://www.atv-systems.de/impressum">Impressum</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.atv-systems.de/datenschutz">Datenschutz</a>
 
 nav:
   - Home: index.md
