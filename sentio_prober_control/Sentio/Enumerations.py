@@ -726,13 +726,19 @@ class LoadPosition(Enum):
     Attributes:
         Front (0): The Front Load position. All probe station have a front load position.
         Side (1): The Side Load position. The side load position is optional and only present on systems with a side loader, a cassette loader or a wafer wallet.
+        Center (2): Move chuck from a load position to the center. This is the normal chuck work position.
     """
 
     Front = 0
     Side = 1
+    Center = 2
 
     def toSentioAbbr(self):
-        switcher = {LoadPosition.Front: "front", LoadPosition.Side: "side"}
+        switcher = {
+            LoadPosition.Front: "front", 
+            LoadPosition.Side: "side", 
+            LoadPosition.Center: "center"
+        }
         return switcher.get(self, "Invalid Load position")
 
 

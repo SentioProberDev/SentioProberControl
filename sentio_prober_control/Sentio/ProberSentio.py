@@ -557,12 +557,12 @@ class SentioProber(ProberBase):
         Wraps SENTIO's "move_chuck_load" remote command.
 
         Args:
-            pos (LoadPosition): The load position to move to.
+            pos (LoadPosition): The position to move the chuck to. This can either be a load position or the center position of the chuck.
 
         Returns:
             A response object with the result of the command.
         """
-        self.comm.send("move_chuck_load {0}".format(pos.toSentioAbbr()))
+        self.comm.send(f"move_chuck_load {pos.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
 
 
