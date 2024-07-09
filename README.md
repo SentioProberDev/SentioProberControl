@@ -18,6 +18,10 @@ If you already have a version of the package installed you can update the existi
 
 You no longer need to download the package by yourself, just use pip. If you cannot access the internet from your machine you can still download the archives from [the release section of this project](https://github.com/SentioProberDev/SentioProberControl/releases/).
 
+## API Documentation
+
+https://sentio.atv-systems.de
+
 ## Example-Scripts
 
 A set of example scripts for python is maintained in a separate archive at GitHub. 
