@@ -1,5 +1,10 @@
 Changes:
 
+Version 24.0.3
+=============
+Bugfixes:
+	+ fix for #12 (class ProbeCommandGroup has inheritance bug)
+
 Version 24.0.1
 =============
 Modifications:
