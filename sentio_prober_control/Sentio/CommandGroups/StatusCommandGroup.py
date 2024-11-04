@@ -117,3 +117,14 @@ class StatusCommandGroup(ModuleCommandGroupBase):
 
         self.comm.send(f"status:set_chuck_temp {temp:.2f}")
         return Response.check_resp(self.comm.read_line())
+
+
+    def set_wafer_progress(self, progress : float) -> Response:
+        """Set progress of the wafer on the chuck.
+
+        Args:
+            progress: Wafer progress in percent (0.0 .. 100.0)
+        """
+
+        self.comm.send(f"status:set_wafer_progress {progress}")
+        return Response.check_resp(self.comm.read_line())

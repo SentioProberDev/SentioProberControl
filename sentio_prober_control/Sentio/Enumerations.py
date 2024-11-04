@@ -1201,7 +1201,7 @@ class RemoteCommandError:
     InvalidNumberOfParameters = 7
     ArgumentOutOfBounds = 8
     FileNotFound = 9
-    InvalidFileFormat = 10
+    Unused01 = 10
     EndOfRoute = 11
     InvalidOperation = 12
     NotSupported = 13
