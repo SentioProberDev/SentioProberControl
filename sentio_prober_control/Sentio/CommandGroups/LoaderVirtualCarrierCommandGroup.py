@@ -114,7 +114,7 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         return steps
 
 
-    def next_step(self, timeout : int = 90) -> Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]:
+    def next_step(self, timeout : int = 120) -> Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]:
         """Execute the next processing step of the virtual carrier.
 
             Wraps Sentios "loader:vc:start_next_step" remote command.
@@ -124,7 +124,7 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         """
 
         resp : Response = self.prober.send_cmd("loader:vc:start_next_step")
-        resp = self.prober.wait_complete(resp)
+        resp = self.prober.wait_complete(resp, timeout)
 
         col = resp.message().split(',')
         state = VirtualCarrierStepProcessingState[col[0]]
