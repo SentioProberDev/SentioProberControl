@@ -1471,6 +1471,25 @@ class VirtualCarrierStepProcessingState(Enum):
         return switcher.get(self, "Invalid VirtualCarrierStepProcessingState")
 
 
+class WaferStatusItem(Enum):
+    """ An enumeration containing wafer status items. 
+
+    Attributes:
+        Progress (0): Wafer progress.
+        Orientation (1): Wafer Orientation.
+    """
+
+    Progress = 0
+    Orientation = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            WaferStatusItem.Progress: "Progress",
+            WaferStatusItem.Orientation: "Orientation",
+        }
+        return switcher.get(self, "Invalid WaferStatusItem")
+    
+
 class WorkArea(Enum):
     """An enumeration containing probe station work areas. The OffAxis work area is only present if the specific model of probe station supports it.
 
