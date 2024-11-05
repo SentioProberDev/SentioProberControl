@@ -75,7 +75,7 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
 #        matches = re.findall(r'"[^"]*"|[^,]+', s)
 #        return [match.strip('"') for match in matches]
 
-    def initialize(self, carrier_name : str, mode : VirtualCarrierInitFlags = VirtualCarrierInitFlags.Start, timeout : int = 90) -> List[Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]]:
+    def initialize(self, carrier_name : str, mode : VirtualCarrierInitFlags = VirtualCarrierInitFlags.Start, forceDataSync : bool = False, timeout : int = 90) -> List[Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]]:
         """Initializes the selected virtual carrier.
         
             Wraps Sentios "loader:vc:start_initialize" remote command. This command synchronizes the async
@@ -90,7 +90,7 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
                 A List of steps to execute.
         """
 
-        resp : Response = self.prober.send_cmd(f"loader:vc:start_initialize {carrier_name}, {mode.toSentioAbbr()}")
+        resp : Response = self.prober.send_cmd(f"loader:vc:start_initialize {carrier_name},{mode.toSentioAbbr()},{forceDataSync}")
         resp = self.prober.wait_complete(resp.cmd_id())
 
         # parse processing steps into a list of tuples
