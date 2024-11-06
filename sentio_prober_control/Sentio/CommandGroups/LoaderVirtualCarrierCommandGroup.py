@@ -38,7 +38,7 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
             return []
         
 
-    def select(self, vc_name : str) -> Response:
+    def select(self, vc_name : str) -> None:
         """Select a virtual carrier.
 
         Wraps Sentios "loader:vc:select" remote command.
@@ -47,33 +47,12 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
             vc_name (str): The name of the virtual carrier to select.
 
         Returns:
-            response (Response): A Response object.
+            None
         """
 
-        self.comm.send(f"loader:vc:select {vc_name}")
-        return Response.check_resp(self.comm.read_line())
+        resp : Response = self.prober.send_cmd(f"loader:vc:select {vc_name}")
+        resp.check()
 
-
-    def start_load_first(self, cleanup : bool = False) -> Response:
-        """Start loading the first wafer in the selected virtual carrier.
-            
-            This is an async command. You need to wait for the command to 
-            complete.
-
-        Wraps Sentios "loader:vc:start_load_first" remote command.
-
-        Returns:
-            resp (Response): A response object.
-        """
-
-        self.comm.send(f"loader:vc:start_load_first {cleanup}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp
-
-
-#    def __split_string(self, s : str) -> List[str]:
-#        matches = re.findall(r'"[^"]*"|[^,]+', s)
-#        return [match.strip('"') for match in matches]
 
     def initialize(self, carrier_name : str, mode : VirtualCarrierInitFlags = VirtualCarrierInitFlags.Start, forceDataSync : bool = False, timeout : int = 90) -> List[Tuple[VirtualCarrierStepProcessingState, str, LoaderStation, int, float, int]]:
         """Initializes the selected virtual carrier.
@@ -135,4 +114,18 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
         probecard_idx = int(col[5])
 
         return (state, id, station, slot, temp, probecard_idx)
+    
+
+    def save_state(self) -> None:
+        """ Save the state of the currently active virtual carrier.
+
+            Wraps Sentios "loader:vc:save_state" remote command.
+
+        Returns:
+            None
+        """
+        
+        resp : Response = self.prober.send_cmd("loader:vc:save_state")
+        resp.check()
+
 

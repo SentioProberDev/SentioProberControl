@@ -53,7 +53,7 @@ class CommunicatorGpib(CommunicatorBase):
         c.connect(addr)
         return c
 
-    def connect(self, address: str):
+    def connect(self, address: str) -> None:
         """Connects to a GPIB device at the specified address.
 
         :param addr: A string that specifies the address of the GPIB device to connect to. The address must have the format "BOARD_NAME&colon;ADDRESS"
@@ -67,8 +67,8 @@ class CommunicatorGpib(CommunicatorBase):
             raise Exception('Gpib address must have the format "BOARD_NAME:ADDRESS"')
 
         board: str = tok[0]
-        address: int = int(tok[1])
-        self._driver.connect(board, address)
+        addr: int = int(tok[1])
+        self._driver.connect(board, addr)
 
     def disconnect(self):
         """Disconnects from the GPIB device."""

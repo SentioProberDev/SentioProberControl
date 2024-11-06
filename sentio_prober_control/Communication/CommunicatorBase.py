@@ -10,12 +10,14 @@ class CommunicatorBase(ABC):
 
     _verbose = False
 
-    def connect(self):
+
+    def connect(self, address: str) -> None:
         """Connect to the probe station.
 
         Must be implemented by the derived class.
         """
         raise NotImplementedError("CommunicatorBase.connect is not implemented!")
+
 
     def disconnect(self):
         """Disconnect from the probe station.
@@ -24,12 +26,14 @@ class CommunicatorBase(ABC):
         """
         raise NotImplementedError("CommunicatorBase.disconnect is not implemented!")
 
+
     def send(self, msg: str):
         """Send a command to the probe station.
 
         Must be implemented by the derived class.
         """
         raise NotImplementedError("CommunicatorBase.send is not implemented!")
+
 
     def read_line(self):
         """Read a line from the probe station.

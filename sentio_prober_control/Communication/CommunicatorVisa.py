@@ -24,7 +24,7 @@ class CommunicatorVisa(CommunicatorBase):
         c.connect(addr)
         return c
 
-    def connect(self, address: str):
+    def connect(self, address: str) -> None:
         """Connect to a VISA device at the specified address.
 
         The VISA timeout for the interface is set to 3600000 (1 hour).

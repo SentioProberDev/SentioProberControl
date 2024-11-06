@@ -21,19 +21,20 @@ class CommunicatorTcpIp(CommunicatorBase):
         c.connect(addr)
         return c
 
-    def connect(self, address: str):
+    def connect(self, address: str) -> None:
         """Connect to a TCP/IP device at the specified address.
 
-        :param addr: A string that specifies the address of the TCP/IP device to connect to. The address must have the format "IP_ADDRESS&colon;PORT"
+            :param addr: A string that specifies the address of the TCP/IP device to connect to. The address must have the format "IP_ADDRESS&colon;PORT"
         """
         tok = address.split(":")
+        if len(tok) != 2:
+            raise Exception("Invalid address format. Must be IP_ADDRESS:PORT")
+        
         self.__address = tok[0]
         self.__port = int(tok[1])
 
         if CommunicatorBase._verbose:
-            print(
-                "Connecting comunicator to {0}:{1}".format(self.__address, self.__port)
-            )
+            print(f"Connecting comunicator to {self.__address}:{self.__port}")
 
         self.__socket.connect((self.__address, self.__port))
 
