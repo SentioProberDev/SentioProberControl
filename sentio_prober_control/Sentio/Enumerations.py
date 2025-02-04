@@ -166,6 +166,9 @@ class CameraMountPoint(Enum):
     OffAxis = 3
     Vce = 4
     Vce2 = 5
+    Chuck2 = 6
+    Angled = 7
+    BottomScope = 8
 
     def toSentioAbbr(self):
         switcher = {
@@ -175,6 +178,9 @@ class CameraMountPoint(Enum):
             CameraMountPoint.OffAxis: "offaxis",
             CameraMountPoint.Vce: "vce01",
             CameraMountPoint.Vce2: "vce02",
+            CameraMountPoint.Chuck2: "chuck2",
+            CameraMountPoint.Angled: "angled",
+            CameraMountPoint.BottomScope: "bottomscope"
         }
         return switcher.get(self, "Invalid camera mount point id")
 
