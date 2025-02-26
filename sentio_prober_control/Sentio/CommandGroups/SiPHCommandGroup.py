@@ -35,16 +35,16 @@ class SiPHCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def get_intensity(self) -> float:
+    def get_intensity(self, channel : int = 1) -> float:
         """Get the current intensity value.
 
-        :raises: ProberException if an error occured.
-        :returns: The intensity value.
+         Args:
+            channel: The channel to return the intensite of. One-Based index, must be either 1 or 2.
         """
 
-        self.comm.send("siph:get_intensity")
+        self.comm.send(f"siph:get_intensity {channel}")
         resp = Response.check_resp(self.comm.read_line())
-        return int(resp.message())
+        return float(resp.message())
 
 
     def gradient_search(self) -> None:
