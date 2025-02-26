@@ -1,5 +1,14 @@
 Changes:
 
+Version 24.4.0
+=============
+Bugfixes:
+	+ fix for #15 (align_wafer remote method behaviour is different compared to when ran locally)
+	+ fix for #16 (get_intensity method is broken)
+
+Modifications:
+	+ removed return type from prober.vision.align_wafer function
+
 Version 24.0.3
 =============
 Bugfixes:
