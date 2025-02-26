@@ -45,7 +45,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self.compensation = VisionCompensationGroup(comm)
 
 
-    def align_wafer(self, mode: AutoAlignCmd) -> Response:
+    def align_wafer(self, mode: AutoAlignCmd = AutoAlignCmd.AlignOnly) -> None:
         """Perform a wafer alignment.
 
         Args:
@@ -55,8 +55,15 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        self.comm.send(f"vis:align_wafer {mode.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        # Sentio before 25.1 did not accept the explicit mode parameter "alignonly". It was only implicitly used when
+        # no parameter was given. This changed in 25.1 but i have to add this special treatment for backwards 
+        # compatibility. Sentio Versions after 25.1 will work with the else branch.
+        if mode==AutoAlignCmd.AlignOnly:
+            self.comm.send(f"vis:align_wafer")
+        else:
+            self.comm.send(f"vis:align_wafer {mode.toSentioAbbr()}")
+
+        Response.check_resp(self.comm.read_line())
 
 
     def align_die(self, threshold: float = 0.05) -> Tuple[float, float, float]:

@@ -7,17 +7,20 @@ class AutoAlignCmd(Enum):
     """Specifies an algorithm for performaing auto alignment.
 
     Attributes:
-        AutoDieSize (0): Perform auto alignment. Determine die size with zero prior knowledge.
-        UpdateDieSize (1): Perform auto alignment. Update die size based on current value.
-        TwoPt (2): Use Two-Point alignment algorithm.
+        AlignOnly (0): Perform auto alignment do not measure or change current die size.
+        AutoDieSize (1): Perform auto alignment. Determine die size with zero prior knowledge.
+        UpdateDieSize (2): Perform auto alignment. Update die size based on current value.
+        TwoPt (3): Use Two-Point alignment algorithm.
     """
 
-    AutoDieSize = 0
-    UpdateDieSize = 1
-    TwoPt = 2
+    AlignOnly = 0
+    AutoDieSize = 1
+    UpdateDieSize = 2
+    TwoPt = 3
 
     def toSentioAbbr(self):
         switcher = {
+            AutoAlignCmd.AlignOnly: "alignonly",
             AutoAlignCmd.AutoDieSize: "auto",
             AutoAlignCmd.UpdateDieSize: "update",
             AutoAlignCmd.TwoPt: "2pt",
