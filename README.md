@@ -20,7 +20,7 @@ You no longer need to download the package by yourself, just use pip. If you can
 
 ## API Documentation
 
-https://sentio.atv-systems.de
+https://ast.mpi-corporation.com/
 
 ## Example-Scripts
 
