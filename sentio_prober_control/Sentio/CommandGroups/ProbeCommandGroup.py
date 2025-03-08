@@ -321,3 +321,47 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], float(tok[1]), float(tok[2])
+
+    def enable_probe_motor(self, probe: ProbeSentio, status: bool) -> None:
+        """Enable/Disable the probe motor.
+
+        Probe with 3 motors will enable and disable by following behavior.
+
+        Args:
+            probe: The probe to action.
+            status: Enable or disable status
+
+        """
+        self.comm.send(f"enable_positioner_motor {probe.toSentioAbbr()},{status}")
+        Response.check_resp(self.comm.read_line())
+
+    def get_probe_status(self, probe: ProbeSentio) -> str:
+        """Obtain the status of probe.
+
+        Command will return 4 probe status
+
+        Args:
+            probe: The probe to step.
+
+        Returns:
+            Status of positioner with 4 digits, 1st digit indicates the East Positioner, 2nd digit indicates West Positioner
+            3rd digit indicates the North Positioner, 4rd digit indicates the South Positioner.
+        """
+
+        self.comm.send(f"get_positioner_status {probe.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+    def set_probe_status(self, probe: ProbeSentio, status: bool) -> None:
+        """Enable/Disable the probe stage in the SENTIO.
+
+        Enable/Disable the Probes in the SENTIO.
+
+        Args:
+            probe: The probe to action.
+            status: Enable or disable status
+
+        """
+        self.comm.send(f"set_positioner_status {probe.toSentioAbbr()},{status}")
+        Response.check_resp(self.comm.read_line())
+
