@@ -39,19 +39,11 @@ class TestProbeCommandGroup(unittest.TestCase):
         self.assertEqual(result, 500.0)
 
     # ---missing the relative---
-    # def test_move_probe_xy(self):
-    #     self.mock_comm.read_line.return_value = "0,0,3000,4000"
-    #
-    #     # Fix enum error by verifying `ProbeXYReference.Relative` exists
-    #     try:
-    #         print("Available ProbeXYReference Enums:", list(ProbeXYReference))
-    #         xy_ref = ProbeXYReference.Relative  # Ensure it's valid
-    #     except AttributeError:
-    #         raise Exception("ProbeXYReference.Relative does not exist!")
-    #
-    #     result = self.probe_group.move_probe_xy(ProbeSentio.South, xy_ref, 3000, 4000)
-    #     self.mock_comm.send.assert_called_with("move_positioner_xy South,Relative,3000,4000")
-    #     self.assertEqual(result, (3000.0, 4000.0))
+    def test_move_probe_xy(self):
+        self.mock_comm.read_line.return_value = "0,0,3000,4000"
+        result = self.test_prober.probe.move_probe_xy(ProbeSentio.South, ProbeXYReference.Home, 3000, 4000)
+        self.mock_comm.send.assert_called_with("move_positioner_xy South,Home,3000,4000")
+        self.assertEqual(result, (3000.0, 4000.0))
 
     def test_move_probe_z(self):
         self.mock_comm.read_line.return_value = "0,0,1200"
