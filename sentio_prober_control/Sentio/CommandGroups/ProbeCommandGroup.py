@@ -83,7 +83,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return resp.cmd_id()
 
 
-    def get_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[int, str, float, float]:
+    def get_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[int, float, float, str]:
         """Get information for a probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -93,13 +93,13 @@ class ProbeCommandGroup(CommandGroupBase):
             probe: The probe to get the site for.
 
         Returns:
-            A tuple containing the site index, the site name, the x position in micrometer and the y position in micrometer.
+            A tuple containing the site index, position x, the position y in micrometer and the reference.
         """
         self.comm.send(f"get_positioner_site {probe.toSentioAbbr()},{idx}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
 
-        return int(tok[0]), str(tok[1]), float(tok[2]), float(tok[3])
+        return int(tok[0]), float(tok[1]), float(tok[2]), str(tok[3])
 
 
     def get_probe_site_number(self, probe: ProbeSentio) -> int:
@@ -144,7 +144,7 @@ class ProbeCommandGroup(CommandGroupBase):
         Returns:
             The z position in micrometer.
         """
-        self.comm.send(f"get_positioner_z {probe.toSentioAbbr()}, {ref.toSentioAbbr()}")
+        self.comm.send(f"get_positioner_z {probe.toSentioAbbr()},{ref.toSentioAbbr()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -259,7 +259,7 @@ class ProbeCommandGroup(CommandGroupBase):
         if site is None:
             self.comm.send(f"set_positioner_home {probe.toSentioAbbr()}")
         else:
-            self.comm.send(f"set_positioner_home {probe.toSentioAbbr()}, {site.toSentioAbbr()}, {x}, {y}")
+            self.comm.send(f"set_positioner_home {probe.toSentioAbbr()},{site.toSentioAbbr()},{x},{y}")
 
         Response.check_resp(self.comm.read_line())
 
