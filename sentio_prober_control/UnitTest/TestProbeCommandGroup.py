@@ -19,7 +19,7 @@ class TestProbeCommandGroup(unittest.TestCase):
         self.mock_comm.send.assert_called_with("start_step_positioner_site East,1")
         self.assertEqual(cmd_id, 123)
 
-    #----Command is different of document---
+    #----Command is different of document, waiting the fix by another PR---
     # def test_get_probe_site(self):
     #     self.mock_comm.read_line.return_value = "0,0,site1,1000,2000"
     #     result = self.test_prober.probe.get_probe_site(ProbeSentio.East, 0)
@@ -35,7 +35,7 @@ class TestProbeCommandGroup(unittest.TestCase):
     def test_get_probe_z(self):
         self.mock_comm.read_line.return_value = "0,0,500"
         result = self.test_prober.probe.get_probe_z(ProbeSentio.North, ProbeZReference.Zero)
-        self.mock_comm.send.assert_called_with("get_positioner_z North, Zero")
+        self.mock_comm.send.assert_called_with("get_positioner_z North,Zero")
         self.assertEqual(result, 500.0)
 
     # ---missing the relative---
@@ -48,7 +48,7 @@ class TestProbeCommandGroup(unittest.TestCase):
     def test_move_probe_z(self):
         self.mock_comm.read_line.return_value = "0,0,1200"
         result = self.test_prober.probe.move_probe_z(ProbeSentio.West, ProbeZReference.Contact, 1200)
-        self.mock_comm.send.assert_called_with("move_positioner_z West, Contact, 1200")
+        self.mock_comm.send.assert_called_with("move_positioner_z West,Contact,1200")
         self.assertEqual(result, 1200.0)
 
 
