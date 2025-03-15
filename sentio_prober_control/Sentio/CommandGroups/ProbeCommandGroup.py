@@ -99,7 +99,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
 
-        return int(tok[0]), float(tok[1]), float(tok[2]), str(tok[3])
+        return str(tok[0]), float(tok[1]), float(tok[2]), str(tok[3])
 
 
     def get_probe_site_number(self, probe: ProbeSentio) -> int:
@@ -226,7 +226,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        self.comm.send(f"move_positioner_z {probe.toSentioAbbr()}, {ref.toSentioAbbr()}, {z}")
+        self.comm.send(f"move_positioner_z {probe.toSentioAbbr()},{ref.toSentioAbbr()},{z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 

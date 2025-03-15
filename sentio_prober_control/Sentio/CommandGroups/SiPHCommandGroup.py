@@ -15,11 +15,11 @@ class SiPHCommandGroup(CommandGroupBase):
         super().__init__(comm)
 
 
-    def fast_alignment(self) -> Response:
+    def fast_alignment(self) -> None:
         """Perform fast fiber alignment."""
 
         self.comm.send("siph:fast_alignment")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def get_cap_sensor(self) -> Tuple[float, float]:
@@ -99,7 +99,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A tuple containing the status of Coarse, Fine, Gradient, and Rotary/Focal searching (True/False).
         """
-        self.comm.send(f"siph:get_alignment {probe.toSentioAbbr()},{fiber_type}")
+        self.comm.send(f"siph:get_alignment {probe.toSentioAbbr()},{fiber_type.toSentioAbbr()}")
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
@@ -232,10 +232,10 @@ class SiPHCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
 
         # Extract asynchronous command ID from response
-        command_id = int(resp.message().split(",")[1])
+        command_id = int(resp.cmd_id())
         return command_id
 
-    def move_nanocube_xy(self, probe: ProbeSentio, x: float, y: float) -> tuple:
+    def move_nanocube_xy(self, probe: ProbeSentio, x: float, y: float) -> tuple[float, float]:
         """Move NanoCube to the target XY position.
 
         The movement range is limited to 0 ~ 100 μm.
@@ -256,11 +256,11 @@ class SiPHCommandGroup(CommandGroupBase):
 
         # Parse response message
         tok = resp.message().split(",")
-        new_x = float(tok[1])
-        new_y = float(tok[2])
+        new_x = float(tok[0])
+        new_y = float(tok[1])
         return new_x, new_y
 
-    def get_nanocube_xy(self, probe: ProbeSentio) -> tuple:
+    def get_nanocube_xy(self, probe: ProbeSentio) -> tuple[float, float]:
         """Get the current NanoCube XY position.
 
         Args:
@@ -274,8 +274,8 @@ class SiPHCommandGroup(CommandGroupBase):
 
         # Parse response message
         tok = resp.message().split(",")
-        current_x = float(tok[1])
-        current_y = float(tok[2])
+        current_x = float(tok[0])
+        current_y = float(tok[1])
         return current_x, current_y
 
     def get_nanocube_z(self, probe: ProbeSentio) -> float:
@@ -292,5 +292,5 @@ class SiPHCommandGroup(CommandGroupBase):
 
         # Parse response message
         tok = resp.message().split(",")
-        current_z = float(tok[1])
+        current_z = float(tok[0])
         return current_z
