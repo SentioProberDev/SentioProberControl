@@ -1050,3 +1050,98 @@ class SentioProber(ProberBase):
             self.comm.send(f"wait_complete {id_or_resp}, {timeout}")
 
         return Response.check_resp(self.comm.read_line())
+
+    def get_scope_home(self) -> tuple[float, float]:
+        """Gets the home position information for the scope stage.
+
+        Returns:
+            A tuple containing the X and Y home positions in micrometers.
+        """
+        self.comm.send("get_scope_home")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        home_x = float(tok[0])
+        home_y = float(tok[1])
+        return home_x, home_y
+
+    def set_scope_home(self, home_x: float = None, home_y: float = None) -> None:
+        """Sets the home position for the scope stage.
+
+        Args:
+            home_x: (Optional) The X-coordinate of the home position in micrometers.
+            home_y: (Optional) The Y-coordinate of the home position in micrometers.
+
+        Returns:
+            A Response object indicating whether the command was successful.
+        """
+        if home_x is not None and home_y is not None:
+            self.comm.send(f"set_scope_home {home_x},{home_y}")
+        else:
+            self.comm.send("set_scope_home")
+
+        Response.check_resp(self.comm.read_line())
+
+    def step_scope_site(self, site_index: int or str) -> tuple[str, float, float]:
+        """Steps the scope to the indicated site and sets it as the current site.
+
+        Args:
+            site_index: The scope site index (zero-based) or its ID.
+
+        Returns:
+            A tuple containing:
+                - Site ID (string): The identifier of the current scope site.
+                - Offset X (float): The X offset relative to the scope home position.
+                - Offset Y (float): The Y offset relative to the scope home position.
+        """
+        self.comm.send(f"step_scope_site {site_index}")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        site_id = tok[0]
+        offset_x = float(tok[1])
+        offset_y = float(tok[2])
+
+        return site_id, offset_x, offset_y
+
+    def step_scope_site_first(self) -> tuple[str, float, float]:
+        """Steps the scope to the first site in the scope site list.
+
+        Returns:
+            A tuple containing:
+                - Site ID (string): The identifier of the current scope site.
+                - Offset X (float): The X offset relative to the scope home position.
+                - Offset Y (float): The Y offset relative to the scope home position.
+        """
+        self.comm.send("step_scope_site_first")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        site_id = tok[0]
+        offset_x = float(tok[1])
+        offset_y = float(tok[2])
+
+        return site_id, offset_x, offset_y
+
+    def step_scope_site_next(self) -> tuple[str, float, float]:
+        """Steps the scope to the next site and sets it as the current site.
+
+        Returns:
+            A tuple containing:
+                - Site ID (string): The identifier of the current scope site.
+                - Offset X (float): The X offset relative to the scope home position.
+                - Offset Y (float): The Y offset relative to the scope home position.
+        """
+        self.comm.send("step_scope_site_next")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        site_id = tok[0]
+        offset_x = float(tok[1])
+        offset_y = float(tok[2])
+
+        return site_id, offset_x, offset_y
