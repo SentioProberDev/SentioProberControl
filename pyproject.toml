@@ -1,0 +1,29 @@
+[build-system]
+# ibg 2023-08-30: added pyvisa and pdoc
+requires = ["setuptools>=61.0", "pyvisa", "pdoc"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentio-prober-control"
+# ibg 2023-08-30: added pyvisa as run time dependency
+dependencies = ["pyvisa", "deprecated"]
+version = "24.4.0"
+authors = [
+  { name="Ingo Berg", email="ingo.berg@atv-systems.de" },
+]
+description = "MPI Sentio Prober Control - Python Bindings"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+	"Development Status :: 5 - Production/Stable",
+	"Environment :: Console",
+	"License :: Other/Proprietary License",
+	"Natural Language :: English",
+	"Topic :: Scientific/Engineering"
+]
+
+[project.urls]
+"Homepage" = "https://ast.mpi-corporation.com/"
+"Bug Tracker" = "https://github.com/SentioProberDev/SentioProberControl/issues"

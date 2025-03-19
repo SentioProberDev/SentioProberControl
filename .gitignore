@@ -1,0 +1,12 @@
+build/*
+sentio_prober_control/.idea/*
+.idea/*
+*.pyc
+*.gz
+dist/*
+sentio_prober_control/.vs/*
+sentio_prober_control/Python-Test-Scripts
+sentio_prober_control/Test/*
+sentio_prober_control.egg-info/*
+site/*
+.vscode/*

@@ -1,0 +1,67 @@
+site_name: Sentio Prober Control
+repo_url: https://github.com/SentioProberDev/SentioProberControl
+site_url: https://sentio.atv-systems.de/
+use_directory_urls: false
+
+# this is required by law in germany if we host the content at the atv servers.
+copyright: <a href="https://www.atv-systems.de/impressum">Impressum</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.atv-systems.de/datenschutz">Datenschutz</a>
+
+nav:
+  - Home: index.md
+#  - GettingStarted: GettingStarted.md  
+  - Probe Station Control: 
+    - Prober Operations: SentioProber.md
+    - Modules:
+        - Aux Sites: AuxCommandGroup.md
+        - Loader: LoaderCommandGroup.md
+        - Wafermap:
+            - WafermapCommandGroup: WafermapCommandGroup.md
+            - WafermapBinsCommandGroup: WafermapBinningCommandGroup.md
+            - WafermapDieCommandGroup: WafermapDieCommandGroup.md
+            - WafermapPathCommandGroup: WafermapPathCommandGroup.md
+            - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
+            - WafermapSubsiteGroup: WafermapSubsiteGroup.md
+        - Probe Handling: ProbeCommandGroup.md
+        - Qalibria: QalibriaCommandGroup.md
+        - SiPH: SiPHCommandGroup.md
+        - Dashboard: StatusCommandGroup.md
+        - Service: ServiceCommandGroup.md     
+        - Vísion:
+            - VisionCommandGroup: VisionCommandGroup.md
+            - VisionCameraCommandGroup: VisionCameraCommandGroup.md
+            - VisionCompensationGroup: VisionCompensationGroup.md
+            - VisionIMagProCommandGroup: VisionIMagProCommandGroup.md
+    - ProberException: ProberException.md
+    - Response: Response.md
+  - Enumerations: Enumerations.md
+
+theme:
+    name: "material"
+    logo: images/mpilogo.png
+    palette:
+      primary: custom
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  homepage: https://www.mpi-corporation.com/ast/
+
+plugins: 
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+            paths: [sentio_prober_control]
+            options:
+                show_source: false

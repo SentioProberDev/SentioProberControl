@@ -1,0 +1,64 @@
+Changes:
+
+Version 24.4.0
+=============
+Bugfixes:
+	+ fix for #15 (align_wafer remote method behaviour is different compared to when ran locally)
+	+ fix for #16 (get_intensity method is broken)
+
+Modifications:
+	+ removed return type from prober.vision.align_wafer function
+
+Version 24.0.3
+=============
+Bugfixes:
+	+ fix for #12 (class ProbeCommandGroup has inheritance bug)
+
+Version 24.0.1
+=============
+Modifications:
+	+ default timeout of the waitcomplete command increased to 300 seconds.
+	+ map.bins.set_bin parameters col, row and site are now optional as in the corresponding remote command.
+
+Version 23.1.x
+=============
+Bugfixes:
+	+ Fix for SENTIO#12991 (#4)
+	+ The Module enumerator did not have a "Loader" entry.
+	+ move_vce_z was broken
+
+Modification:
+	+ Common Probe Tip detector added (new SENTIO 3.8)
+		- prober.vision.detect_probetips adapted to SENTIO changes
+	+ remote command error codes updated
+
+
+Version 3.6.0
+=============
+
+New features:
+	+ New Remote command wrapper functions:
+		- prober.status.get_chuck_temp 
+		- prober.status.get_chuck_temp_setpoint 
+		- prober.status.set_chuck_temp 
+		- prober.status.get_chuck_thermo_state
+
+
+Version 3.5.1
+=============
+
+New Features:
+	+ added communicator class for NI GPIB drivers
+
+
+Version 3.5.2
+=============
+
+New Features:
+	+ no new features
+
+Python API Bugfixes:
+	+ When no subsite was specified "prober.map.step_next_die" and 
+	  "prober.map.bin_step_next_die" were always stepping to site 0 
+	  instead of staying at the current site
+	+ missing error handling in map.step_first_die added
