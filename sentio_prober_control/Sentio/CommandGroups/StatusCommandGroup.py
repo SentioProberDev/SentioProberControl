@@ -117,4 +117,87 @@ class StatusCommandGroup(ModuleCommandGroupBase):
 
         self.comm.send(f"status:set_chuck_temp {temp:.2f}")
         return Response.check_resp(self.comm.read_line())
+    
+    def get_chuck_thermo_energy_mode(self) -> str:
+        """Get the current chuck thermo energy mode.
 
+        Returns:
+            The current energy mode as a string. Possible values: Fast, Optimal, HighPower, Customized.
+        """
+        self.comm.send("status:get_chuck_thermo_energy_mode")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+    
+    def get_chuck_thermo_hold_mode(self) -> str:
+        """Get thermo chuck hold mode.
+
+        Returns:
+            The current hold mode. Possible values: Active, Nonactive.
+        """
+        self.comm.send("status:get_chuck_thermo_hold_mode")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+    
+    def get_high_purge_state(self) -> str:
+        """Get thermo chuck high purge state.
+
+        Returns:
+            The current high purge state. Possible values: ON, OFF.
+        """
+        self.comm.send("status:get_high_purge_state")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+    
+    def set_chuck_thermo_energy_mode(self, mode: str) -> Response:
+        """Set chuck thermo energy mode.
+
+        Args:
+            mode: The desired energy mode. Possible values: Fast, Optimal, HighPower, Customized.
+
+        Returns:
+            A Response object confirming the command execution.
+
+        Raises:
+            ValueError: If the provided mode is not valid.
+        """
+        self.comm.send(f"status:set_chuck_thermo_energy_mode {mode}")
+        return Response.check_resp(self.comm.read_line())
+    
+    def set_chuck_thermo_hold_mode(self, mode: bool) -> Response:
+        """Set thermo chuck hold mode.
+
+        Args:
+            mode: A boolean indicating whether to enable (True) or disable (False) hold mode.
+
+        Returns:
+            A Response object confirming the command execution.
+        """
+        self.comm.send(f"status:set_chuck_thermo_hold_mode {state}")
+        return Response.check_resp(self.comm.read_line())
+    
+    def set_chuck_thermo_mode(self, mode: str) -> Response:
+        """Set chuck thermo operation mode.
+
+        Args:
+            mode: The operation mode to set. Possible values: Normal, Standby, Defrost, Purge, Turbo, Eco.
+
+        Returns:
+            A Response object confirming the command execution.
+
+        Raises:
+            ValueError: If the provided mode is not valid.
+        """
+        self.comm.send(f"status:set_chuck_thermo_mode {mode}")
+        return Response.check_resp(self.comm.read_line())
+    
+    def set_high_purge(self, enable: bool) -> Response:
+        """Set thermo chuck high purge state.
+
+        Args:
+            enable: A boolean indicating whether to enable (True) or disable (False) high purge.
+
+        Returns:
+            A Response object confirming the command execution.
+        """
+        self.comm.send(f"status:set_high_purge {state}")
+        return Response.check_resp(self.comm.read_line())
