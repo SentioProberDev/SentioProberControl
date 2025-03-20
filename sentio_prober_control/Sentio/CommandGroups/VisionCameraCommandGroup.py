@@ -16,7 +16,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         super().__init__(comm)
 
 
-    def set_light(self, mp: CameraMountPoint, value: int) -> Response:
+    def set_light(self, mp: CameraMountPoint, value: int) -> None:
         """Set intensity of the light.
 
         Args:
@@ -25,10 +25,10 @@ class VisionCameraCommandGroup(CommandGroupBase):
         """
 
         self.comm.send(f"vis:set_prop light, {mp.toSentioAbbr()}, {value}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def set_exposure(self, mp: CameraMountPoint, value: int) -> Response:
+    def set_exposure(self, mp: CameraMountPoint, value: int) -> None:
         """Set exposure time of the camera.
 
         Args:
@@ -40,10 +40,10 @@ class VisionCameraCommandGroup(CommandGroupBase):
         """
 
         self.comm.send(f"vis:set_prop exposure, {mp.toSentioAbbr()}, {value}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def set_gain(self, mp: CameraMountPoint, value: float) -> Response:
+    def set_gain(self, mp: CameraMountPoint, value: float) -> None:
         """Set gain of the camera.
 
         Args:
@@ -52,7 +52,7 @@ class VisionCameraCommandGroup(CommandGroupBase):
         """
 
         self.comm.send(f"vis:set_prop gain, {mp.toSentioAbbr()}, {value}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def get_light(self, mp: CameraMountPoint) -> float:

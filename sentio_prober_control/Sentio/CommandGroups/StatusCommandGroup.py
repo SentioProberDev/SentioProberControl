@@ -108,13 +108,19 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         return temp
 
 
-    def set_chuck_temp(self, temp: float) -> Response:
+    def set_chuck_temp(self, temp: float, lift_chuck : bool = False) -> None:
         """Set chuck temperature setpoint.
 
-        Args:
-            temp: The chuck temperature setpoint in degrees Celsius.
+            This function wraps SENTIO's status:set_chuck_temp remote command.
+
+            Args:
+                temp: The chuck temperature setpoint in degrees Celsius.
+                lift_chuck: If True, the chuck will moved to the lift position if required. If this value is false and a move to lift is required an error occurs.
+
+            Raises:
+                ProberException: If an error occurred.
         """
 
-        self.comm.send(f"status:set_chuck_temp {temp:.2f}")
-        return Response.check_resp(self.comm.read_line())
+        self.comm.send(f"status:set_chuck_temp {temp:.2f}, {lift_chuck}")
+        Response.check_resp(self.comm.read_line())
 
