@@ -19,7 +19,6 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send(f"map:poi:add {x}, {y}, {desc}")
         Response.check_resp(self.comm.read_line())
 
-
     def get_num(self) -> int:
         """Returns the number of POIs in the list.
 
@@ -31,7 +30,6 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send("map:poi:get_num")
         resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
-
 
     def reset(self, stage: Stage, refXy: PoiReferenceXy) -> None:
         """Reset the list of POIs.
@@ -47,7 +45,6 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send("map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr()))
         Response.check_resp(self.comm.read_line())
 
-
     def step(self, target: str | int) -> None:
         """Step to a POI in the list.
 
@@ -59,7 +56,6 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send(f"map:poi:step {target}")
         Response.check_resp(self.comm.read_line())
 
-
     def step_first(self) -> None:
         """Step to the first POI in the list.
 
@@ -68,11 +64,24 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send("map:poi:step_first")
         Response.check_resp(self.comm.read_line())
 
-
     def step_next(self) -> None:
         """Step to the next POI in the list.
 
         Wrap SENTIO's map:poi:step_next remote command.
         """
         self.comm.send("map:poi:step_next")
+        Response.check_resp(self.comm.read_line())
+
+    def remove(self, idx: int | None = None) -> None:
+        """Remove POI(s) from wafermap.
+
+        Wraps SENTIO's map:poi:remove remote command.
+
+        Args:
+            idx: POI index to remove. If None, remove all.
+        """
+        if idx is None:
+            self.comm.send("map:poi:remove")
+        else:
+            self.comm.send(f"map:poi:remove {idx}")
         Response.check_resp(self.comm.read_line())
