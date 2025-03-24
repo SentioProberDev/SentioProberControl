@@ -172,7 +172,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Returns:
             A Response object confirming the command execution.
         """
-        self.comm.send(f"status:set_chuck_thermo_hold_mode {state}")
+        self.comm.send(f"status:set_chuck_thermo_hold_mode {mode}")
         return Response.check_resp(self.comm.read_line())
     
     def set_chuck_thermo_mode(self, mode: str) -> Response:
@@ -189,15 +189,15 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
         self.comm.send(f"status:set_chuck_thermo_mode {mode}")
         return Response.check_resp(self.comm.read_line())
-    
+
     def set_high_purge(self, enable: bool) -> Response:
         """Set thermo chuck high purge state.
 
-        Args:
-            enable: A boolean indicating whether to enable (True) or disable (False) high purge.
+                Args:
+                    enable: A boolean indicating whether to enable (True) or disable (False) high purge.
 
-        Returns:
-            A Response object confirming the command execution.
-        """
-        self.comm.send(f"status:set_high_purge {state}")
+                Returns:
+                    A Response object confirming the command execution.
+                """
+        self.comm.send(f"status:set_high_purge {enable}")
         return Response.check_resp(self.comm.read_line())
