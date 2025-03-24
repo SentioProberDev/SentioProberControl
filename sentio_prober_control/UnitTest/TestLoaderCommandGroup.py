@@ -1,119 +1,120 @@
 import unittest
-from unittest.mock import MagicMock
-from sentio_prober_control.Sentio.Enumerations import LoaderStation, OrientationMarker, WaferStatusItem
-from sentio_prober_control.Sentio.Response import Response
+from unittest.mock import MagicMock, patch
 from sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup import LoaderCommandGroup
+from sentio_prober_control.Sentio.Enumerations import LoaderStation, OrientationMarker, WaferStatusItem
+
 
 class TestLoaderCommandGroup(unittest.TestCase):
     def setUp(self):
-        """初始化 LoaderCommandGroup 測試環境"""
-        self.mock_comm = MagicMock()  # 建立 Mock 通訊物件
-        self.loader = LoaderCommandGroup(self.mock_comm)  # 傳入 Mock 通訊物件
-        self.mock_comm.send = MagicMock()
-        self.mock_comm.read_line = MagicMock()
+        self.mock_parent = MagicMock()
+        self.mock_comm = MagicMock()
+        self.mock_parent.comm = self.mock_comm
+        self.loader = LoaderCommandGroup(self.mock_parent)
 
-    def test_has_station(self):
-        """測試 has_station() 是否正確回應"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,1"  # 模擬 Prober Response
-        self.assertTrue(self.loader.has_station(station))
-        self.mock_comm.send.assert_called_with(f"loader:has_station {station.toSentioAbbr()}")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_has_station(self, mock_check):
+        mock_check.return_value.message.return_value = "1"
+        result = self.loader.has_station(LoaderStation.Cassette1)
+        self.assertTrue(result)
+        self.mock_comm.send.assert_called_with("loader:has_station cas1")
 
-    def test_load_wafer(self):
-        """測試 load_wafer() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.load_wafer(station, 1)
-        self.mock_comm.send.assert_called_with(f"loader:load_wafer {station.toSentioAbbr()}, 1")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_load_wafer(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.load_wafer(LoaderStation.Cassette1, 1, 180)
+        self.assertEqual(msg, "OK")
+        self.mock_comm.send.assert_called_with("loader:load_wafer cas1, 1, 180")
 
-    def test_prealign(self):
-        """測試 prealign() 指令"""
-        marker = OrientationMarker.Notch
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.prealign(marker, 90)
-        self.mock_comm.send.assert_called_with(f"loader:prealign {marker.toSentioAbbr()}, 90")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_prealign(self, mock_check):
+        mock_check.return_value.message.return_value = "Aligned"
+        msg = self.loader.prealign(OrientationMarker.Notch, 90)
+        self.assertEqual(msg, "Aligned")
+        self.mock_comm.send.assert_called_with("loader:prealign Notch, 90")
 
-    def test_query_wafer_status(self):
-        """測試 query_wafer_status() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,Cassette1,1,200,0,50"
-        result = self.loader.query_wafer_status(station, 1)
-        self.assertEqual(result, (LoaderStation.Cassette1, 1, 200, 0, 50.0))
-        self.mock_comm.send.assert_called_with(f"loader:query_wafer_status {station.toSentioAbbr()}, 1")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_query_wafer_status(self, mock_check):
+        mock_check.return_value.message.return_value = "Cassette1,1,200,90,50.0"
+        result = self.loader.query_wafer_status(LoaderStation.Cassette1, 1)
+        self.assertEqual(result, (LoaderStation.Cassette1, 1, 200, 90, 50.0))
 
-    def test_scan_station(self):
-        """測試 scan_station() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.scan_station(station)
-        self.mock_comm.send.assert_called_with(f"loader:scan_station {station.toSentioAbbr()}")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_scan_station(self, mock_check):
+        mock_check.return_value.message.return_value = "11001"
+        msg = self.loader.scan_station(LoaderStation.Cassette2)
+        self.assertEqual(msg, "11001")
 
-    def test_set_wafer_status(self):
-        """測試 set_wafer_status() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.set_wafer_status(station, 1, WaferStatusItem.Progress, 100.0)
-        self.mock_comm.send.assert_called_with(f"loader:set_wafer_status {station.toSentioAbbr()},1,Progress,100.0")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_set_wafer_status(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.set_wafer_status(LoaderStation.Cassette1, 2, WaferStatusItem.Orientation, 180)
+        self.assertEqual(msg, "OK")
 
-    def test_transfer_wafer(self):
-        """測試 transfer_wafer() 指令"""
-        src_station = LoaderStation.Cassette1
-        dst_station = LoaderStation.Cassette2
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.transfer_wafer(src_station, 1, dst_station, 2)
-        self.mock_comm.send.assert_called_with(
-            f"loader:transfer_wafer {src_station.toSentioAbbr()}, 1, {dst_station.toSentioAbbr()}, 2"
-        )
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_start_prepare_station(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.start_prepare_station(LoaderStation.Cassette2, 0)
+        self.assertEqual(msg, "OK")
 
-    def test_unload_wafer(self):
-        """測試 unload_wafer() 指令"""
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.unload_wafer()
-        self.mock_comm.send.assert_called_with("loader:unload_wafer")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_transfer_wafer(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.transfer_wafer(LoaderStation.Cassette1, 1, LoaderStation.Chuck, 1)
+        self.assertEqual(msg, "OK")
 
-    def test_has_cassette(self):
-        """測試 has_cassette() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,1"
-        self.assertEqual(self.loader.has_cassette(station), "1")
-        self.mock_comm.send.assert_called_with(f"loader:has_cassette {station.toSentioAbbr()}")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_unload_wafer(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.unload_wafer()
+        self.assertEqual(msg, "OK")
 
-    def test_set_wafer_id(self):
-        """測試 set_wafer_id() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.loader.set_wafer_id(station, 1, "TestWafer123")
-        self.mock_comm.send.assert_called_with(f"loader:set_wafer_id {station.toSentioAbbr()}, 1, TestWafer123")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_has_cassette(self, mock_check):
+        mock_check.return_value.message.return_value = "1"
+        msg = self.loader.has_cassette(LoaderStation.Cassette2)
+        self.assertEqual(msg, "1")
 
-    def test_query_wafer_id(self):
-        """測試 query_wafer_id() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,TestWafer123"
-        result = self.loader.query_wafer_id(station, 1)
-        self.assertEqual(result, "TestWafer123")
-        self.mock_comm.send.assert_called_with(f"loader:query_wafer_id {station.toSentioAbbr()}, 1")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_set_wafer_id(self, mock_check):
+        mock_check.return_value.message.return_value = "wafer_123"
+        msg = self.loader.set_wafer_id(LoaderStation.Cassette1, 1, "wafer_123")
+        self.assertEqual(msg, "wafer_123")
 
-    def test_read_wafer_id(self):
-        """測試 read_wafer_id() 指令"""
-        self.mock_comm.read_line.return_value = "0,0,TestWafer123"
-        result = self.loader.read_wafer_id("180", "T")
-        self.assertEqual(result, "TestWafer123")
-        self.mock_comm.send.assert_called_with("loader:read_wafer_id 180, T")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_query_wafer_id(self, mock_check):
+        mock_check.return_value.message.return_value = "wafer_123"
+        msg = self.loader.query_wafer_id(LoaderStation.Cassette1, 1)
+        self.assertEqual(msg, "wafer_123")
 
-    def test_query_station_status(self):
-        """測試 query_station_status() 指令"""
-        station = LoaderStation.Cassette1
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        result = self.loader.query_station_status(station)
-        self.assertEqual(result, "OK")
-        self.mock_comm.send.assert_called_with(f"loader:query_station_status {station.toSentioAbbr()}")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_read_wafer_id(self, mock_check):
+        mock_check.return_value.message.return_value = "wafer_XYZ"
+        msg = self.loader.read_wafer_id("0", "T")
+        self.assertEqual(msg, "wafer_XYZ")
 
-    def test_start_read_wafer_id(self):
-        """測試 start_read_wafer_id() 指令"""
-        self.mock_comm.read_line.return_value = "0,0,TestWafer123"
-        result = self.loader.start_read_wafer_id("180", "T")
-        self.assertEqual(result, "TestWafer123")
-        self.mock_comm.send.assert_called_with("loader:start_read_wafer_id 180, T")
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_start_prepare_wafer(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.start_prepare_wafer(LoaderStation.Cassette1, 1, 0, 1, LoaderStation.Cassette2, 2)
+        self.assertEqual(msg, "OK")
+
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_swap_wafer(self, mock_check):
+        mock_check.return_value.message.return_value = "OK"
+        msg = self.loader.swap_wafer()
+        self.assertEqual(msg, "OK")
+
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_query_station_status(self, mock_check):
+        mock_check.return_value.message.return_value = "000111"
+        msg = self.loader.query_station_status(LoaderStation.Cassette1)
+        self.assertEqual(msg, "000111")
+
+    @patch("sentio_prober_control.Sentio.CommandGroups.LoaderCommandGroup.Response.check_resp")
+    def test_start_read_wafer_id(self, mock_check):
+        mock_check.return_value.message.return_value = "wafer_abc"
+        msg = self.loader.start_read_wafer_id("0", "T")
+        self.assertEqual(msg, "wafer_abc")
 
 if __name__ == "__main__":
     unittest.main()
