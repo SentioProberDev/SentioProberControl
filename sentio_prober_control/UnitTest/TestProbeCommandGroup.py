@@ -1,9 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 from sentio_prober_control.Sentio.Enumerations import ProbeSentio, ProbeXYReference, ProbeZReference
-from sentio_prober_control.Sentio.Response import Response
-from sentio_prober_control.Sentio.CommandGroups.ProbeCommandGroup import ProbeCommandGroup
 from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
 from sentio_prober_control.Sentio.ProberSentio import SentioProber
 class TestProbeCommandGroup(unittest.TestCase):
@@ -19,12 +16,11 @@ class TestProbeCommandGroup(unittest.TestCase):
         self.mock_comm.send.assert_called_with("start_step_positioner_site East,1")
         self.assertEqual(cmd_id, 123)
 
-    #----Command is different of document, waiting the fix by another PR---
-    # def test_get_probe_site(self):
-    #     self.mock_comm.read_line.return_value = "0,0,site1,1000,2000"
-    #     result = self.test_prober.probe.get_probe_site(ProbeSentio.East, 0)
-    #     self.mock_comm.send.assert_called_with("get_positioner_site East,0")
-    #     self.assertEqual(result, (0, "site1", 1000.0, 2000.0))
+    def test_get_probe_site(self):
+        self.mock_comm.read_line.return_value = "0,0,site1,1000,2000,Home"
+        result = self.test_prober.probe.get_probe_site(ProbeSentio.East, 0)
+        self.mock_comm.send.assert_called_with("get_positioner_site East,0")
+        self.assertEqual(result, ("site1", 1000.0, 2000.0, "Home"))
 
     def test_get_probe_xy(self):
         self.mock_comm.read_line.return_value = "0,0,1500,2500"

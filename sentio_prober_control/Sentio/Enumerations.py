@@ -1550,3 +1550,45 @@ class ZPositionHint(Enum):
             ZPositionHint.Transfer: "Transfer",
         }
         return switcher.get(self, "Invalid ZPositionHint")
+
+class UvwAxis(Enum):
+    """An enumeration containing UVW axis.
+
+    Attributes:
+        U (0): U axis.
+        V (1): V axis.
+        W (2): W axis.
+    """
+
+    U = 0
+    V = 1
+    W = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            UvwAxis.U: "U",
+            UvwAxis.V: "V",
+            UvwAxis.W: "W",
+        }
+        return switcher.get(self, "Invalid UVW enumerator")
+
+class FiberType(Enum):
+    """An enumeration containing supported fiber type.
+
+    Attributes:
+        Single (0)
+        Array (1)
+        Lensed (2)
+    """
+
+    Single = 0
+    Array = 1
+    Lensed = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            FiberType.Single: "Single",
+            FiberType.Array: "Array",
+            FiberType.Lensed: "Lensed",
+        }
+        return switcher.get(self, "Invalid fiber type enumerator")
