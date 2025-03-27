@@ -60,8 +60,7 @@ class LoaderCommandGroup(CommandGroupBase):
         else:
             self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
 
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
 
     def prealign(self, marker: OrientationMarker, angle: int) -> None:
         """Prealign a wafer.
@@ -74,8 +73,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         self.comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
 
     def query_wafer_status(self, station : LoaderStation, slot : int) -> Tuple[LoaderStation, int, int, int, float] | None:
         """Query the status of a wafer in a loader station.
@@ -143,8 +141,7 @@ class LoaderCommandGroup(CommandGroupBase):
             value (float): The value to set.
         """
         self.comm.send(f"loader:set_wafer_status {station.toSentioAbbr()},{slot},{what.toSentioAbbr()},{value}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
 
     def start_prepare_station(self, station: LoaderStation, angle: float | None = None) -> None:
         """Prepare a loader station for wafer processing.
@@ -164,15 +161,12 @@ class LoaderCommandGroup(CommandGroupBase):
         else:
             self.comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}, {angle}")
 
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
 
-    @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):
         self.comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
-
 
     def transfer_wafer(
         self,
@@ -192,9 +186,7 @@ class LoaderCommandGroup(CommandGroupBase):
         self.comm.send(
             f"loader:transfer_wafer {src_station.toSentioAbbr()}, {src_slot}, {dst_station.toSentioAbbr()}, {dst_slot}"
         )
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-
+        Response.check_resp(self.comm.read_line())
 
     def unload_wafer(self) -> None:
         """Unload the current wafer from the chuck.
@@ -203,8 +195,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         self.comm.send("loader:unload_wafer")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
 
     def has_cassette(self,station : LoaderStation) -> None:
         
@@ -216,8 +207,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:has_cassette {station.toSentioAbbr()}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def set_wafer_id(self,station : LoaderStation, slot : int, waferid : str) -> None:
         
@@ -230,8 +220,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:set_wafer_id {station.toSentioAbbr}, {slot}, {waferid}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def query_wafer_id(self,station : LoaderStation, slot : int) -> None:
         
@@ -243,8 +232,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:query_wafer_id {station.toSentioAbbr}, {slot}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def read_wafer_id(self,angle : str, side : str) -> None:
         
@@ -256,8 +244,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:read_wafer_id {angle}, {side}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def start_prepare_wafer(self,station : LoaderStation, slot : int, angle : int, readid : int, unloadstation : LoaderStation, unloadslot : int) -> None:
         
@@ -266,8 +253,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:start_prepare_wafer {station.toSentioAbbr}, {slot}, {angle}, {readid}, {unloadstation}, {unloadslot}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def swap_wafer(self) ->None:
         
@@ -278,8 +264,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:swap_wafer")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def query_station_status(self, station : LoaderStation) ->None:
         
@@ -291,8 +276,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:query_station_status {station.toSentioAbbr}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
     
     def start_read_wafer_id(self, angle : str, side : str) ->None:
         
@@ -301,5 +285,4 @@ class LoaderCommandGroup(CommandGroupBase):
         """
         
         self.comm.send(f"loader:start_read_wafer_id {angle}, {side}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        Response.check_resp(self.comm.read_line())
