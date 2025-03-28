@@ -1,6 +1,10 @@
-from typing import Tuple
-
-from sentio_prober_control.Sentio.Enumerations import ThermoChuckState
+from typing import Tuple, Union
+from sentio_prober_control.Sentio.Enumerations import (
+    ThermoChuckState,
+    ChuckThermoEnergyMode,
+    ChuckThermoHoldMode,
+    HighPurgeState
+)
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
     ModuleCommandGroupBase,
@@ -123,16 +127,16 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"status:set_chuck_temp {temp:.2f}, {lift_chuck}")
         Response.check_resp(self.comm.read_line())
     
-    def get_chuck_thermo_energy_mode(self) -> str:
+    def get_chuck_thermo_energy_mode(self) -> ChuckThermoEnergyMode:
         """Get the current chuck thermo energy mode.
         Returns:
             The current energy mode as a string. Possible values: Fast, Optimal, HighPower, Customized.
         """
         self.comm.send("status:get_chuck_thermo_energy_mode")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return ChuckThermoEnergyMode[resp.message()]
     
-    def get_chuck_thermo_hold_mode(self) -> str:
+    def get_chuck_thermo_hold_mode(self) -> ChuckThermoHoldMode:
         """Get thermo chuck hold mode.
 
         Returns:
@@ -140,9 +144,9 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
         self.comm.send("status:get_chuck_thermo_hold_mode")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return ChuckThermoHoldMode[resp.message()]
     
-    def get_high_purge_state(self) -> str:
+    def get_high_purge_state(self) -> HighPurgeState:
         """Get thermo chuck high purge state.
 
         Returns:
@@ -150,9 +154,9 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
         self.comm.send("status:get_high_purge_state")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return HighPurgeState[resp.message()]
     
-    def set_chuck_thermo_energy_mode(self, mode: str) -> Response:
+    def set_chuck_thermo_energy_mode(self, mode: Union[str, ChuckThermoEnergyMode]) -> Response:
         """Set chuck thermo energy mode.
 
         Args:
@@ -164,10 +168,12 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Raises:
             ValueError: If the provided mode is not valid.
         """
-        self.comm.send(f"status:set_chuck_thermo_energy_mode {mode}")
+        if not isinstance(mode, ChuckThermoEnergyMode):
+            mode = ChuckThermoEnergyMode[mode]
+        self.comm.send(f"status:set_chuck_thermo_energy_mode {mode.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
     
-    def set_chuck_thermo_hold_mode(self, mode: bool) -> Response:
+    def set_chuck_thermo_hold_mode(self, mode: Union[bool, ChuckThermoHoldMode, str]) -> Response:
         """Set thermo chuck hold mode.
 
         Args:
@@ -176,7 +182,11 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Returns:
             A Response object confirming the command execution.
         """
-        self.comm.send(f"status:set_chuck_thermo_hold_mode {mode}")
+        if isinstance(mode, bool):
+            mode = ChuckThermoHoldMode.Active if mode else ChuckThermoHoldMode.Nonactive
+        elif isinstance(mode, str):
+            mode = ChuckThermoHoldMode[mode]
+        self.comm.send(f"status:set_chuck_thermo_hold_mode {mode.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
     
     def set_chuck_thermo_mode(self, mode: str) -> Response:
@@ -194,7 +204,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"status:set_chuck_thermo_mode {mode}")
         return Response.check_resp(self.comm.read_line())
 
-    def set_high_purge(self, enable: bool) -> Response:
+    def set_high_purge(self, enable: Union[bool, HighPurgeState, str]) -> Response:
         """Set thermo chuck high purge state.
 
                 Args:
@@ -203,5 +213,9 @@ class StatusCommandGroup(ModuleCommandGroupBase):
                 Returns:
                     A Response object confirming the command execution.
                 """
-        self.comm.send(f"status:set_high_purge {enable}")
+        if isinstance(enable, bool):
+            enable = HighPurgeState.On if enable else HighPurgeState.Off
+        elif isinstance(enable, str):
+            enable = HighPurgeState[enable]
+        self.comm.send(f"status:set_high_purge {enable.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())

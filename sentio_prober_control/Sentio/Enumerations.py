@@ -1592,3 +1592,40 @@ class FiberType(Enum):
             FiberType.Lensed: "Lensed",
         }
         return switcher.get(self, "Invalid fiber type enumerator")
+
+class ChuckThermoEnergyMode(Enum):
+    Fast = 0
+    Optimal = 1
+    HighPower = 2
+    Customized = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoEnergyMode.Fast: "Fast",
+            ChuckThermoEnergyMode.Optimal: "Optimal",
+            ChuckThermoEnergyMode.HighPower: "HighPower",
+            ChuckThermoEnergyMode.Customized: "Customized",
+        }
+        return switcher.get(self, "Invalid ChuckThermoEnergyMode")
+
+class ChuckThermoHoldMode(Enum):
+    Active = 0
+    Nonactive = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoHoldMode.Active: "Active",
+            ChuckThermoHoldMode.Nonactive: "Nonactive",
+        }
+        return switcher.get(self, "Invalid ChuckThermoHoldMode")
+
+class HighPurgeState(Enum):
+    On = 0
+    Off = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            HighPurgeState.On: "ON",
+            HighPurgeState.Off: "OFF",
+        }
+        return switcher.get(self, "Invalid HighPurgeState")
