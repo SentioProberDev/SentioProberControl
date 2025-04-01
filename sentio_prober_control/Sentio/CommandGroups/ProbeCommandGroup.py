@@ -83,7 +83,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return resp.cmd_id()
 
 
-    def get_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[int, float, float, str]:
+    def get_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[str, float, float, str]:
         """Get information for a probe site.
 
         Each positioner can define n a number of predefined positions called "sites".

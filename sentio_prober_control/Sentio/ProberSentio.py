@@ -110,7 +110,7 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite | None = None) -> Response:
+    def clear_contact(self, site: ChuckSite | None = None) -> None:
         """Clear contact positions.
 
         Args:
@@ -125,7 +125,7 @@ class SentioProber(ProberBase):
         else:
             self.comm.send(f"clear_contact {site.toSentioAbbr()}")
 
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     @staticmethod
@@ -150,7 +150,7 @@ class SentioProber(ProberBase):
             raise ValueError(f'Unknown prober type: "{comm_type}"')
 
 
-    def enable_chuck_overtravel(self, stat: bool) -> Response:
+    def enable_chuck_overtravel(self, stat: bool) -> None:
         """Enable chuck overtravel.
 
         This function wraps SENTIO's "enable_chuck_overtravel" remote command.
@@ -163,10 +163,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_overtravel {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_hover(self, stat: bool) -> Response:
+    def enable_chuck_hover(self, stat: bool) -> None:
         """Enable chuck hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -183,10 +183,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_hover {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> None:
         """Enable chuck site hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -202,10 +202,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> None:
         """Enable overtravel distance for a specific chuck site.
 
         Args:
@@ -217,7 +217,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def file_transfer(self, source: str, dest: str) -> Response:
@@ -551,7 +551,7 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_chuck_load(self, pos: LoadPosition) -> Response:
+    def move_chuck_load(self, pos: LoadPosition) -> None:
         """Move chuck to load position.
 
         Wraps SENTIO's "move_chuck_load" remote command.
@@ -563,7 +563,7 @@ class SentioProber(ProberBase):
             A response object with the result of the command.
         """
         self.comm.send(f"move_chuck_load {pos.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def move_chuck_separation(self) -> float:
@@ -644,7 +644,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_chuck_work_area(self, area: WorkArea) -> Response:
+    def move_chuck_work_area(self, area: WorkArea) -> None:
         """Move the chuck to a given work area.
 
         A SENTIO probe station can have different work areas. One area is for probing. This is the default
@@ -663,7 +663,7 @@ class SentioProber(ProberBase):
             A response object with the result of the command.
         """
         self.comm.send(f"move_chuck_work_area {area.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def move_scope_xy(
         self, ref: ScopeXYReference, x: float, y: float
@@ -686,7 +686,7 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def move_scope_lift(self, state: bool):
+    def move_scope_lift(self, state: bool) -> None:
         """Move scope to its lift position.
 
         The scope lift position is a position where the scope is
@@ -741,7 +741,7 @@ class SentioProber(ProberBase):
         """
         return self.__name
 
-    def open_project(self, project: str, restore_heights: bool = False):
+    def open_project(self, project: str, restore_heights: bool = False) -> None:
         """Open a SENTIO project file.
 
         Wraps SENTIO's "open_project" remote command.
@@ -805,7 +805,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def select_module(self, module: Module, tabSheet: str | None = None):
+    def select_module(self, module: Module, tabSheet: str | None = None) -> None:
         """Activate a given SENTIO module.
 
         In response to this function SENTIO will switch its user interface to make
@@ -904,7 +904,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def set_vacuum(self, site: ChuckSite, stat: bool) -> Response:
+    def set_vacuum(self, site: ChuckSite, stat: bool) -> None:
         """Switches the vacuum of a chuck site on or off.
 
         Args:
@@ -916,7 +916,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def show_hint(self, msg: str, subtext: str) -> Response:
