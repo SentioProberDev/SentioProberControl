@@ -44,6 +44,18 @@ class TestWafermapSubsiteGroup(unittest.TestCase):
         self.prober.map.subsites.reset()
         self.mock_comm.send.assert_called_with("map:subsite:reset")
 
+    def test_step_with_index(self):
+        self.mock_comm.read_line.return_value = "0,0,5,10,1"
+        result = self.prober.map.subsites.step(1)
+        self.mock_comm.send.assert_called_with("map:subsite:step 1")
+        self.assertEqual(result, (5, 10, 1))
+
+    def test_step_with_id_string(self):
+        self.mock_comm.read_line.return_value = "0,0,3,7,0"
+        result = self.prober.map.subsites.step("SubA")
+        self.mock_comm.send.assert_called_with("map:subsite:step SubA")
+        self.assertEqual(result, (3, 7, 0))
+
     def test_step_next(self):
         self.mock_comm.read_line.return_value = "0,0,8,9,2"
         result = self.prober.map.subsites.step_next()

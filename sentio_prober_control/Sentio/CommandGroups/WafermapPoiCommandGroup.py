@@ -19,6 +19,22 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send(f"map:poi:add {x}, {y}, {desc}")
         Response.check_resp(self.comm.read_line())
 
+    def get(self, idx: int) -> tuple[float, float, str]:
+        """Get POI data of a single POI.
+
+        Wraps SENTIO's map:poi:get remote command.
+
+        Args:
+            idx: The index of the POI to retrieve.
+
+        Returns:
+            A tuple (x, y, description) of the POI.
+        """
+        self.comm.send(f"map:poi:get {idx}")
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+        return float(tok[0]), float(tok[1]), str(tok[2])
+
     def get_num(self) -> int:
         """Returns the number of POIs in the list.
 
@@ -45,7 +61,7 @@ class WafermapPoiCommandGroup(CommandGroupBase):
         self.comm.send("map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr()))
         Response.check_resp(self.comm.read_line())
 
-    def step(self, target: str | int) -> None:
+    def step(self, target: str | int) -> tuple[int, int, int]:
         """Step to a POI in the list.
 
         Wraps SENTIO's map:poi:step remote command.
@@ -54,23 +70,29 @@ class WafermapPoiCommandGroup(CommandGroupBase):
             target: The target POI to step to. This is either the index of the poi or the id of the poi.
         """
         self.comm.send(f"map:poi:step {target}")
-        Response.check_resp(self.comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+        return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def step_first(self) -> None:
+    def step_first(self) -> tuple[int, int, int]:
         """Step to the first POI in the list.
 
         Wraps SENTIO's map:poi:step_first remote command.
         """
         self.comm.send("map:poi:step_first")
-        Response.check_resp(self.comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+        return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def step_next(self) -> None:
+    def step_next(self) -> tuple[int, int, int]:
         """Step to the next POI in the list.
 
         Wrap SENTIO's map:poi:step_next remote command.
         """
         self.comm.send("map:poi:step_next")
-        Response.check_resp(self.comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+        return int(tok[0]), int(tok[1]), int(tok[2])
 
     def remove(self, idx: int | None = None) -> None:
         """Remove POI(s) from wafermap.

@@ -19,9 +19,10 @@ class TestWafermapCompensationCommandGroup(unittest.TestCase):
     def test_topography(self):
         """Test executing topography compensation"""
         self.mock_comm.read_line.return_value = "0,100,OK"
-        cmd_id = self.test_prober.map.compensation.topography(ExecuteAction.Execute)
+        resp = self.test_prober.map.compensation.topography(ExecuteAction.Execute)
         self.mock_comm.send.assert_called_with("map:compensation:topography execute")
-        self.assertEqual(cmd_id, 100)
+        self.assertEqual(resp.cmd_id(), 100)
+        self.assertEqual(resp.message(), "OK")
 
     def test_set_xy_compensation(self):
         """Test enabling XY compensation"""
@@ -31,9 +32,11 @@ class TestWafermapCompensationCommandGroup(unittest.TestCase):
 
     def test_set_z_compensation(self):
         """Test enabling Z compensation"""
-        self.mock_comm.read_line.return_value = "0,0,OK"
-        self.test_prober.map.compensation.set_z(ZCompensationType.Topography)
+        self.mock_comm.read_line.return_value = "0,100,OK"
+        resp = self.test_prober.map.compensation.set_z(ZCompensationType.Topography)
         self.mock_comm.send.assert_called_with("map:compensation:set_z Topography")
+        self.assertEqual(resp.cmd_id(), 100)
+        self.assertEqual(resp.message(), "OK")
 
 
 if __name__ == "__main__":

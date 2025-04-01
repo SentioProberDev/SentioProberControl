@@ -10,7 +10,7 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
     """This command group bundles functions for setting up and using XY/Z compensation on the wafermap."""
 
     @deprecated("Use vis.compensation.start_execute(CompensationType.Topography, CompensationMode.Vertical) instead")
-    def topography(self, execute: ExecuteAction) -> int:
+    def topography(self, execute: ExecuteAction) -> Response:
         """Execute topography compensation.
 
         Args:
@@ -25,7 +25,7 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         if not resp.ok():
             raise ProberException(resp.message())
 
-        return resp.cmd_id()
+        return resp
 
     def set_xy(self, comp_type: XyCompensationType) -> None:
         """Enable the XY Stepping Compensation.
@@ -36,11 +36,13 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         self.comm.send(f"map:compensation:set_xy {comp_type.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
 
-    def set_z(self, comp_type: ZCompensationType) -> None:
+    def set_z(self, comp_type: ZCompensationType) -> Response:
         """Enable the Z Stepping Compensation.
 
         Args:
             comp_type: The type of Z Stepping Compensation.
         """
         self.comm.send(f"map:compensation:set_z {comp_type.toSentioAbbr()}")
-        Response.check_resp(self.comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
+
+        return resp
