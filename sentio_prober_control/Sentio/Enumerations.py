@@ -638,6 +638,28 @@ class ExecuteCompensation(Enum):
         return switcher.get(self, "Invalid compensation type")
 
 
+class FiberType(Enum):
+    """An enumeration containing supported fiber type.
+
+    Attributes:
+        Single (0)
+        Array (1)
+        Lensed (2)
+    """
+
+    Single = 0
+    Array = 1
+    Lensed = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            FiberType.Single: "Single",
+            FiberType.Array: "Array",
+            FiberType.Lensed: "Lensed",
+        }
+        return switcher.get(self, "Invalid fiber type enumerator")
+    
+
 class FindPatternReference(Enum):
     """Reference point for coordinates than returning a pattern position.
 
@@ -1423,6 +1445,27 @@ class ThermoChuckState(Enum):
     Controlling = 6
     Unknown = 7
 
+class UvwAxis(Enum):
+    """An enumeration containing UVW axis.
+
+    Attributes:
+        U (0): U axis.
+        V (1): V axis.
+        W (2): W axis.
+    """
+
+    U = 0
+    V = 1
+    W = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            UvwAxis.U: "U",
+            UvwAxis.V: "V",
+            UvwAxis.W: "W",
+        }
+        return switcher.get(self, "Invalid UVW enumerator")
+    
 
 class VceZReference(Enum):
     """Reference for Vce z motions.
@@ -1478,6 +1521,26 @@ class VirtualCarrierStepProcessingState(Enum):
             VirtualCarrierStepProcessingState.Ready: "Ready",
         }
         return switcher.get(self, "Invalid VirtualCarrierStepProcessingState")
+
+
+class WaferIdSide(Enum):
+    """ An enumeration for specifying on which side of the wafer the id is located. 
+    
+    Attributes:
+        Top (0): The id is located on the top side of the wafer.
+        Bottom (1): The id is located on the bottom side of the wafer.
+
+    """
+
+    Top = 0
+    Bottom = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            WaferIdSide.Top: "T",
+            WaferIdSide.Bottom: "B",
+        }
+        return switcher.get(self, "Invalid WaferIdSide")
 
 
 class WaferStatusItem(Enum):
@@ -1551,44 +1614,4 @@ class ZPositionHint(Enum):
         }
         return switcher.get(self, "Invalid ZPositionHint")
 
-class UvwAxis(Enum):
-    """An enumeration containing UVW axis.
 
-    Attributes:
-        U (0): U axis.
-        V (1): V axis.
-        W (2): W axis.
-    """
-
-    U = 0
-    V = 1
-    W = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            UvwAxis.U: "U",
-            UvwAxis.V: "V",
-            UvwAxis.W: "W",
-        }
-        return switcher.get(self, "Invalid UVW enumerator")
-
-class FiberType(Enum):
-    """An enumeration containing supported fiber type.
-
-    Attributes:
-        Single (0)
-        Array (1)
-        Lensed (2)
-    """
-
-    Single = 0
-    Array = 1
-    Lensed = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            FiberType.Single: "Single",
-            FiberType.Array: "Array",
-            FiberType.Lensed: "Lensed",
-        }
-        return switcher.get(self, "Invalid fiber type enumerator")
