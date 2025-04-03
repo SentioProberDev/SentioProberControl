@@ -1220,6 +1220,18 @@ class RemoteCommandError:
         LoaderCassetteDoesNotExist (80): The cassette does not exist
         LoaderSlotNumberError (81): The slot number is not correct
         LoaderPreAlignerAngleError (83): The prealigner angle is not correct
+
+        QaChuckNotWorkingPosition(450): Chuck is not in working position
+        QaSubstrateNotSet(451): Substrate is not set
+        QaRemoteModeNotSet(452): Remote mode is not set
+        QaStandardsEmpty(453): Standards are empty
+        QaCalculateEtsFail(454): Calculate ETS failed
+        QaSetCalDriftDutDataFail(455): Set Cal Drift DUT data failed
+        QaCalDriftDutNotFound(456): Cal Drift DUT not found
+        QaCalDriftDutFail(457): Cal Drift DUT failed
+        QaSwitchViewFail(458): Switch view failed
+        QaExportCalDriftDataFail(459): Export Cal Drift data failed
+        QaCalDriftDutPositionNotSet(460): Cal Drift DUT position not set
     """
 
     NoError = 0
@@ -1330,6 +1342,7 @@ class RemoteCommandError:
     QaCalDriftDutFail = 457
     QaSwitchViewFail = 458
     QaExportCalDriftDataFail = 459
+    QaCalDriftDutPositionNotSet = 460
 
 
 class RoutingPriority(Enum):

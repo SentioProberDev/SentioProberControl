@@ -10,6 +10,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
     def __init__(self, comm) -> None:
         super().__init__(comm)
 
+
     def calibration_execute(self) -> None:
         """
         Execute VNA calibration.
@@ -18,6 +19,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
         self.comm.send("qal:calibration_execute")
         Response.check_resp(self.comm.read_line())
+
 
     def calibration_drift_verify(self, dut_name: str = "", auto_exec: bool = True) -> None:
         """
@@ -32,6 +34,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(f"qal:calibration_drift_verify {dut_name},{str(auto_exec).lower()}")
         Response.check_resp(self.comm.read_line())
 
+
     @deprecated(reason="use calibration_execute instead!; violates naming conventions. (CR#13887)")
     def start_calibration(self) -> None:
         """
@@ -40,6 +43,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
         self.comm.send("qal:calibration_execute")
         Response.check_resp(self.comm.read_line())
+
 
     @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
     def verify_calibration_drift(self) -> None:
@@ -50,6 +54,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:calibration_drift_verify")
         Response.check_resp(self.comm.read_line())
 
+
     @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
     def verify_calibration_drift_dut(self, dut) -> None:
         """
@@ -58,6 +63,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
         self.comm.send(f"qal:calibration_drift_verify {dut}")
         Response.check_resp(self.comm.read_line())
+
 
     @deprecated(reason="oddly specific function name; filed as CR#13887")
     def set_calibration_drift_probe12(self):
@@ -88,6 +94,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:get_calibration_status")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
 
     def measurement_execute(
         self,
@@ -128,6 +135,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:reset_ets")
         Response.check_resp(self.comm.read_line())
 
+
     def set_ets(self, ports: str, path: str) -> None:
         """
         Set error terms in the buffer.
@@ -142,6 +150,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
+
     def send_ets_to_vna(self, cal_set_name: str) -> None:
         """
         Send current error terms in QAlibria buffer to the VNA.
@@ -155,6 +164,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
+
     def clear_dut_network(self, dut_name: str, drift_type: str, update_ui: bool) -> None:
         """
         Clear network data for a DUT.
@@ -166,12 +176,10 @@ class QAlibriaCommandGroup(CommandGroupBase):
             drift_type: The type of drift data to clear ("DriftRef" or "Drift").
             update_ui: Whether to update the UI (True/False).
         """
-        cmd = (
-            f"qal:clear_dut_network "
-            f"{dut_name},{drift_type},{str(update_ui).lower()}"
-        )
+        cmd = (f"qal:clear_dut_network {dut_name},{drift_type},{str(update_ui).lower()}")
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
+
 
     def vna_write(self, vna_command: str) -> None:
         """
@@ -185,6 +193,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         cmd = f"qal:vna_write {vna_command}"
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
+
 
     def vna_query(self, vna_command: str) -> str:
         """
@@ -202,6 +211,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
 
     def vna_read(self) -> str:
         """
