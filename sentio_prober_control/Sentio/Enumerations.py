@@ -255,6 +255,20 @@ class ChuckPositionHint(Enum):
     Center = 0
     FrontLoad = 1
     SideLoad = 2
+    OffAxisCamera = 3
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Probing": ChuckPositionHint.Center,
+            "FrontLoad": ChuckPositionHint.FrontLoad,
+            "SideLoad": ChuckPositionHint.SideLoad,
+            "OffAxisCamera": ChuckPositionHint.OffAxisCamera
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckPositionHint abbreviation: {abbr}")
 
 
 class ChuckSite(Enum):
@@ -270,6 +284,8 @@ class ChuckSite(Enum):
         AuxRight2 (3): Secondary right auxilliary site (if available)
         AuxLeft2 (4): Secondary left auxilliary site (if available)
         ChuckCamera (5): The chuck camera
+        SiPhSetHoverHeight (6): Siph set hover height site
+        SiPhFiberPowerMeasure (7): Siph fiber power measure site
     """
 
     Wafer = 0
@@ -278,6 +294,8 @@ class ChuckSite(Enum):
     AuxRight2 = 3
     AuxLeft2 = 4
     ChuckCamera = 5
+    SiPhSetHoverHeight = 6
+    SiPhFiberPowerMeasure = 7
 
     def toSentioAbbr(self):
         switcher = {
@@ -287,8 +305,27 @@ class ChuckSite(Enum):
             ChuckSite.AuxRight: "AuxRight",
             ChuckSite.AuxRight2: "AuxRight2",
             ChuckSite.ChuckCamera: "ChuckCamera",
+            ChuckSite.SiPhSetHoverHeight: "SiPhSetHoverHeight",
+            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure",
         }
         return switcher.get(self, "Invalid chuck site")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Wafer": ChuckSite.Wafer,
+            "AuxRight": ChuckSite.AuxRight,
+            "AuxLeft": ChuckSite.AuxLeft,
+            "AuxRight2": ChuckSite.AuxRight2,
+            "AuxLeft2": ChuckSite.AuxLeft2,
+            "ChuckCamera": ChuckSite.ChuckCamera,
+            "SiPhSetHoverHeight": ChuckSite.SiPhSetHoverHeight,
+            "SiPhFiberPowerMeasure": ChuckSite.SiPhFiberPowerMeasure,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSite abbreviation: {abbr}")
 
 
 class ChuckThetaReference(Enum):
@@ -1761,3 +1798,75 @@ class HighPurgeState(Enum):
             HighPurgeState.Off: "OFF",
         }
         return switcher.get(self, "Invalid HighPurgeState")
+
+class ChuckSpeed(Enum):
+    Fast = 0
+    Normal = 1
+    Slow = 2
+    Jog = 3
+    Index = 4
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Fast": ChuckSpeed.Fast,
+            "Normal": ChuckSpeed.Normal,
+            "Slow": ChuckSpeed.Slow,
+            "Jog": ChuckSpeed.Jog,
+            "Index": ChuckSpeed.Index,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
+
+class VacuumState(Enum):
+    Off = 0
+    On = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            VacuumState.Off: "Off",
+            VacuumState.On: "On",
+        }.get(self, "Invalid VacuumState")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "0": VacuumState.Off,
+            "1": VacuumState.On
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
+
+class HighPowerAirState(Enum):
+    Off = 0
+    On = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            HighPowerAirState.Off: "0",
+            HighPowerAirState.On: "1",
+        }.get(self, "Invalid HighPowerAirState")
+
+class SoftContactState(Enum):
+    Disable = 0
+    Enable = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            SoftContactState.Disable: "0",
+            SoftContactState.Enable: "1",
+        }.get(self, "Invalid SoftContactState")
+
+class UserCoordState(Enum):
+    Chuck = 0
+    Scope = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            UserCoordState.Chuck: "chuck",
+            UserCoordState.Scope: "scope"
+        }.get(self, "Invalid UserCoordState")
