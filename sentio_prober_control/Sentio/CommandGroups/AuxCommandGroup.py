@@ -1,13 +1,78 @@
-from typing import Optional, Tuple, List, Dict, Union
-from deprecated import deprecated
+from enum import Enum
+from typing import Optional, Tuple, List
+from dataclasses import dataclass
 
+from sentio_prober_control.Sentio.Enumerations import ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.AuxCleaningGroup import AuxCleaningGroup
-from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
-    ModuleCommandGroupBase,
-)
+from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
 
+class ElementInfoResponse:
+    """
+    A class to handle and parse the raw response string for element information 
+    returned from SENTIO's "aux:get_element_info" command.
+
+    Attributes:
+        raw_response (str): The raw comma-separated response from SENTIO.
+        element_info (ElementInfo): The parsed element information.
+    """
+    def __init__(self, raw_response: str) -> None:
+        self.raw_response = raw_response
+        parts = raw_response.split(",")
+        if len(parts) < 7:
+            raise ProberException("Unexpected response for element info.")
+        # Parse the parts into an ElementInfo object.
+        self.element_info = ElementInfo(
+            element_type=ElementType.from_str(parts[0]),
+            element_subtype=parts[1],
+            x_position=float(parts[2]),
+            y_position=float(parts[3]),
+            spacing=float(parts[4]),
+            touch_count=int(parts[5]),
+            life_time=float(parts[6])
+        )
+
+    def get_element_info(self) -> "ElementInfo":
+        """
+        Returns:
+            The parsed ElementInfo instance.
+        """
+        return self.element_info
+
+# --- New Enumerator for element types ---
+class ElementType(Enum):
+    """Represents the type of a calibration element."""
+    Open = 0
+    Short = 1
+    Thru = 2
+    Load = 3
+    Align = 4
+    Unknown = 99
+
+    @classmethod
+    def from_str(cls, s: str) -> "ElementType":
+        mapping = {
+            "open": cls.Open,
+            "short": cls.Short,
+            "thru": cls.Thru,
+            "load" : cls.Load,
+            "align": cls.Align
+        }
+        return mapping.get(s.lower(), cls.Unknown)
+
+# --- New data class for element information ---
+@dataclass
+class ElementInfo:
+    element_type: ElementType
+    element_subtype: str
+    x_position: float
+    y_position: float
+    spacing: float
+    touch_count: int
+    life_time: float
+
+# --- Updated AuxCommandGroup with eleven API methods ---
 class AuxCommandGroup(ModuleCommandGroupBase):
     """This command group contains functions for working with auxiliary sites of the chuck.
     You are not meant to create instances of this class on your own. Instead, use the aux
@@ -21,69 +86,84 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         super().__init__(comm, "aux")
         self.cleaning: AuxCleaningGroup = AuxCleaningGroup(comm)
 
+    # --- Helper method to validate that the given site is an auxiliary site ---
+    def _validate_aux_site(self, site: "ChuckSite") -> None:
+        # Only auxiliary sites (e.g. AuxRight, AuxLeft, AuxRight2, AuxLeft2) are allowed.
+        # Wafer and ChuckCamera are not valid for these commands.
+        if site in (ChuckSite.Wafer, ChuckSite.ChuckCamera):
+            raise ProberException(f"Invalid auxiliary site: {site.name}.")
+
     # -------------------------------------------------------------------------
-    #  1) retrieve_substrate_data
+    # 1) retrieve_substrate_data
     # -------------------------------------------------------------------------
-    def retrieve_substrate_data(self, site: Optional[str] = None) -> Tuple[int, List[str]]:
+    def retrieve_substrate_data(self, site: Optional["ChuckSite"] = None) -> List["ChuckSite"]:
         """
-        Retrieves contact and home information from configuration file and assigns it
+        Retrieves contact and home information from the configuration file and assigns it
         to the corresponding auxiliary site. Must be used after system start, since data
         are not retrieved automatically for safety reasons.
 
         Wraps SENTIO's "aux:retrieve_substrate_data" remote command.
 
         Args:
-            site: (Optional) The name/index of the site (e.g. "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, data for all auxiliary sites is retrieved.
 
         Returns:
-            A tuple of (count, site_list):
-              - count: The number of sites data has been retrieved for
-              - site_list: A list of site names for which data was retrieved
+            A list of ChuckSite for which data was retrieved.
         """
         cmd = "aux:retrieve_substrate_data"
         if site:
-            cmd += f" {site}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()}"
 
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
-
-        # The response is typically "0,0,<count>,<site1>,<site2>,..."
-        # resp.message() returns "<count>,<site1>,<site2>,..."
         parts = resp.message().split(",")
-        if len(parts) == 0:
-            return 0, []
+        if not parts or len(parts) < 1:
+            return []
 
-        count = int(parts[0])
-        site_list = parts[1:]
-        return count, site_list
+        # The response format is "<count>,<site1>,<site2>,..."
+        # Skip the count and convert each token to its corresponding ChuckSite.
+        sites = []
+        for token in parts[1:]:
+            token = token.strip()
+            for aux_site in ChuckSite:
+                if token.lower() == aux_site.toSentioAbbr().lower():
+                    sites.append(aux_site)
+                    break
+        return sites
 
     # -------------------------------------------------------------------------
-    #  2) get_substrate_type
+    # 2) get_substrate_type
     # -------------------------------------------------------------------------
-    def get_substrate_type(self, site: Optional[str] = None) -> str:
+    def get_substrate_type(self, site: Optional["ChuckSite"] = None) -> str:
         """
         Retrieves the type of a calibration substrate placed on the chuck.
 
         Wraps SENTIO's "aux:get_substrate_type" remote command.
 
         Args:
-            site: (Optional) The site index or name (e.g. "0", "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, the currently active site is used.
 
         Returns:
-            A string describing the substrate type (e.g. "AC-2", "Wafer", "Brush").
+            A string describing the substrate type.
+            If the remote command returns "OK", an empty string is returned.
         """
         cmd = "aux:get_substrate_type"
         if site:
-            cmd += f" {site}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()}"
 
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        substrate_type = resp.message()
+        if substrate_type.upper() == "OK":
+            return ""
+        return substrate_type
 
     # -------------------------------------------------------------------------
-    #  3) step_to_element
+    # 3) step_to_element
     # -------------------------------------------------------------------------
     def step_to_element(
         self,
@@ -112,7 +192,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
     # -------------------------------------------------------------------------
-    #  4) step_to_dut_element
+    # 4) step_to_dut_element
     # -------------------------------------------------------------------------
     def step_to_dut_element(
         self,
@@ -132,8 +212,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
             x: (Optional) X position [um].
             y: (Optional) Y position [um].
         """
-        # The typical format is:
-        #   aux:step_to_dut_element <dut_name>,<move_z>,<x>,<y>
         cmd = f"aux:step_to_dut_element {dut_name},{str(move_z).lower()}"
         if x is not None and y is not None:
             cmd += f",{x},{y}"
@@ -142,13 +220,9 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
     # -------------------------------------------------------------------------
-    #  5) get_element_type
+    # 5) get_element_type
     # -------------------------------------------------------------------------
-    def get_element_type(
-        self,
-        element_standard_id: str,
-        site: Optional[str] = None
-    ) -> str:
+    def get_element_type(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> ElementType:
         """
         Retrieves the type of an element on a calibration substrate placed on the chuck.
 
@@ -156,63 +230,60 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         Args:
             element_standard_id: The standard ID of the element (e.g. "0102").
-            site: (Optional) Substrate type or chuck site (e.g. "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, the currently active site is used.
 
         Returns:
-            The element type as a string (e.g. "Open", "Short", "Thru", "Align", etc.).
+            An ElementType enumerator (e.g. ElementType.Short, ElementType.Thru, ElementType.Align, etc).
         """
         cmd = "aux:get_element_type"
         if site:
-            cmd += f" {site},{element_standard_id}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        result = resp.message()
+        return ElementType.from_str(result)
 
     # -------------------------------------------------------------------------
-    #  6) get_substrate_info
+    # 6) get_substrate_info
     # -------------------------------------------------------------------------
-    def get_substrate_info(self, site: Union[int, str]) -> Dict[str, Union[str, float]]:
+    def get_substrate_info(self, site: "ChuckSite") -> Tuple[str, str, float]:
         """
         Retrieves information of a calibration substrate or cleaning pad placed on a chuck site.
 
         Wraps SENTIO's "aux:get_substrate_info" remote command.
 
         Args:
-            site: The index (0,1,2,...) or name ("AuxRight", "AuxLeft", etc.) of the site.
+            site: The auxiliary site (e.g. ChuckSite.AuxRight).
 
         Returns:
-            A dict with keys:
-                "substrate_type" (str),
-                "substrate_id"   (str),
-                "life_time"      (float) in %
+            A tuple containing:
+                - substrate_type (str)
+                - substrate_id (str) [if the id is "OK", an empty string is returned]
+                - life_time (float) in %
         """
-        cmd = f"aux:get_substrate_info {site}"
+        self._validate_aux_site(site)
+        cmd = f"aux:get_substrate_info {site.toSentioAbbr()}"
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
-
         parts = resp.message().split(",")
-        # Typically: <substrate_type>,<substrate_id>,<life_time>
         if len(parts) < 3:
             raise ProberException("Unexpected response for get_substrate_info.")
-
-        return {
-            "substrate_type": parts[0],
-            "substrate_id": parts[1],
-            "life_time": float(parts[2])
-        }
+        substrate_type = parts[0]
+        substrate_id = parts[1]
+        if substrate_id.upper() == "OK":
+            substrate_id = ""
+        life_time = float(parts[2])
+        return (substrate_type, substrate_id, life_time)
 
     # -------------------------------------------------------------------------
-    #  7) get_element_touch_count
+    # 7) get_element_touch_count
     # -------------------------------------------------------------------------
-    def get_element_touch_count(
-        self,
-        element_standard_id: str,
-        site: Optional[str] = None
-    ) -> int:
+    def get_element_touch_count(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> int:
         """
         Retrieves the touch count of an element on a calibration substrate placed on the chuck.
 
@@ -220,7 +291,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         Args:
             element_standard_id: The standard ID of the element (e.g. "0102").
-            site: (Optional) Substrate type or chuck site (e.g. "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, the currently active site is used.
 
         Returns:
@@ -228,7 +299,8 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         """
         cmd = "aux:get_element_touch_count"
         if site:
-            cmd += f" {site},{element_standard_id}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -237,13 +309,9 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         return int(resp.message())
 
     # -------------------------------------------------------------------------
-    #  8) get_element_spacing
+    # 8) get_element_spacing
     # -------------------------------------------------------------------------
-    def get_element_spacing(
-        self,
-        element_standard_id: str,
-        site: Optional[str] = None
-    ) -> float:
+    def get_element_spacing(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> float:
         """
         Retrieves the spacing value of an element on a calibration substrate placed on the chuck.
 
@@ -251,7 +319,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         Args:
             element_standard_id: The standard ID of the element (e.g. "0102").
-            site: (Optional) Substrate type or chuck site (e.g. "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, the currently active site is used.
 
         Returns:
@@ -259,7 +327,8 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         """
         cmd = "aux:get_element_spacing"
         if site:
-            cmd += f" {site},{element_standard_id}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -268,13 +337,9 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         return float(resp.message())
 
     # -------------------------------------------------------------------------
-    #  9) get_element_pos
+    # 9) get_element_pos
     # -------------------------------------------------------------------------
-    def get_element_pos(
-        self,
-        element_standard_id: str,
-        site: Optional[str] = None
-    ) -> Tuple[float, float]:
+    def get_element_pos(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> Tuple[float, float]:
         """
         Retrieves the (X, Y) position of an element on a calibration substrate placed on the chuck.
 
@@ -282,7 +347,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         Args:
             element_standard_id: The standard ID of the element (e.g. "0102").
-            site: (Optional) Substrate type or chuck site (e.g. "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, the currently active site is used.
 
         Returns:
@@ -290,7 +355,8 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         """
         cmd = "aux:get_element_pos"
         if site:
-            cmd += f" {site},{element_standard_id}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -299,7 +365,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         parts = resp.message().split(",")
         if len(parts) < 2:
             raise ProberException("Unexpected response for get_element_pos.")
-
         x = float(parts[0])
         y = float(parts[1])
         return (x, y)
@@ -307,11 +372,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
     # -------------------------------------------------------------------------
     # 10) get_element_life_time
     # -------------------------------------------------------------------------
-    def get_element_life_time(
-        self,
-        element_standard_id: str,
-        site: Optional[str] = None
-    ) -> float:
+    def get_element_life_time(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> float:
         """
         Retrieves the life time (in %) of an element on a calibration substrate placed on the chuck.
 
@@ -319,7 +380,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
 
         Args:
             element_standard_id: The standard ID of the element (e.g. "0102").
-            site: (Optional) Substrate type or chuck site (e.g. "AuxRight").
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
                   If omitted, the currently active site is used.
 
         Returns:
@@ -327,7 +388,8 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         """
         cmd = "aux:get_element_life_time"
         if site:
-            cmd += f" {site},{element_standard_id}"
+            self._validate_aux_site(site)
+            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -338,50 +400,46 @@ class AuxCommandGroup(ModuleCommandGroupBase):
     # -------------------------------------------------------------------------
     # 11) get_element_info
     # -------------------------------------------------------------------------
-    def get_element_info(
-        self,
-        element_standard_id: str,
-        site: Optional[str] = None
-    ) -> Dict[str, Union[str, float, int]]:
+    def get_element_info(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> ElementInfo:
         """
         Retrieves information of a calibration element on a calibration substrate placed on the chuck.
 
         Wraps SENTIO's "aux:get_element_info" remote command.
 
+        According to the SENTIO specification:
+        - If a site is given, the command format is:
+                aux:get_element_info <ChuckSite>,<ElementStandardID>
+        - If no site is given, the command format is:
+                aux:get_element_info <ElementStandardID>
+
         Args:
             element_standard_id: The standard ID of the element (e.g. "0102").
-            site: (Optional) Substrate type or chuck site (e.g. "AuxRight").
-                  If omitted, the currently active site is used.
+            site: (Optional) The auxiliary site (e.g. ChuckSite.AuxRight).
+                If omitted, the currently active site is used.
 
         Returns:
-            A dictionary with keys:
-                "element_type" (str)      -> e.g. "Thru", "Open", "Short", "Align", ...
-                "element_subtype" (str)   -> e.g. "GSG"
-                "x_position" (float)
-                "y_position" (float)
-                "spacing" (float)
-                "touch_count" (int)
-                "life_time" (float)       -> in %
+            An ElementInfo object containing:
+                - element_type (ElementType)
+                - element_subtype (str)
+                - x_position (float)
+                - y_position (float)
+                - spacing (float)
+                - touch_count (int)
+                - life_time (float)
         """
+        # Construct the command based on whether a site is specified
         cmd = "aux:get_element_info"
-        if site:
-            cmd += f" {site},{element_standard_id}"
+        if site is not None:
+            self._validate_aux_site(site)
+            # First parameter is the optional chuck site, second is the element ID
+            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
         else:
+            # Only the element ID is passed if the site is omitted
             cmd += f" {element_standard_id}"
 
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
-
-        parts = resp.message().split(",")
-        if len(parts) < 7:
-            raise ProberException("Unexpected response for get_element_info.")
-
-        return {
-            "element_type": parts[0],
-            "element_subtype": parts[1],
-            "x_position": float(parts[2]),
-            "y_position": float(parts[3]),
-            "spacing": float(parts[4]),
-            "touch_count": int(parts[5]),
-            "life_time": float(parts[6])
-        }
+        
+        # Use the ElementInfoResponse class to parse the raw response
+        parser = ElementInfoResponse(resp.message())
+        return parser.get_element_info()

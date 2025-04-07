@@ -1,8 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, call
 from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
-from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import QAlibriaCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.QAlibriaCommandGroup import QAlibriaCommandGroup, DriftType
 from sentio_prober_control.Sentio.Response import Response
+from sentio_prober_control.Sentio.ProberBase import ProberException
 
 # Dummy response class to simulate Response objects from check_resp.
 class DummyResponse:
@@ -70,15 +71,22 @@ class TestQAlibriaCommandGroup(unittest.TestCase):
         self.mock_comm.send.assert_has_calls(expected_calls)
         self.assertEqual(result, "SecondResponse")
 
-    def test_get_calibration_status(self):
+    def test_check_calibration_status_ok(self):
         self.mock_comm.read_line.return_value = "0,0,OK"
-        status = self.qal.get_calibration_status()
+        # check_calibration_status should not return any value and not raise an exception.
+        result = self.qal.check_calibration_status()
         self.mock_comm.send.assert_called_with("qal:get_calibration_status")
-        self.assertEqual(status, "OK")
+        self.assertIsNone(result)
+
+    def test_check_calibration_status_error(self):
+        self.mock_comm.read_line.return_value = "0,0,ERROR"
+        with self.assertRaises(ProberException):
+            self.qal.check_calibration_status()
 
     def test_measurement_execute(self):
         self.mock_comm.read_line.return_value = "0,0,OK"
-        self.qal.measurement_execute("test.snp", "1,2", True, False, True)
+        # Now use ports as a list of integers.
+        self.qal.measurement_execute("test.snp", [1, 2], True, False, True)
         expected_cmd = "qal:measurement_execute test.snp,1,2,true,false,true"
         self.mock_comm.send.assert_called_with(expected_cmd)
 
@@ -89,8 +97,9 @@ class TestQAlibriaCommandGroup(unittest.TestCase):
 
     def test_set_ets(self):
         self.mock_comm.read_line.return_value = "0,0,OK"
-        self.qal.set_ets("12", "D:\\temp\\ets.txt")
-        expected_cmd = "qal:set_ets 12,D:\\temp\\ets.txt"
+        # Pass an integer for port.
+        self.qal.set_ets(12, "D:\\temp\\ets.txt")
+        expected_cmd = "qal:set_ets 12,D:\\temp\\ets.txt,0"
         self.mock_comm.send.assert_called_with(expected_cmd)
 
     def test_send_ets_to_vna(self):
@@ -101,7 +110,8 @@ class TestQAlibriaCommandGroup(unittest.TestCase):
 
     def test_clear_dut_network(self):
         self.mock_comm.read_line.return_value = "0,0,OK"
-        self.qal.clear_dut_network("RefDUT", "DriftRef", True)
+        # Pass DriftType.DriftRef instead of a string.
+        self.qal.clear_dut_network("RefDUT", DriftType.DriftRef, True)
         expected_cmd = "qal:clear_dut_network RefDUT,DriftRef,true"
         self.mock_comm.send.assert_called_with(expected_cmd)
 
