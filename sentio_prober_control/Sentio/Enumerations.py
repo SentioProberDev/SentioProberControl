@@ -141,11 +141,66 @@ class BinQuality(Enum):
 
     def toSentioAbbr(self):
         switcher = {
-            BinQuality.Pass: 0,
-            BinQuality.Fail: 1,
-            BinQuality.Undefined: 2,
+            BinQuality.Pass: "pass",
+            BinQuality.Fail: "fail",
+            BinQuality.Undefined: "undefined",
         }
         return switcher.get(self, "Invalid bin quality identifier")
+
+
+class PathSelection(Enum):
+    """An enumerator for defining the path selection state of a die.
+
+       Attributes:
+           Pass (0): Die is marked as pass and valid for good bin selection.
+           Fail (1): Die is marked as fail and should be skipped or binned as failed.
+           Undefined (2): Die has no defined path selection; may be excluded from testing.
+           Unbinned (3): Die has not yet been assigned to any bin.
+       """
+
+    Pass = 0
+    Fail = 1
+    Undefined = 2
+    Unbinned = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            PathSelection.Pass: "pass",
+            PathSelection.Fail: "fail",
+            PathSelection.Undefined: "undefined",
+            PathSelection.Unbinned: "unbinned",
+        }
+        return switcher.get(self, "Invalid path selection identifier")
+
+
+class SubsiteGroup(Enum):
+    """An enumerator for defining subsite group types for get_num() command.
+
+    Attributes:
+        Present (0): Subsites present on a specific die.
+        Selected (1): Subsites selected for routing on a specific die.
+        GlobalPresent (2): Global subsite table entries.
+        GlobalSelected (3): Globally selected subsites.
+        WaferPresent (4): Subsites present on the entire wafer.
+        WaferSelected (5): Selected subsites on the entire wafer.
+    """
+    Present = 0
+    Selected = 1
+    GlobalPresent = 2
+    GlobalSelected = 3
+    WaferPresent = 4
+    WaferSelected = 5
+
+    def toSentioAbbr(self) -> str:
+        switcher = {
+            SubsiteGroup.Present: "P",
+            SubsiteGroup.Selected: "S",
+            SubsiteGroup.GlobalPresent: "GP",
+            SubsiteGroup.GlobalSelected: "GS",
+            SubsiteGroup.WaferPresent: "WP",
+            SubsiteGroup.WaferSelected: "WS",
+        }
+        return switcher.get(self, "Invalid subsite group identifier")
 
 
 class CameraMountPoint(Enum):
@@ -418,6 +473,56 @@ class CompensationType(Enum):
         return switcher.get(self, "Invalid CompensationType")
 
 
+class XyCompensationType(Enum):
+    """A list of XY compensation types.
+
+    Attributes:
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
+    """
+
+    Disable = 0
+    OnTheFly = 1
+    MapScan = 2
+    Thermal = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            XyCompensationType.Disable: "None",
+            XyCompensationType.OnTheFly: "OnTheFly",
+            XyCompensationType.MapScan: "MapScan",
+            XyCompensationType.Thermal: "Thermal",
+        }
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
+class ZCompensationType(Enum):
+    """A list of Z compensation types.
+
+    Attributes:
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
+    """
+
+    Disable = 0
+    OnTheFly = 1
+    Topography = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            ZCompensationType.Disable: "None",
+            ZCompensationType.OnTheFly: "OnTheFly",
+            ZCompensationType.Topography: "Topography",
+        }
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
 class DefaultPattern(Enum):
     """A list of slots for visual patterns used by SENTIO.
 
@@ -608,6 +713,7 @@ class DieNumber(Enum):
 
     Present = 1
     Selected = 2
+    Total = 3
 
 
 @deprecated("ExecuteAction is deprecated.")
@@ -1334,6 +1440,19 @@ class RoutingPriority(Enum):
         }
         return switcher.get(self, "Invalid RoutingPriority enumerator")
 
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "R": RoutingPriority.RowUniDir,
+            "C": RoutingPriority.ColUniDir,
+            "WR": RoutingPriority.RowBiDir,
+            "WC": RoutingPriority.ColBiDir,
+        }
+        try:
+            return mapping[abbr.upper()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingPriority abbreviation: {abbr}")
+
 
 class RoutingStartPoint(Enum):
     """Defines the starting point for routing (stepping commands).
@@ -1347,7 +1466,7 @@ class RoutingStartPoint(Enum):
 
     UpperLeft = 0
     UpperRight = 1
-    LowerLeft =  2
+    LowerLeft = 2
     LowerRight = 3
 
     def toSentioAbbr(self):
@@ -1358,6 +1477,19 @@ class RoutingStartPoint(Enum):
             RoutingStartPoint.LowerRight: "lr",
         }
         return switcher.get(self, "Invalid RoutingStartPoint enumerator")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "UL": RoutingStartPoint.UpperLeft,
+            "UR": RoutingStartPoint.UpperRight,
+            "LL": RoutingStartPoint.LowerLeft,
+            "LR": RoutingStartPoint.LowerRight,
+        }
+        try:
+            return mapping[abbr.upper()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingStartPoint abbreviation: {abbr}")
 
 
 class StatusBits:
@@ -1550,3 +1682,82 @@ class ZPositionHint(Enum):
             ZPositionHint.Transfer: "Transfer",
         }
         return switcher.get(self, "Invalid ZPositionHint")
+
+class UvwAxis(Enum):
+    """An enumeration containing UVW axis.
+
+    Attributes:
+        U (0): U axis.
+        V (1): V axis.
+        W (2): W axis.
+    """
+
+    U = 0
+    V = 1
+    W = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            UvwAxis.U: "U",
+            UvwAxis.V: "V",
+            UvwAxis.W: "W",
+        }
+        return switcher.get(self, "Invalid UVW enumerator")
+
+class FiberType(Enum):
+    """An enumeration containing supported fiber type.
+
+    Attributes:
+        Single (0)
+        Array (1)
+        Lensed (2)
+    """
+
+    Single = 0
+    Array = 1
+    Lensed = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            FiberType.Single: "Single",
+            FiberType.Array: "Array",
+            FiberType.Lensed: "Lensed",
+        }
+        return switcher.get(self, "Invalid fiber type enumerator")
+
+class ChuckThermoEnergyMode(Enum):
+    Fast = 0
+    Optimal = 1
+    HighPower = 2
+    Customized = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoEnergyMode.Fast: "Fast",
+            ChuckThermoEnergyMode.Optimal: "Optimal",
+            ChuckThermoEnergyMode.HighPower: "HighPower",
+            ChuckThermoEnergyMode.Customized: "Customized",
+        }
+        return switcher.get(self, "Invalid ChuckThermoEnergyMode")
+
+class ChuckThermoHoldMode(Enum):
+    Active = 0
+    Nonactive = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoHoldMode.Active: "Active",
+            ChuckThermoHoldMode.Nonactive: "Nonactive",
+        }
+        return switcher.get(self, "Invalid ChuckThermoHoldMode")
+
+class HighPurgeState(Enum):
+    On = 0
+    Off = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            HighPurgeState.On: "ON",
+            HighPurgeState.Off: "OFF",
+        }
+        return switcher.get(self, "Invalid HighPurgeState")

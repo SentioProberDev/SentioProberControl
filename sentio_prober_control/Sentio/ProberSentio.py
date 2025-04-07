@@ -110,7 +110,7 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite | None = None) -> Response:
+    def clear_contact(self, site: ChuckSite | None = None) -> None:
         """Clear contact positions.
 
         Args:
@@ -125,7 +125,7 @@ class SentioProber(ProberBase):
         else:
             self.comm.send(f"clear_contact {site.toSentioAbbr()}")
 
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     @staticmethod
@@ -150,7 +150,7 @@ class SentioProber(ProberBase):
             raise ValueError(f'Unknown prober type: "{comm_type}"')
 
 
-    def enable_chuck_overtravel(self, stat: bool) -> Response:
+    def enable_chuck_overtravel(self, stat: bool) -> None:
         """Enable chuck overtravel.
 
         This function wraps SENTIO's "enable_chuck_overtravel" remote command.
@@ -163,10 +163,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_overtravel {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_hover(self, stat: bool) -> Response:
+    def enable_chuck_hover(self, stat: bool) -> None:
         """Enable chuck hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -183,10 +183,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_hover {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> None:
         """Enable chuck site hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -202,10 +202,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> None:
         """Enable overtravel distance for a specific chuck site.
 
         Args:
@@ -217,7 +217,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def file_transfer(self, source: str, dest: str) -> Response:
@@ -551,7 +551,7 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_chuck_load(self, pos: LoadPosition) -> Response:
+    def move_chuck_load(self, pos: LoadPosition) -> None:
         """Move chuck to load position.
 
         Wraps SENTIO's "move_chuck_load" remote command.
@@ -563,7 +563,7 @@ class SentioProber(ProberBase):
             A response object with the result of the command.
         """
         self.comm.send(f"move_chuck_load {pos.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def move_chuck_separation(self) -> float:
@@ -644,7 +644,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_chuck_work_area(self, area: WorkArea) -> Response:
+    def move_chuck_work_area(self, area: WorkArea) -> None:
         """Move the chuck to a given work area.
 
         A SENTIO probe station can have different work areas. One area is for probing. This is the default
@@ -663,7 +663,7 @@ class SentioProber(ProberBase):
             A response object with the result of the command.
         """
         self.comm.send(f"move_chuck_work_area {area.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def move_scope_xy(
         self, ref: ScopeXYReference, x: float, y: float
@@ -686,7 +686,7 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def move_scope_lift(self, state: bool):
+    def move_scope_lift(self, state: bool) -> None:
         """Move scope to its lift position.
 
         The scope lift position is a position where the scope is
@@ -741,7 +741,7 @@ class SentioProber(ProberBase):
         """
         return self.__name
 
-    def open_project(self, project: str, restore_heights: bool = False):
+    def open_project(self, project: str, restore_heights: bool = False) -> None:
         """Open a SENTIO project file.
 
         Wraps SENTIO's "open_project" remote command.
@@ -805,7 +805,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def select_module(self, module: Module, tabSheet: str | None = None):
+    def select_module(self, module: Module, tabSheet: str | None = None) -> None:
         """Activate a given SENTIO module.
 
         In response to this function SENTIO will switch its user interface to make
@@ -904,7 +904,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def set_vacuum(self, site: ChuckSite, stat: bool) -> Response:
+    def set_vacuum(self, site: ChuckSite, stat: bool) -> None:
         """Switches the vacuum of a chuck site on or off.
 
         Args:
@@ -916,7 +916,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def show_hint(self, msg: str, subtext: str) -> Response:
@@ -1050,3 +1050,98 @@ class SentioProber(ProberBase):
             self.comm.send(f"wait_complete {id_or_resp}, {timeout}")
 
         return Response.check_resp(self.comm.read_line())
+
+    def get_scope_home(self) -> tuple[float, float]:
+        """Gets the home position information for the scope stage.
+
+        Returns:
+            A tuple containing the X and Y home positions in micrometers.
+        """
+        self.comm.send("get_scope_home")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        home_x = float(tok[0])
+        home_y = float(tok[1])
+        return home_x, home_y
+
+    def set_scope_home(self, home_x: float = None, home_y: float = None) -> None:
+        """Sets the home position for the scope stage.
+
+        Args:
+            home_x: (Optional) The X-coordinate of the home position in micrometers.
+            home_y: (Optional) The Y-coordinate of the home position in micrometers.
+
+        Returns:
+            A Response object indicating whether the command was successful.
+        """
+        if home_x is not None and home_y is not None:
+            self.comm.send(f"set_scope_home {home_x},{home_y}")
+        else:
+            self.comm.send("set_scope_home")
+
+        Response.check_resp(self.comm.read_line())
+
+    def step_scope_site(self, site_index: int or str) -> tuple[str, float, float]:
+        """Steps the scope to the indicated site and sets it as the current site.
+
+        Args:
+            site_index: The scope site index (zero-based) or its ID.
+
+        Returns:
+            A tuple containing:
+                - Site ID (string): The identifier of the current scope site.
+                - Offset X (float): The X offset relative to the scope home position.
+                - Offset Y (float): The Y offset relative to the scope home position.
+        """
+        self.comm.send(f"step_scope_site {site_index}")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        site_id = tok[0]
+        offset_x = float(tok[1])
+        offset_y = float(tok[2])
+
+        return site_id, offset_x, offset_y
+
+    def step_scope_site_first(self) -> tuple[str, float, float]:
+        """Steps the scope to the first site in the scope site list.
+
+        Returns:
+            A tuple containing:
+                - Site ID (string): The identifier of the current scope site.
+                - Offset X (float): The X offset relative to the scope home position.
+                - Offset Y (float): The Y offset relative to the scope home position.
+        """
+        self.comm.send("step_scope_site_first")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        site_id = tok[0]
+        offset_x = float(tok[1])
+        offset_y = float(tok[2])
+
+        return site_id, offset_x, offset_y
+
+    def step_scope_site_next(self) -> tuple[str, float, float]:
+        """Steps the scope to the next site and sets it as the current site.
+
+        Returns:
+            A tuple containing:
+                - Site ID (string): The identifier of the current scope site.
+                - Offset X (float): The X offset relative to the scope home position.
+                - Offset Y (float): The Y offset relative to the scope home position.
+        """
+        self.comm.send("step_scope_site_next")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        site_id = tok[0]
+        offset_x = float(tok[1])
+        offset_y = float(tok[2])
+
+        return site_id, offset_x, offset_y

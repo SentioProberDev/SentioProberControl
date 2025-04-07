@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import AxisOrient, StatusBits
+from sentio_prober_control.Sentio.Enumerations import AxisOrient, StatusBits, SubsiteGroup
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -18,8 +18,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         super().__init__(comm)
         self._parent_command_group = wafermap_command_group
 
-
-    def add(self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight) -> None:
+    def add(self, id: str, x: float, y: float, orient: AxisOrient = AxisOrient.UpRight) -> int:
         """Add a single subsite to the wafermap.
 
         Creates a new subsite definition in SENTIO. The subsite position is defined
@@ -35,8 +34,8 @@ class WafermapSubsiteGroup(CommandGroupBase):
             orient: The axis orientation used fot the submitted values
         """
         self.comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
-        Response.check_resp(self.comm.read_line())
-
+        resp = Response.check_resp(self.comm.read_line())
+        return int(resp.message())
 
     def bin_step_next(self, bin: int) -> Tuple[int, int, int]:
         """Step to the next active subsite and assign bin code to current subsite.
@@ -56,7 +55,6 @@ class WafermapSubsiteGroup(CommandGroupBase):
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
-
 
     def get(self, idx: int, orient: AxisOrient | None = None) -> Tuple[str, float, float]:
         """Returns the subsite definition for a subsite with a given index.
@@ -85,8 +83,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return str(tok[0]), float(tok[1]), float(tok[2])
 
-
-    def get_num(self) -> int:
+    def get_num(self, group: SubsiteGroup | None = None) -> int:
         """Retrieve the number of subsites per die defined in the wafermap.
 
         Wraps the "map:subsite:get_num" remote command.
@@ -94,10 +91,14 @@ class WafermapSubsiteGroup(CommandGroupBase):
         Returns:
             The number of subsites in the wafermap.
         """
-        self.comm.send("map:subsite:get_num")
+        if group is None:
+            group_str = ""
+        else:
+            group_str = group.toSentioAbbr()
+
+        self.comm.send(f"map:subsite:get_num {group_str}")
         resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
-
 
     def reset(self) -> None:
         """Reset Sentios subsite definitions.
@@ -107,6 +108,23 @@ class WafermapSubsiteGroup(CommandGroupBase):
         self.comm.send("map:subsite:reset")
         Response.check_resp(self.comm.read_line())
 
+    def step(self, target: int | str) -> Tuple[int, int, int]:
+        """Step to a specific subsite on the current die.
+
+        Wraps the "map:subsite:step" remote command.
+
+        Args:
+            target: The subsite index or ID to step to.
+
+        Returns:
+            A tuple containing (column, row, subsite) after the step.
+        """
+        self.comm.send(f"map:subsite:step {target}")
+        resp = Response.check_resp(self.comm.read_line())
+        self._parent_command_group.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
+
+        tok = resp.message().split(",")
+        return int(tok[0]), int(tok[1]), int(tok[2])
 
     def step_next(self) -> Tuple[int, int, int]:
         """Step to the next active subsite.
@@ -123,3 +141,90 @@ class WafermapSubsiteGroup(CommandGroupBase):
 
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
+
+    def export(self, file_path: str) -> None:
+        """Export subsite definitions to file.
+
+        Wraps the "map:subsite:export" remote command.
+
+        Args:
+            file_path: Full or relative file path to export (CSV, XLS, XLSX)
+        """
+        self.comm.send(f"map:subsite:export {file_path}")
+        Response.check_resp(self.comm.read_line())
+
+    def get_state(self, subsite: int | str, col: int | None = None, row: int | None = None) -> int:
+        """Check if a subsite is active (globally or locally).
+
+        Wraps the "map:subsite:get_state" remote command.
+
+        Args:
+            subsite: Subsite index or ID.
+            col: Optional column for local state check.
+            row: Optional row for local state check.
+
+        Returns:
+            1 if active, 0 if inactive.
+        """
+        if col is not None and row is not None:
+            self.comm.send(f"map:subsite:get_state {subsite}, {col}, {row}")
+        else:
+            self.comm.send(f"map:subsite:get_state {subsite}")
+        resp = Response.check_resp(self.comm.read_line())
+        return int(resp.message())
+
+    def import_from_file(self, file_path: str) -> None:
+        """Import subsite definitions from file.
+
+        Wraps the "map:subsite:import" remote command.
+
+        Args:
+            file_path: Path to CSV/XLS/XLSX file.
+        """
+        self.comm.send(f"map:subsite:import {file_path}")
+        Response.check_resp(self.comm.read_line())
+
+    def remove(self, subsite: int | str) -> None:
+        """Remove a subsite from the table.
+
+        Wraps the "map:subsite:remove" remote command.
+
+        Args:
+            subsite: Index or ID of the subsite to remove.
+        """
+        self.comm.send(f"map:subsite:remove {subsite}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_state(self, subsite: int | str, state: int, col: int | None = None, row: int | None = None) -> None:
+        """Set a subsite active or inactive.
+
+        Wraps the "map:subsite:set_state" remote command.
+
+        Args:
+            subsite: Subsite ID or index.
+            state: 1 = active, 0 = inactive.
+            col: Optional column index for local state.
+            row: Optional row index for local state.
+        """
+        if col is not None and row is not None:
+            self.comm.send(f"map:subsite:set_state {subsite}, {state}, {col}, {row}")
+        else:
+            self.comm.send(f"map:subsite:set_state {subsite}, {state}")
+        Response.check_resp(self.comm.read_line())
+
+    def step_previous(self) -> Tuple[int, int, int]:
+        """Step to the previous active subsite.
+
+        Wraps the "map:subsite:step_previous" remote command.
+
+        Returns:
+            A tuple of (col, row, subsite) after step.
+        """
+        self.comm.send("map:subsite:step_previous")
+        resp = Response.check_resp(self.comm.read_line())
+        self._parent_command_group.__end_of_route = (resp.status() & StatusBits.EndOfRoute) == StatusBits.EndOfRoute
+
+        tok = resp.message().split(",")
+        return int(tok[0]), int(tok[1]), int(tok[2])
+
+    

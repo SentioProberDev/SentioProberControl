@@ -61,7 +61,6 @@ class LoaderCommandGroup(CommandGroupBase):
             self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
 
         Response.check_resp(self.comm.read_line())
-    
 
     def prealign(self, marker: OrientationMarker, angle: int) -> None:
         """Prealign a wafer.
@@ -75,7 +74,6 @@ class LoaderCommandGroup(CommandGroupBase):
 
         self.comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
         Response.check_resp(self.comm.read_line())
-
 
     def query_wafer_status(self, station : LoaderStation, slot : int) -> Tuple[LoaderStation, int, int, int, float] | None:
         """Query the status of a wafer in a loader station.
@@ -145,7 +143,6 @@ class LoaderCommandGroup(CommandGroupBase):
         self.comm.send(f"loader:set_wafer_status {station.toSentioAbbr()},{slot},{what.toSentioAbbr()},{value}")
         Response.check_resp(self.comm.read_line())
 
-
     def start_prepare_station(self, station: LoaderStation, angle: float | None = None) -> None:
         """Prepare a loader station for wafer processing.
 
@@ -166,13 +163,10 @@ class LoaderCommandGroup(CommandGroupBase):
 
         Response.check_resp(self.comm.read_line())
 
-
-    @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):
         self.comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
-
 
     def transfer_wafer(
         self,
@@ -194,7 +188,6 @@ class LoaderCommandGroup(CommandGroupBase):
         )
         Response.check_resp(self.comm.read_line())
 
-
     def unload_wafer(self) -> None:
         """Unload the current wafer from the chuck.
 
@@ -202,4 +195,94 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         self.comm.send("loader:unload_wafer")
+        Response.check_resp(self.comm.read_line())
+
+    def has_cassette(self,station : LoaderStation) -> None:
+        
+        """Query whether a cassette is present in a given cassette station.
+
+        Args:
+            station (LoaderStation): The cassette station to scan
+
+        """
+        
+        self.comm.send(f"loader:has_cassette {station.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
+    
+    def set_wafer_id(self,station : LoaderStation, slot : int, waferid : str) -> None:
+        
+        """Reset the wafer id.
+
+        Args:
+            station (LoaderStation): The  station to reset waferid
+            slot(int):The slot to reset waferid
+
+        """
+        
+        self.comm.send(f"loader:set_wafer_id {station.toSentioAbbr}, {slot}, {waferid}")
+        Response.check_resp(self.comm.read_line())
+    
+    def query_wafer_id(self,station : LoaderStation, slot : int) -> None:
+        
+        """Query the wafer id that already existing.
+
+        Args:
+            station (LoaderStation): The  station to query waferid
+            slot(int):The slot to query waferid
+        """
+        
+        self.comm.send(f"loader:query_wafer_id {station.toSentioAbbr}, {slot}")
+        Response.check_resp(self.comm.read_line())
+    
+    def read_wafer_id(self,angle : str, side : str) -> None:
+        
+        """Command will trigger ID Reader to read wafer id.
+
+        Args:
+            angle(str):Wafer ID angle
+            side(str):Wafer ID side
+        """
+        
+        self.comm.send(f"loader:read_wafer_id {angle}, {side}")
+        Response.check_resp(self.comm.read_line())
+    
+    def start_prepare_wafer(self,station : LoaderStation, slot : int, angle : int, readid : int, unloadstation : LoaderStation, unloadslot : int) -> None:
+        
+        """Set the wafer to default state
+
+        """
+        
+        self.comm.send(f"loader:start_prepare_wafer {station.toSentioAbbr}, {slot}, {angle}, {readid}, {unloadstation}, {unloadslot}")
+        Response.check_resp(self.comm.read_line())
+    
+    def swap_wafer(self) ->None:
+        
+        """
+            For dual-fork loader: Wafer form chuck is placed on loader fork A, wafer from loader fork A is placed on chuck.
+            For single-fork loader: Wafer form chuck is placed on its origin station, wafer from pre-aligner is placed on chuck.
+
+        """
+        
+        self.comm.send(f"loader:swap_wafer")
+        Response.check_resp(self.comm.read_line())
+    
+    def query_station_status(self, station : LoaderStation) ->None:
+        
+        """Returns the wafer presence state of a station without losing wafer information.
+
+        Args:
+            station(LoaderStation):query station status.
+        
+        """
+        
+        self.comm.send(f"loader:query_station_status {station.toSentioAbbr}")
+        Response.check_resp(self.comm.read_line())
+    
+    def start_read_wafer_id(self, angle : str, side : str) ->None:
+        
+        """Command will trigger ID Reader to read wafer id._summary_
+
+        """
+        
+        self.comm.send(f"loader:start_read_wafer_id {angle}, {side}")
         Response.check_resp(self.comm.read_line())
