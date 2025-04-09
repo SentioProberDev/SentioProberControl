@@ -151,6 +151,7 @@ class SentioProber(ProberBase):
 
 
     def enable_chuck_overtravel(self, stat: bool) -> Response:
+
         """Enable chuck overtravel.
 
         This function wraps SENTIO's "enable_chuck_overtravel" remote command.
@@ -167,6 +168,7 @@ class SentioProber(ProberBase):
 
 
     def enable_chuck_hover(self, stat: bool) -> Response:
+
         """Enable chuck hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -187,6 +189,7 @@ class SentioProber(ProberBase):
 
 
     def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> Response:
+
         """Enable chuck site hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -206,6 +209,7 @@ class SentioProber(ProberBase):
 
 
     def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> Response:
+
         """Enable overtravel distance for a specific chuck site.
 
         Args:
@@ -221,6 +225,7 @@ class SentioProber(ProberBase):
 
 
     def file_transfer(self, source: str, dest: str) -> Response:
+
         """Transfer a file to the prober.
 
         This function will transfer a file to the prober. The file will be stored in the position specified by
@@ -230,6 +235,7 @@ class SentioProber(ProberBase):
             source (str): The path to the file to transfer.
             dest (str): The destination path on the prober. Must be a complete path including file name. Make sure that SENTIO has write access to the given destination.
         """
+
         # open file and encode with base64
         if not os.path.isfile(source):
             raise ProberException(f"File {source} not found!")
@@ -242,6 +248,7 @@ class SentioProber(ProberBase):
 
 
     def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:
+
         """Retrieves height information of a chuck site
 
         Example:
@@ -259,6 +266,7 @@ class SentioProber(ProberBase):
             overtravel_dist (float): overtravel distance
             hover_gap (float): hover gap
         """
+        
         self.comm.send("get_chuck_site_heights {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
 
@@ -1051,12 +1059,15 @@ class SentioProber(ProberBase):
 
         return Response.check_resp(self.comm.read_line())
 
+
     def get_scope_home(self) -> tuple[float, float]:
+
         """Gets the home position information for the scope stage.
 
         Returns:
             A tuple containing the X and Y home positions in micrometers.
         """
+
         self.comm.send("get_scope_home")
         resp = Response.check_resp(self.comm.read_line())
 
@@ -1066,7 +1077,9 @@ class SentioProber(ProberBase):
         home_y = float(tok[1])
         return home_x, home_y
 
+
     def set_scope_home(self, home_x: float = None, home_y: float = None) -> None:
+
         """Sets the home position for the scope stage.
 
         Args:
@@ -1076,6 +1089,7 @@ class SentioProber(ProberBase):
         Returns:
             A Response object indicating whether the command was successful.
         """
+
         if home_x is not None and home_y is not None:
             self.comm.send(f"set_scope_home {home_x},{home_y}")
         else:
@@ -1083,7 +1097,8 @@ class SentioProber(ProberBase):
 
         Response.check_resp(self.comm.read_line())
 
-    def step_scope_site(self, site_index: int or str) -> tuple[str, float, float]:
+
+    def step_scope_site(self, site_index: int | str) -> tuple[str, float, float]:
         """Steps the scope to the indicated site and sets it as the current site.
 
         Args:
@@ -1105,6 +1120,7 @@ class SentioProber(ProberBase):
         offset_y = float(tok[2])
 
         return site_id, offset_x, offset_y
+
 
     def step_scope_site_first(self) -> tuple[str, float, float]:
         """Steps the scope to the first site in the scope site list.

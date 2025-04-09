@@ -4,6 +4,7 @@ from typing import List
 
 
 class Helper:
+    @staticmethod
     def split_string(s : str, delimiter : str) -> List[str]:
         escaped_delimiter = re.escape(delimiter)
         pattern = rf'"[^"]*"|[^{escaped_delimiter}]+'

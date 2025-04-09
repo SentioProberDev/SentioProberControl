@@ -1,5 +1,6 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from typing import Tuple
 
 
 class ModuleCommandGroupBase(CommandGroupBase):
@@ -10,7 +11,8 @@ class ModuleCommandGroupBase(CommandGroupBase):
         self._groupAbbr = abbr
 
 
-    def get_prop(self, prop_name: str, arg1=None):
+    def get_prop(self, prop_name: str, arg1=None) -> int | float | str | bool | Tuple[float, float] | Tuple[float, float, float]:
+
         """Query a module property.
 
         SENTIO exposes some of its internal variables in the form of so called "module properties".
@@ -25,10 +27,11 @@ class ModuleCommandGroupBase(CommandGroupBase):
         :param arg1: An optional parameter for the property.
         :raises: ProberException if an error occured.
         """
+        
         if arg1 == None:
-            self.comm.send("{0}:get_prop {1}".format(self._groupAbbr, prop_name))
+            self.comm.send(f"{self._groupAbbr}:get_prop {prop_name}")
         else:
-            self.comm.send("{0}:get_prop {1}, {2}".format(self._groupAbbr, prop_name, arg1))
+            self.comm.send(f"{self._groupAbbr}:get_prop {prop_name}, {arg1}")
 
         resp = Response.check_resp(self.comm.read_line())
 
@@ -58,7 +61,7 @@ class ModuleCommandGroupBase(CommandGroupBase):
         return int(resp.message())
 
 
-    def set_prop(self, prop_name: str, *argv):
+    def set_prop(self, prop_name: str, *argv) -> None:
         """Set a module property.
 
         SENTIO exposes some of its internal variables in the form of so called "module properties".

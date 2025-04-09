@@ -7,7 +7,9 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 from sentio_prober_control.Sentio.CommandGroups.LoaderVirtualCarrierCommandGroup import LoaderVirtualCarrierCommandGroup
 from sentio_prober_control.Sentio.ProberBase import ProberException
 
+
 class LoaderCommandGroup(CommandGroupBase):
+
     """This command group contains functions for working with the loader.
     You are not meant to instantiate this class directly. Access it via the loader attribute
     of the [SentioProber](SentioProber.md) class.
@@ -25,10 +27,11 @@ class LoaderCommandGroup(CommandGroupBase):
     def __init__(self, parent : 'SentioProber') -> None:
         super().__init__(parent)
 
-        self.vc: LoaderVirtualCarrierCommandGroup = LoaderVirtualCarrierCommandGroup(self)
+        self.vc : LoaderVirtualCarrierCommandGroup = LoaderVirtualCarrierCommandGroup(self)
 
 
     def has_station(self, station: LoaderStation) -> bool:
+
         """Check wether a certain loader station is present.
 
         Wraps Sentios "loader:has_station" remote command.
@@ -46,6 +49,7 @@ class LoaderCommandGroup(CommandGroupBase):
     
 
     def load_wafer(self, src_station: LoaderStation, src_slot: int, angle: int | None = None) -> str:
+
         """Load a wafer onto the chuck with optional prealignment.
 
         Args:
@@ -71,6 +75,7 @@ class LoaderCommandGroup(CommandGroupBase):
 
 
     def prealign(self, marker: OrientationMarker, angle: int) -> None:
+
         """Prealign a wafer.
 
         Wraps Sentios "loader:prealign" remote command.
@@ -85,6 +90,7 @@ class LoaderCommandGroup(CommandGroupBase):
 
 
     def query_wafer_status(self, station : LoaderStation, slot : int) -> Tuple[LoaderStation, int, int, int, float] | None:
+
         """Query the status of a wafer in a loader station.
 
         Wraps Sentios "loader:query_wafer_status" remote command.
@@ -124,6 +130,7 @@ class LoaderCommandGroup(CommandGroupBase):
 
 
     def scan_station(self, station: LoaderStation) -> str:
+
         """Scans a loader station for wafers.
         Wraps Sentios "loader:scan_station" remote command.
 
@@ -140,6 +147,7 @@ class LoaderCommandGroup(CommandGroupBase):
     
 
     def set_wafer_status(self, station: LoaderStation, slot : int, what : WaferStatusItem, value : float) -> None:
+
         """ Set status of a wafer in the wafer tracker.
         Wraps Sentios "loader:set_wafer_status" remote command.
 
@@ -149,6 +157,7 @@ class LoaderCommandGroup(CommandGroupBase):
             what (WaferStatusItem): Defines which status iten shall be set.
             value (float): The value to set.
         """
+        
         self.comm.send(f"loader:set_wafer_status {station.toSentioAbbr()},{slot},{what.toSentioAbbr()},{value}")
         Response.check_resp(self.comm.read_line())
         

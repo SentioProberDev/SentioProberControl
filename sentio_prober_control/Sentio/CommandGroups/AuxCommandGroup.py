@@ -21,10 +21,9 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         super().__init__(comm, "aux")
         self.cleaning: AuxCleaningGroup = AuxCleaningGroup(comm)
 
-    # -------------------------------------------------------------------------
-    #  1) retrieve_substrate_data
-    # -------------------------------------------------------------------------
+
     def retrieve_substrate_data(self, site: Optional[str] = None) -> Tuple[int, List[str]]:
+
         """
         Retrieves contact and home information from configuration file and assigns it
         to the corresponding auxiliary site. Must be used after system start, since data
@@ -41,6 +40,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
               - count: The number of sites data has been retrieved for
               - site_list: A list of site names for which data was retrieved
         """
+
         cmd = "aux:retrieve_substrate_data"
         if site:
             cmd += f" {site}"
@@ -58,10 +58,9 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         site_list = parts[1:]
         return count, site_list
 
-    # -------------------------------------------------------------------------
-    #  2) get_substrate_type
-    # -------------------------------------------------------------------------
+
     def get_substrate_type(self, site: Optional[str] = None) -> str:
+
         """
         Retrieves the type of a calibration substrate placed on the chuck.
 
@@ -74,6 +73,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         Returns:
             A string describing the substrate type (e.g. "AC-2", "Wafer", "Brush").
         """
+        
         cmd = "aux:get_substrate_type"
         if site:
             cmd += f" {site}"
