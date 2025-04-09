@@ -140,11 +140,21 @@ class SentioProber(ProberBase):
                 arg2 (str): Only used for gpib communication. This is the GPIB address of the prober i.e. "GPIB0:20". 
          """
         
+        
         if comm_type == "tcpip" or comm_type == SentioCommunicationType.TcpIp:
+            if not isinstance(arg1, str):
+                raise ValueError(f"Invalid argument for TCP/IP communication: {arg1}. Expected a string containing an ip address and a port number. i.e.: \"127.0.0.1:35555\".")
+            
             return SentioProber(CommunicatorTcpIp.create(arg1))
         elif comm_type == "gpib" or comm_type == SentioCommunicationType.Gpib:
+            if not isinstance(arg1, GpibCardVendor):
+                raise ValueError(f"Invalid argument for gpib communication: {arg1}. Expected a GpibCardVendor specification (either NI or ADLINK).")
+
             return SentioProber(CommunicatorGpib.create(arg1, arg2))
         elif comm_type == "visa" or comm_type == SentioCommunicationType.Visa:
+            if not isinstance(arg1, str):
+                raise ValueError(f"Invalid argument for VISA communication: {arg1}. Expected a string containing a VISA resource identifier. i.e.: \"GPIB0::20::INSTR\".")
+
             return SentioProber(CommunicatorVisa.create(arg1))
         else:
             raise ValueError(f'Unknown prober type: "{comm_type}"')
@@ -266,7 +276,7 @@ class SentioProber(ProberBase):
             overtravel_dist (float): overtravel distance
             hover_gap (float): hover gap
         """
-        
+
         self.comm.send("get_chuck_site_heights {0}".format(site.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
 
@@ -853,6 +863,7 @@ class SentioProber(ProberBase):
         self.comm.send(cmd)
         return Response.check_resp(self.comm.read_line())
 
+
     def set_chuck_site_height(
         self,
         site: ChuckSite,
@@ -860,7 +871,7 @@ class SentioProber(ProberBase):
         separation: float,
         overtravel_dist: float,
         hover_gap: float,
-    ) -> Response:
+    ) -> Tuple[ChuckSite, float, float, float, float]:
         """Sets z position information of a chuck site
 
         Example:
@@ -875,10 +886,25 @@ class SentioProber(ProberBase):
             separation: The new separation height in micrometer.
             overtravel_dist: The new overtravel distance in micrometer.
             hover_gap: The new hover gap in micrometer.
+
+        Returns:
+            site: The chuck site that was set.
+            contact: The new contact height in micrometer.
+            separation: The new separation height in micrometer.
+            overtravel_dist: The new overtravel distance in micrometer.
+            hover_gap: The new hover gap in micrometer.
         """
-        par: str = f"{site.toSentioAbbr()},{contact},{separation},{overtravel_dist},{hover_gap}"
-        self.comm.send("set_chuck_site_heights {0}".format(par))
-        return Response.check_resp(self.comm.read_line())
+
+        self.comm.send(f"set_chuck_site_heights {site.toSentioAbbr()},{contact},{separation},{overtravel_dist},{hover_gap}")
+        resp = Response.check_resp(self.comm.read_line())        
+        tok = resp.message().split(",")
+        site = ChuckSite[tok[0]]
+        contact = float(tok[1])
+        separation = float(tok[2])
+        overtravel_dist = float(tok[3])
+        hover_gap = float(tok[4])
+
+        return site, contact, separation, overtravel_dist, hover_gap
 
 
     def set_ink(self, idx_inker : int) -> None:
@@ -912,7 +938,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def set_vacuum(self, site: ChuckSite, stat: bool) -> Response:
+    def set_vacuum(self, site: ChuckSite, stat: bool) -> None:
         """Switches the vacuum of a chuck site on or off.
 
         Args:
@@ -920,14 +946,14 @@ class SentioProber(ProberBase):
             stat: True to switch the vacuum on, False to switch it off.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
         self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def show_hint(self, msg: str, subtext: str) -> Response:
+    def show_hint(self, msg: str, subtext: str) -> None:
         """Show an on screen message (hint) and return immediately
 
         Hints are on screen messages that pop up in SENTIO's lower left corner. This hint will
@@ -940,7 +966,7 @@ class SentioProber(ProberBase):
             subtext: The subtext to display.
         """
         self.comm.send(f'status:show_hint "{msg}", "{subtext}"')
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def show_hint_and_wait(
