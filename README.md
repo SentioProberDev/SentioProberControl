@@ -7,7 +7,7 @@ This archive contains a package with python bindings to control a [MPI SENTIO® 
 
 ## Instructions for installing the SENTIO® prober control Python package
 
-The package for controlling MPI probe stations running the MPI SENTIO Software suite is now available via [pythons package index](https://pypi.org/project/sentio-prober-control/). To install the
+ for controlling MPI probe stations running the MPI SENTIO Software suite is now available via [pythons package index](https://pypi.org/project/sentio-prober-control/). To install the
 package simply type:
 
 ```python -m pip install sentio-prober-control```
