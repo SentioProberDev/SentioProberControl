@@ -42,6 +42,8 @@ class AutoFocusAlgorithm(Enum):
     Bandpass = 1
     Difference = 2
     AutoCorrelation = 3
+    LaplaceStdDev = 4
+    Harris = 5
 
     def toSentioAbbr(self):
         switcher = {
@@ -49,6 +51,8 @@ class AutoFocusAlgorithm(Enum):
             AutoFocusAlgorithm.Bandpass: "Bandpass",
             AutoFocusAlgorithm.Difference: "Difference",
             AutoFocusAlgorithm.AutoCorrelation: "AutoCorrelation",
+            AutoFocusAlgorithm.LaplaceStdDev: "LaplaceStdDev",
+            AutoFocusAlgorithm.Harris: "Harris",
         }
         return switcher.get(self, "Invalid focus measure")
 
@@ -73,6 +77,22 @@ class AutoFocusCmd(Enum):
             AutoFocusCmd.GoTo: "G",
         }
         return switcher.get(self, "Invalid auto focus function")
+
+
+class MoveAxis(Enum):
+    """Defines the movement axis for the auto-focus function."""
+
+    Scope = 0
+    Imagpro = 1
+    Chuck = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            MoveAxis.Scope: "scope",
+            MoveAxis.Imagpro: "imagpro",
+            MoveAxis.Chuck: "chuck",
+        }
+        return switcher.get(self, "Invalid AxisOrient")
 
 
 class AxisOrient(Enum):
@@ -730,12 +750,20 @@ class DieCompensationType(Enum):
     DieAlign = 0
     MapScan = 1
     Topography = 2
+    AlignDie = 3
+    ContactSense = 4
+    OnTheFly = 5
+    Offaxis = 6
 
     def toSentioAbbr(self):
         switcher = {
             DieCompensationType.DieAlign: "DieAlign",
             DieCompensationType.MapScan: "MapScan",
             DieCompensationType.Topography: "Topography",
+            DieCompensationType.AlignDie: "AlignDie",
+            DieCompensationType.ContactSense: "ContactSense",
+            DieCompensationType.OnTheFly: "OnTheFly",
+            DieCompensationType.Offaxis: "Offaxis",
         }
         return switcher.get(self, "Invalid Compensation_Type function")
 
