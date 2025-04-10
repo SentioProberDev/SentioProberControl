@@ -1,5 +1,3 @@
-import re
-
 from typing import List, Tuple
 
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase

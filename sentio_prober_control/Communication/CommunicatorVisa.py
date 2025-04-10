@@ -24,7 +24,7 @@ class CommunicatorVisa(CommunicatorBase):
         c.connect(addr)
         return c
 
-    def connect(self, address: str) -> None:
+    def connect(self, address: str, encoding : str | None = None) -> None:
         """Connect to a VISA device at the specified address.
 
         The VISA timeout for the interface is set to 3600000 (1 hour).
@@ -33,6 +33,7 @@ class CommunicatorVisa(CommunicatorBase):
         """
         self.__visa = self.__rm.open_resource(address)
         self.__visa.timeout = 3600000
+        self.__address = address
 
     def disconnect(self):
         """Disconnect from the VISA device."""

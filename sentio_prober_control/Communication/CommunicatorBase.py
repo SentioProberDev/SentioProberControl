@@ -11,7 +11,7 @@ class CommunicatorBase(ABC):
     _verbose = False
 
 
-    def connect(self, address: str) -> None:
+    def connect(self, address: str, encoding : str = 'utf-8') -> None:
         """Connect to the probe station.
 
         Must be implemented by the derived class.

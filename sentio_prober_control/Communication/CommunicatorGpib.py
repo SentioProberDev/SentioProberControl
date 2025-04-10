@@ -53,7 +53,7 @@ class CommunicatorGpib(CommunicatorBase):
         c.connect(addr)
         return c
 
-    def connect(self, address: str) -> None:
+    def connect(self, address: str, encoding : str | None = None) -> None:
         """Connects to a GPIB device at the specified address.
 
         :param addr: A string that specifies the address of the GPIB device to connect to. The address must have the format "BOARD_NAME&colon;ADDRESS"
