@@ -44,7 +44,8 @@ from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHComm
 from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import StatusCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
-from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
+from sentio_prober_control.Sentio.Enumerations import ChuckSite
+
 
 class SentioCommunicationType(Enum):
     """This enum defines different types of prober communication.
@@ -100,7 +101,6 @@ class SentioProber(ProberBase):
         self.siph: SiPHCommandGroup = SiPHCommandGroup(self)
         self.status: StatusCommandGroup = StatusCommandGroup(self)
         self.vision: VisionCommandGroup = VisionCommandGroup(self)
-        self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
 
     def abort_command(self, cmd_id: int) -> Response:
@@ -116,7 +116,7 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite | None = None) -> Response:
+    def clear_contact(self, site: ChuckSite | None = None) -> None:
         """Clear contact positions.
 
         Args:
@@ -131,7 +131,7 @@ class SentioProber(ProberBase):
         else:
             self.comm.send(f"clear_contact {site.toSentioAbbr()}")
 
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     @staticmethod
@@ -156,7 +156,7 @@ class SentioProber(ProberBase):
             raise ValueError(f'Unknown prober type: "{comm_type}"')
 
 
-    def enable_chuck_overtravel(self, stat: bool) -> Response:
+    def enable_chuck_overtravel(self, stat: bool) -> None:
         """Enable chuck overtravel.
 
         This function wraps SENTIO's "enable_chuck_overtravel" remote command.
@@ -169,10 +169,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_overtravel {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_hover(self, stat: bool) -> Response:
+    def enable_chuck_hover(self, stat: bool) -> None:
         """Enable chuck hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -189,10 +189,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_hover {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> None:
         """Enable chuck site hover height.
 
         The Hover height is a height that is significantly closer to the chuck compared to the separation height.
@@ -208,10 +208,10 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> None:
         """Enable overtravel distance for a specific chuck site.
 
         Args:
@@ -223,7 +223,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def file_transfer(self, source: str, dest: str) -> Response:
@@ -557,7 +557,7 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_chuck_load(self, pos: LoadPosition) -> Response:
+    def move_chuck_load(self, pos: LoadPosition) -> None:
         """Move chuck to load position.
 
         Wraps SENTIO's "move_chuck_load" remote command.
@@ -569,7 +569,7 @@ class SentioProber(ProberBase):
             A response object with the result of the command.
         """
         self.comm.send(f"move_chuck_load {pos.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def move_chuck_separation(self) -> float:
@@ -650,7 +650,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_chuck_work_area(self, area: WorkArea) -> Response:
+    def move_chuck_work_area(self, area: WorkArea) -> None:
         """Move the chuck to a given work area.
 
         A SENTIO probe station can have different work areas. One area is for probing. This is the default
@@ -669,7 +669,7 @@ class SentioProber(ProberBase):
             A response object with the result of the command.
         """
         self.comm.send(f"move_chuck_work_area {area.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def move_scope_xy(
         self, ref: ScopeXYReference, x: float, y: float
@@ -692,7 +692,7 @@ class SentioProber(ProberBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def move_scope_lift(self, state: bool):
+    def move_scope_lift(self, state: bool) -> None:
         """Move scope to its lift position.
 
         The scope lift position is a position where the scope is
@@ -910,7 +910,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def set_vacuum(self, site: ChuckSite, stat: bool) -> Response:
+    def set_vacuum(self, site: ChuckSite, stat: bool) -> None:
         """Switches the vacuum of a chuck site on or off.
 
         Args:
@@ -922,7 +922,7 @@ class SentioProber(ProberBase):
         """
 
         self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def show_hint(self, msg: str, subtext: str) -> Response:
@@ -1373,6 +1373,8 @@ class SentioProber(ProberBase):
         self.comm.send(f"set_chuck_separation_gap {gap}")
         Response.check_resp(self.comm.read_line())
 
+    from sentio_prober_control.Sentio.Enumerations import ChuckSite
+    from sentio_prober_control.Sentio.Response import Response
 
     def set_chuck_site_overtravel_gap(self, site: ChuckSite, gap: float) -> None:
         """Set overtravel gap for a specific chuck site.
@@ -1504,161 +1506,3 @@ class SentioProber(ProberBase):
         full_path = tok[0]
 
         return full_path
-    
-    def get_indexer_pos(self) -> Tuple[int, str]:
-        """Get currently indexer position.
-
-        Returns:
-            Tuple[int, str]: Indexer location (1~5), and indexer z-position ("up" or "down").
-        """
-        self.comm.send("get_indexer_pos")
-        resp = Response.check_resp(self.comm.read_line())
-        location, position = resp.message().split(",")
-        return int(location), position
-
-    def indexer_cda(self, on: bool) -> Response:
-        """Turn indexer CDA on or off.
-
-        Args:
-            on (bool): True to turn on, False to turn off.
-
-        Returns:
-            Response: Result response.
-        """
-        state = "on" if on else "off"
-        self.comm.send(f"indexer_cda {state}")
-        return Response.check_resp(self.comm.read_line())
-
-    def move_bottom_platen_contact(self) -> float:
-        """Move bottom platen to contact height.
-
-        Returns:
-            float: New Z position in µm with respect to zero.
-        """
-        self.comm.send("move_bottom_platen_contact")
-        resp = Response.check_resp(self.comm.read_line())
-        return float(resp.message())
-
-    def move_bottom_platen_separation(self) -> float:
-        """Move bottom platen to separation height.
-
-        Returns:
-            float: New Z position in µm with respect to zero.
-        """
-        self.comm.send("move_bottom_platen_separation")
-        resp = Response.check_resp(self.comm.read_line())
-        return float(resp.message())
-
-    def move_indexer_lift(self) -> Response:
-        """Move indexer up.
-
-        Returns:
-            Response: Result response.
-        """
-        self.comm.send("move_indexer_lift")
-        return Response.check_resp(self.comm.read_line())
-
-    def move_indexer_down(self) -> Response:
-        """Move indexer down.
-
-        Returns:
-            Response: Result response.
-        """
-        self.comm.send("move_indexer_down")
-        return Response.check_resp(self.comm.read_line())
-
-    def probe_air_lift(self, valve: str, position: str) -> Response:
-        """Control probe air lift mechanism.
-
-        Args:
-            valve (str): v1/v2
-            position (str): lift or unlift
-
-        Returns:
-            Response: Result response.
-        """
-        self.comm.send(f"probe_air_lift {valve},{position}")
-        return Response.check_resp(self.comm.read_line())
-
-    def set_signal_tower(self, red: int, yellow: int, green: int, blue: int) -> Response:
-        """Set signal tower LED states.
-
-        Args:
-            red (int): -1=no change, 0=off, 1=on, 2=blinking
-            yellow (int)
-            green (int)
-            blue (int)
-
-        Returns:
-            Response: Result response.
-        """
-        self.comm.send(f"set_signal_tower {red},{yellow},{green},{blue}")
-        return Response.check_resp(self.comm.read_line())
-
-    def set_signal_tower_buzzer(self, state: int) -> Response:
-        """Set signal tower buzzer state.
-
-        Args:
-            state (int): -1=no change, 0=off, 1=on, 2=pulsed
-
-        Returns:
-            Response: Result response.
-        """
-        self.comm.send(f"set_signal_tower_buzzer {state}")
-        return Response.check_resp(self.comm.read_line())
-
-    def start_move_indexer_pos(self, pos: int) -> Response:
-        """Asynchronously move indexer to position.
-
-        Args:
-            pos (int): Position index from 1 to 5
-
-        Returns:
-            Response: Includes cmd_id for async tracking.
-        """
-        self.comm.send(f"start_move_indexer_pos {pos}")
-        return Response.check_resp(self.comm.read_line())
-
-    def swap_bridge(self, side: str, device_position: str = None) -> Response:
-        """Control swap bridge side and position.
-
-        Args:
-            side (str): right/left/current
-            device_position (str, optional): up/down
-
-        Returns:
-            Response: Result response.
-        """
-        cmd = f"swap_bridge {side}"
-        if device_position:
-            cmd += f",{device_position}"
-        self.comm.send(cmd)
-        return Response.check_resp(self.comm.read_line())
-
-    def get_door_status(self, door: str) -> Tuple[bool, bool]:
-        """Retrieves the closed and locked state of a door.
-
-        Args:
-            door (str): The door to query ("prober" or "loader").
-
-        Returns:
-            Tuple[bool, bool]: (is_closed, is_locked)
-        """
-        self.comm.send(f"get_door_status {door.lower()}")
-        resp = Response.check_resp(self.comm.read_line())
-        closed, locked = resp.message().split(",")
-        return closed == "1", locked == "1"
-
-    def set_door_lock(self, door: str, lock: bool) -> Response:
-        """Locks or unlocks the specified door.
-
-        Args:
-            door (str): The door to control ("prober" or "loader").
-            lock (bool): True to lock the door, False to unlock.
-
-        Returns:
-            Response: Result of the operation.
-        """
-        state = "1" if lock else "0"
-        self.comm.send(f"set_door_lock {door.lower()},{state}")
-        return Response.check_resp(self.comm.read_line())
