@@ -42,6 +42,8 @@ class AutoFocusAlgorithm(Enum):
     Bandpass = 1
     Difference = 2
     AutoCorrelation = 3
+    LaplaceStdDev = 4
+    Harris = 5
 
     def toSentioAbbr(self):
         switcher = {
@@ -49,6 +51,8 @@ class AutoFocusAlgorithm(Enum):
             AutoFocusAlgorithm.Bandpass: "Bandpass",
             AutoFocusAlgorithm.Difference: "Difference",
             AutoFocusAlgorithm.AutoCorrelation: "AutoCorrelation",
+            AutoFocusAlgorithm.LaplaceStdDev: "LaplaceStdDev",
+            AutoFocusAlgorithm.Harris: "Harris",
         }
         return switcher.get(self, "Invalid focus measure")
 
@@ -73,6 +77,22 @@ class AutoFocusCmd(Enum):
             AutoFocusCmd.GoTo: "G",
         }
         return switcher.get(self, "Invalid auto focus function")
+
+
+class MoveAxis(Enum):
+    """Defines the movement axis for the auto-focus function."""
+
+    Scope = 0
+    Imagpro = 1
+    Chuck = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            MoveAxis.Scope: "scope",
+            MoveAxis.Imagpro: "imagpro",
+            MoveAxis.Chuck: "chuck",
+        }
+        return switcher.get(self, "Invalid AxisOrient")
 
 
 class AxisOrient(Enum):
@@ -141,11 +161,66 @@ class BinQuality(Enum):
 
     def toSentioAbbr(self):
         switcher = {
-            BinQuality.Pass: 0,
-            BinQuality.Fail: 1,
-            BinQuality.Undefined: 2,
+            BinQuality.Pass: "pass",
+            BinQuality.Fail: "fail",
+            BinQuality.Undefined: "undefined",
         }
         return switcher.get(self, "Invalid bin quality identifier")
+
+
+class PathSelection(Enum):
+    """An enumerator for defining the path selection state of a die.
+
+       Attributes:
+           Pass (0): Die is marked as pass and valid for good bin selection.
+           Fail (1): Die is marked as fail and should be skipped or binned as failed.
+           Undefined (2): Die has no defined path selection; may be excluded from testing.
+           Unbinned (3): Die has not yet been assigned to any bin.
+       """
+
+    Pass = 0
+    Fail = 1
+    Undefined = 2
+    Unbinned = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            PathSelection.Pass: "pass",
+            PathSelection.Fail: "fail",
+            PathSelection.Undefined: "undefined",
+            PathSelection.Unbinned: "unbinned",
+        }
+        return switcher.get(self, "Invalid path selection identifier")
+
+
+class SubsiteGroup(Enum):
+    """An enumerator for defining subsite group types for get_num() command.
+
+    Attributes:
+        Present (0): Subsites present on a specific die.
+        Selected (1): Subsites selected for routing on a specific die.
+        GlobalPresent (2): Global subsite table entries.
+        GlobalSelected (3): Globally selected subsites.
+        WaferPresent (4): Subsites present on the entire wafer.
+        WaferSelected (5): Selected subsites on the entire wafer.
+    """
+    Present = 0
+    Selected = 1
+    GlobalPresent = 2
+    GlobalSelected = 3
+    WaferPresent = 4
+    WaferSelected = 5
+
+    def toSentioAbbr(self) -> str:
+        switcher = {
+            SubsiteGroup.Present: "P",
+            SubsiteGroup.Selected: "S",
+            SubsiteGroup.GlobalPresent: "GP",
+            SubsiteGroup.GlobalSelected: "GS",
+            SubsiteGroup.WaferPresent: "WP",
+            SubsiteGroup.WaferSelected: "WS",
+        }
+        return switcher.get(self, "Invalid subsite group identifier")
 
 
 class CameraMountPoint(Enum):
@@ -200,6 +275,20 @@ class ChuckPositionHint(Enum):
     Center = 0
     FrontLoad = 1
     SideLoad = 2
+    OffAxisCamera = 3
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Probing": ChuckPositionHint.Center,
+            "FrontLoad": ChuckPositionHint.FrontLoad,
+            "SideLoad": ChuckPositionHint.SideLoad,
+            "OffAxisCamera": ChuckPositionHint.OffAxisCamera
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckPositionHint abbreviation: {abbr}")
 
 
 class ChuckSite(Enum):
@@ -215,6 +304,8 @@ class ChuckSite(Enum):
         AuxRight2 (3): Secondary right auxilliary site (if available)
         AuxLeft2 (4): Secondary left auxilliary site (if available)
         ChuckCamera (5): The chuck camera
+        SiPhSetHoverHeight (6): Siph set hover height site
+        SiPhFiberPowerMeasure (7): Siph fiber power measure site
     """
 
     Wafer = 0
@@ -223,6 +314,8 @@ class ChuckSite(Enum):
     AuxRight2 = 3
     AuxLeft2 = 4
     ChuckCamera = 5
+    SiPhSetHoverHeight = 6
+    SiPhFiberPowerMeasure = 7
 
     def toSentioAbbr(self):
         switcher = {
@@ -232,8 +325,27 @@ class ChuckSite(Enum):
             ChuckSite.AuxRight: "AuxRight",
             ChuckSite.AuxRight2: "AuxRight2",
             ChuckSite.ChuckCamera: "ChuckCamera",
+            ChuckSite.SiPhSetHoverHeight: "SiPhSetHoverHeight",
+            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure",
         }
         return switcher.get(self, "Invalid chuck site")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Wafer": ChuckSite.Wafer,
+            "AuxRight": ChuckSite.AuxRight,
+            "AuxLeft": ChuckSite.AuxLeft,
+            "AuxRight2": ChuckSite.AuxRight2,
+            "AuxLeft2": ChuckSite.AuxLeft2,
+            "ChuckCamera": ChuckSite.ChuckCamera,
+            "SiPhSetHoverHeight": ChuckSite.SiPhSetHoverHeight,
+            "SiPhFiberPowerMeasure": ChuckSite.SiPhFiberPowerMeasure,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSite abbreviation: {abbr}")
 
 
 class ChuckThetaReference(Enum):
@@ -418,6 +530,56 @@ class CompensationType(Enum):
         return switcher.get(self, "Invalid CompensationType")
 
 
+class XyCompensationType(Enum):
+    """A list of XY compensation types.
+
+    Attributes:
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
+    """
+
+    Disable = 0
+    OnTheFly = 1
+    MapScan = 2
+    Thermal = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            XyCompensationType.Disable: "None",
+            XyCompensationType.OnTheFly: "OnTheFly",
+            XyCompensationType.MapScan: "MapScan",
+            XyCompensationType.Thermal: "Thermal",
+        }
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
+class ZCompensationType(Enum):
+    """A list of Z compensation types.
+
+    Attributes:
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
+    """
+
+    Disable = 0
+    OnTheFly = 1
+    Topography = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            ZCompensationType.Disable: "None",
+            ZCompensationType.OnTheFly: "OnTheFly",
+            ZCompensationType.Topography: "Topography",
+        }
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
 class DefaultPattern(Enum):
     """A list of slots for visual patterns used by SENTIO.
 
@@ -588,12 +750,20 @@ class DieCompensationType(Enum):
     DieAlign = 0
     MapScan = 1
     Topography = 2
+    AlignDie = 3
+    ContactSense = 4
+    OnTheFly = 5
+    Offaxis = 6
 
     def toSentioAbbr(self):
         switcher = {
             DieCompensationType.DieAlign: "DieAlign",
             DieCompensationType.MapScan: "MapScan",
             DieCompensationType.Topography: "Topography",
+            DieCompensationType.AlignDie: "AlignDie",
+            DieCompensationType.ContactSense: "ContactSense",
+            DieCompensationType.OnTheFly: "OnTheFly",
+            DieCompensationType.Offaxis: "Offaxis",
         }
         return switcher.get(self, "Invalid Compensation_Type function")
 
@@ -608,6 +778,7 @@ class DieNumber(Enum):
 
     Present = 1
     Selected = 2
+    Total = 3
 
 
 @deprecated("ExecuteAction is deprecated.")
@@ -1369,6 +1540,19 @@ class RoutingPriority(Enum):
         }
         return switcher.get(self, "Invalid RoutingPriority enumerator")
 
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "R": RoutingPriority.RowUniDir,
+            "C": RoutingPriority.ColUniDir,
+            "WR": RoutingPriority.RowBiDir,
+            "WC": RoutingPriority.ColBiDir,
+        }
+        try:
+            return mapping[abbr.upper()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingPriority abbreviation: {abbr}")
+
 
 class RoutingStartPoint(Enum):
     """Defines the starting point for routing (stepping commands).
@@ -1382,7 +1566,7 @@ class RoutingStartPoint(Enum):
 
     UpperLeft = 0
     UpperRight = 1
-    LowerLeft =  2
+    LowerLeft = 2
     LowerRight = 3
 
     def toSentioAbbr(self):
@@ -1393,6 +1577,19 @@ class RoutingStartPoint(Enum):
             RoutingStartPoint.LowerRight: "lr",
         }
         return switcher.get(self, "Invalid RoutingStartPoint enumerator")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "UL": RoutingStartPoint.UpperLeft,
+            "UR": RoutingStartPoint.UpperRight,
+            "LL": RoutingStartPoint.LowerLeft,
+            "LR": RoutingStartPoint.LowerRight,
+        }
+        try:
+            return mapping[abbr.upper()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingStartPoint abbreviation: {abbr}")
 
 
 class StatusBits:
@@ -1628,3 +1825,151 @@ class ZPositionHint(Enum):
         return switcher.get(self, "Invalid ZPositionHint")
 
 
+    """
+    Attributes:
+        U (0): U axis.
+        V (1): V axis.
+        W (2): W axis.
+    """
+
+    U = 0
+    V = 1
+    W = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            UvwAxis.U: "U",
+            UvwAxis.V: "V",
+            UvwAxis.W: "W",
+        }
+        return switcher.get(self, "Invalid UVW enumerator")
+
+class FiberType(Enum):
+    """An enumeration containing supported fiber type.
+
+    Attributes:
+        Single (0)
+        Array (1)
+        Lensed (2)
+    """
+
+    Single = 0
+    Array = 1
+    Lensed = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            FiberType.Single: "Single",
+            FiberType.Array: "Array",
+            FiberType.Lensed: "Lensed",
+        }
+        return switcher.get(self, "Invalid fiber type enumerator")
+
+class ChuckThermoEnergyMode(Enum):
+    Fast = 0
+    Optimal = 1
+    HighPower = 2
+    Customized = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoEnergyMode.Fast: "Fast",
+            ChuckThermoEnergyMode.Optimal: "Optimal",
+            ChuckThermoEnergyMode.HighPower: "HighPower",
+            ChuckThermoEnergyMode.Customized: "Customized",
+        }
+        return switcher.get(self, "Invalid ChuckThermoEnergyMode")
+
+class ChuckThermoHoldMode(Enum):
+    Active = 0
+    Nonactive = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoHoldMode.Active: "Active",
+            ChuckThermoHoldMode.Nonactive: "Nonactive",
+        }
+        return switcher.get(self, "Invalid ChuckThermoHoldMode")
+
+class HighPurgeState(Enum):
+    On = 0
+    Off = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            HighPurgeState.On: "ON",
+            HighPurgeState.Off: "OFF",
+        }
+        return switcher.get(self, "Invalid HighPurgeState")
+
+class ChuckSpeed(Enum):
+    Fast = 0
+    Normal = 1
+    Slow = 2
+    Jog = 3
+    Index = 4
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Fast": ChuckSpeed.Fast,
+            "Normal": ChuckSpeed.Normal,
+            "Slow": ChuckSpeed.Slow,
+            "Jog": ChuckSpeed.Jog,
+            "Index": ChuckSpeed.Index,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
+
+class VacuumState(Enum):
+    Off = 0
+    On = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            VacuumState.Off: "Off",
+            VacuumState.On: "On",
+        }.get(self, "Invalid VacuumState")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "0": VacuumState.Off,
+            "1": VacuumState.On
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
+
+class HighPowerAirState(Enum):
+    Off = 0
+    On = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            HighPowerAirState.Off: "0",
+            HighPowerAirState.On: "1",
+        }.get(self, "Invalid HighPowerAirState")
+
+class SoftContactState(Enum):
+    Disable = 0
+    Enable = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            SoftContactState.Disable: "0",
+            SoftContactState.Enable: "1",
+        }.get(self, "Invalid SoftContactState")
+
+class UserCoordState(Enum):
+    Chuck = 0
+    Scope = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            UserCoordState.Chuck: "chuck",
+            UserCoordState.Scope: "scope"
+        }.get(self, "Invalid UserCoordState")

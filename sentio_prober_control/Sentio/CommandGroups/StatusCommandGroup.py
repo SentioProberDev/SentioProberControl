@@ -1,11 +1,14 @@
-from typing import Tuple
-
-from sentio_prober_control.Sentio.Enumerations import ThermoChuckState
+from typing import Tuple, Union
+from sentio_prober_control.Sentio.Enumerations import (
+    ThermoChuckState,
+    ChuckThermoEnergyMode,
+    ChuckThermoHoldMode,
+    HighPurgeState
+)
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
     ModuleCommandGroupBase,
 )
-
 
 class StatusCommandGroup(ModuleCommandGroupBase):
     """A command group for getting the status of the probe station and controlling the dashboard module."""
@@ -123,16 +126,16 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"status:set_chuck_temp {temp:.2f}, {lift_chuck}")
         Response.check_resp(self.comm.read_line())
     
-    def get_chuck_thermo_energy_mode(self) -> str:
+    def get_chuck_thermo_energy_mode(self) -> ChuckThermoEnergyMode:
         """Get the current chuck thermo energy mode.
         Returns:
             The current energy mode as a string. Possible values: Fast, Optimal, HighPower, Customized.
         """
         self.comm.send("status:get_chuck_thermo_energy_mode")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return ChuckThermoEnergyMode[resp.message()]
     
-    def get_chuck_thermo_hold_mode(self) -> str:
+    def get_chuck_thermo_hold_mode(self) -> ChuckThermoHoldMode:
         """Get thermo chuck hold mode.
 
         Returns:
@@ -140,9 +143,9 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
         self.comm.send("status:get_chuck_thermo_hold_mode")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return ChuckThermoHoldMode[resp.message()]
     
-    def get_high_purge_state(self) -> str:
+    def get_high_purge_state(self) -> HighPurgeState:
         """Get thermo chuck high purge state.
 
         Returns:
@@ -150,9 +153,9 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
         self.comm.send("status:get_high_purge_state")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        return HighPurgeState[resp.message()]
     
-    def set_chuck_thermo_energy_mode(self, mode: str) -> Response:
+    def set_chuck_thermo_energy_mode(self, mode: Union[str, ChuckThermoEnergyMode]) -> Response:
         """Set chuck thermo energy mode.
 
         Args:
@@ -164,10 +167,12 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Raises:
             ValueError: If the provided mode is not valid.
         """
-        self.comm.send(f"status:set_chuck_thermo_energy_mode {mode}")
+        if not isinstance(mode, ChuckThermoEnergyMode):
+            mode = ChuckThermoEnergyMode[mode]
+        self.comm.send(f"status:set_chuck_thermo_energy_mode {mode.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
     
-    def set_chuck_thermo_hold_mode(self, mode: bool) -> Response:
+    def set_chuck_thermo_hold_mode(self, mode: Union[bool, ChuckThermoHoldMode, str]) -> Response:
         """Set thermo chuck hold mode.
 
         Args:
@@ -176,7 +181,11 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Returns:
             A Response object confirming the command execution.
         """
-        self.comm.send(f"status:set_chuck_thermo_hold_mode {mode}")
+        if isinstance(mode, bool):
+            mode = ChuckThermoHoldMode.Active if mode else ChuckThermoHoldMode.Nonactive
+        elif isinstance(mode, str):
+            mode = ChuckThermoHoldMode[mode]
+        self.comm.send(f"status:set_chuck_thermo_hold_mode {mode.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
     
     def set_chuck_thermo_mode(self, mode: str) -> Response:
@@ -194,7 +203,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"status:set_chuck_thermo_mode {mode}")
         return Response.check_resp(self.comm.read_line())
 
-    def set_high_purge(self, enable: bool) -> Response:
+    def set_high_purge(self, enable: Union[bool, HighPurgeState, str]) -> Response:
         """Set thermo chuck high purge state.
 
                 Args:
@@ -203,5 +212,107 @@ class StatusCommandGroup(ModuleCommandGroupBase):
                 Returns:
                     A Response object confirming the command execution.
                 """
-        self.comm.send(f"status:set_high_purge {enable}")
+        if isinstance(enable, bool):
+            enable = HighPurgeState.On if enable else HighPurgeState.Off
+        elif isinstance(enable, str):
+            enable = HighPurgeState[enable]
+        self.comm.send(f"status:set_high_purge {enable.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
+    
+    def get_access_level(self) -> str:
+        """Retrieves the access level of operation.
+
+        Returns:
+            A string representing the access level. Possible values are:
+            'Operator', 'Admin', 'Service', 'Engineer', 'Debug'.
+        """
+        self.comm.send("status:get_access_level")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+    def get_prop(self, prop_name: str, stage: str = None) -> str:
+        """Retrieve a specific data item from the setup module.
+
+        Args:
+            prop_name: The property name to query. Valid examples include:
+                'Edge_Sensor', 'Z_Position_Hint', 'Active_Stage'.
+            stage: Optional stage name for 'Z_Position_Hint'. Can be 'Chuck', 'Scope', 'Probe01' ~ 'Probe04'.
+
+        Returns:
+            A string value representing the queried property.
+        """
+        cmd = f"status:get_prop {prop_name}"
+        if stage:
+            cmd += f" {stage}"
+        self.comm.send(cmd)
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+    def get_machine_id(self) -> str:
+        """Retrieves the machine ID.
+
+        Returns:
+            A string containing the machine ID.
+        """
+        self.comm.send("status:get_machine_id")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+    def get_version(self) -> str:
+        """Retrieves the system version.
+
+        Returns:
+            A string containing version information.
+        """
+        self.comm.send("status:get_version")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+    def set_prop(self, prop_name: str, stage: str, chuck_site: str = None) -> Response:
+        """Set a specific property in the dashboard module.
+
+        Args:
+            prop_name: The property name (e.g., 'Active_Stage').
+            stage: The stage to apply the setting (e.g., 'Chuck', 'Scope').
+            chuck_site: Optional. Only used when stage is 'Chuck' (e.g., 'Wafer', 'Auxright1').
+
+        Returns:
+            A Response object after setting the property.
+        """
+        cmd = f"status:set_prop {prop_name} {stage}"
+        if chuck_site:
+            cmd += f", {chuck_site}"
+        self.comm.send(cmd)
+        return Response.check_resp(self.comm.read_line())
+
+    def show_message(self, message: str, button: str = "OK", caption: str = "None", level: str = "Hint") -> str:
+        """Show a message dialog for user interaction.
+
+        Args:
+            message: The message to show.
+            button: The button configuration (e.g., 'OK', 'OKCancel', 'YesNo').
+            caption: Caption for the dialog.
+            level: Level of the message (e.g., 'Hint', 'Warning', 'Error').
+
+        Returns:
+            The button that was pressed.
+        """
+        self.comm.send(f"status:show_message {message},{button},{caption},{level}")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+    def start_show_message(self, message: str, button: str = "OK", caption: str = "None", level: str = "Hint") -> str:
+        """Start an asynchronous message dialog.
+
+        Args:
+            message: The message to show.
+            button: The button configuration.
+            caption: The dialog caption.
+            level: The level of message importance.
+
+        Returns:
+            A string containing Command ID and button pressed info.
+        """
+        self.comm.send(f"status:start_show_message {message},{button},{caption},{level}")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()

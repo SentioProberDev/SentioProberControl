@@ -137,7 +137,7 @@ class SiPHCommandGroup(CommandGroupBase):
             A Response object containing the command execution status.
         """
         self.comm.send(f"siph:move_origin {probe.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def move_position_uvw(self, probe: ProbeSentio, axis: UvwAxis, degree: float) -> float:
         """Move the SiPH positioner target axis with a relative degree.

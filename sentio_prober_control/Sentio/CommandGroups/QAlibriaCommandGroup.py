@@ -1,6 +1,13 @@
 from deprecated import deprecated
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.ProberBase import ProberException
+from typing import List
+from enum import Enum
+
+class DriftType(Enum):
+    DriftRef = "DriftRef"
+    Drift = "Drift"
 
 class QAlibriaCommandGroup(CommandGroupBase):
     """
@@ -81,25 +88,27 @@ class QAlibriaCommandGroup(CommandGroupBase):
     # New / Additional Commands
     # -------------------------------------------------------------------------
 
-    def get_calibration_status(self) -> str:
+    def check_calibration_status(self) -> None:
         """
-        Retrieve the status of QAlibria.
+        Checks the calibration status of QAlibria.
 
         Wraps SENTIO's "qal:get_calibration_status" remote command.
 
-        Returns:
-            str: The status string of QAlibria (e.g., "OK"). If "OK" and
-                 the system is in Remote mode, calibration is ready.
+        Raises:
+            ProberException: If the calibration status is not "OK".
         """
         self.comm.send("qal:get_calibration_status")
         resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        status = resp.message().strip()
+        if status.upper() != "OK":
+            raise ProberException(f"Calibration status error: {status}")
+
 
 
     def measurement_execute(
         self,
         file_name: str,
-        ports: str = "1,2",
+        ports: List[int] = [1, 2],
         correct_by_vna: bool = True,
         enable_use_ratio: bool = False,
         enable_switch_term: bool = False
@@ -111,14 +120,18 @@ class QAlibriaCommandGroup(CommandGroupBase):
 
         Args:
             file_name: The path to the SNP file.
-            ports: The port(s) used for the measurement, e.g. "1,2".
+            ports: A list of port numbers used for the measurement (e.g. [1, 2]).
             correct_by_vna: Whether to apply VNA correction (True/False).
             enable_use_ratio: Whether to enable 'Use Ratio b/a' (True/False).
             enable_switch_term: Whether to enable switch term (True/False).
+
+        Raises:
+            ProberException: If the remote command returns an error.
         """
+        ports_str = ",".join(str(port) for port in ports)
         cmd = (
             f"qal:measurement_execute "
-            f"{file_name},{ports},"
+            f"{file_name},{ports_str},"
             f"{str(correct_by_vna).lower()},"
             f"{str(enable_use_ratio).lower()},"
             f"{str(enable_switch_term).lower()}"
@@ -135,18 +148,21 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:reset_ets")
         Response.check_resp(self.comm.read_line())
 
-
-    def set_ets(self, ports: str, path: str) -> None:
+    def set_ets(self, port: int, path: str, ets_mode: int = 0) -> None:
         """
         Set error terms in the buffer.
 
         Wraps SENTIO's "qal:set_ets" remote command.
 
         Args:
-            ports: Port(s) of error terms (e.g. "12").
+            port: Port of error terms (e.g. 12).
             path: Path to the error terms file in the buffer (e.g. "D:\\temp\\ets.txt").
+            ets_mode: An integer parameter as defined by the remote command spec (default is 0).
+
+        Raises:
+            ProberException: If the remote command returns an error.
         """
-        cmd = f"qal:set_ets {ports},{path}"
+        cmd = f"qal:set_ets {port},{path},{ets_mode}"
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
@@ -164,8 +180,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
-
-    def clear_dut_network(self, dut_name: str, drift_type: str, update_ui: bool) -> None:
+    def clear_dut_network(self, dut_name: str, drift_type: DriftType, update_ui: bool) -> None:
         """
         Clear network data for a DUT.
 
@@ -173,10 +188,13 @@ class QAlibriaCommandGroup(CommandGroupBase):
 
         Args:
             dut_name: The name of the DUT (e.g. "RefDUT").
-            drift_type: The type of drift data to clear ("DriftRef" or "Drift").
+            drift_type: The type of drift data to clear (DriftType.DriftRef or DriftType.Drift).
             update_ui: Whether to update the UI (True/False).
+
+        Raises:
+            ProberException: If the remote command returns an error.
         """
-        cmd = (f"qal:clear_dut_network {dut_name},{drift_type},{str(update_ui).lower()}")
+        cmd = f"qal:clear_dut_network {dut_name},{drift_type.value},{str(update_ui).lower()}"
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
