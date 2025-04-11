@@ -88,7 +88,6 @@ class LoaderCommandGroup(CommandGroupBase):
         self.comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
         Response.check_resp(self.comm.read_line())
 
-
     def query_wafer_status(self, station : LoaderStation, slot : int) -> Tuple[LoaderStation, int, int, int, float] | None:
 
         """Query the status of a wafer in a loader station.
@@ -187,12 +186,10 @@ class LoaderCommandGroup(CommandGroupBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):
         self.comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
-
 
     def transfer_wafer(
         self,

@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import RoutingPriority, RoutingStartPoint, TestSelection
+from sentio_prober_control.Sentio.Enumerations import RoutingPriority, RoutingStartPoint, TestSelection, PathSelection
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -11,17 +11,23 @@ class WafermapPathCommandGroup(CommandGroupBase):
     A test path defines which dies are tested in which order.
     """
 
-    def create_from_bin(self, bin_val: int) -> None:
+    def create_from_bin(self, bin_val: int | str | PathSelection) -> int:
         """Create test path by using all dies with a specific bin.
 
         Wraps SENTIO's map:path:create_from_bin remote command.
 
         Args:
-            bin_val: The bin value to use.
+            bin_val: The bin value to use. Can be an int or PathSelection enum.
         """
-        self.comm.send("map:path:create_from_bins {0}".format(bin_val))
-        Response.check_resp(self.comm.read_line())
+        if isinstance(bin_val, PathSelection):
+            bin_val_str = bin_val.toSentioAbbr()
+        else:
+            bin_val_str = str(bin_val)
 
+        self.comm.send(f"map:path:create_from_bins {bin_val_str}")
+        resp = Response.check_resp(self.comm.read_line())
+
+        return int(resp.message())
 
     def get_die(self, seq: int) -> Tuple[int, int]:
         """Get die column and row coordinates from a sequence number.
@@ -39,7 +45,6 @@ class WafermapPathCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1])
 
-
     def select_dies(self, selection: TestSelection) -> None:
         """Select dies for testing.
 
@@ -50,7 +55,6 @@ class WafermapPathCommandGroup(CommandGroupBase):
         """
         self.comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
-
 
     def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority) -> None:
         """Set up path finnding for stepping by specifying a start point position
@@ -64,3 +68,38 @@ class WafermapPathCommandGroup(CommandGroupBase):
         """
         self.comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
+
+    def add_bins(self, selection: int | str | PathSelection) -> int:
+        """Adds dies with specific bin(s) to the stepping path.
+
+        Wraps SENTIO's map:path:add_bins remote command.
+
+        Args:
+            selection: e.g. "1", "1-5", "Pass", "Unbinned"
+
+        Returns:
+            Path length after addition.
+        """
+        if isinstance(selection, PathSelection):
+            selection_str = selection.toSentioAbbr()
+        else:
+            selection_str = str(selection)
+
+        self.comm.send(f"map:path:add_bins {selection_str}")
+        resp = Response.check_resp(self.comm.read_line())
+        return int(resp.message())
+
+    def remove_bins(self, selection: str) -> int:
+        """Removes dies with specific bin(s) from stepping path.
+
+        Wraps SENTIO's map:path:remove_bins remote command.
+
+        Args:
+            selection: e.g. "1", "1-5", "Pass", "Fail"
+
+        Returns:
+            Remaining path length.
+        """
+        self.comm.send(f"map:path:remove_bins {selection}")
+        resp = Response.check_resp(self.comm.read_line())
+        return int(resp.message())
