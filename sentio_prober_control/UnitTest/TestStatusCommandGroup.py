@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import StatusCommandGroup
-from sentio_prober_control.Sentio.Enumerations import ThermoChuckState
+from sentio_prober_control.Sentio.Enumerations import ThermoChuckState, ChuckThermoEnergyMode
+from sentio_prober_control.Sentio.Enumerations import ChuckThermoHoldMode, HighPurgeState
 
 
 class TestStatusCommandGroup(unittest.TestCase):
@@ -49,24 +50,26 @@ class TestStatusCommandGroup(unittest.TestCase):
 
     @patch("sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.Response.check_resp")
     def test_set_chuck_temp(self, mock_resp):
-        mock_resp.return_value.message.return_value = "OK"
-        resp = self.status.set_chuck_temp(75.0)
-        self.assertEqual(resp, "OK")
+        mock_resp.return_value = MagicMock()
+        self.status.comm.send = MagicMock()
+        self.status.set_chuck_temp(75.0)
+        self.status.comm.send.assert_called_with("status:set_chuck_temp 75.00, False")
+        mock_resp.assert_called()
 
     @patch("sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.Response.check_resp")
     def test_get_chuck_thermo_energy_mode(self, mock_resp):
         mock_resp.return_value.message.return_value = "Fast"
-        self.assertEqual(self.status.get_chuck_thermo_energy_mode(), "Fast")
+        self.assertEqual(self.status.get_chuck_thermo_energy_mode(), ChuckThermoEnergyMode.Fast)
 
     @patch("sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.Response.check_resp")
     def test_get_chuck_thermo_hold_mode(self, mock_resp):
         mock_resp.return_value.message.return_value = "Active"
-        self.assertEqual(self.status.get_chuck_thermo_hold_mode(), "Active")
+        self.assertEqual(self.status.get_chuck_thermo_hold_mode(), ChuckThermoHoldMode.Active)
 
     @patch("sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.Response.check_resp")
     def test_get_high_purge_state(self, mock_resp):
-        mock_resp.return_value.message.return_value = "ON"
-        self.assertEqual(self.status.get_high_purge_state(), "ON")
+        mock_resp.return_value.message.return_value = "On"
+        self.assertEqual(self.status.get_high_purge_state(), HighPurgeState.On)
 
     @patch("sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.Response.check_resp")
     def test_set_chuck_thermo_energy_mode(self, mock_resp):
@@ -79,7 +82,7 @@ class TestStatusCommandGroup(unittest.TestCase):
         mock_resp.return_value.message.return_value = "OK"
         self.status.comm.send = MagicMock()
         resp = self.status.set_chuck_thermo_hold_mode(True)
-        self.status.comm.send.assert_called_with("status:set_chuck_thermo_hold_mode True")
+        self.status.comm.send.assert_called_with("status:set_chuck_thermo_hold_mode Active")
         self.assertEqual(resp.message(), "OK")
 
     @patch("sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup.Response.check_resp")
@@ -93,7 +96,7 @@ class TestStatusCommandGroup(unittest.TestCase):
         mock_resp.return_value.message.return_value = "OK"
         self.status.comm.send = MagicMock()
         resp = self.status.set_high_purge(True)
-        self.status.comm.send.assert_called_with("status:set_high_purge True")
+        self.status.comm.send.assert_called_with("status:set_high_purge ON")
         self.assertEqual(resp.message(), "OK")
 
     def test_get_access_level(self):
