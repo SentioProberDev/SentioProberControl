@@ -172,38 +172,38 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"status:set_chuck_thermo_energy_mode {mode.toSentioAbbr()}")
         return Response.check_resp(self.comm.read_line())
     
-    def set_chuck_thermo_hold_mode(self, mode: Union[bool, ChuckThermoHoldMode, str]) -> Response:
+    def set_chuck_thermo_hold_mode(self, mode: Union[bool, ChuckThermoHoldMode, str]) -> None:
         """Set thermo chuck hold mode.
 
         Args:
             mode: A boolean indicating whether to enable (True) or disable (False) hold mode.
 
         Returns:
-            A Response object confirming the command execution.
+            None
         """
         if isinstance(mode, bool):
             mode = ChuckThermoHoldMode.Active if mode else ChuckThermoHoldMode.Nonactive
         elif isinstance(mode, str):
             mode = ChuckThermoHoldMode[mode]
         self.comm.send(f"status:set_chuck_thermo_hold_mode {mode.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
     
-    def set_chuck_thermo_mode(self, mode: str) -> Response:
+    def set_chuck_thermo_mode(self, mode: str) -> None:
         """Set chuck thermo operation mode.
 
         Args:
             mode: The operation mode to set. Possible values: Normal, Standby, Defrost, Purge, Turbo, Eco.
 
         Returns:
-            A Response object confirming the command execution.
+            None
 
         Raises:
             ValueError: If the provided mode is not valid.
         """
         self.comm.send(f"status:set_chuck_thermo_mode {mode}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def set_high_purge(self, enable: Union[bool, HighPurgeState, str]) -> Response:
+    def set_high_purge(self, enable: Union[bool, HighPurgeState, str]) -> None:
         """Set thermo chuck high purge state.
 
                 Args:
@@ -217,7 +217,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         elif isinstance(enable, str):
             enable = HighPurgeState[enable]
         self.comm.send(f"status:set_high_purge {enable.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
     
     def get_access_level(self) -> str:
         """Retrieves the access level of operation.

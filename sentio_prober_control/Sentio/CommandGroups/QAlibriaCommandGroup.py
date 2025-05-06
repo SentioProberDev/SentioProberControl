@@ -187,10 +187,13 @@ class QAlibriaCommandGroup(CommandGroupBase):
         Wraps SENTIO's "qal:clear_dut_network" remote command.
 
         Args:
-            dut_name: The name of the DUT (e.g. "RefDUT").
-            drift_type: The type of drift data to clear (DriftType.DriftRef or DriftType.Drift).
-            update_ui: Whether to update the UI (True/False).
+            dut_name (str): The name of the DUT (e.g. "RefDUT").
+            drift_type (DriftType): The type of drift data to clear (DriftType.DriftRef or DriftType.Drift).
+            update_ui (bool): Whether to update the UI (True/False).
 
+        Returns:
+            None
+            
         Raises:
             ProberException: If the remote command returns an error.
         """
