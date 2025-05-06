@@ -1637,31 +1637,31 @@ class SentioProber(ProberBase):
         self.comm.send(f"set_signal_tower {red},{yellow},{green},{blue}")
         return Response.check_resp(self.comm.read_line())
 
-    def set_signal_tower_buzzer(self, state: int) -> Response:
+    def set_signal_tower_buzzer(self, state: int) -> None:
         """Set signal tower buzzer state.
 
         Args:
             state (int): -1=no change, 0=off, 1=on, 2=pulsed
 
         Returns:
-            Response: Result response.
+            Response: None
         """
         self.comm.send(f"set_signal_tower_buzzer {state}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def start_move_indexer_pos(self, pos: int) -> Response:
+    def start_move_indexer_pos(self, pos: int) -> None:
         """Asynchronously move indexer to position.
 
         Args:
             pos (int): Position index from 1 to 5
 
         Returns:
-            Response: Includes cmd_id for async tracking.
+            None
         """
         self.comm.send(f"start_move_indexer_pos {pos}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def swap_bridge(self, side: str, device_position: str = None) -> Response:
+    def swap_bridge(self, side: str, device_position: str | None = None) -> None:
         """Control swap bridge side and position.
 
         Args:
@@ -1669,13 +1669,13 @@ class SentioProber(ProberBase):
             device_position (str, optional): up/down
 
         Returns:
-            Response: Result response.
+            None
         """
         cmd = f"swap_bridge {side}"
         if device_position:
             cmd += f",{device_position}"
         self.comm.send(cmd)
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def get_door_status(self, door: str) -> Tuple[bool, bool]:
         """Retrieves the closed and locked state of a door.

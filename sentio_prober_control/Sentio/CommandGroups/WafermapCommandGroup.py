@@ -593,7 +593,6 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.comm.send("map:get_routing")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
-        print(RoutingStartPoint.fromSentioAbbr(tok[0]), RoutingStartPoint.fromSentioAbbr(tok[1]))
         return RoutingStartPoint.fromSentioAbbr(tok[0]), RoutingStartPoint.fromSentioAbbr(tok[1])
 
     def open(self, file_path: str) -> None:
