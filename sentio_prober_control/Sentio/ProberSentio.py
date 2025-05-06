@@ -1691,7 +1691,7 @@ class SentioProber(ProberBase):
         closed, locked = resp.message().split(",")
         return closed == "1", locked == "1"
 
-    def set_door_lock(self, door: str, lock: bool) -> Response:
+    def set_door_lock(self, door: str, lock: bool) -> None:
         """Locks or unlocks the specified door.
 
         Args:
@@ -1703,4 +1703,4 @@ class SentioProber(ProberBase):
         """
         state = "1" if lock else "0"
         self.comm.send(f"set_door_lock {door.lower()},{state}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
