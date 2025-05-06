@@ -201,20 +201,20 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             stat: A flag indicating whether to switch the lights on or off.
 
         Returns:
-            A Response object.
+            None
         """
 
-        self.comm.send("vis:switch_all_lights {0}".format(stat))
+        self.comm.send(f"vis:switch_all_lights {stat}")
 
-    def remove_probetip_marker(self) -> Response:
+    def remove_probetip_marker(self) -> None:
         """Remove probetip marker from the camera display.
 
         Returns:
-            A Response object.
+            None
         """
 
         self.comm.send("vis:remove_probetip_marker")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def match_tips(self, ptpa_type: PtpaType) -> Tuple[float, float]:
         """For internal use only!
@@ -323,7 +323,11 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         return float(tok[0]), float(tok[1])
 
     def get_lens_zoom_level(self) -> float:
-        """Get current zoom level of the lens."""
+        """ Get current zoom level of the lens. 
+        
+            Returns:
+                float: The current zoom level of the lens.
+        """
         self.comm.send("vis:get_lens_zoom_level")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
@@ -333,6 +337,9 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         Args:
             level (float): Zoom level, such as 1, 2, ..., 10
+
+        Returns:
+            None
         """
         self.comm.send(f"vis:set_lens_zoom_level {level}")
         Response.check_resp(self.comm.read_line())
