@@ -589,11 +589,15 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         return tok[0], float(tok[1]), float(tok[2])
 
     def get_routing(self) -> Tuple[RoutingStartPoint, RoutingPriority]:
-        """Retrieves routing scheme for die stepping."""
+        """ Retrieves routing scheme for die stepping. 
+        
+            Returns:
+                A tuple with the start point and the routing priority.            
+        """
         self.comm.send("map:get_routing")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
-        return RoutingStartPoint.fromSentioAbbr(tok[0]), RoutingStartPoint.fromSentioAbbr(tok[1])
+        return RoutingStartPoint.fromSentioAbbr(tok[0]), RoutingPriority.fromSentioAbbr(tok[1])
 
     def open(self, file_path: str) -> None:
         """Open a wafer map file."""
