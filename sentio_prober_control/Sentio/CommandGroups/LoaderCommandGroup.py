@@ -185,7 +185,7 @@ class LoaderCommandGroup(CommandGroupBase):
 
         return Response.check_resp(self.comm.read_line())
 
-
+    @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
     def switch_work_area(self, area: str):
         self.comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self.comm.read_line())
