@@ -1587,25 +1587,25 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_indexer_lift(self) -> Response:
+    def move_indexer_lift(self) -> None:
         """Move indexer up.
 
         Returns:
-            Response: Result response.
+            None
         """
         self.comm.send("move_indexer_lift")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def move_indexer_down(self) -> Response:
+    def move_indexer_down(self) -> None:
         """Move indexer down.
 
         Returns:
-            Response: Result response.
+            None
         """
         self.comm.send("move_indexer_down")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def probe_air_lift(self, valve: str, position: str) -> Response:
+    def probe_air_lift(self, valve: str, position: str) -> None:
         """Control probe air lift mechanism.
 
         Args:
@@ -1613,12 +1613,12 @@ class SentioProber(ProberBase):
             position (str): lift or unlift
 
         Returns:
-            Response: Result response.
+            None
         """
         self.comm.send(f"probe_air_lift {valve},{position}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def set_signal_tower(self, red: int, yellow: int, green: int, blue: int) -> Response:
+    def set_signal_tower(self, red: int, yellow: int, green: int, blue: int) -> None:
         """Set signal tower LED states.
 
         Args:
@@ -1628,10 +1628,10 @@ class SentioProber(ProberBase):
             blue (int)
 
         Returns:
-            Response: Result response.
+            None
         """
         self.comm.send(f"set_signal_tower {red},{yellow},{green},{blue}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def set_signal_tower_buzzer(self, state: int) -> None:
         """Set signal tower buzzer state.
