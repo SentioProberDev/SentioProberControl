@@ -331,7 +331,7 @@ class ChuckSite(Enum):
         return switcher.get(self, "Invalid chuck site")
 
     @staticmethod
-    def fromSentioAbbr(abbr: str):
+    def fromSentioAbbr(abbr: str) -> "ChuckSite":
         mapping = {
             "Wafer": ChuckSite.Wafer,
             "AuxRight": ChuckSite.AuxRight,

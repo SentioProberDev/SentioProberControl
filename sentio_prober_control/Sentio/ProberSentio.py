@@ -1260,7 +1260,7 @@ class SentioProber(ProberBase):
             index (int, optional): The index of the chuck site. If None, gets the name of the current site.
 
         Returns:
-            name (str): The name of the chuck site.
+            site (ChuckSite): The name of the chuck site.
         """
         if index is None:
             self.comm.send("get_chuck_site_name")
@@ -1268,12 +1268,8 @@ class SentioProber(ProberBase):
             self.comm.send(f"get_chuck_site_name {index}")
 
         resp = Response.check_resp(self.comm.read_line())
-
-        # Parse response message
-        tok = resp.message().split(",")
-        site_str = tok[0]
-        site = ChuckSite.fromSentioAbbr(site_str)
-
+        site : ChuckSite = ChuckSite.fromSentioAbbr(resp.message())
+        
         return site
 
     def get_chuck_site_pos(self, site: ChuckSite | None = None) -> tuple[float, float, float]:
