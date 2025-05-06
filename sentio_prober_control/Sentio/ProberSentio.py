@@ -1382,7 +1382,7 @@ class SentioProber(ProberBase):
             theta_offset (float): Offset in theta (in degrees).
 
         Returns:
-            result (str): Usually returns "OK" on success.
+            None
         """
         self.comm.send(f"move_chuck_xyt {x_offset}, {y_offset}, {theta_offset}")
         Response.check_resp(self.comm.read_line())
@@ -1394,7 +1394,7 @@ class SentioProber(ProberBase):
             gap (float): The overtravel gap in micrometers.
 
         Returns:
-            result (str): Typically "OK" if successfully set.
+            None
         """
         self.comm.send(f"set_chuck_overtravel_gap {gap}")
         Response.check_resp(self.comm.read_line())
@@ -1406,7 +1406,7 @@ class SentioProber(ProberBase):
             gap (float): The separation gap in micrometers.
 
         Returns:
-            result (str): Typically "OK" if successfully set.
+            None
         """
         self.comm.send(f"set_chuck_separation_gap {gap}")
         Response.check_resp(self.comm.read_line())
