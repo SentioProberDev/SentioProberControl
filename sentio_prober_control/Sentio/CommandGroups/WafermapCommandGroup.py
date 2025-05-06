@@ -316,7 +316,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """Retrieves index coordinates of the home die.
 
         Returns:
-            A tuple with the die width and height, the xy offset of grid and edge area size in micrometer.
+            Row and column index of the home die.
         """
         self.comm.send("map:get_home_die")
         resp = Response.check_resp(self.comm.read_line())
@@ -328,7 +328,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """Retrieves the number of columns in the grid.
 
         Returns:
-            A tuple with the die width and height, the xy offset of grid and edge area size in micrometer.
+            The number of columns in the wafer map.
         """
         self.comm.send("map:get_num_cols")
         resp = Response.check_resp(self.comm.read_line())
@@ -339,7 +339,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         """Retrieves the number of rows in the grid.
 
         Returns:
-            A tuple with the die width and height, the xy offset of grid and edge area size in micrometer.
+            The number of rows in the wafer map.
         """
         self.comm.send("map:get_num_rows")
         resp = Response.check_resp(self.comm.read_line())
@@ -582,7 +582,11 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         return int(tok[0]), int(tok[1]), int(tok[2])
 
     def get_orient_marker(self) -> Tuple[str, float, float]:
-        """Retrieves the type, angle, and size of the wafer orientation marker."""
+        """ Retrieves the type, angle, and size of the wafer orientation marker.
+        
+            Returns:
+                A tuple with the marker type (Flat/Notch), angle, and size in µm.
+        """
         self.comm.send("map:get_orient_marker")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
