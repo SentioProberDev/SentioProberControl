@@ -1,5 +1,4 @@
 from enum import Enum
-
 from deprecated import deprecated
 
 
@@ -1898,3 +1897,7 @@ class UserCoordState(Enum):
             UserCoordState.Chuck: "chuck",
             UserCoordState.Scope: "scope"
         }.get(self, "Invalid UserCoordState")
+
+class DriftType(Enum):
+    DriftRef = "DriftRef"
+    Drift = "Drift"
