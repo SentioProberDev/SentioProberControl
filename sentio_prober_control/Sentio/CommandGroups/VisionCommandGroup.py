@@ -344,7 +344,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"vis:set_lens_zoom_level {level}")
         Response.check_resp(self.comm.read_line())
 
-    def get_light_status(self, camera: str) -> bool:
+    def get_light_status(self, camera: CameraMountPoint) -> bool:
         """Check whether light is on or off for a specific camera.
 
         Args:
@@ -353,6 +353,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         Returns:
             True if light is ON
         """
-        self.comm.send(f"vis:get_light_status {camera}")
+        self.comm.send(f"vis:get_light_status {camera.toSentioAbbr()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().strip().lower() == "1"

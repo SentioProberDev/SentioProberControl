@@ -81,7 +81,7 @@ class TestVisionCommandGroup(unittest.TestCase):
 
     def test_get_light_status(self):
         self.mock_comm.read_line.return_value = "0,0,1"
-        result = self.prober.vision.get_light_status("scope")
+        result = self.prober.vision.get_light_status(CameraMountPoint.Scope)
         self.mock_comm.send.assert_called_with("vis:get_light_status scope")
         self.assertTrue(result)
 

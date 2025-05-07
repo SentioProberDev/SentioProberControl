@@ -45,29 +45,53 @@ class TestWafermapPathCommandGroup(unittest.TestCase):
         self.prober.map.path.set_routing(RoutingStartPoint.UpperLeft, RoutingPriority.RowUniDir)
         self.mock_comm.send.assert_called_with("map:set_routing ul, r")
 
-    def test_add_bins_str(self):
-        self.mock_comm.read_line.return_value = "0,0,12"
-        result = self.prober.map.path.add_bins("1-5")
-        self.mock_comm.send.assert_called_with("map:path:add_bins 1-5")
-        self.assertEqual(result, 12)
-
     def test_add_bins_int(self):
         self.mock_comm.read_line.return_value = "0,0,5"
         result = self.prober.map.path.add_bins(0)
         self.mock_comm.send.assert_called_with("map:path:add_bins 0")
         self.assertEqual(result, 5)
 
-    def test_add_bins_enum(self):
-        self.mock_comm.read_line.return_value = "0,0,20"
-        result = self.prober.map.path.add_bins(PathSelection.Pass)
-        self.mock_comm.send.assert_called_with("map:path:add_bins pass")
-        self.assertEqual(result, 20)
+    def test_add_bins_list_int(self):
+        self.mock_comm.read_line.return_value = "0,0,3"
+        result = self.prober.map.path.add_bins([1, 3, 5])
+        self.mock_comm.send.assert_called_with("map:path:add_bins 1,3,5")
+        self.assertEqual(result, 3)
 
-    def test_remove_enum(self):
+    def test_add_bins_range(self):
+        self.mock_comm.read_line.return_value = "0,0,4"
+        result = self.prober.map.path.add_bins(range(2, 5))
+        self.mock_comm.send.assert_called_with("map:path:add_bins 2-4")
+        self.assertEqual(result, 4)
+
+    def test_add_bins_list_mixed(self):
         self.mock_comm.read_line.return_value = "0,0,6"
-        result = self.prober.map.path.remove_bins("Fail")
-        self.mock_comm.send.assert_called_with("map:path:remove_bins Fail")
+        result = self.prober.map.path.add_bins([range(1, 3), 4, 6])
+        self.mock_comm.send.assert_called_with("map:path:add_bins 1-2,4,6")
         self.assertEqual(result, 6)
+
+    def test_remove_bins_int(self):
+        self.mock_comm.read_line.return_value = "0,0,6"
+        result = self.prober.map.path.remove_bins(2)
+        self.mock_comm.send.assert_called_with("map:path:remove_bins 2")
+        self.assertEqual(result, 6)
+
+    def test_remove_bins_list(self):
+        self.mock_comm.read_line.return_value = "0,0,5"
+        result = self.prober.map.path.remove_bins([1, 4, 5])
+        self.mock_comm.send.assert_called_with("map:path:remove_bins 1,4,5")
+        self.assertEqual(result, 5)
+
+    def test_remove_bins_range(self):
+        self.mock_comm.read_line.return_value = "0,0,4"
+        result = self.prober.map.path.remove_bins(range(3, 6))  # 3-5
+        self.mock_comm.send.assert_called_with("map:path:remove_bins 3-5")
+        self.assertEqual(result, 4)
+
+    def test_remove_bins_list_mixed(self):
+        self.mock_comm.read_line.return_value = "0,0,7"
+        result = self.prober.map.path.remove_bins([range(1, 3), 6, 9])
+        self.mock_comm.send.assert_called_with("map:path:remove_bins 1-2,6,9")
+        self.assertEqual(result, 7)
 
 
 if __name__ == "__main__":

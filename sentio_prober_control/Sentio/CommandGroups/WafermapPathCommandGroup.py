@@ -69,37 +69,92 @@ class WafermapPathCommandGroup(CommandGroupBase):
         self.comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
 
-    def add_bins(self, selection: int | str | PathSelection) -> int:
-        """Adds dies with specific bin(s) to the stepping path.
+    def add_bins(self, selection: int | list[int] | range | list[range]) -> int:
+        """
+        Adds dies with specific bin values to the stepping path.
 
-        Wraps SENTIO's map:path:add_bins remote command.
+        This method simplifies usage by accepting native Python types instead of custom strings,
+        making it easier to dynamically construct input data.
 
         Args:
-            selection: e.g. "1", "1-5", "Pass", "Unbinned"
+            selection (int | list[int] | range | list[range]):
+                - A single bin number (e.g. 1)
+                - A list of bin numbers (e.g. [1, 3, 5])
+                - A range object (e.g. range(1, 6)) → "1-5"
+                - A list of ranges or mix of int/range (e.g. [range(1, 4), 10])
 
         Returns:
-            Path length after addition.
+            int: The resulting path length after adding the dies.
+
+        Raises:
+            TypeError: If the input contains unsupported data types.
         """
-        if isinstance(selection, PathSelection):
-            selection_str = selection.toSentioAbbr()
-        else:
+        if isinstance(selection, int):
+            # Single bin value
             selection_str = str(selection)
+
+        elif isinstance(selection, range):
+            # Convert range to SENTIO format: "start-end"
+            selection_str = f"{selection.start}-{selection.stop - 1}"
+
+        elif isinstance(selection, list):
+            parts = []
+            for item in selection:
+                if isinstance(item, range):
+                    parts.append(f"{item.start}-{item.stop - 1}")
+                elif isinstance(item, int):
+                    parts.append(str(item))
+                else:
+                    raise TypeError(f"Unsupported item type in list: {type(item)}")
+            selection_str = ",".join(parts)
+
+        else:
+            raise TypeError(f"Unsupported selection type: {type(selection)}")
 
         self.comm.send(f"map:path:add_bins {selection_str}")
         resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
 
-    def remove_bins(self, selection: str) -> int:
-        """Removes dies with specific bin(s) from stepping path.
+    def remove_bins(self, selection: int | list[int] | range | list[range]) -> int:
+        """
+        Removes dies with specific bin values from the stepping path.
 
-        Wraps SENTIO's map:path:remove_bins remote command.
+        This method allows more natural Python inputs, avoiding manual string construction.
 
         Args:
-            selection: e.g. "1", "1-5", "Pass", "Fail"
+            selection (int | list[int] | range | list[range]):
+                - A single bin number (e.g. 2)
+                - A list of bin numbers (e.g. [1, 4, 6])
+                - A range (e.g. range(5, 10)) → becomes "5-9"
+                - A list of ranges or combination (e.g. [range(1, 4), 6])
 
         Returns:
-            Remaining path length.
+            int: Remaining path length after removal.
+
+        Raises:
+            TypeError: If the selection type is not supported.
         """
-        self.comm.send(f"map:path:remove_bins {selection}")
+        if isinstance(selection, int):
+            selection_str = str(selection)
+
+        elif isinstance(selection, range):
+            selection_str = f"{selection.start}-{selection.stop - 1}"
+
+        elif isinstance(selection, list):
+            parts = []
+            for item in selection:
+                if isinstance(item, range):
+                    parts.append(f"{item.start}-{item.stop - 1}")
+                elif isinstance(item, int):
+                    parts.append(str(item))
+                else:
+                    raise TypeError(f"Unsupported item in list: {type(item)}")
+            selection_str = ",".join(parts)
+
+        else:
+            raise TypeError(f"Unsupported selection type: {type(selection)}")
+
+        self.comm.send(f"map:path:remove_bins {selection_str}")
         resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
+
