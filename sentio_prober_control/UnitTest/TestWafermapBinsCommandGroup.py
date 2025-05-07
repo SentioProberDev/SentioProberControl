@@ -36,7 +36,6 @@ class TestWafermapBinsCommandGroup(unittest.TestCase):
         """Test getting bin information"""
         self.mock_comm.read_line.return_value = "0,0,3,TestBin,Pass,#FF00FFFF"
         result = self.test_prober.map.bins.get_bin_info(3)
-        print(result)
         self.mock_comm.send.assert_called_with("map:bins:get_bin_info 3")
         self.assertEqual(result, (3, "TestBin", BinQuality.Pass, "#FF00FFFF"))
 

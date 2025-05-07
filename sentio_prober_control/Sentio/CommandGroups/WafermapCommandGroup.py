@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from sentio_prober_control.Sentio.Enumerations import AxisOrient, ColorScheme, DieNumber, StatusBits, RoutingStartPoint, \
-    RoutingPriority
+    RoutingPriority, OrientationMarker
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
@@ -581,7 +581,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return int(tok[0]), int(tok[1]), int(tok[2])
 
-    def get_orient_marker(self) -> Tuple[str, float, float]:
+    def get_orient_marker(self) -> Tuple[OrientationMarker, float, float]:
         """ Retrieves the type, angle, and size of the wafer orientation marker.
         
             Returns:
@@ -590,7 +590,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.comm.send("map:get_orient_marker")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
-        return tok[0], float(tok[1]), float(tok[2])
+        return OrientationMarker[tok[0]], float(tok[1]), float(tok[2])
 
     def get_routing(self) -> Tuple[RoutingStartPoint, RoutingPriority]:
         """ Retrieves routing scheme for die stepping. 

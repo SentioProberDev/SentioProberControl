@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 from sentio_prober_control.Sentio.ProberSentio import SentioProber
 from sentio_prober_control.Communication.CommunicatorTcpIp import CommunicatorTcpIp
 from sentio_prober_control.Sentio.Enumerations import AxisOrient, ColorScheme, DieNumber, RoutingStartPoint, \
-    RoutingPriority
+    RoutingPriority, OrientationMarker
 
 
 class TestWafermapCommandGroup(unittest.TestCase):
@@ -199,7 +199,7 @@ class TestWafermapCommandGroup(unittest.TestCase):
         self.mock_comm.read_line.return_value = "0,0,Flat,90.0,1200.0"
         marker = self.prober.map.get_orient_marker()
         self.mock_comm.send.assert_called_with("map:get_orient_marker")
-        self.assertEqual(marker, ("Flat", 90.0, 1200.0))
+        self.assertEqual(marker, (OrientationMarker.Flat, 90.0, 1200.0))
 
     def test_set_orient_marker(self):
         self.mock_comm.read_line.return_value = "0,0,OK"
