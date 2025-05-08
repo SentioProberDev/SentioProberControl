@@ -783,6 +783,10 @@ class DieNumber(Enum):
     Selected = 2
     Total = 3
 
+class DriftType(Enum):
+    """Specifies the type of drift."""
+    DriftRef = "DriftRef"
+    Drift = "Drift"
 
 @deprecated("ExecuteAction is deprecated.")
 class ExecuteAction(Enum):
@@ -1773,7 +1777,7 @@ class ThermoChuckState(Enum):
             "controlling": ThermoChuckState.Controlling,
         }
         try:
-            return mapping[abbr]
+            return mapping[abbr.lower()]
         except KeyError:
             raise ValueError(f"Unknown ThermoChuckState abbreviation: {abbr}")
 
