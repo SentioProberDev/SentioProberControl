@@ -14,7 +14,6 @@ from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup impo
 from sentio_prober_control.Sentio.CommandGroups.WafermapViewCommandGroup import WafermapViewCommandGroup
 
 
-@deprecated("Use VisionCompensationGroup instead")
 class WafermapCommandGroup(ModuleCommandGroupBase):
     """This class represents the SENTIO command group for wafermap related commands.
     You are not meant to instantiate objects of this class directly! This class

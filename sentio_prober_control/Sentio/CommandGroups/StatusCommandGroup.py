@@ -220,24 +220,6 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         level : AccessLevel = AccessLevel[Response.check_resp(self.comm.read_line()).message()]
         return level
 
-    def get_prop(self, prop_name: str, stage: str = None) -> str:
-        """Retrieve a specific data item from the setup module.
-
-        Args:
-            prop_name: The property name to query. Valid examples include:
-                'Edge_Sensor', 'Z_Position_Hint', 'Active_Stage'.
-            stage: Optional stage name for 'Z_Position_Hint'. Can be 'Chuck', 'Scope', 'Probe01' ~ 'Probe04'.
-
-        Returns:
-            A string value representing the queried property.
-        """
-        cmd = f"status:get_prop {prop_name}"
-        if stage:
-            cmd += f" {stage}"
-        self.comm.send(cmd)
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-
     def get_machine_id(self) -> str:
         """Retrieves the machine ID.
 
@@ -257,23 +239,6 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send("status:get_version")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
-
-    def set_prop(self, prop_name: str, stage: str, chuck_site: str = None) -> Response:
-        """Set a specific property in the dashboard module.
-
-        Args:
-            prop_name: The property name (e.g., 'Active_Stage').
-            stage: The stage to apply the setting (e.g., 'Chuck', 'Scope').
-            chuck_site: Optional. Only used when stage is 'Chuck' (e.g., 'Wafer', 'Auxright1').
-
-        Returns:
-            A Response object after setting the property.
-        """
-        cmd = f"status:set_prop {prop_name} {stage}"
-        if chuck_site:
-            cmd += f", {chuck_site}"
-        self.comm.send(cmd)
-        return Response.check_resp(self.comm.read_line())
 
     def show_message(self, message: str, button: DialogButtons = DialogButtons.Ok, caption: str = "None", level: str = "Hint") -> str:
         """Show a message dialog for user interaction.

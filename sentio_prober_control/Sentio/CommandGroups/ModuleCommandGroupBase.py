@@ -1,7 +1,7 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from typing import Tuple
-
+from enum import Enum
 
 class ModuleCommandGroupBase(CommandGroupBase):
     """Base class for all command groups."""
@@ -30,6 +30,8 @@ class ModuleCommandGroupBase(CommandGroupBase):
         
         if arg1 == None:
             self.comm.send(f"{self._groupAbbr}:get_prop {prop_name}")
+        elif isinstance(arg1, Enum):
+            self.comm.send(f"{self._groupAbbr}:get_prop {prop_name}, {arg1.name}")
         else:
             self.comm.send(f"{self._groupAbbr}:get_prop {prop_name}, {arg1}")
 
@@ -78,7 +80,10 @@ class ModuleCommandGroupBase(CommandGroupBase):
         """
         cmd: str = self._groupAbbr + ":set_prop {0}"
         for n in range(0, len(argv)):
-            cmd += ", {0}".format(argv[n])
+            if isinstance(argv[n], Enum):
+                cmd += f", {argv[n].name}"
+            else:
+                cmd += f", {argv[n]}"
 
         self.comm.send(cmd.format(prop_name))
         Response.check_resp(self.comm.read_line())
