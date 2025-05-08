@@ -301,6 +301,29 @@ class ChuckSite(Enum):
         except KeyError:
             raise ValueError(f"Unknown ChuckSite abbreviation: {abbr}")
 
+
+class ChuckSpeed(Enum):
+    Fast = 0
+    Normal = 1
+    Slow = 2
+    Jog = 3
+    Index = 4
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Fast": ChuckSpeed.Fast,
+            "Normal": ChuckSpeed.Normal,
+            "Slow": ChuckSpeed.Slow,
+            "Jog": ChuckSpeed.Jog,
+            "Index": ChuckSpeed.Index,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
+
+
 class ChuckThermoEnergyMode(Enum):
     Fast = 0
     Optimal = 1
@@ -414,28 +437,6 @@ class ChuckZReference(Enum):
         return switcher.get(self, "Invalid chuck z reference")
 
 
-
-class ChuckSpeed(Enum):
-    Fast = 0
-    Normal = 1
-    Slow = 2
-    Jog = 3
-    Index = 4
-
-    @staticmethod
-    def fromSentioAbbr(abbr: str):
-        mapping = {
-            "Fast": ChuckSpeed.Fast,
-            "Normal": ChuckSpeed.Normal,
-            "Slow": ChuckSpeed.Slow,
-            "Jog": ChuckSpeed.Jog,
-            "Index": ChuckSpeed.Index,
-        }
-        try:
-            return mapping[abbr]
-        except KeyError:
-            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
-        
 class ColorScheme(Enum):
     """The color scheme used by the wafer map.
 
@@ -538,31 +539,6 @@ class CompensationType(Enum):
             CompensationType.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid CompensationType")
-
-class XyCompensationType(Enum):
-    """A list of XY compensation types.
-
-    Attributes:
-        Disable (0): None
-        Topography (1): Vertical (Z) compensation.
-        MapScan (2): Both lateral and vertical compensation.
-        AlignDie (3): Probe card compensation.
-        SkateDetection (4): MapScan compensation.
-    """
-
-    Disable = 0
-    OnTheFly = 1
-    MapScan = 2
-    Thermal = 3
-
-    def toSentioAbbr(self):
-        switcher = {
-            XyCompensationType.Disable: "None",
-            XyCompensationType.OnTheFly: "OnTheFly",
-            XyCompensationType.MapScan: "MapScan",
-            XyCompensationType.Thermal: "Thermal",
-        }
-        return switcher.get(self, "Invalid XyCompensationType")
 
 
 class ZCompensationType(Enum):
@@ -855,7 +831,7 @@ class FiberType(Enum):
             FiberType.Lensed: "Lensed",
         }
         return switcher.get(self, "Invalid fiber type enumerator")
-    
+
 
 class FindPatternReference(Enum):
     """Reference point for coordinates than returning a pattern position.
@@ -874,6 +850,17 @@ class FindPatternReference(Enum):
             FindPatternReference.CenterOfRoi: "CenterOfRoi",
         }
         return switcher.get(self, "Invalid find pattern reference id")
+
+
+class HighPowerAirState(Enum):
+    Off = 0
+    On = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            HighPowerAirState.Off: "0",
+            HighPowerAirState.On: "1",
+        }.get(self, "Invalid HighPowerAirState")
 
 
 class ImagePattern(Enum):
@@ -1010,6 +997,7 @@ class Module(Enum):
             Module.Dashboard: "Dashboard",
         }
         return switcher.get(self, "Invalid Module Name")
+
 
 class MoveAxis(Enum):
     """Defines the movement axis for the auto-focus function."""
@@ -1175,6 +1163,17 @@ class SnapshotLocation(Enum):
     """ The snapshot will be transferred to the PC that is running the python control script. 
         This option only makes sense if the prober and the control PC are different. """
 
+
+class SoftContactState(Enum):
+    Disable = 0
+    Enable = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            SoftContactState.Disable: "0",
+            SoftContactState.Enable: "1",
+        }.get(self, "Invalid SoftContactState")
+    
 
 class Stage(Enum):
     """Represents a stage in SENTIO.
@@ -1750,6 +1749,18 @@ class ThermoChuckState(Enum):
     Controlling = 6
     Unknown = 7
 
+
+class UserCoordState(Enum):
+    Chuck = 0
+    Scope = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            UserCoordState.Chuck: "chuck",
+            UserCoordState.Scope: "scope"
+        }.get(self, "Invalid UserCoordState")
+
+
 class UvwAxis(Enum):
     """An enumeration containing UVW axis.
 
@@ -1771,6 +1782,28 @@ class UvwAxis(Enum):
         }
         return switcher.get(self, "Invalid UVW enumerator")
     
+
+class VacuumState(Enum):
+    Off = 0
+    On = 1
+
+    def toSentioAbbr(self) -> str:
+        return {
+            VacuumState.Off: "Off",
+            VacuumState.On: "On",
+        }.get(self, "Invalid VacuumState")
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "0": VacuumState.Off,
+            "1": VacuumState.On
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
+
 
 class VceZReference(Enum):
     """Reference for Vce z motions.
@@ -1886,6 +1919,32 @@ class WorkArea(Enum):
         return switcher.get(self, "Invalid chuck site")
 
 
+class XyCompensationType(Enum):
+    """A list of XY compensation types.
+
+    Attributes:
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
+    """
+
+    Disable = 0
+    OnTheFly = 1
+    MapScan = 2
+    Thermal = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            XyCompensationType.Disable: "None",
+            XyCompensationType.OnTheFly: "OnTheFly",
+            XyCompensationType.MapScan: "MapScan",
+            XyCompensationType.Thermal: "Thermal",
+        }
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
 class ZPositionHint(Enum):
     """Represents a hint for the z position of a stage.
 
@@ -1918,76 +1977,3 @@ class ZPositionHint(Enum):
             ZPositionHint.Transfer: "Transfer",
         }
         return switcher.get(self, "Invalid ZPositionHint")
-
-
-class FiberType(Enum):
-    """An enumeration containing supported fiber type.
-
-    Attributes:
-        Single (0)
-        Array (1)
-        Lensed (2)
-    """
-
-    Single = 0
-    Array = 1
-    Lensed = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            FiberType.Single: "Single",
-            FiberType.Array: "Array",
-            FiberType.Lensed: "Lensed",
-        }
-        return switcher.get(self, "Invalid fiber type enumerator")
-
-class VacuumState(Enum):
-    Off = 0
-    On = 1
-
-    def toSentioAbbr(self) -> str:
-        return {
-            VacuumState.Off: "Off",
-            VacuumState.On: "On",
-        }.get(self, "Invalid VacuumState")
-
-    @staticmethod
-    def fromSentioAbbr(abbr: str):
-        mapping = {
-            "0": VacuumState.Off,
-            "1": VacuumState.On
-        }
-        try:
-            return mapping[abbr]
-        except KeyError:
-            raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
-
-class HighPowerAirState(Enum):
-    Off = 0
-    On = 1
-
-    def toSentioAbbr(self) -> str:
-        return {
-            HighPowerAirState.Off: "0",
-            HighPowerAirState.On: "1",
-        }.get(self, "Invalid HighPowerAirState")
-
-class SoftContactState(Enum):
-    Disable = 0
-    Enable = 1
-
-    def toSentioAbbr(self) -> str:
-        return {
-            SoftContactState.Disable: "0",
-            SoftContactState.Enable: "1",
-        }.get(self, "Invalid SoftContactState")
-
-class UserCoordState(Enum):
-    Chuck = 0
-    Scope = 1
-
-    def toSentioAbbr(self) -> str:
-        return {
-            UserCoordState.Chuck: "chuck",
-            UserCoordState.Scope: "scope"
-        }.get(self, "Invalid UserCoordState")
