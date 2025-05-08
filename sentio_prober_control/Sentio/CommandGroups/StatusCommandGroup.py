@@ -1,5 +1,8 @@
 from typing import Tuple, Union
-from sentio_prober_control.Sentio.Enumerations import ThermoChuckState
+from sentio_prober_control.Sentio.Enumerations import (
+    ThermoChuckState, 
+    DialogButtons
+)
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
     ModuleCommandGroupBase,
@@ -270,23 +273,23 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(cmd)
         return Response.check_resp(self.comm.read_line())
 
-    def show_message(self, message: str, button: str = "OK", caption: str = "None", level: str = "Hint") -> str:
+    def show_message(self, message: str, button: DialogButtons = DialogButtons.Ok, caption: str = "None", level: str = "Hint") -> str:
         """Show a message dialog for user interaction.
 
         Args:
             message: The message to show.
-            button: The button configuration (e.g., 'OK', 'OKCancel', 'YesNo').
+            button: The button configuration (e.g., 'Ok', 'OkCancel', 'YesNo').
             caption: Caption for the dialog.
             level: Level of the message (e.g., 'Hint', 'Warning', 'Error').
 
         Returns:
             The button that was pressed.
         """
-        self.comm.send(f"status:show_message {message},{button},{caption},{level}")
+        self.comm.send(f"status:show_message {message},{button.toSentioAbbr()},{caption},{level}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
-    def start_show_message(self, message: str, button: str = "OK", caption: str = "None", level: str = "Hint") -> str:
+    def start_show_message(self, message: str, button: DialogButtons = DialogButtons.Ok, caption: str = "None", level: str = "Hint") -> Response:
         """Start an asynchronous message dialog.
 
         Args:
@@ -298,6 +301,5 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Returns:
             A string containing Command ID and button pressed info.
         """
-        self.comm.send(f"status:start_show_message {message},{button},{caption},{level}")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        self.comm.send(f"status:start_show_message {message},{button.toSentioAbbr()},{caption},{level}")
+        return Response.check_resp(self.comm.read_line())

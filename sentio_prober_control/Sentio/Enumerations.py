@@ -79,22 +79,6 @@ class AutoFocusCmd(Enum):
         return switcher.get(self, "Invalid auto focus function")
 
 
-class MoveAxis(Enum):
-    """Defines the movement axis for the auto-focus function."""
-
-    Scope = 0
-    Imagpro = 1
-    Chuck = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            MoveAxis.Scope: "scope",
-            MoveAxis.Imagpro: "imagpro",
-            MoveAxis.Chuck: "chuck",
-        }
-        return switcher.get(self, "Invalid AxisOrient")
-
-
 class AxisOrient(Enum):
     """Represents an axis orientation.
 
@@ -166,61 +150,6 @@ class BinQuality(Enum):
             BinQuality.Undefined: "undefined",
         }
         return switcher.get(self, "Invalid bin quality identifier")
-
-
-class PathSelection(Enum):
-    """An enumerator for defining the path selection state of a die.
-
-       Attributes:
-           Pass (0): Die is marked as pass and valid for good bin selection.
-           Fail (1): Die is marked as fail and should be skipped or binned as failed.
-           Undefined (2): Die has no defined path selection; may be excluded from testing.
-           Unbinned (3): Die has not yet been assigned to any bin.
-       """
-
-    Pass = 0
-    Fail = 1
-    Undefined = 2
-    Unbinned = 3
-
-    def toSentioAbbr(self):
-        switcher = {
-            PathSelection.Pass: "pass",
-            PathSelection.Fail: "fail",
-            PathSelection.Undefined: "undefined",
-            PathSelection.Unbinned: "unbinned",
-        }
-        return switcher.get(self, "Invalid path selection identifier")
-
-
-class SubsiteGroup(Enum):
-    """An enumerator for defining subsite group types for get_num() command.
-
-    Attributes:
-        Present (0): Subsites present on a specific die.
-        Selected (1): Subsites selected for routing on a specific die.
-        GlobalPresent (2): Global subsite table entries.
-        GlobalSelected (3): Globally selected subsites.
-        WaferPresent (4): Subsites present on the entire wafer.
-        WaferSelected (5): Selected subsites on the entire wafer.
-    """
-    Present = 0
-    Selected = 1
-    GlobalPresent = 2
-    GlobalSelected = 3
-    WaferPresent = 4
-    WaferSelected = 5
-
-    def toSentioAbbr(self) -> str:
-        switcher = {
-            SubsiteGroup.Present: "P",
-            SubsiteGroup.Selected: "S",
-            SubsiteGroup.GlobalPresent: "GP",
-            SubsiteGroup.GlobalSelected: "GS",
-            SubsiteGroup.WaferPresent: "WP",
-            SubsiteGroup.WaferSelected: "WS",
-        }
-        return switcher.get(self, "Invalid subsite group identifier")
 
 
 class CameraMountPoint(Enum):
@@ -347,6 +276,40 @@ class ChuckSite(Enum):
         except KeyError:
             raise ValueError(f"Unknown ChuckSite abbreviation: {abbr}")
 
+class ChuckThermoEnergyMode(Enum):
+    Fast = 0
+    Optimal = 1
+    HighPower = 2
+    Customized = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoEnergyMode.Fast: "Fast",
+            ChuckThermoEnergyMode.Optimal: "Optimal",
+            ChuckThermoEnergyMode.HighPower: "HighPower",
+            ChuckThermoEnergyMode.Customized: "Customized",
+        }
+        return switcher.get(self, "Invalid ChuckThermoEnergyMode")
+
+
+class ChuckThermoHoldMode(Enum):
+    """An enumeration containing chuck thermo hold mode.
+
+    Attributes:
+        Active (0): Chuck is holding temperature.
+        Nonactive (1): Chuck is not actively controlling temperature.
+    """
+
+    Active = 0
+    Nonactive = 1
+
+    def toSentioAbbr(self):
+        switcher = {
+            ChuckThermoHoldMode.Active: "Active",
+            ChuckThermoHoldMode.Nonactive: "Nonactive",
+        }
+        return switcher.get(self, "Invalid ChuckThermoHoldMode")
+
 
 class ChuckThetaReference(Enum):
     """Reference to use for chuck theat motions.
@@ -426,6 +389,28 @@ class ChuckZReference(Enum):
         return switcher.get(self, "Invalid chuck z reference")
 
 
+
+class ChuckSpeed(Enum):
+    Fast = 0
+    Normal = 1
+    Slow = 2
+    Jog = 3
+    Index = 4
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "Fast": ChuckSpeed.Fast,
+            "Normal": ChuckSpeed.Normal,
+            "Slow": ChuckSpeed.Slow,
+            "Jog": ChuckSpeed.Jog,
+            "Index": ChuckSpeed.Index,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
+        
 class ColorScheme(Enum):
     """The color scheme used by the wafer map.
 
@@ -528,7 +513,6 @@ class CompensationType(Enum):
             CompensationType.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid CompensationType")
-
 
 class XyCompensationType(Enum):
     """A list of XY compensation types.
@@ -705,6 +689,23 @@ class DialogButtons(Enum):
             DialogButtons.YesNoCancel: "YesNoCancel",
         }
         return switcher.get(self, "Invalid button id")
+    
+    @staticmethod
+    def fromSentioAbbr(abbr: str) -> "DialogButtons":
+        mapping = {
+            "Ok": DialogButtons.Ok,
+            "Cancel": DialogButtons.Cancel,
+            "OkCancel": DialogButtons.OkCancel,
+            "Yes": DialogButtons.Yes,
+            "No": DialogButtons.No,
+            "YesNo": DialogButtons.YesNo,
+            "YesCancel": DialogButtons.YesCancel,
+            "YesNoCancel": DialogButtons.YesNoCancel,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown button abbreviation: {abbr}")
 
 
 @deprecated("Use CompensationMode instead")
@@ -985,7 +986,21 @@ class Module(Enum):
         }
         return switcher.get(self, "Invalid Module Name")
 
+class MoveAxis(Enum):
+    """Defines the movement axis for the auto-focus function."""
 
+    Scope = 0
+    Imagpro = 1
+    Chuck = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            MoveAxis.Scope: "scope",
+            MoveAxis.Imagpro: "imagpro",
+            MoveAxis.Chuck: "chuck",
+        }
+        return switcher.get(self, "Invalid AxisOrient")
+    
 @deprecated(reason="duplicated; Use CompensationMode instead.")
 class OnTheFlyMode(Enum):
     Lateral = 0
@@ -1025,6 +1040,31 @@ class OrientationMarker(Enum):
         switcher = {OrientationMarker.Notch: "Notch", OrientationMarker.Flat: "Flat"}
         return switcher.get(self, "Invalid orientation marker")
 
+
+class PathSelection(Enum):
+    """An enumerator for defining the path selection state of a die.
+
+       Attributes:
+           Pass (0): Die is marked as pass and valid for good bin selection.
+           Fail (1): Die is marked as fail and should be skipped or binned as failed.
+           Undefined (2): Die has no defined path selection; may be excluded from testing.
+           Unbinned (3): Die has not yet been assigned to any bin.
+       """
+
+    Pass = 0
+    Fail = 1
+    Undefined = 2
+    Unbinned = 3
+
+    def toSentioAbbr(self):
+        switcher = {
+            PathSelection.Pass: "pass",
+            PathSelection.Fail: "fail",
+            PathSelection.Undefined: "undefined",
+            PathSelection.Unbinned: "unbinned",
+        }
+        return switcher.get(self, "Invalid path selection identifier")
+    
 
 class PoiReferenceXy(Enum):
     """Referenc position for points of interest.
@@ -1633,6 +1673,36 @@ class SoftwareFence(Enum):
         return switcher.get(self, "Invalid SoftwareFence parameter")
 
 
+class SubsiteGroup(Enum):
+    """An enumerator for defining subsite group types for get_num() command.
+
+    Attributes:
+        Present (0): Subsites present on a specific die.
+        Selected (1): Subsites selected for routing on a specific die.
+        GlobalPresent (2): Global subsite table entries.
+        GlobalSelected (3): Globally selected subsites.
+        WaferPresent (4): Subsites present on the entire wafer.
+        WaferSelected (5): Selected subsites on the entire wafer.
+    """
+    Present = 0
+    Selected = 1
+    GlobalPresent = 2
+    GlobalSelected = 3
+    WaferPresent = 4
+    WaferSelected = 5
+
+    def toSentioAbbr(self) -> str:
+        switcher = {
+            SubsiteGroup.Present: "P",
+            SubsiteGroup.Selected: "S",
+            SubsiteGroup.GlobalPresent: "GP",
+            SubsiteGroup.GlobalSelected: "GS",
+            SubsiteGroup.WaferPresent: "WP",
+            SubsiteGroup.WaferSelected: "WS",
+        }
+        return switcher.get(self, "Invalid subsite group identifier")
+    
+    
 class ThermoChuckState(Enum):
     """The state of a thermo chuck.
 
@@ -1825,25 +1895,6 @@ class ZPositionHint(Enum):
         return switcher.get(self, "Invalid ZPositionHint")
 
 
-    """
-    Attributes:
-        U (0): U axis.
-        V (1): V axis.
-        W (2): W axis.
-    """
-
-    U = 0
-    V = 1
-    W = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            UvwAxis.U: "U",
-            UvwAxis.V: "V",
-            UvwAxis.W: "W",
-        }
-        return switcher.get(self, "Invalid UVW enumerator")
-
 class FiberType(Enum):
     """An enumeration containing supported fiber type.
 
@@ -1864,53 +1915,6 @@ class FiberType(Enum):
             FiberType.Lensed: "Lensed",
         }
         return switcher.get(self, "Invalid fiber type enumerator")
-
-class ChuckThermoEnergyMode(Enum):
-    Fast = 0
-    Optimal = 1
-    HighPower = 2
-    Customized = 3
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckThermoEnergyMode.Fast: "Fast",
-            ChuckThermoEnergyMode.Optimal: "Optimal",
-            ChuckThermoEnergyMode.HighPower: "HighPower",
-            ChuckThermoEnergyMode.Customized: "Customized",
-        }
-        return switcher.get(self, "Invalid ChuckThermoEnergyMode")
-
-class ChuckThermoHoldMode(Enum):
-    Active = 0
-    Nonactive = 1
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckThermoHoldMode.Active: "Active",
-            ChuckThermoHoldMode.Nonactive: "Nonactive",
-        }
-        return switcher.get(self, "Invalid ChuckThermoHoldMode")
-
-class ChuckSpeed(Enum):
-    Fast = 0
-    Normal = 1
-    Slow = 2
-    Jog = 3
-    Index = 4
-
-    @staticmethod
-    def fromSentioAbbr(abbr: str):
-        mapping = {
-            "Fast": ChuckSpeed.Fast,
-            "Normal": ChuckSpeed.Normal,
-            "Slow": ChuckSpeed.Slow,
-            "Jog": ChuckSpeed.Jog,
-            "Index": ChuckSpeed.Index,
-        }
-        try:
-            return mapping[abbr]
-        except KeyError:
-            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
 
 class VacuumState(Enum):
     Off = 0
