@@ -31,58 +31,11 @@ class QAlibriaCommandGroup(CommandGroupBase):
         Wraps SENTIO's "qal:calibration_drift_verify" remote command.
 
         Args:
-            dut_name: The name of the DUT.
-            auto_exec: Whether to automatically execute the drift verify process.
+            dut_name (str): The name of the DUT.
+            auto_exec (bool): Whether to automatically execute the drift verify process.
         """
         self.comm.send(f"qal:calibration_drift_verify {dut_name},{str(auto_exec).lower()}")
         Response.check_resp(self.comm.read_line())
-
-
-    @deprecated(reason="use calibration_execute instead!; violates naming conventions. (CR#13887)")
-    def start_calibration(self) -> None:
-        """
-        Deprecated function for starting calibration.
-        Please use calibration_execute instead.
-        """
-        self.comm.send("qal:calibration_execute")
-        Response.check_resp(self.comm.read_line())
-
-
-    @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
-    def verify_calibration_drift(self) -> None:
-        """
-        Deprecated function for verifying calibration drift.
-        Please use calibration_drift_verify instead.
-        """
-        self.comm.send("qal:calibration_drift_verify")
-        Response.check_resp(self.comm.read_line())
-
-
-    @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
-    def verify_calibration_drift_dut(self, dut) -> None:
-        """
-        Deprecated function for verifying calibration drift with a specific DUT.
-        Please use calibration_drift_verify(dut_name, ...) instead.
-        """
-        self.comm.send(f"qal:calibration_drift_verify {dut}")
-        Response.check_resp(self.comm.read_line())
-
-
-    @deprecated(reason="oddly specific function name; filed as CR#13887")
-    def set_calibration_drift_probe12(self):
-        """
-        Deprecated function for setting calibration drift for probe 1 and 2.
-        """
-        self.comm.send("qal:set_dut_network RefDUT,DriftRef,12,false")
-        Response.check_resp(self.comm.read_line())
-
-        self.comm.send("qal:set_dut_network RefDUT,Drift,12,false")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-
-    # -------------------------------------------------------------------------
-    # New / Additional Commands
-    # -------------------------------------------------------------------------
 
     def check_calibration_status(self) -> None:
         """
@@ -94,6 +47,27 @@ class QAlibriaCommandGroup(CommandGroupBase):
             ProberException: If the calibration status is not "OK".
         """
         self.comm.send("qal:get_calibration_status")
+        Response.check_resp(self.comm.read_line())
+
+    def clear_dut_network(self, dut_name: str, drift_type: DriftType, update_ui: bool) -> None:
+        """
+        Clear network data for a DUT.
+
+        Wraps SENTIO's "qal:clear_dut_network" remote command.
+
+        Args:
+            dut_name (str): The name of the DUT (e.g. "RefDUT").
+            drift_type (DriftType): The type of drift data to clear (DriftType.DriftRef or DriftType.Drift).
+            update_ui (bool): Whether to update the UI (True/False).
+
+        Returns:
+            None
+            
+        Raises:
+            ProberException: If the remote command returns an error.
+        """
+        cmd = f"qal:clear_dut_network {dut_name},{drift_type.value},{str(update_ui).lower()}"
+        self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
     def measurement_execute(
@@ -139,6 +113,18 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:reset_ets")
         Response.check_resp(self.comm.read_line())
 
+    @deprecated(reason="oddly specific function name; filed as CR#13887")
+    def set_calibration_drift_probe12(self):
+        """
+        Deprecated function for setting calibration drift for probe 1 and 2.
+        """
+        self.comm.send("qal:set_dut_network RefDUT,DriftRef,12,false")
+        Response.check_resp(self.comm.read_line())
+
+        self.comm.send("qal:set_dut_network RefDUT,Drift,12,false")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+    
     def set_ets(self, port: int, path: str, ets_mode: int = 0) -> None:
         """
         Set error terms in the buffer.
@@ -171,41 +157,33 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
-    def clear_dut_network(self, dut_name: str, drift_type: DriftType, update_ui: bool) -> None:
+    @deprecated(reason="use calibration_execute instead!; violates naming conventions. (CR#13887)")
+    def start_calibration(self) -> None:
         """
-        Clear network data for a DUT.
-
-        Wraps SENTIO's "qal:clear_dut_network" remote command.
-
-        Args:
-            dut_name (str): The name of the DUT (e.g. "RefDUT").
-            drift_type (DriftType): The type of drift data to clear (DriftType.DriftRef or DriftType.Drift).
-            update_ui (bool): Whether to update the UI (True/False).
-
-        Returns:
-            None
-            
-        Raises:
-            ProberException: If the remote command returns an error.
+        Deprecated function for starting calibration.
+        Please use calibration_execute instead.
         """
-        cmd = f"qal:clear_dut_network {dut_name},{drift_type.value},{str(update_ui).lower()}"
-        self.comm.send(cmd)
+        self.comm.send("qal:calibration_execute")
+        Response.check_resp(self.comm.read_line())
+        
+    @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
+    def verify_calibration_drift(self) -> None:
+        """
+        Deprecated function for verifying calibration drift.
+        Please use calibration_drift_verify instead.
+        """
+        self.comm.send("qal:calibration_drift_verify")
         Response.check_resp(self.comm.read_line())
 
 
-    def vna_write(self, vna_command: str) -> None:
+    @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
+    def verify_calibration_drift_dut(self, dut) -> None:
         """
-        Write a remote command to the VNA.
-
-        Wraps SENTIO's "qal:vna_write" remote command.
-
-        Args:
-            vna_command: The remote command to send to the VNA (e.g. ":SENS1:FREQ:STAR 1.0E9").
+        Deprecated function for verifying calibration drift with a specific DUT.
+        Please use calibration_drift_verify(dut_name, ...) instead.
         """
-        cmd = f"qal:vna_write {vna_command}"
-        self.comm.send(cmd)
+        self.comm.send(f"qal:calibration_drift_verify {dut}")
         Response.check_resp(self.comm.read_line())
-
 
     def vna_query(self, vna_command: str) -> str:
         """
@@ -224,7 +202,6 @@ class QAlibriaCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
-
     def vna_read(self) -> str:
         """
         Read data from the VNA.
@@ -237,3 +214,16 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:vna_read")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+    
+    def vna_write(self, vna_command: str) -> None:
+        """
+        Write a remote command to the VNA.
+
+        Wraps SENTIO's "qal:vna_write" remote command.
+
+        Args:
+            vna_command: The remote command to send to the VNA (e.g. ":SENS1:FREQ:STAR 1.0E9").
+        """
+        cmd = f"qal:vna_write {vna_command}"
+        self.comm.send(cmd)
+        Response.check_resp(self.comm.read_line())
