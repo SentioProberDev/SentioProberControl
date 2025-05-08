@@ -2,6 +2,31 @@ from enum import Enum
 
 from deprecated import deprecated
 
+class AccessLevel(Enum):
+    """Specifies a SENTIO access level.
+
+    Attributes:
+        Operator (1): Operator access
+        Admin (2): Admin access
+        Engineer (4): Engineer access
+        Service (8): Service access
+        Debug (16): Debug access
+    """
+    Operator = 1 << 0,
+    Admin = 1 << 1,
+    Engineer = 1 << 2,
+    Service = 1 << 3,
+    Debug = 1 << 4
+
+    def toSentioAbbr(self):
+        switcher = {
+            AccessLevel.Operator: "Operator",
+            AccessLevel.Admin: "Admin",
+            AccessLevel.Engineer: "Engineer",
+            AccessLevel.Service: "Service",
+            AccessLevel.Debug: "Debug",
+        }
+        return switcher.get(self, "Invalid Auto Align function")
 
 class AutoAlignCmd(Enum):
     """Specifies an algorithm for performaing auto alignment.
@@ -1702,7 +1727,7 @@ class SubsiteGroup(Enum):
         }
         return switcher.get(self, "Invalid subsite group identifier")
     
-    
+
 class ThermoChuckState(Enum):
     """The state of a thermo chuck.
 

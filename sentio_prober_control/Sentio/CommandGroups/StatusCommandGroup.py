@@ -1,5 +1,6 @@
-from typing import Tuple, Union
+from typing import Tuple
 from sentio_prober_control.Sentio.Enumerations import (
+    AccessLevel,
     ThermoChuckState, 
     DialogButtons
 )
@@ -153,61 +154,62 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
     
-    def set_chuck_thermo_energy_mode(self, mode: str) -> Response:
+    def set_chuck_thermo_energy_mode(self, mode: str) -> None:
         """Set chuck thermo energy mode.
 
         Args:
             mode: The desired energy mode. Possible values: Fast, Optimal, HighPower, Customized.
 
         Returns:
-            A Response object confirming the command execution.
+            None
 
         Raises:
             ValueError: If the provided mode is not valid.
         """
         self.comm.send(f"status:set_chuck_thermo_energy_mode {mode}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
     
-    def set_chuck_thermo_hold_mode(self, mode: bool) -> Response:
+    def set_chuck_thermo_hold_mode(self, mode: bool) -> None:
         """Set thermo chuck hold mode.
 
         Args:
             mode: A boolean indicating whether to enable (True) or disable (False) hold mode.
 
         Returns:
-            A Response object confirming the command execution.
+            None
         """
         self.comm.send(f"status:set_chuck_thermo_hold_mode {mode}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
     
-    def set_chuck_thermo_mode(self, mode: str) -> Response:
+    def set_chuck_thermo_mode(self, mode: str) -> None:
         """Set chuck thermo operation mode.
 
         Args:
             mode: The operation mode to set. Possible values: Normal, Standby, Defrost, Purge, Turbo, Eco.
 
         Returns:
-            A Response object confirming the command execution.
+            None
 
         Raises:
             ValueError: If the provided mode is not valid.
         """
         self.comm.send(f"status:set_chuck_thermo_mode {mode}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-    def set_high_purge(self, enable: bool) -> Response:
+    def set_high_purge(self, enable: bool) -> None:
         """Set thermo chuck high purge state.
 
             Args:
                 enable: A boolean indicating whether to enable (True) or disable (False) high purge
+            
             Returns:
-                A Response object confirming the command execution.
+                None
         """
                 
         self.comm.send(f"status:set_high_purge {enable}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
     
-    def get_access_level(self) -> str:
+    def get_access_level(self) -> AccessLevel:
         """Retrieves the access level of operation.
 
         Returns:
@@ -215,8 +217,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             'Operator', 'Admin', 'Service', 'Engineer', 'Debug'.
         """
         self.comm.send("status:get_access_level")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+        level : AccessLevel = AccessLevel[Response.check_resp(self.comm.read_line()).message()]
+        return level
 
     def get_prop(self, prop_name: str, stage: str = None) -> str:
         """Retrieve a specific data item from the setup module.
