@@ -15,6 +15,17 @@ class StatusCommandGroup(ModuleCommandGroupBase):
     def __init__(self, comm) -> None:
         super().__init__(comm, "status")
 
+    def get_access_level(self) -> AccessLevel:
+        """Retrieves the access level of operation.
+
+        Returns:
+            A string representing the access level. Possible values are:
+            'Operator', 'Admin', 'Service', 'Engineer', 'Debug'.
+        """
+        self.comm.send("status:get_access_level")
+        level : AccessLevel = AccessLevel[Response.check_resp(self.comm.read_line()).message()]
+        return level
+
 
     def get_chuck_temp(self) -> float:
         """Get current chuck temperature.
@@ -44,6 +55,27 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         return temp
 
 
+    def get_chuck_thermo_energy_mode(self) -> str:
+        """Get the current chuck thermo energy mode.
+        Returns:
+            The current energy mode as a string. Possible values: Fast, Optimal, HighPower, Customized.
+        """
+        self.comm.send("status:get_chuck_thermo_energy_mode")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+    
+
+    def get_chuck_thermo_hold_mode(self) -> str:
+        """Get thermo chuck hold mode.
+
+        Returns:
+            The current hold mode. Possible values: Active, Nonactive.
+        """
+        self.comm.send("status:get_chuck_thermo_hold_mode")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+
     def get_chuck_thermo_state(self) -> ThermoChuckState:
         """Return thermo chuck state.
 
@@ -71,6 +103,28 @@ class StatusCommandGroup(ModuleCommandGroupBase):
             return ThermoChuckState.Uncontrolled
         else:
             return ThermoChuckState.Unknown
+
+
+    def get_high_purge_state(self) -> str:
+        """Get thermo chuck high purge state.
+
+        Returns:
+            The current high purge state. Possible values: ON, OFF.
+        """
+        self.comm.send("status:get_high_purge_state")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+    
+
+    def get_machine_id(self) -> str:
+        """Retrieves the machine ID.
+
+        Returns:
+            A string containing the machine ID.
+        """
+        self.comm.send("status:get_machine_id")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
 
 
     def get_machine_status(self) -> Tuple[bool, bool, bool]:
@@ -110,6 +164,17 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         return temp
 
 
+    def get_version(self) -> str:
+        """Retrieves the system version.
+
+        Returns:
+            A string containing version information.
+        """
+        self.comm.send("status:get_version")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message()
+
+
     def set_chuck_temp(self, temp: float, lift_chuck : bool = False) -> None:
         """Set chuck temperature setpoint.
 
@@ -124,35 +189,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
         self.comm.send(f"status:set_chuck_temp {temp:.2f}, {lift_chuck}")
         Response.check_resp(self.comm.read_line())
-    
-    def get_chuck_thermo_energy_mode(self) -> str:
-        """Get the current chuck thermo energy mode.
-        Returns:
-            The current energy mode as a string. Possible values: Fast, Optimal, HighPower, Customized.
-        """
-        self.comm.send("status:get_chuck_thermo_energy_mode")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-    
-    def get_chuck_thermo_hold_mode(self) -> str:
-        """Get thermo chuck hold mode.
-
-        Returns:
-            The current hold mode. Possible values: Active, Nonactive.
-        """
-        self.comm.send("status:get_chuck_thermo_hold_mode")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-    
-    def get_high_purge_state(self) -> str:
-        """Get thermo chuck high purge state.
-
-        Returns:
-            The current high purge state. Possible values: ON, OFF.
-        """
-        self.comm.send("status:get_high_purge_state")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
+   
     
     def set_chuck_thermo_energy_mode(self, mode: str) -> None:
         """Set chuck thermo energy mode.
@@ -208,37 +245,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
                 
         self.comm.send(f"status:set_high_purge {enable}")
         Response.check_resp(self.comm.read_line())
-    
-    def get_access_level(self) -> AccessLevel:
-        """Retrieves the access level of operation.
 
-        Returns:
-            A string representing the access level. Possible values are:
-            'Operator', 'Admin', 'Service', 'Engineer', 'Debug'.
-        """
-        self.comm.send("status:get_access_level")
-        level : AccessLevel = AccessLevel[Response.check_resp(self.comm.read_line()).message()]
-        return level
-
-    def get_machine_id(self) -> str:
-        """Retrieves the machine ID.
-
-        Returns:
-            A string containing the machine ID.
-        """
-        self.comm.send("status:get_machine_id")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
-
-    def get_version(self) -> str:
-        """Retrieves the system version.
-
-        Returns:
-            A string containing version information.
-        """
-        self.comm.send("status:get_version")
-        resp = Response.check_resp(self.comm.read_line())
-        return resp.message()
 
     def show_message(self, message: str, button: DialogButtons = DialogButtons.Ok, caption: str = "None", level: str = "Hint") -> str:
         """Show a message dialog for user interaction.
@@ -255,6 +262,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         self.comm.send(f"status:show_message {message},{button.toSentioAbbr()},{caption},{level}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
 
     def start_show_message(self, message: str, button: DialogButtons = DialogButtons.Ok, caption: str = "None", level: str = "Hint") -> Response:
         """Start an asynchronous message dialog.

@@ -28,6 +28,7 @@ class AccessLevel(Enum):
         }
         return switcher.get(self, "Invalid Auto Align function")
 
+
 class AutoAlignCmd(Enum):
     """Specifies an algorithm for performaing auto alignment.
 
