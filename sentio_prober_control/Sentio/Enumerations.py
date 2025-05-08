@@ -1891,17 +1891,6 @@ class ChuckThermoHoldMode(Enum):
         }
         return switcher.get(self, "Invalid ChuckThermoHoldMode")
 
-class HighPurgeState(Enum):
-    On = 0
-    Off = 1
-
-    def toSentioAbbr(self):
-        switcher = {
-            HighPurgeState.On: "ON",
-            HighPurgeState.Off: "OFF",
-        }
-        return switcher.get(self, "Invalid HighPurgeState")
-
 class ChuckSpeed(Enum):
     Fast = 0
     Normal = 1
