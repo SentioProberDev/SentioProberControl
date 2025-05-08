@@ -1,6 +1,6 @@
 import base64
 import os
-from typing import Tuple
+from typing import Tuple,Optional
 from enum import Enum
 
 from deprecated import deprecated
@@ -843,16 +843,14 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def send_cmd(self, cmd: str) -> Response:
+    def send_cmd(self, cmd: str) -> Optional[Response|str]:
         """Sends a command to the prober and return a response object.
 
         This function is intended for directly sending remote commands that
         are not yet included in the python wrapper. It will send the command
         and parse the respone from SENTIO.
 
-        Do NOT send low level commands that do not have a response (i.e. "*LOCAL").
-        This will lock the communication pipeline as it is waiting for a
-        response that never arrives.
+        Support low level remote command.
 
         It will then return a Response object with the extracted data from
         SENTIO's response.
@@ -860,9 +858,17 @@ class SentioProber(ProberBase):
         Returns:
             A response object with the result of the command.
         """
+    
         self.comm.send(cmd)
-        return Response.check_resp(self.comm.read_line())
+        
+        if '*' in cmd and '?' in cmd:
+            return self.comm.read_line()
 
+        elif '*' in cmd:
+            return None
+        
+        else:
+            return Response.check_resp(self.comm.read_line())
 
     def set_chuck_site_height(
         self,
