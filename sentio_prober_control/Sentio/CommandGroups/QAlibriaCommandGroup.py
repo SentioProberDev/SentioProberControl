@@ -2,12 +2,8 @@ from deprecated import deprecated
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.ProberBase import ProberException
+from sentio_prober_control.Sentio.Enumerations import DriftType
 from typing import List
-from enum import Enum
-
-class DriftType(Enum):
-    DriftRef = "DriftRef"
-    Drift = "Drift"
 
 class QAlibriaCommandGroup(CommandGroupBase):
     """
@@ -98,12 +94,7 @@ class QAlibriaCommandGroup(CommandGroupBase):
             ProberException: If the calibration status is not "OK".
         """
         self.comm.send("qal:get_calibration_status")
-        resp = Response.check_resp(self.comm.read_line())
-        status = resp.message().strip()
-        if status.upper() != "OK":
-            raise ProberException(f"Calibration status error: {status}")
-
-
+        Response.check_resp(self.comm.read_line())
 
     def measurement_execute(
         self,
