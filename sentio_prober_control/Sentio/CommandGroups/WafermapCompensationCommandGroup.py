@@ -5,9 +5,11 @@ from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 
+@deprecated("Use VisionCompensationGroup instead")
 class WafermapCompensationCommandGroup(CommandGroupBase):
     """This command group bundles functions for setting up and using XY/Z compensation on the wafermap."""
 
+    @deprecated("Use vision.compensation.enable instead")
     def topography(self, execute: ExecuteAction) -> Response:
         """Execute topography compensation.
 

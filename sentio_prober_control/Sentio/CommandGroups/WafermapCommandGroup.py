@@ -1,5 +1,5 @@
 from typing import Tuple
-
+from deprecated import deprecated
 from sentio_prober_control.Sentio.Enumerations import AxisOrient, ColorScheme, DieNumber, StatusBits, RoutingStartPoint, \
     RoutingPriority, OrientationMarker
 from sentio_prober_control.Sentio.ProberBase import ProberException
@@ -14,6 +14,7 @@ from sentio_prober_control.Sentio.CommandGroups.WafermapSubsiteCommandGroup impo
 from sentio_prober_control.Sentio.CommandGroups.WafermapViewCommandGroup import WafermapViewCommandGroup
 
 
+@deprecated("Use VisionCompensationGroup instead")
 class WafermapCommandGroup(ModuleCommandGroupBase):
     """This class represents the SENTIO command group for wafermap related commands.
     You are not meant to instantiate objects of this class directly! This class
