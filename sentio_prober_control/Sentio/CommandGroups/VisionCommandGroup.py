@@ -16,14 +16,14 @@ from sentio_prober_control.Sentio.Enumerations import (
     PtpaFindTipsMode,
     PtpaType,
     SnapshotLocation,
-    SnapshotType,
-)
+    SnapshotType, MoveAxis,)
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
 from sentio_prober_control.Sentio.CommandGroups.VisionCameraCommandGroup import VisionCameraCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionCompensationGroup import VisionCompensationGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionIMagProCommandGroup import VisionIMagProCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.VisionPatternCommandGroup import VisionPatternCommandGroup
 
 
 class VisionCommandGroup(ModuleCommandGroupBase):
@@ -43,7 +43,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self.camera = VisionCameraCommandGroup(comm)
         self.imagpro = VisionIMagProCommandGroup(comm)
         self.compensation = VisionCompensationGroup(comm)
-
+        self.pattern = VisionPatternCommandGroup(comm)
 
     def align_wafer(self, mode: AutoAlignCmd = AutoAlignCmd.AlignOnly) -> None:
         """Perform a wafer alignment.
@@ -65,7 +65,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         Response.check_resp(self.comm.read_line())
 
-
     def align_die(self, threshold: float = 0.05) -> Tuple[float, float, float]:
         """Perform a die alignment.
 
@@ -84,8 +83,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
-
-    def auto_focus(self, af_cmd: AutoFocusCmd = AutoFocusCmd.Focus) -> float:
+    def auto_focus(self, af_cmd: AutoFocusCmd = AutoFocusCmd.Focus) -> tuple[float, MoveAxis]:
         """Perform an auto focus operation.
 
         Args:
@@ -94,40 +92,15 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         Returns:
             The focus height in micrometer
         """
-
         resp = self.prober.send_cmd(f"vis:auto_focus {af_cmd.toSentioAbbr()}")
         tok = resp.message().split(",")
-        return float(tok[0])
-
+        return float(tok[0]), MoveAxis[tok[1].capitalize()]
 
     def camera_synchronize(self) -> Tuple[float, float, float]:
         self.comm.send("vis:camera_synchronize")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
-
-
-    def create_probepad_model(self, angleStep: float = 0.1, imgPath: str | None = None, UL: tuple | None = None, LR: tuple | None = None):
-        if imgPath == None or UL == None or LR == None:
-            self.comm.send(f"vis:create_probepad_model {angleStep}")
-        else:
-            self.comm.send(f"vis:create_probepad_model {angleStep}, {imgPath}, {UL[0]}, {UL[1]}, {LR[0]}, {LR[1]}")
-
-        resp = Response.check_resp(self.comm.read_line())
-        tok = resp.message().split(",")
-        return tok
-
-
-    def detect_probepads(self, imgPath: str | None = None, minScore: float = 0.7, startAngle: float | None = None, startExtend: float | None = None, maxOverlap: float | None  = None) -> Tuple[bool, float, str]:
-        if startAngle == None:
-            self.comm.send("vis:detect_probepads {},{}".format(imgPath, minScore))
-        else:
-            self.comm.send("vis:detect_probepads {},{},{},{},{}".format(imgPath, minScore, startAngle, startExtend, maxOverlap))
-
-        resp = Response.check_resp(self.comm.read_line())
-        tok = resp.message().split(",")
-        return bool(tok[0]), float(tok[1]), tok[2]
-
 
     def detect_probetips(self, camera: CameraMountPoint, detector: DetectionAlgorithm = DetectionAlgorithm.ProbeDetector, coords: DetectionCoordindates = DetectionCoordindates.Roi) -> list:
         """Executes a built in detector on a given camera and return a list of detection results.
@@ -164,8 +137,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         return found_tips
 
-
-    def enable_follow_mode(self, stat: bool) -> Response:
+    def enable_follow_mode(self, stat: bool):
         """Enable or disable the scope follow mode.
 
         If scope follow mode is active the scope will move in sync with the chuck. This is useful for
@@ -175,27 +147,19 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         Args:
             stat: A flag indicating whether to enable or disable the follow mode.
-
-        Returns:
-            A Response object.
         """
 
         self.comm.send("vis:enable_follow_mode {0}".format(stat))
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-
-    def find_home(self) -> Response:
+    def find_home(self):
         """Find home position.
 
         This function uses a pre-trained pattern to fully automatically find the home position.
-
-        Returns:
-            A Response object.
         """
 
         self.comm.send("vis:find_home")
-        return Response.check_resp(self.comm.read_line())
-
+        Response.check_resp(self.comm.read_line())
 
     def find_pattern(self, name: str, threshold: float = 70, pattern_index: int = 0, reference: FindPatternReference = FindPatternReference.CenterOfRoi) -> Tuple[float, float, float, float]:
         """Find a trained pattern in the camera image.
@@ -211,7 +175,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
-
 
     def has_camera(self, camera: CameraMountPoint) -> bool:
         """Check wether a given camera is present in the system.
@@ -229,8 +192,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "1"
 
-
-    def switch_all_lights(self, stat: bool) -> Response:
+    def switch_all_lights(self, stat: bool) -> None:
         """Switch all camera lights on or off.
 
         This function wraps the "vis:switch_all_lights" remote command.
@@ -239,23 +201,20 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             stat: A flag indicating whether to switch the lights on or off.
 
         Returns:
-            A Response object.
+            None
         """
 
-        self.comm.send("vis:switch_all_lights {0}".format(stat))
-        return Response.check_resp(self.comm.read_line())
+        self.comm.send(f"vis:switch_all_lights {stat}")
 
-
-    def remove_probetip_marker(self) -> Response:
+    def remove_probetip_marker(self) -> None:
         """Remove probetip marker from the camera display.
 
         Returns:
-            A Response object.
+            None
         """
 
         self.comm.send("vis:remove_probetip_marker")
-        return Response.check_resp(self.comm.read_line())
-
+        Response.check_resp(self.comm.read_line())
 
     def match_tips(self, ptpa_type: PtpaType) -> Tuple[float, float]:
         """For internal use only!
@@ -266,7 +225,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
-
 
     def snap_image(self, file: str, what: SnapshotType = SnapshotType.CameraRaw, where: SnapshotLocation = SnapshotLocation.Prober) -> None:
         """Save a snapshot of the current camera image to a file.
@@ -293,8 +251,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             self.comm.send(f"vis:snap_image {file}, {what.toSentioAbbr()}")
             Response.check_resp(self.comm.read_line())
 
-
-    def switch_light(self, camera: CameraMountPoint, stat: bool) -> Response:
+    def switch_light(self, camera: CameraMountPoint, stat: bool):
         """Switch the light of a given camera on or off.
 
         Args:
@@ -304,12 +261,10 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         Returns:
             A Response object.
         """
-
         self.comm.send(f"vis:switch_light {camera.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
-
-    def switch_camera(self, camera: CameraMountPoint) -> Response:
+    def switch_camera(self, camera: CameraMountPoint):
         """Switch the camera to use for the vision module.
 
         Args:
@@ -320,8 +275,6 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         """
 
         self.comm.send(f"vis:switch_camera {camera.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
-
 
     def ptpa_find_pads(self, row: int = 0, column: int = 0):
         self.comm.send("vis:execute_ptpa_find_pads {0},{1}".format(row, column))
@@ -329,13 +282,11 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
-
     def ptpa_find_tips(self, ptpa_mode: PtpaFindTipsMode):
         self.comm.send("vis:ptpa_find_tips {0}".format(ptpa_mode.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
-
 
     def start_fast_track(self) -> Response:
         """Start the fast track process as defined in SENTIO.
@@ -350,13 +301,58 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         return self.prober.send_cmd("vis:start_fast_track")
 
-
     @deprecated("use vision.compensation.start_execute(...) instead!")
-    def start_execute_compensation(self, comp_type: DieCompensationType, comp_mode: DieCompensationMode):
+    def start_execute_compensation(self, comp_type: DieCompensationType, comp_mode: DieCompensationMode) -> Response:
         self.comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.toSentioAbbr(), comp_mode.toSentioAbbr()))
         resp = Response.check_resp(self.comm.read_line())
 
         if not resp.ok():
             raise ProberException(resp.message())
 
-        return resp.cmd_id()
+        return resp
+
+    def find_thermal_die_size(self) -> Tuple[float, float]:
+        """Detect thermal expansion and return die size ratio.
+
+        Returns:
+            A tuple of (ThermalFactorX, ThermalFactorY)
+        """
+        self.comm.send("vis:find_thermal_die_size")
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+        return float(tok[0]), float(tok[1])
+
+    def get_lens_zoom_level(self) -> float:
+        """ Get current zoom level of the lens. 
+        
+            Returns:
+                float: The current zoom level of the lens.
+        """
+        self.comm.send("vis:get_lens_zoom_level")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
+
+    def set_lens_zoom_level(self, level: float) -> None:
+        """Set lens zoom level.
+
+        Args:
+            level (float): Zoom level, such as 1, 2, ..., 10
+
+        Returns:
+            None
+        """
+        self.comm.send(f"vis:set_lens_zoom_level {level}")
+        Response.check_resp(self.comm.read_line())
+
+    def get_light_status(self, camera: CameraMountPoint) -> bool:
+        """Check whether light is on or off for a specific camera.
+
+        Args:
+            camera: e.g. 'scope', 'offaxis'
+
+        Returns:
+            True if light is ON
+        """
+        self.comm.send(f"vis:get_light_status {camera.toSentioAbbr()}")
+        resp = Response.check_resp(self.comm.read_line())
+        return resp.message().strip().lower() == "1"

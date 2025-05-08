@@ -19,7 +19,13 @@ from sentio_prober_control.Sentio.Enumerations import (
     Stage,
     SteppingContactMode,
     VceZReference,
-    WorkArea
+    WorkArea,
+    ChuckPositionHint,
+    ChuckSpeed,
+    VacuumState,
+    HighPowerAirState,
+    SoftContactState,
+    UserCoordState
 )
 
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
@@ -38,8 +44,7 @@ from sentio_prober_control.Sentio.CommandGroups.SiPHCommandGroup import SiPHComm
 from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import StatusCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
-from sentio_prober_control.Sentio.Enumerations import ChuckSite
-
+from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
 
 class SentioCommunicationType(Enum):
     """This enum defines different types of prober communication.
@@ -95,6 +100,7 @@ class SentioProber(ProberBase):
         self.siph: SiPHCommandGroup = SiPHCommandGroup(self)
         self.status: StatusCommandGroup = StatusCommandGroup(self)
         self.vision: VisionCommandGroup = VisionCommandGroup(self)
+        self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
 
     def abort_command(self, cmd_id: int) -> Response:
@@ -759,7 +765,7 @@ class SentioProber(ProberBase):
         """
         return self.__name
 
-    def open_project(self, project: str, restore_heights: bool = False):
+    def open_project(self, project: str, restore_heights: bool = False) -> None:
         """Open a SENTIO project file.
 
         Wraps SENTIO's "open_project" remote command.
@@ -823,7 +829,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def select_module(self, module: Module, tabSheet: str | None = None):
+    def select_module(self, module: Module, tabSheet: str | None = None) -> None:
         """Activate a given SENTIO module.
 
         In response to this function SENTIO will switch its user interface to make
@@ -1187,3 +1193,510 @@ class SentioProber(ProberBase):
         offset_y = float(tok[2])
 
         return site_id, offset_x, offset_y
+
+    def get_chuck_position_hint(self) -> tuple[ChuckPositionHint, ChuckSite]:
+        """Get a verbal representation of the current chuck position and the active site.
+
+        Returns:
+            position_hint (str): Describes the chuck's general position, e.g., "Probing", "FrontLoad", "SideLoad".
+            site (str): The current chuck site, e.g., "Wafer", "AuxRight", "ChuckCameraLR", etc.
+        """
+        self.comm.send("get_chuck_position_hint")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        pos_hint_str = tok[0]
+        site_str = tok[1]
+
+        pos_hint = ChuckPositionHint.fromSentioAbbr(pos_hint_str)
+        site = ChuckSite.fromSentioAbbr(site_str)
+
+        return pos_hint, site
+
+    def get_chuck_site_count(self) -> int:
+        """Retrieve the number of chuck sites.
+
+        Wraps SENTIO's "get_chuck_site_count" remote command.
+
+        Returns:
+            count (int): The number of chuck sites.
+        """
+        self.comm.send("get_chuck_site_count")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        count = int(tok[0])
+
+        return count
+
+    def get_chuck_site_index(self, name: str | None = None) -> int:
+        """Retrieve the index of a chuck site by name. If no name is provided, returns the index of the current site.
+
+        Args:
+            name (str, optional): The name of the chuck site. If None, the current site index is returned.
+
+        Returns:
+            index (int): The index of the chuck site.
+        """
+        if name is None:
+            self.comm.send("get_chuck_site_index")
+        else:
+            self.comm.send(f"get_chuck_site_index {name}")
+
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        index = int(tok[0])
+
+        return index
+
+    def get_chuck_site_name(self, index: int | None = None) -> ChuckSite:
+        """Retrieve the name of a chuck site. If no index is given, returns the current site's name.
+
+        Args:
+            index (int, optional): The index of the chuck site. If None, gets the name of the current site.
+
+        Returns:
+            site (ChuckSite): The name of the chuck site.
+        """
+        if index is None:
+            self.comm.send("get_chuck_site_name")
+        else:
+            self.comm.send(f"get_chuck_site_name {index}")
+
+        resp = Response.check_resp(self.comm.read_line())
+        site : ChuckSite = ChuckSite.fromSentioAbbr(resp.message())
+        
+        return site
+
+    def get_chuck_site_pos(self, site: ChuckSite | None = None) -> tuple[float, float, float]:
+        """Retrieve position information of a chuck site.
+
+        Args:
+            site (ChuckSite, optional): The chuck site to query. If None, uses the current active site.
+
+        Returns:
+            tuple[float, float, float]: (home_x, home_y, angle) in µm and degrees.
+        """
+        if site is not None:
+            site_arg = site.toSentioAbbr()
+            self.comm.send(f"get_chuck_site_pos {site_arg}")
+        else:
+            self.comm.send("get_chuck_site_pos")
+
+        resp = Response.check_resp(self.comm.read_line())
+        tok = resp.message().split(",")
+        home_x = float(tok[0])
+        home_y = float(tok[1])
+        angle = float(tok[2])
+        return home_x, home_y, angle
+
+    def get_chuck_speed(self) -> ChuckSpeed:
+        """Retrieve the current chuck speed setting.
+
+        Returns:
+            ChuckSpeed: Enum representing current chuck speed.
+        """
+        self.comm.send("get_chuck_speed")
+        resp = Response.check_resp(self.comm.read_line())
+        speed_str = resp.message().split(",")[0]
+
+        speed = ChuckSpeed.fromSentioAbbr(speed_str)
+
+        return speed
+
+    from sentio_prober_control.Sentio.Enumerations import ChuckSite
+
+    def get_vacuum_status(self, site: ChuckSite | None = None) -> VacuumState:
+        """Get the vacuum status of a chuck site.
+
+        Args:
+            site (ChuckSite, optional): The chuck site to query. If None, queries the currently active site.
+
+        Returns:
+            VacuumState: Enum indicating On or Off.
+        """
+        if site is not None:
+            site_arg = site.toSentioAbbr()
+            self.comm.send(f"get_vacuum_status {site_arg}")
+        else:
+            self.comm.send("get_vacuum_status")
+
+        resp = Response.check_resp(self.comm.read_line())
+        status = resp.message().split(",")[0]
+
+        return VacuumState.fromSentioAbbr(status)
+
+    def move_chuck_hover(self) -> float:
+        """Move the chuck to hover height.
+
+        If hover height is not enabled, the move will not be carried out.
+
+        Returns:
+            z (float): The new Z position in micrometers with respect to zero.
+        """
+        self.comm.send("move_chuck_hover")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        z_pos = float(tok[0])
+
+        return z_pos
+
+    def move_chuck_index(self, ref: str, x_steps: int, y_steps: int) -> tuple[float, float]:
+        """Move chuck xy by a number of index steps relative to a reference point.
+
+        If the chuck is above separation height, it will move to separation before and return after movement.
+
+        Args:
+            ref (str): The reference point ("Zero", "Home", "Relative", "Center"). Case-insensitive.
+            x_steps (int): Number of steps in X direction.
+            y_steps (int): Number of steps in Y direction.
+
+        Returns:
+            new_x (float): New X position (in µm, from axis zero).
+            new_y (float): New Y position (in µm, from axis zero).
+        """
+        self.comm.send(f"move_chuck_index {ref}, {x_steps}, {y_steps}")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        new_x = float(tok[0])
+        new_y = float(tok[1])
+
+        return new_x, new_y
+
+    def move_chuck_xyt(self, x_offset: float, y_offset: float, theta_offset: float) -> None:
+        """Move chuck xy and theta to match pattern to field of view center.
+
+        If chuck is above separation height, it will move to separation first and stay there after movement.
+
+        Args:
+            x_offset (float): Offset in X direction (in µm).
+            y_offset (float): Offset in Y direction (in µm).
+            theta_offset (float): Offset in theta (in degrees).
+
+        Returns:
+            None
+        """
+        self.comm.send(f"move_chuck_xyt {x_offset}, {y_offset}, {theta_offset}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_chuck_overtravel_gap(self, gap: float) -> None:
+        """Set overtravel gap for all chuck sites.
+
+        Args:
+            gap (float): The overtravel gap in micrometers.
+
+        Returns:
+            None
+        """
+        self.comm.send(f"set_chuck_overtravel_gap {gap}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_chuck_separation_gap(self, gap: float) -> None:
+        """Set separation gap for all chuck sites.
+
+        Args:
+            gap (float): The separation gap in micrometers.
+
+        Returns:
+            None
+        """
+        self.comm.send(f"set_chuck_separation_gap {gap}")
+        Response.check_resp(self.comm.read_line())
+
+
+    def set_chuck_site_overtravel_gap(self, site: ChuckSite, gap: float) -> None:
+        """Set overtravel gap for a specific chuck site.
+
+        Args:
+            site (ChuckSite): The chuck site to apply the overtravel gap to. Cannot be None.
+            gap (float): Overtravel gap in micrometers.
+
+        Raises:
+            ValueError: If site is None.
+        """
+        if site is None:
+            raise ValueError("site is required and cannot be None")
+
+        site_arg = site.toSentioAbbr()
+        self.comm.send(f"set_chuck_site_overtravel_gap {site_arg}, {gap}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_chuck_site_pos(
+            self,
+            x: float | None = None,
+            y: float | None = None,
+            theta: float | None = None,
+            site: ChuckSite | None = None
+    ) -> None:
+        """Set home position information of a chuck site.
+
+        Args:
+            x (float, optional): Home X position in µm.
+            y (float, optional): Home Y position in µm.
+            theta (float, optional): Home angle in degrees.
+            site (ChuckSite, optional): Site enum. If None, uses current chuck site.
+
+        Returns:
+            None
+        """
+        if x is not None and y is not None and theta is not None:
+            site_arg = site.toSentioAbbr() if site is not None else None
+
+            if site_arg:
+                self.comm.send(f"set_chuck_site_pos {site_arg},{x},{y},{theta}")
+            else:
+                self.comm.send(f"set_chuck_site_pos {x},{y},{theta}")
+        else:
+            self.comm.send("set_chuck_site_pos")
+
+        Response.check_resp(self.comm.read_line())
+
+    def set_chuck_site_separation_gap(self, site: ChuckSite, gap: float) -> None:
+        """Set separation gap for a specific chuck site.
+
+        Args:
+            site (ChuckSite): The chuck site to apply the gap to. This parameter is required.
+            gap (float): Separation gap in micrometers.
+
+        Raises:
+            ValueError: If site is None.
+        """
+        if site is None:
+            raise ValueError("site is required and cannot be None")
+
+        site_arg = site.toSentioAbbr()
+        self.comm.send(f"set_chuck_site_separation_gap {site_arg}, {gap}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_high_power_air(self, state: HighPowerAirState) -> None:
+        """Switch the air of high power prober card on or off.
+
+        Args:
+            state (HighPowerAirState): Enum value indicating whether to enable or disable air.
+
+        Raises:
+            ValueError: If state is None or not a valid enum.
+        """
+        if state is None:
+            raise ValueError("state is required and must be a valid HighPowerAirState enum")
+
+        self.comm.send(f"set_high_power_air {state.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_soft_contact(self, state: SoftContactState) -> None:
+        """Enable or disable soft contact mode.
+
+        Args:
+            state (SoftContactState): Enum indicating whether to enable or disable soft contact.
+
+        Raises:
+            ValueError: If state is None.
+        """
+        if state is None:
+            raise ValueError("state is required and must be a valid SoftContactState enum")
+
+        self.comm.send(f"set_soft_contact {state.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_user_coordinate_origin(self, state: UserCoordState, x: float, y: float) -> None:
+        """Set the new user coordinate origin (X, Y) for chuck or scope.
+
+        Args:
+            state (UserCoordState): Either UserCoordState.Chuck or UserCoordState.Scope.
+            x (float): X offset in micrometers.
+            y (float): Y offset in micrometers.
+
+        Raises:
+            ValueError: If any parameter is invalid.
+        """
+        if state is None:
+            raise ValueError("state is required and must be a valid UserCoordState")
+
+        cmd = f"set_user_coordinate_origin {state.toSentioAbbr()},{x},{y}"
+        self.comm.send(cmd)
+        Response.check_resp(self.comm.read_line())
+
+    def create_project(self, path_or_name: str) -> str:
+        """Create a new project. Overwrites if a project with the same name exists.
+
+        Args:
+            path_or_name (str): Full path or project name.
+                                If only a name is given, it will be created in the default project directory.
+
+        Returns:
+            full_path (str): The full path to the created project file (*.trex).
+        """
+        self.comm.send(f"create_project {path_or_name}")
+        resp = Response.check_resp(self.comm.read_line())
+
+        # Parse response message
+        tok = resp.message().split(",")
+        full_path = tok[0]
+
+        return full_path
+    
+    def get_indexer_pos(self) -> Tuple[int, str]:
+        """Get currently indexer position.
+
+        Returns:
+            Tuple[int, str]: Indexer location (1~5), and indexer z-position ("up" or "down").
+        """
+        self.comm.send("get_indexer_pos")
+        resp = Response.check_resp(self.comm.read_line())
+        location, position = resp.message().split(",")
+        return int(location), position
+
+    def indexer_cda(self, on: bool) -> Response:
+        """Turn indexer CDA on or off.
+
+        Args:
+            on (bool): True to turn on, False to turn off.
+
+        Returns:
+            Response: Result response.
+        """
+        state = "on" if on else "off"
+        self.comm.send(f"indexer_cda {state}")
+        return Response.check_resp(self.comm.read_line())
+
+    def move_bottom_platen_contact(self) -> float:
+        """Move bottom platen to contact height.
+
+        Returns:
+            float: New Z position in µm with respect to zero.
+        """
+        self.comm.send("move_bottom_platen_contact")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
+
+    def move_bottom_platen_separation(self) -> float:
+        """Move bottom platen to separation height.
+
+        Returns:
+            float: New Z position in µm with respect to zero.
+        """
+        self.comm.send("move_bottom_platen_separation")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
+
+    def move_indexer_lift(self) -> None:
+        """Move indexer up.
+
+        Returns:
+            None
+        """
+        self.comm.send("move_indexer_lift")
+        Response.check_resp(self.comm.read_line())
+
+    def move_indexer_down(self) -> None:
+        """Move indexer down.
+
+        Returns:
+            None
+        """
+        self.comm.send("move_indexer_down")
+        Response.check_resp(self.comm.read_line())
+
+    def probe_air_lift(self, valve: str, position: str) -> None:
+        """Control probe air lift mechanism.
+
+        Args:
+            valve (str): v1/v2
+            position (str): lift or unlift
+
+        Returns:
+            None
+        """
+        self.comm.send(f"probe_air_lift {valve},{position}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_signal_tower(self, red: int, yellow: int, green: int, blue: int) -> None:
+        """Set signal tower LED states.
+
+        Args:
+            red (int): -1=no change, 0=off, 1=on, 2=blinking
+            yellow (int)
+            green (int)
+            blue (int)
+
+        Returns:
+            None
+        """
+        self.comm.send(f"set_signal_tower {red},{yellow},{green},{blue}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_signal_tower_buzzer(self, state: int) -> None:
+        """Set signal tower buzzer state.
+
+        Args:
+            state (int): -1=no change, 0=off, 1=on, 2=pulsed
+
+        Returns:
+            Response: None
+        """
+        self.comm.send(f"set_signal_tower_buzzer {state}")
+        Response.check_resp(self.comm.read_line())
+
+    def start_move_indexer_pos(self, pos: int) -> None:
+        """Asynchronously move indexer to position.
+
+        Args:
+            pos (int): Position index from 1 to 5
+
+        Returns:
+            None
+        """
+        self.comm.send(f"start_move_indexer_pos {pos}")
+        Response.check_resp(self.comm.read_line())
+
+    def swap_bridge(self, side: str, device_position: str | None = None) -> None:
+        """Control swap bridge side and position.
+
+        Args:
+            side (str): right/left/current
+            device_position (str, optional): up/down
+
+        Returns:
+            None
+        """
+        cmd = f"swap_bridge {side}"
+        if device_position:
+            cmd += f",{device_position}"
+        self.comm.send(cmd)
+        Response.check_resp(self.comm.read_line())
+
+    def get_door_status(self, door: str) -> Tuple[bool, bool]:
+        """Retrieves the closed and locked state of a door.
+
+        Args:
+            door (str): The door to query ("prober" or "loader").
+
+        Returns:
+            Tuple[bool, bool]: (is_closed, is_locked)
+        """
+        self.comm.send(f"get_door_status {door.lower()}")
+        resp = Response.check_resp(self.comm.read_line())
+        closed, locked = resp.message().split(",")
+        return closed == "1", locked == "1"
+
+    def set_door_lock(self, door: str, lock: bool) -> None:
+        """Locks or unlocks the specified door.
+
+        Args:
+            door (str): The door to control ("prober" or "loader").
+            lock (bool): True to lock the door, False to unlock.
+
+        Returns:
+            Response: Result of the operation.
+        """
+        state = "1" if lock else "0"
+        self.comm.send(f"set_door_lock {door.lower()},{state}")
+        Response.check_resp(self.comm.read_line())
