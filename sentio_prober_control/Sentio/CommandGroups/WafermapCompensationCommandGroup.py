@@ -36,13 +36,11 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         self.comm.send(f"map:compensation:set_xy {comp_type.toSentioAbbr()}")
         Response.check_resp(self.comm.read_line())
 
-    def set_z(self, comp_type: ZCompensationType) -> Response:
+    def set_z(self, comp_type: ZCompensationType) -> None:
         """Enable the Z Stepping Compensation.
 
         Args:
             comp_type: The type of Z Stepping Compensation.
         """
         self.comm.send(f"map:compensation:set_z {comp_type.toSentioAbbr()}")
-        resp = Response.check_resp(self.comm.read_line())
-
-        return resp
+        Response.check_resp(self.comm.read_line())

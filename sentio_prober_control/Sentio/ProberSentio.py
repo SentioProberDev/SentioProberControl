@@ -112,11 +112,11 @@ class SentioProber(ProberBase):
         Returns:
             A response object with the result of the command.
         """
-        self.comm.send("abort_command {0}".format(cmd_id))
+        self.comm.send(f"abort_command {cmd_id}")
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite | None = None) -> Response:
+    def clear_contact(self, site: ChuckSite | None = None) -> None:
         """Clear contact positions.
 
         Args:
@@ -131,7 +131,7 @@ class SentioProber(ProberBase):
         else:
             self.comm.send(f"clear_contact {site.toSentioAbbr()}")
 
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     @staticmethod
@@ -166,7 +166,7 @@ class SentioProber(ProberBase):
             raise ValueError(f'Unknown prober type: "{comm_type}"')
 
 
-    def enable_chuck_overtravel(self, stat: bool) -> Response:
+    def enable_chuck_overtravel(self, stat: bool) -> None:
 
         """Enable chuck overtravel.
 
@@ -176,14 +176,14 @@ class SentioProber(ProberBase):
             stat (bool): True to enable, False to disable.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
         self.comm.send(f"enable_chuck_overtravel {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_hover(self, stat: bool) -> Response:
+    def enable_chuck_hover(self, stat: bool) -> None:
 
         """Enable chuck hover height.
 
@@ -197,14 +197,14 @@ class SentioProber(ProberBase):
             stat (bool): True to enable, False to disable.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
         self.comm.send(f"enable_chuck_hover {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_hover(self, site: ChuckSite, stat: bool) -> None:
 
         """Enable chuck site hover height.
 
@@ -217,14 +217,14 @@ class SentioProber(ProberBase):
             stat (bool): True to enable, False to disable.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> Response:
+    def enable_chuck_site_overtravel(self, site: ChuckSite, stat: bool) -> None:
 
         """Enable overtravel distance for a specific chuck site.
 
@@ -233,14 +233,14 @@ class SentioProber(ProberBase):
             stat (bool): True to enable, False to disable.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
         self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
-    def file_transfer(self, source: str, dest: str) -> Response:
+    def file_transfer(self, source: str, dest: str) -> None:
 
         """Transfer a file to the prober.
 
@@ -260,7 +260,7 @@ class SentioProber(ProberBase):
         encoded = base64.b64encode(file_bytes).decode("ascii")
 
         self.comm.send(f"file_transfer {dest}, {encoded}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def get_chuck_site_height(self, site: ChuckSite) -> Tuple[float, float, float, float]:
@@ -575,7 +575,7 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_chuck_load(self, pos: LoadPosition) -> Response:
+    def move_chuck_load(self, pos: LoadPosition) -> None:
         """Move chuck to load position.
 
         Wraps SENTIO's "move_chuck_load" remote command.
@@ -584,10 +584,10 @@ class SentioProber(ProberBase):
             pos (LoadPosition): The position to move the chuck to. This can either be a load position or the center position of the chuck.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
         self.comm.send(f"move_chuck_load {pos.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
 
     def move_chuck_separation(self) -> float:
@@ -668,7 +668,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_chuck_work_area(self, area: WorkArea) -> Response:
+    def move_chuck_work_area(self, area: WorkArea) -> None:
         """Move the chuck to a given work area.
 
         A SENTIO probe station can have different work areas. One area is for probing. This is the default
@@ -684,10 +684,10 @@ class SentioProber(ProberBase):
             area: The work area to move to.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
         self.comm.send(f"move_chuck_work_area {area.toSentioAbbr()}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def move_scope_xy(
         self, ref: ScopeXYReference, x: float, y: float
@@ -1554,7 +1554,7 @@ class SentioProber(ProberBase):
         location, position = resp.message().split(",")
         return int(location), position
 
-    def indexer_cda(self, on: bool) -> Response:
+    def indexer_cda(self, on: bool) -> None:
         """Turn indexer CDA on or off.
 
         Args:
@@ -1565,7 +1565,7 @@ class SentioProber(ProberBase):
         """
         state = "on" if on else "off"
         self.comm.send(f"indexer_cda {state}")
-        return Response.check_resp(self.comm.read_line())
+        Response.check_resp(self.comm.read_line())
 
     def move_bottom_platen_contact(self) -> float:
         """Move bottom platen to contact height.
