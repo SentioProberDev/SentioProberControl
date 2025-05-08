@@ -1750,6 +1750,33 @@ class ThermoChuckState(Enum):
     Controlling = 6
     Unknown = 7
 
+    @staticmethod
+    def fromSentioAbbr(abbr: str) -> "ThermoChuckState":
+        """Convert a SENTIO abbreviation to a ThermoChuckState.
+
+        Args:
+            abbr (str): The SENTIO abbreviation.
+
+        Returns:
+            ThermoChuckState: The corresponding ThermoChuckState.
+
+        Raises:
+            ValueError: If the abbreviation is not recognized.
+        """
+        mapping = {
+            "soaking": ThermoChuckState.Soaking,
+            "cooling": ThermoChuckState.Cooling,
+            "heating": ThermoChuckState.Heating,
+            "uncontrolled": ThermoChuckState.Uncontrolled,
+            "standby": ThermoChuckState.Standby,
+            "error": ThermoChuckState.Error,
+            "controlling": ThermoChuckState.Controlling,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ThermoChuckState abbreviation: {abbr}")
+
 
 class UserCoordState(Enum):
     Chuck = 0
