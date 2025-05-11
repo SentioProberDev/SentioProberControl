@@ -57,6 +57,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
 
     def get_chuck_thermo_energy_mode(self) -> str:
         """Get the current chuck thermo energy mode.
+
         Returns:
             The current energy mode as a string. Possible values: Fast, Optimal, HighPower, Customized.
         """
@@ -75,7 +76,6 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
-
     def get_chuck_thermo_state(self) -> ThermoChuckState:
         """Return thermo chuck state.
 
@@ -85,25 +85,8 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
 
         self.comm.send("status:get_chuck_thermo_state")
-        resp = Response.check_resp(self.comm.read_line())
-
-        if "soaking" in resp.message().lower():
-            return ThermoChuckState.Soaking
-        elif "cooling" in resp.message().lower():
-            return ThermoChuckState.Cooling
-        elif "heating" in resp.message().lower():
-            return ThermoChuckState.Heating
-        elif "controlling" in resp.message().lower():
-            return ThermoChuckState.Controlling
-        elif "standby" in resp.message().lower():
-            return ThermoChuckState.Standby
-        elif "error" in resp.message().lower():
-            return ThermoChuckState.Error
-        elif "uncontrolled" in resp.message().lower():
-            return ThermoChuckState.Uncontrolled
-        else:
-            return ThermoChuckState.Unknown
-
+        state : ThermoChuckState = ThermoChuckState.fromSentioAbbr(Response.check_resp(self.comm.read_line()).message())
+        return state
 
     def get_high_purge_state(self) -> str:
         """Get thermo chuck high purge state.

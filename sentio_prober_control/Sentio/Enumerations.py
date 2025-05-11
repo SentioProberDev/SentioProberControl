@@ -783,6 +783,10 @@ class DieNumber(Enum):
     Selected = 2
     Total = 3
 
+class DriftType(Enum):
+    """Specifies the type of drift."""
+    DriftRef = "DriftRef"
+    Drift = "Drift"
 
 @deprecated("ExecuteAction is deprecated.")
 class ExecuteAction(Enum):
@@ -1749,6 +1753,33 @@ class ThermoChuckState(Enum):
     Error = 5
     Controlling = 6
     Unknown = 7
+
+    @staticmethod
+    def fromSentioAbbr(abbr: str) -> "ThermoChuckState":
+        """Convert a SENTIO abbreviation to a ThermoChuckState.
+
+        Args:
+            abbr (str): The SENTIO abbreviation.
+
+        Returns:
+            ThermoChuckState: The corresponding ThermoChuckState.
+
+        Raises:
+            ValueError: If the abbreviation is not recognized.
+        """
+        mapping = {
+            "soaking": ThermoChuckState.Soaking,
+            "cooling": ThermoChuckState.Cooling,
+            "heating": ThermoChuckState.Heating,
+            "uncontrolled": ThermoChuckState.Uncontrolled,
+            "standby": ThermoChuckState.Standby,
+            "error": ThermoChuckState.Error,
+            "controlling": ThermoChuckState.Controlling,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ThermoChuckState abbreviation: {abbr}")
 
 
 class UserCoordState(Enum):
