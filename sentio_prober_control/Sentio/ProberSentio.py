@@ -1,6 +1,6 @@
 import base64
 import os
-from typing import Tuple,Optional
+from typing import Tuple
 from enum import Enum
 
 from deprecated import deprecated
@@ -843,7 +843,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def send_cmd(self, cmd: str) -> Optional[Response|str]:
+    def send_cmd(self, cmd: str) -> Response:
         """Sends a command to the prober and return a response object.
 
         This function is intended for directly sending remote commands that
@@ -862,10 +862,10 @@ class SentioProber(ProberBase):
         self.comm.send(cmd)
         
         if '*' in cmd and '?' in cmd:
-            return self.comm.read_line()
+            return Response(0,0,0,self.comm.read_line())
 
         elif '*' in cmd:
-            return None
+            return Response(0,0,0,"")
         
         else:
             return Response.check_resp(self.comm.read_line())
