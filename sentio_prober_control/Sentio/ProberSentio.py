@@ -25,7 +25,9 @@ from sentio_prober_control.Sentio.Enumerations import (
     VacuumState,
     HighPowerAirState,
     SoftContactState,
-    UserCoordState
+    UserCoordState,
+    SwapBridgeSide,
+    DevicePosition
 )
 
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
@@ -1663,19 +1665,20 @@ class SentioProber(ProberBase):
         self.comm.send(f"start_move_indexer_pos {pos}")
         Response.check_resp(self.comm.read_line())
 
-    def swap_bridge(self, side: str, device_position: str | None = None) -> None:
-        """Control swap bridge side and position.
+    def swap_bridge(self, side: SwapBridgeSide, device_position: DevicePosition, delaytime: int = 8) -> None:
+        """Control swap bridge side,position and delay time.
 
         Args:
             side (str): right/left/current
             device_position (str, optional): up/down
-
+            delaytime (int) : 8
         Returns:
             None
         """
         cmd = f"swap_bridge {side}"
         if device_position:
             cmd += f",{device_position}"
+        cmd += f",{delaytime}"
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
