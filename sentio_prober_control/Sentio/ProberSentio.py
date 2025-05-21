@@ -1335,6 +1335,19 @@ class SentioProber(ProberBase):
         status = resp.message().split(",")[0]
 
         return VacuumState.fromSentioAbbr(status)
+    
+    def get_wafer_diameter(self) -> float:
+        """Get the diameter of wafer on chuck.
+
+        Wraps SENTIO's "get_wafer_diameter" remote command.
+
+        Returns:
+            diameter (float): The wafer diameter in mm.
+        """
+
+        self.comm.send("get_wafer_diameter")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
 
     def move_chuck_hover(self) -> float:
         """Move the chuck to hover height.
@@ -1376,6 +1389,19 @@ class SentioProber(ProberBase):
         new_y = float(tok[1])
 
         return new_x, new_y
+
+    def move_chuck_lift(self) -> float:
+        """Move chuck to "Lift" position.
+
+        Wraps SENTIO's "move_chuck_lift" remote command.
+
+        Returns:
+            Height (float): The chuck Z position in µm.
+        """
+
+        self.comm.send("move_chuck_lift")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
 
     def move_chuck_xyt(self, x_offset: float, y_offset: float, theta_offset: float) -> None:
         """Move chuck xy and theta to match pattern to field of view center.
