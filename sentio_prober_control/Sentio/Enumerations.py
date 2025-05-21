@@ -2009,3 +2009,42 @@ class ZPositionHint(Enum):
             ZPositionHint.Transfer: "Transfer",
         }
         return switcher.get(self, "Invalid ZPositionHint")
+
+class SwapBridgeSide(Enum):    
+    """Control swap bridge move to right or left side.
+
+    Attributes:
+        Right (0): Move swap bridge to right side.
+        Left (1): Move swap bridge to left side.
+        Current (2): Keep bridge at current side.
+    """
+    
+    Right = 0
+    Left = 1
+    Current = 2
+    
+    def toSentioAbbr(self):
+        switcher = {
+            SwapBridgeSide.Right: "Right",
+            SwapBridgeSide.Left: "Left",
+            SwapBridgeSide.Current: "Current",
+        }
+        return switcher.get(self, "Invalid swap bridge side.")
+    
+class DevicePosition(Enum):
+    """Control swap bridge move to up or down side.
+
+    Attributes:
+        Up (0): Move device to up position.
+        Down (1): Move device to down position.
+    """
+    
+    Up = 0
+    Down = 1
+    
+    def toSentioAbbr(self):
+        switcher = {
+            DevicePosition.Up: "Up",
+            DevicePosition.Down: "Down",
+        }
+        return switcher.get(self, "Invalid device position.")
