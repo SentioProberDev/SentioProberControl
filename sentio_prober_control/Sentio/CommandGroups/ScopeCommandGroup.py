@@ -20,15 +20,17 @@ class ScopeCommandGroup(CommandGroupBase):
     ```
     """
 
-    def __init__(self, prober: 'SentioProber', stage : Stage, has_subgroups = False) -> None:
+    def __init__(self, prober: 'SentioProber', stage : Stage, has_subgroups = False) -> None: # type: ignore
         super().__init__(prober)
 
+        self.__stage_selector: str = ""
+        
         if stage==Stage.Scope:
-            self.__scope_selector: str = "top"
+            self.__stage_selector = "top"
         elif stage==Stage.BottomScope:
-            self.__scope_selector: str = "bottom"
+            self.__stage_selector = "bottom"
         elif stage==Stage.AuxiliaryScope:
-            self.__scope_selector: str = "aux"
+            self.__stage_selector = "aux"
         else:
             raise ValueError(f"Invalid stage {stage} for ScopeCommandGroup")
 
@@ -50,7 +52,7 @@ class ScopeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position after the move.
         """
 
-        self.comm.send(f"scope:{self.__scope_selector}:move_xy {ref.to_string()},{x},{y}")
+        self.comm.send(f"scope:{self.__stage_selector}:move_xy {ref.to_string()},{x},{y}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), XyReference.from_string(tok[2])
