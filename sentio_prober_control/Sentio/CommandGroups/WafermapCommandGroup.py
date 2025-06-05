@@ -1,7 +1,8 @@
 from typing import Tuple
-from deprecated import deprecated
+
 from sentio_prober_control.Sentio.Enumerations import AxisOrient, ColorScheme, DieNumber, StatusBits, RoutingStartPoint, \
     RoutingPriority, OrientationMarker
+
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
@@ -37,18 +38,18 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         subsites (WafermapSubsiteGroup): A group to set up subsites.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm, "map")
+    def __init__(self, sentio : 'SentioProber') -> None:
+        super().__init__(sentio, "map")
 
         self.__end_of_route: bool = False
 
-        self.bins: WafermapBinsCommandGroup = WafermapBinsCommandGroup(comm)
-        self.compensation: WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(comm)
-        self.die: WafermapDieCommandGroup = WafermapDieCommandGroup(comm)
-        self.path: WafermapPathCommandGroup = WafermapPathCommandGroup(comm)
-        self.poi: WafermapPoiCommandGroup = WafermapPoiCommandGroup(comm)
-        self.subsites: WafermapSubsiteGroup = WafermapSubsiteGroup(comm, self)
-        self.view: WafermapViewCommandGroup = WafermapViewCommandGroup(comm)
+        self.bins: WafermapBinsCommandGroup = WafermapBinsCommandGroup(sentio)
+        self.compensation: WafermapCompensationCommandGroup = WafermapCompensationCommandGroup(sentio)
+        self.die: WafermapDieCommandGroup = WafermapDieCommandGroup(sentio)
+        self.path: WafermapPathCommandGroup = WafermapPathCommandGroup(sentio)
+        self.poi: WafermapPoiCommandGroup = WafermapPoiCommandGroup(sentio)
+        self.subsites: WafermapSubsiteGroup = WafermapSubsiteGroup(sentio, self)
+        self.view: WafermapViewCommandGroup = WafermapViewCommandGroup(sentio)
 
     def bin_step_next_die(self, bin_value: int, site: int | None = None) -> Tuple[int, int, int]:
         """Bin the current die and step to the naxt die.
@@ -601,7 +602,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         self.comm.send("map:get_routing")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
-        return RoutingStartPoint.fromSentioAbbr(tok[0]), RoutingPriority.fromSentioAbbr(tok[1])
+        return RoutingStartPoint.from_string(tok[0]), RoutingPriority.from_string(tok[1])
 
     def open(self, file_path: str) -> None:
         """Open a wafer map file."""

@@ -1,5 +1,6 @@
 from typing import Tuple
 
+
 from sentio_prober_control.Sentio.Enumerations import ProbeSentio, UvwAxis, FiberType
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -11,8 +12,8 @@ class SiPHCommandGroup(CommandGroupBase):
     of the [SentioProber](SentioProber.md) class.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober)
 
 
     def fast_alignment(self) -> None:

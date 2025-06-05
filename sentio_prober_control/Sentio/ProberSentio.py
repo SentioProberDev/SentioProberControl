@@ -1,33 +1,33 @@
 import base64
 import os
-from typing import Tuple
+from typing import Tuple, Optional, Callable, TypeVar
 from enum import Enum
 
 from deprecated import deprecated
 
 from sentio_prober_control.Sentio.Enumerations import (
+    ChuckPositionHint,
     ChuckSite,
-    ChuckXYReference,
+    ChuckSpeed,
     ChuckThetaReference,
+    ChuckXYReference,
     ChuckZReference,
     DialogButtons,
     LoadPosition,
-    ProjectFileInfo,
     Module,
+    ProjectFileInfo,
     ScopeXYReference,
     ScopeZReference,
+    SoftContactState,
     Stage,
     SteppingContactMode,
-    VceZReference,
-    WorkArea,
-    ChuckPositionHint,
-    ChuckSpeed,
-    VacuumState,
     HighPowerAirState,
-    SoftContactState,
     UserCoordState,
     SwapBridgeSide,
-    DevicePosition
+    DevicePosition,
+    VacuumState,
+    VceZReference,
+    WorkArea
 )
 
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
@@ -93,7 +93,6 @@ class SentioProber(ProberBase):
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
 
         self.aux: AuxCommandGroup = AuxCommandGroup(self)
-        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
         self.loader: LoaderCommandGroup = LoaderCommandGroup(self)
         self.map: WafermapCommandGroup = WafermapCommandGroup(self)
         self.probe: ProbeCommandGroup = ProbeCommandGroup(self)
@@ -104,6 +103,12 @@ class SentioProber(ProberBase):
         self.vision: VisionCommandGroup = VisionCommandGroup(self)
         self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
+        # Command groups for stages; Only available for Sentio > 25.2
+        #self.scope: ScopeCommandGroup = ScopeCommandGroup(self)
+
+        # deprecated command groups; may be removed at any time.
+        # DO NOT USE THEM IN NEW CODE!
+        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
 
     def abort_command(self, cmd_id: int) -> Response:
         """Stop an ongoing asynchronous remote command.
@@ -118,20 +123,20 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite | None = None) -> None:
+    def clear_contact(self, chuckSite: Optional[ChuckSite] = None) -> None:
         """Clear contact positions.
 
         Args:
-            site (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
+            chuckSite (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
-        if site is None:
+        if chuckSite is None:
             self.comm.send("clear_contact")
         else:
-            self.comm.send(f"clear_contact {site.toSentioAbbr()}")
+            self.comm.send(f"clear_contact {chuckSite.toSentioAbbr()}")
 
         Response.check_resp(self.comm.read_line())
 
@@ -547,6 +552,24 @@ class SentioProber(ProberBase):
         to switch the machine back into local mode and thus enable its UI.
         """
         self.comm.send("*LOCAL")
+
+    T = TypeVar("T")
+    def get(self, variable : str, stype: Callable[[str], T] = str) -> T:
+        """Get a variable from the prober.
+
+        This function wraps SENTIO's "*GET?" remote command.
+        This command can query the value of any internal SENTIO variable that is accessible via the 
+        SENTIO's internal environment object.
+
+        Args:
+            variable (str): The full name of the global variable to get.
+
+        Returns:
+            value (str): The value of the variable.
+        """
+        self.comm.send(f"*GET? {variable}")
+        resp : str = self.comm.read_line()
+        return stype(resp)
 
 
     def move_chuck_contact(self) -> float:
@@ -1118,7 +1141,7 @@ class SentioProber(ProberBase):
         return home_x, home_y
 
 
-    def set_scope_home(self, home_x: float = None, home_y: float = None) -> None:
+    def set_scope_home(self, home_x: Optional[float] = None, home_y: Optional[float] = None) -> None:
 
         """Sets the home position for the scope stage.
 
@@ -1217,8 +1240,8 @@ class SentioProber(ProberBase):
         pos_hint_str = tok[0]
         site_str = tok[1]
 
-        pos_hint = ChuckPositionHint.fromSentioAbbr(pos_hint_str)
-        site = ChuckSite.fromSentioAbbr(site_str)
+        pos_hint = ChuckPositionHint.from_string(pos_hint_str)
+        site = ChuckSite.from_string(site_str)
 
         return pos_hint, site
 
@@ -1239,7 +1262,7 @@ class SentioProber(ProberBase):
 
         return count
 
-    def get_chuck_site_index(self, name: str | None = None) -> int:
+    def get_chuck_site_index(self, name: Optional[str] = None) -> int:
         """Retrieve the index of a chuck site by name. If no name is provided, returns the index of the current site.
 
         Args:
@@ -1261,7 +1284,7 @@ class SentioProber(ProberBase):
 
         return index
 
-    def get_chuck_site_name(self, index: int | None = None) -> ChuckSite:
+    def get_chuck_site_name(self, index: Optional[int] = None) -> ChuckSite:
         """Retrieve the name of a chuck site. If no index is given, returns the current site's name.
 
         Args:
@@ -1276,11 +1299,11 @@ class SentioProber(ProberBase):
             self.comm.send(f"get_chuck_site_name {index}")
 
         resp = Response.check_resp(self.comm.read_line())
-        site : ChuckSite = ChuckSite.fromSentioAbbr(resp.message())
+        site : ChuckSite = ChuckSite.from_string(resp.message())
         
         return site
 
-    def get_chuck_site_pos(self, site: ChuckSite | None = None) -> tuple[float, float, float]:
+    def get_chuck_site_pos(self, site: Optional[ChuckSite] = None) -> tuple[float, float, float]:
         """Retrieve position information of a chuck site.
 
         Args:
@@ -1312,11 +1335,9 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         speed_str = resp.message().split(",")[0]
 
-        speed = ChuckSpeed.fromSentioAbbr(speed_str)
+        speed = ChuckSpeed.from_string(speed_str)
 
         return speed
-
-    from sentio_prober_control.Sentio.Enumerations import ChuckSite
 
     def get_vacuum_status(self, site: ChuckSite | None = None) -> VacuumState:
         """Get the vacuum status of a chuck site.
@@ -1336,7 +1357,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         status = resp.message().split(",")[0]
 
-        return VacuumState.fromSentioAbbr(status)
+        return VacuumState.from_string(status)
     
     def get_wafer_diameter(self) -> float:
         """Get the diameter of wafer on chuck.

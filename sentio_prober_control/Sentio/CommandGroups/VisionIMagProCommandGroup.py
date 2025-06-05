@@ -12,8 +12,8 @@ class VisionIMagProCommandGroup(CommandGroupBase):
     of the vision attribute of the [SentioProber](SentioProber.md) class.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober)
 
 
     def move_z(self, ref: IMagProZReference, pos: float) -> float:

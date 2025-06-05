@@ -1,5 +1,6 @@
 from typing import Tuple
 
+
 from sentio_prober_control.Sentio.Enumerations import AutoFocusAlgorithm, CameraMountPoint, DefaultPattern
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -12,8 +13,8 @@ class VisionCameraCommandGroup(CommandGroupBase):
     of the vision attribute of the [SentioProber](SentioProber.md) class.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober)
 
     def set_light(self, mp: CameraMountPoint, value: int) -> None:
         """Set intensity of the light.

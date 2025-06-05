@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional, Tuple, List
 from dataclasses import dataclass
 
-from sentio_prober_control.Sentio.Enumerations import ChuckSite
+from sentio_prober_control.Sentio.Enumerations import ChuckSite, ElementType
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.AuxCleaningGroup import AuxCleaningGroup
@@ -22,9 +22,10 @@ class ElementInfoResponse:
         parts = raw_response.split(",")
         if len(parts) < 7:
             raise ProberException("Unexpected response for element info.")
+
         # Parse the parts into an ElementInfo object.
         self.element_info = ElementInfo(
-            element_type=ElementType.from_str(parts[0]),
+            element_type=ElementType.from_string(parts[0]),
             element_subtype=parts[1],
             x_position=float(parts[2]),
             y_position=float(parts[3]),
@@ -40,28 +41,8 @@ class ElementInfoResponse:
         """
         return self.element_info
 
-# --- New Enumerator for element types ---
-class ElementType(Enum):
-    """Represents the type of a calibration element."""
-    Open = 0
-    Short = 1
-    Thru = 2
-    Load = 3
-    Align = 4
-    Unknown = 99
 
-    @classmethod
-    def from_str(cls, s: str) -> "ElementType":
-        mapping = {
-            "open": cls.Open,
-            "short": cls.Short,
-            "thru": cls.Thru,
-            "load" : cls.Load,
-            "align": cls.Align
-        }
-        return mapping.get(s.lower(), cls.Unknown)
 
-# --- New data class for element information ---
 @dataclass
 class ElementInfo:
     element_type: ElementType
@@ -72,7 +53,7 @@ class ElementInfo:
     touch_count: int
     life_time: float
 
-# --- Updated AuxCommandGroup with eleven API methods ---
+
 class AuxCommandGroup(ModuleCommandGroupBase):
     """This command group contains functions for working with auxiliary sites of the chuck.
     You are not meant to create instances of this class on your own. Instead, use the aux
@@ -82,9 +63,9 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cleaning (AuxCleaningGroup): A subgroup to provide logic for probe cleaning.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm, "aux")
-        self.cleaning: AuxCleaningGroup = AuxCleaningGroup(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober, "aux")
+        self.cleaning: AuxCleaningGroup = AuxCleaningGroup(prober)
 
     # --- Helper method to validate that the given site is an auxiliary site ---
     def _validate_aux_site(self, site: "ChuckSite") -> None:
@@ -93,9 +74,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         if site in (ChuckSite.Wafer, ChuckSite.ChuckCamera):
             raise ProberException(f"Invalid auxiliary site: {site.name}.")
 
-    # -------------------------------------------------------------------------
-    # 1) retrieve_substrate_data
-    # -------------------------------------------------------------------------
     def retrieve_substrate_data(self, site: Optional["ChuckSite"] = None) -> List["ChuckSite"]:
         """
         Retrieves contact and home information from the configuration file and assigns it
@@ -134,9 +112,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
                     break
         return sites
 
-    # -------------------------------------------------------------------------
-    # 2) get_substrate_type
-    # -------------------------------------------------------------------------
     def get_substrate_type(self, site: Optional["ChuckSite"] = None) -> str:
         """
         Retrieves the type of a calibration substrate placed on the chuck.
@@ -164,9 +139,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
             return ""
         return substrate_type
 
-    # -------------------------------------------------------------------------
-    # 3) step_to_element
-    # -------------------------------------------------------------------------
     def step_to_element(
         self,
         element_standard_id: str,
@@ -193,9 +165,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
-    # -------------------------------------------------------------------------
-    # 4) step_to_dut_element
-    # -------------------------------------------------------------------------
     def step_to_dut_element(
         self,
         dut_name: str,
@@ -221,9 +190,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
-    # -------------------------------------------------------------------------
-    # 5) get_element_type
-    # -------------------------------------------------------------------------
     def get_element_type(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> ElementType:
         """
         Retrieves the type of an element on a calibration substrate placed on the chuck.
@@ -248,11 +214,8 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
         result = resp.message()
-        return ElementType.from_str(result)
+        return ElementType.from_string(result)
 
-    # -------------------------------------------------------------------------
-    # 6) get_substrate_info
-    # -------------------------------------------------------------------------
     def get_substrate_info(self, site: "ChuckSite") -> Tuple[str, str, float]:
         """
         Retrieves information of a calibration substrate or cleaning pad placed on a chuck site.
@@ -282,9 +245,6 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         life_time = float(parts[2])
         return (substrate_type, substrate_id, life_time)
 
-    # -------------------------------------------------------------------------
-    # 7) get_element_touch_count
-    # -------------------------------------------------------------------------
     def get_element_touch_count(self, element_standard_id: str, site: Optional["ChuckSite"] = None) -> int:
         """
         Retrieves the touch count of an element on a calibration substrate placed on the chuck.

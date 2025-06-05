@@ -1,6 +1,5 @@
 from typing import Tuple
 
-from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 from sentio_prober_control.Sentio.Enumerations import ProbeSentio, ProbeXYReference, ProbeZReference, ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -21,8 +20,8 @@ class ProbeCommandGroup(CommandGroupBase):
     ```
     """
 
-    def __init__(self, comm: CommunicatorBase) -> None:
-        super().__init__(comm)
+    def __init__(self, prober: 'SentioProber') -> None:
+        super().__init__(prober)
 
 
     def async_step_probe_site(self, probe: ProbeSentio, idx: int) -> int:

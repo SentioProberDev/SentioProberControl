@@ -13,9 +13,9 @@ class CompensationCommandGroup(CommandGroupBase):
     Use the SentioProber.vis.compensation group instead!
     """
 
-    def __init__(self, comm) -> None:
+    def __init__(self, prober : 'SentioProber') -> None:
         """@private"""
-        super().__init__(comm)
+        super().__init__(prober)
 
 
     @deprecated(reason="Use prober.vis.compensation.set_compensation instead.")

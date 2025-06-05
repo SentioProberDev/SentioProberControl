@@ -4,6 +4,7 @@ from sentio_prober_control.Sentio.Enumerations import (
     ThermoChuckState, 
     DialogButtons
 )
+
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
     ModuleCommandGroupBase,
@@ -12,8 +13,8 @@ from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import (
 class StatusCommandGroup(ModuleCommandGroupBase):
     """A command group for getting the status of the probe station and controlling the dashboard module."""
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm, "status")
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober, "status")
 
     def get_access_level(self) -> AccessLevel:
         """Retrieves the access level of operation.
@@ -85,7 +86,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         """
 
         self.comm.send("status:get_chuck_thermo_state")
-        state : ThermoChuckState = ThermoChuckState.fromSentioAbbr(Response.check_resp(self.comm.read_line()).message())
+        state : ThermoChuckState = ThermoChuckState.from_string(Response.check_resp(self.comm.read_line()).message())
         return state
 
     def get_high_purge_state(self) -> str:

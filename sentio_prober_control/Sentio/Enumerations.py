@@ -233,6 +233,20 @@ class ChuckPositionHint(Enum):
     OffAxisCamera = 3
 
     @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "Probing": ChuckPositionHint.Center,
+            "FrontLoad": ChuckPositionHint.FrontLoad,
+            "SideLoad": ChuckPositionHint.SideLoad,
+            "OffAxisCamera": ChuckPositionHint.OffAxisCamera
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckPositionHint abbreviation: {abbr}")
+
+    @deprecated("Use from_string instead.")
+    @staticmethod
     def fromSentioAbbr(abbr: str):
         mapping = {
             "Probing": ChuckPositionHint.Center,
@@ -275,18 +289,36 @@ class ChuckSite(Enum):
     def toSentioAbbr(self):
         switcher = {
             ChuckSite.Wafer: "Wafer",
-            ChuckSite.AuxLeft: "AuxLeft",
-            ChuckSite.AuxLeft2: "AuxLeft2",
             ChuckSite.AuxRight: "AuxRight",
+            ChuckSite.AuxLeft: "AuxLeft",
             ChuckSite.AuxRight2: "AuxRight2",
+            ChuckSite.AuxLeft2: "AuxLeft2",
             ChuckSite.ChuckCamera: "ChuckCamera",
             ChuckSite.SiPhSetHoverHeight: "SiPhSetHoverHeight",
-            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure",
+            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure"
         }
         return switcher.get(self, "Invalid chuck site")
 
     @staticmethod
-    def fromSentioAbbr(abbr: str) -> "ChuckSite":
+    def from_string(abbr: str):
+        mapping = {
+            "Wafer": ChuckSite.Wafer,
+            "AuxRight": ChuckSite.AuxRight,
+            "AuxLeft": ChuckSite.AuxLeft,
+            "AuxRight2": ChuckSite.AuxRight2,
+            "AuxLeft2": ChuckSite.AuxLeft2,
+            "ChuckCamera": ChuckSite.ChuckCamera,
+            "SiPhSetHoverHeight": ChuckSite.SiPhSetHoverHeight,
+            "SiPhFiberPowerMeasure": ChuckSite.SiPhFiberPowerMeasure,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSite abbreviation: {abbr}")
+
+    @deprecated("Use from_string instead.")
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
         mapping = {
             "Wafer": ChuckSite.Wafer,
             "AuxRight": ChuckSite.AuxRight,
@@ -310,6 +342,21 @@ class ChuckSpeed(Enum):
     Jog = 3
     Index = 4
 
+    @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "Fast": ChuckSpeed.Fast,
+            "Normal": ChuckSpeed.Normal,
+            "Slow": ChuckSpeed.Slow,
+            "Jog": ChuckSpeed.Jog,
+            "Index": ChuckSpeed.Index,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckSpeed abbreviation: {abbr}")
+
+    @deprecated("Use from_string instead.")
     @staticmethod
     def fromSentioAbbr(abbr: str):
         mapping = {
@@ -499,10 +546,10 @@ class CompensationMode(Enum):
 
     def toSentioAbbr(self):
         switcher = {
-            CompensationMode.Lateral: "Lateral",
-            CompensationMode.Vertical: "Vertical",
-            CompensationMode.Both: "Both",
-            CompensationMode.ProbeCard: "ProbeCard",
+            CompensationMode.Lateral: "lateral",
+            CompensationMode.Vertical: "vertical",
+            CompensationMode.Both: "both",
+            CompensationMode.ProbeCard: "probecard",
             CompensationMode.MapScan: "mapscan",
             CompensationMode.Thermal: "thermal",
             CompensationMode.Topography: "topography",
@@ -540,31 +587,6 @@ class CompensationType(Enum):
             CompensationType.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid CompensationType")
-
-
-class ZCompensationType(Enum):
-    """A list of Z compensation types.
-
-    Attributes:
-        Disable (0): None
-        Topography (1): Vertical (Z) compensation.
-        MapScan (2): Both lateral and vertical compensation.
-        AlignDie (3): Probe card compensation.
-        SkateDetection (4): MapScan compensation.
-    """
-
-    Disable = 0
-    OnTheFly = 1
-    Topography = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ZCompensationType.Disable: "None",
-            ZCompensationType.OnTheFly: "OnTheFly",
-            ZCompensationType.Topography: "Topography",
-        }
-        return switcher.get(self, "Invalid XyCompensationType")
-
 
 class DefaultPattern(Enum):
     """A list of slots for visual patterns used by SENTIO.
@@ -656,6 +678,25 @@ class DetectionCoordindates(Enum):
         return switcher.get(self, "Invalid DetectionCoordindates")
 
 
+class DevicePosition(Enum):
+    """Control swap bridge move to up or down side.
+
+    Attributes:
+        Up (0): Move device to up position.
+        Down (1): Move device to down position.
+    """
+    
+    Up = 0
+    Down = 1
+    
+    def toSentioAbbr(self):
+        switcher = {
+            DevicePosition.Up: "Up",
+            DevicePosition.Down: "Down",
+        }
+        return switcher.get(self, "Invalid device position.")
+    
+
 class DialogButtons(Enum):
     """A list of buttons that can be used in SENTIO's dialogs.
 
@@ -691,7 +732,25 @@ class DialogButtons(Enum):
             DialogButtons.YesNoCancel: "YesNoCancel",
         }
         return switcher.get(self, "Invalid button id")
-    
+
+    @staticmethod
+    def from_string(abbr: str) -> "DialogButtons":
+        mapping = {
+            "Ok": DialogButtons.Ok,
+            "Cancel": DialogButtons.Cancel,
+            "OkCancel": DialogButtons.OkCancel,
+            "Yes": DialogButtons.Yes,
+            "No": DialogButtons.No,
+            "YesNo": DialogButtons.YesNo,
+            "YesCancel": DialogButtons.YesCancel,
+            "YesNoCancel": DialogButtons.YesNoCancel,
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown button abbreviation: {abbr}")
+
+    @deprecated("Use from_string instead.")
     @staticmethod
     def fromSentioAbbr(abbr: str) -> "DialogButtons":
         mapping = {
@@ -787,6 +846,46 @@ class DriftType(Enum):
     """Specifies the type of drift."""
     DriftRef = "DriftRef"
     Drift = "Drift"
+
+
+class ElementType(Enum):
+    """Represents the type of a calibration element."""
+    Open = 0
+    Short = 1
+    Thru = 2
+    Load = 3
+    Align = 4
+    Unknown = 99
+
+    @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "open": ElementType.Open,
+            "short": ElementType.Short,
+            "thru": ElementType.Thru,
+            "load" : ElementType.Load,
+            "align": ElementType.Align
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ElementType string: {abbr}")
+
+    @deprecated("Use from_string instead.")
+    @staticmethod
+    def fromSentioAbbr(abbr: str):
+        mapping = {
+            "open": ElementType.Open,
+            "short": ElementType.Short,
+            "thru": ElementType.Thru,
+            "load" : ElementType.Load,
+            "align": ElementType.Align
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingPriority abbreviation: {abbr}")
+
 
 @deprecated("ExecuteAction is deprecated.")
 class ExecuteAction(Enum):
@@ -1610,6 +1709,20 @@ class RoutingPriority(Enum):
         return switcher.get(self, "Invalid RoutingPriority enumerator")
 
     @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "R": RoutingPriority.RowUniDir,
+            "C": RoutingPriority.ColUniDir,
+            "WR": RoutingPriority.RowBiDir,
+            "WC": RoutingPriority.ColBiDir,
+        }
+        try:
+            return mapping[abbr.upper()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingPriority abbreviation: {abbr}")
+
+    @deprecated("Use from_string instead.")
+    @staticmethod
     def fromSentioAbbr(abbr: str):
         mapping = {
             "R": RoutingPriority.RowUniDir,
@@ -1647,6 +1760,20 @@ class RoutingStartPoint(Enum):
         }
         return switcher.get(self, "Invalid RoutingStartPoint enumerator")
 
+    @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "UL": RoutingStartPoint.UpperLeft,
+            "UR": RoutingStartPoint.UpperRight,
+            "LL": RoutingStartPoint.LowerLeft,
+            "LR": RoutingStartPoint.LowerRight,
+        }
+        try:
+            return mapping[abbr.upper()]
+        except KeyError:
+            raise ValueError(f"Unknown RoutingStartPoint abbreviation: {abbr}")
+        
+    @deprecated("Use from_string instead.")
     @staticmethod
     def fromSentioAbbr(abbr: str):
         mapping = {
@@ -1732,6 +1859,28 @@ class SubsiteGroup(Enum):
         return switcher.get(self, "Invalid subsite group identifier")
     
 
+class SwapBridgeSide(Enum):    
+    """Control swap bridge move to right or left side.
+
+    Attributes:
+        Right (0): Move swap bridge to right side.
+        Left (1): Move swap bridge to left side.
+        Current (2): Keep bridge at current side.
+    """
+    
+    Right = 0
+    Left = 1
+    Current = 2
+    
+    def toSentioAbbr(self):
+        switcher = {
+            SwapBridgeSide.Right: "Right",
+            SwapBridgeSide.Left: "Left",
+            SwapBridgeSide.Current: "Current",
+        }
+        return switcher.get(self, "Invalid swap bridge side.")
+    
+
 class ThermoChuckState(Enum):
     """The state of a thermo chuck.
 
@@ -1754,6 +1903,34 @@ class ThermoChuckState(Enum):
     Controlling = 6
     Unknown = 7
 
+    @staticmethod
+    def from_string(abbr: str) -> "ThermoChuckState":
+        """Convert a SENTIO abbreviation to a ThermoChuckState.
+
+        Args:
+            abbr (str): The SENTIO abbreviation.
+
+        Returns:
+            ThermoChuckState: The corresponding ThermoChuckState.
+
+        Raises:
+            ValueError: If the abbreviation is not recognized.
+        """
+        mapping = {
+            "soaking": ThermoChuckState.Soaking,
+            "cooling": ThermoChuckState.Cooling,
+            "heating": ThermoChuckState.Heating,
+            "uncontrolled": ThermoChuckState.Uncontrolled,
+            "standby": ThermoChuckState.Standby,
+            "error": ThermoChuckState.Error,
+            "controlling": ThermoChuckState.Controlling,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ThermoChuckState abbreviation: {abbr}")
+        
+    @deprecated("Use from_string instead.")
     @staticmethod
     def fromSentioAbbr(abbr: str) -> "ThermoChuckState":
         """Convert a SENTIO abbreviation to a ThermoChuckState.
@@ -1825,6 +2002,18 @@ class VacuumState(Enum):
             VacuumState.On: "On",
         }.get(self, "Invalid VacuumState")
 
+    @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "0": VacuumState.Off,
+            "1": VacuumState.On
+        }
+        try:
+            return mapping[abbr]
+        except KeyError:
+            raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
+        
+    @deprecated("Use from_string instead.") 
     @staticmethod
     def fromSentioAbbr(abbr: str):
         mapping = {
@@ -2010,41 +2199,43 @@ class ZPositionHint(Enum):
         }
         return switcher.get(self, "Invalid ZPositionHint")
 
-class SwapBridgeSide(Enum):    
-    """Control swap bridge move to right or left side.
+    @staticmethod
+    def from_string(abbr: str) -> "ZPositionHint":
+        """Convert a string to a ZPositionHint. """
+        mapping = {
+            "default":ZPositionHint.Default,
+            "contact":ZPositionHint.Contact,
+            "hover":ZPositionHint.Hover,
+            "separation":ZPositionHint.Separation,
+            "lift":ZPositionHint.Lift,
+            "transfer":ZPositionHint.Transfer,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckPositionHint abbreviation: {abbr}")
+
+
+class ZCompensationType(Enum):
+    """A list of Z compensation types.
 
     Attributes:
-        Right (0): Move swap bridge to right side.
-        Left (1): Move swap bridge to left side.
-        Current (2): Keep bridge at current side.
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
     """
-    
-    Right = 0
-    Left = 1
-    Current = 2
-    
-    def toSentioAbbr(self):
-        switcher = {
-            SwapBridgeSide.Right: "Right",
-            SwapBridgeSide.Left: "Left",
-            SwapBridgeSide.Current: "Current",
-        }
-        return switcher.get(self, "Invalid swap bridge side.")
-    
-class DevicePosition(Enum):
-    """Control swap bridge move to up or down side.
 
-    Attributes:
-        Up (0): Move device to up position.
-        Down (1): Move device to down position.
-    """
-    
-    Up = 0
-    Down = 1
-    
+    Disable = 0
+    OnTheFly = 1
+    Topography = 2
+
     def toSentioAbbr(self):
         switcher = {
-            DevicePosition.Up: "Up",
-            DevicePosition.Down: "Down",
+            ZCompensationType.Disable: "None",
+            ZCompensationType.OnTheFly: "OnTheFly",
+            ZCompensationType.Topography: "Topography",
         }
-        return switcher.get(self, "Invalid device position.")
+        return switcher.get(self, "Invalid XyCompensationType")
+

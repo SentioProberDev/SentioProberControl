@@ -17,6 +17,7 @@ from sentio_prober_control.Sentio.Enumerations import (
     PtpaType,
     SnapshotLocation,
     SnapshotType, MoveAxis,)
+
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import ModuleCommandGroupBase
@@ -37,13 +38,13 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         compensation (VisionCompensationGroup): A subgroup to provide logic for compensation specific functions.
     """
 
-    def __init__(self, comm: CommunicatorBase) -> None:
-        super().__init__(comm, "vis")
+    def __init__(self, prober: 'SentioProber') -> None:
+        super().__init__(prober, "vis")
 
-        self.camera = VisionCameraCommandGroup(comm)
-        self.imagpro = VisionIMagProCommandGroup(comm)
-        self.compensation = VisionCompensationGroup(comm)
-        self.pattern = VisionPatternCommandGroup(comm)
+        self.camera = VisionCameraCommandGroup(prober)
+        self.imagpro = VisionIMagProCommandGroup(prober)
+        self.compensation = VisionCompensationGroup(prober)
+        self.pattern = VisionPatternCommandGroup(prober)
 
     def align_wafer(self, mode: AutoAlignCmd = AutoAlignCmd.AlignOnly) -> None:
         """Perform a wafer alignment.

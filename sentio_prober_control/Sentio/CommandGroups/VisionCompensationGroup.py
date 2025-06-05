@@ -1,5 +1,6 @@
 from typing import Tuple
 
+
 from sentio_prober_control.Sentio.Enumerations import CompensationMode, CompensationType
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -14,8 +15,8 @@ class VisionCompensationGroup(CommandGroupBase):
     of the vision attribute of the [SentioProber](SentioProber.md) class.
     """
 
-    def __init__(self, comm):
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber'):
+        super().__init__(prober)
 
     @deprecated("Use vision.compensation.enable() instead")
     def set_compensation(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:

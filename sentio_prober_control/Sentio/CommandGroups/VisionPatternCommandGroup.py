@@ -1,7 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import BinSelection, BinQuality, FindPatternReference, CameraMountPoint, \
-    DefaultPattern
+from sentio_prober_control.Sentio.Enumerations import ( FindPatternReference, CameraMountPoint, DefaultPattern )
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
