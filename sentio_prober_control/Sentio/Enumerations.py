@@ -1898,21 +1898,21 @@ class XyReference(Enum):
     def from_string(abbr: str) -> "XyReference":
         """ Convert a string to a XyReference. """
         mapping = {
-            "M" :          XyReference.Machine,
-            "Machine" :    XyReference.Machine,
-            "H" :          XyReference.Home,
-            "Home" :       XyReference.Home,
-            "C":           XyReference.Center,
-            "Center":      XyReference.Center,
-            "Z":           XyReference.Zero,
-            "Zero":        XyReference.Zero,
-            "U":           XyReference.UserDefined,
-            "UserDefined": XyReference.UserDefined,
-            "R":           XyReference.Current, 
-            "Relative":    XyReference.Current, 
-            "Current":     XyReference.Current, 
-            "A":           XyReference.RealPos,
-            "RealPos":     XyReference.RealPos,
+            "m" :          XyReference.Machine,
+            "machine" :    XyReference.Machine,
+            "h" :          XyReference.Home,
+            "home" :       XyReference.Home,
+            "c":           XyReference.Center,
+            "center":      XyReference.Center,
+            "z":           XyReference.Zero,
+            "zero":        XyReference.Zero,
+            "u":           XyReference.UserDefined,
+            "userdefined": XyReference.UserDefined,
+            "r":           XyReference.Current, 
+            "relative":    XyReference.Current, 
+            "current":     XyReference.Current, 
+            "a":           XyReference.RealPos,
+            "realpos":     XyReference.RealPos,
         }
         try:
             return mapping[abbr.lower()]

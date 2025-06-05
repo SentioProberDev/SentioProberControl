@@ -22,7 +22,6 @@ from sentio_prober_control.Sentio.Enumerations import (
     SwapBridgeSide,
     DevicePosition,
     VacuumState,
-    VceZReference,
     WorkArea,
     XyReference,
     ZReference
@@ -45,6 +44,7 @@ from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import Status
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.ScopeCommandGroup import ScopeCommandGroup
 
 class SentioCommunicationType(Enum):
     """This enum defines different types of prober communication.
@@ -102,7 +102,7 @@ class SentioProber(ProberBase):
         self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
         # Command groups for stages; Only available for Sentio > 25.2
-        #self.scope: ScopeCommandGroup = ScopeCommandGroup(self)
+        self.scope: ScopeCommandGroup = ScopeCommandGroup(self)
 
         # deprecated command groups; may be removed at any time.
         # DO NOT USE THEM IN NEW CODE!
@@ -761,7 +761,8 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_vce_z(self, stage: Stage, ref: VceZReference, z: float) -> float:
+
+    def move_vce_z(self, stage: Stage, ref: ZReference, z: float) -> float:
         """Move VCE stage to a given z position.
 
         Args:
