@@ -18,7 +18,7 @@ class AccessLevel(Enum):
     Service = 1 << 3,
     Debug = 1 << 4
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             AccessLevel.Operator: "Operator",
             AccessLevel.Admin: "Admin",
@@ -44,7 +44,7 @@ class AutoAlignCmd(Enum):
     UpdateDieSize = 2
     TwoPt = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             AutoAlignCmd.AlignOnly: "alignonly",
             AutoAlignCmd.AutoDieSize: "auto",
@@ -71,7 +71,7 @@ class AutoFocusAlgorithm(Enum):
     LaplaceStdDev = 4
     Harris = 5
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             AutoFocusAlgorithm.Gradient: "Gradient",
             AutoFocusAlgorithm.Bandpass: "Bandpass",
@@ -96,7 +96,7 @@ class AutoFocusCmd(Enum):
     Focus = 1
     GoTo = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             AutoFocusCmd.Calibration: "C",
             AutoFocusCmd.Focus: "F",
@@ -124,7 +124,7 @@ class AxisOrient(Enum):
     UpRight = 2
     UpLeft = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             AxisOrient.DownRight: "DR",
             AxisOrient.DownLeft: "DL",
@@ -147,7 +147,7 @@ class BinSelection(Enum):
     DiesOnly = 1
     SubsitesOnly = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             BinSelection.All: "a",
             BinSelection.DiesOnly: "d",
@@ -169,7 +169,7 @@ class BinQuality(Enum):
     Fail = 1
     Undefined = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             BinQuality.Pass: "pass",
             BinQuality.Fail: "fail",
@@ -203,7 +203,7 @@ class CameraMountPoint(Enum):
     Angled = 7
     BottomScope = 8
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             CameraMountPoint.Scope: "scope",
             CameraMountPoint.Scope2: "scope2",
@@ -233,7 +233,7 @@ class ChuckPositionHint(Enum):
     OffAxisCamera = 3
 
     @staticmethod
-    def fromSentioAbbr(abbr: str):
+    def from_string(abbr: str):
         mapping = {
             "Probing": ChuckPositionHint.Center,
             "FrontLoad": ChuckPositionHint.FrontLoad,
@@ -272,21 +272,21 @@ class ChuckSite(Enum):
     SiPhSetHoverHeight = 6
     SiPhFiberPowerMeasure = 7
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ChuckSite.Wafer: "Wafer",
-            ChuckSite.AuxLeft: "AuxLeft",
-            ChuckSite.AuxLeft2: "AuxLeft2",
             ChuckSite.AuxRight: "AuxRight",
+            ChuckSite.AuxLeft: "AuxLeft",
             ChuckSite.AuxRight2: "AuxRight2",
+            ChuckSite.AuxLeft2: "AuxLeft2",
             ChuckSite.ChuckCamera: "ChuckCamera",
             ChuckSite.SiPhSetHoverHeight: "SiPhSetHoverHeight",
-            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure",
+            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure"
         }
         return switcher.get(self, "Invalid chuck site")
 
     @staticmethod
-    def fromSentioAbbr(abbr: str) -> "ChuckSite":
+    def from_string(abbr: str):
         mapping = {
             "Wafer": ChuckSite.Wafer,
             "AuxRight": ChuckSite.AuxRight,
@@ -311,7 +311,7 @@ class ChuckSpeed(Enum):
     Index = 4
 
     @staticmethod
-    def fromSentioAbbr(abbr: str):
+    def from_string(abbr: str):
         mapping = {
             "Fast": ChuckSpeed.Fast,
             "Normal": ChuckSpeed.Normal,
@@ -331,7 +331,7 @@ class ChuckThermoEnergyMode(Enum):
     HighPower = 2
     Customized = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ChuckThermoEnergyMode.Fast: "Fast",
             ChuckThermoEnergyMode.Optimal: "Optimal",
@@ -352,90 +352,12 @@ class ChuckThermoHoldMode(Enum):
     Active = 0
     Nonactive = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ChuckThermoHoldMode.Active: "Active",
             ChuckThermoHoldMode.Nonactive: "Nonactive",
         }
         return switcher.get(self, "Invalid ChuckThermoHoldMode")
-
-
-class ChuckThetaReference(Enum):
-    """Reference to use for chuck theat motions.
-
-    Attributes:
-        Zero (0): Use zero of the theta axis.
-        Site (1): Use the trained site of "home" angle as the reference.
-        Relative (2): Use the current theta position as reference.
-    """
-
-    Zero = 0
-    Site = 1
-    Relative = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckThetaReference.Zero: "Z",
-            ChuckThetaReference.Site: "S",
-            ChuckThetaReference.Relative: "R",
-        }
-        return switcher.get(self, "Invalid chuck theta reference")
-
-
-class ChuckXYReference(Enum):
-    """Defines a reference for chuck xy motions.
-
-    Attributes:
-        Zero (0): Use absolute chuck coordinates.
-        Home (1): Use home position as reference.
-        Relative (2): Use curent chuck position as reference.
-        Center (3): Use chuck center position as reference.
-        User (4): Use user defined coordinate system.
-    """
-
-    Zero = 0
-    Home = 1
-    Relative = 2
-    Center = 3
-    User = 4
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckXYReference.Zero: "Z",
-            ChuckXYReference.Home: "H",
-            ChuckXYReference.Relative: "R",
-            ChuckXYReference.Center: "C",
-            ChuckXYReference.User: "U",
-        }
-        return switcher.get(self, "Invalid chuck xy reference")
-
-
-class ChuckZReference(Enum):
-    """Defines a position reference for chuck z-motions.
-
-    Attributes:
-        Zero (0): Use absolute chuck z coordinates with respect the the physical axis zero positon.
-        Relative (1): Use relative chuck z coordinated with respect to the current position.
-        Contact (2): Use relative chuck z coordinated with respect to the chucks contact height.
-        Hover (3): Use relative chuck z coordinated with respect to the chucks hover height.
-        Separation (4): Use relative chuck z coordinated with respect to the chucks separation height.
-    """
-
-    Zero = 0
-    Relative = 1
-    Contact = 2
-    Hover = 3
-    Separation = 4
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckZReference.Zero: "Z",
-            ChuckZReference.Relative: "R",
-            ChuckZReference.Contact: "C",
-            ChuckZReference.Hover: "H",
-            ChuckZReference.Separation: "S",
-        }
-        return switcher.get(self, "Invalid chuck z reference")
 
 
 class ColorScheme(Enum):
@@ -449,7 +371,7 @@ class ColorScheme(Enum):
     ColorFromBin = 0
     ColorFromValue = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {ColorScheme.ColorFromBin: 0, ColorScheme.ColorFromValue: 1}
         return switcher.get(self, "Invalid ColorScheme")
 
@@ -464,7 +386,7 @@ class Compensation(Enum):
     Thermal = 5
     Topography = 6
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             Compensation.Lateral: "lateral",
             Compensation.Vertical: "vertical",
@@ -497,12 +419,12 @@ class CompensationMode(Enum):
     Thermal = 5
     Topography = 6
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
-            CompensationMode.Lateral: "Lateral",
-            CompensationMode.Vertical: "Vertical",
-            CompensationMode.Both: "Both",
-            CompensationMode.ProbeCard: "ProbeCard",
+            CompensationMode.Lateral: "lateral",
+            CompensationMode.Vertical: "vertical",
+            CompensationMode.Both: "both",
+            CompensationMode.ProbeCard: "probecard",
             CompensationMode.MapScan: "mapscan",
             CompensationMode.Thermal: "thermal",
             CompensationMode.Topography: "topography",
@@ -529,7 +451,7 @@ class CompensationType(Enum):
     OnTheFly = 5
     OffAxis = 6
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             CompensationType.DieAlign: "DieAlign",
             CompensationType.Topography: "Topography",
@@ -540,31 +462,6 @@ class CompensationType(Enum):
             CompensationType.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid CompensationType")
-
-
-class ZCompensationType(Enum):
-    """A list of Z compensation types.
-
-    Attributes:
-        Disable (0): None
-        Topography (1): Vertical (Z) compensation.
-        MapScan (2): Both lateral and vertical compensation.
-        AlignDie (3): Probe card compensation.
-        SkateDetection (4): MapScan compensation.
-    """
-
-    Disable = 0
-    OnTheFly = 1
-    Topography = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ZCompensationType.Disable: "None",
-            ZCompensationType.OnTheFly: "OnTheFly",
-            ZCompensationType.Topography: "Topography",
-        }
-        return switcher.get(self, "Invalid XyCompensationType")
-
 
 class DefaultPattern(Enum):
     """A list of slots for visual patterns used by SENTIO.
@@ -589,7 +486,7 @@ class DefaultPattern(Enum):
     Vce = 6
     Ptpa = 7
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             DefaultPattern.Align: "align",
             DefaultPattern.Home: "home",
@@ -623,7 +520,7 @@ class DetectionAlgorithm(Enum):
     ProbeDetector = 1
     WaferDetector = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             DetectionAlgorithm.Keypoint: "Keypoint",
             DetectionAlgorithm.ProbeDetector: "ProbeDetector",
@@ -647,7 +544,7 @@ class DetectionCoordindates(Enum):
     Fov = 1
     Roi = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             DetectionCoordindates.Image: "Image",
             DetectionCoordindates.Fov: "Fov",
@@ -655,6 +552,25 @@ class DetectionCoordindates(Enum):
         }
         return switcher.get(self, "Invalid DetectionCoordindates")
 
+
+class DevicePosition(Enum):
+    """Control swap bridge move to up or down side.
+
+    Attributes:
+        Up (0): Move device to up position.
+        Down (1): Move device to down position.
+    """
+    
+    Up = 0
+    Down = 1
+    
+    def to_string(self):
+        switcher = {
+            DevicePosition.Up: "Up",
+            DevicePosition.Down: "Down",
+        }
+        return switcher.get(self, "Invalid device position.")
+    
 
 class DialogButtons(Enum):
     """A list of buttons that can be used in SENTIO's dialogs.
@@ -679,7 +595,7 @@ class DialogButtons(Enum):
     YesCancel = 7
     YesNoCancel = 8
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             DialogButtons.Ok: "Ok",
             DialogButtons.Cancel: "Cancel",
@@ -691,9 +607,9 @@ class DialogButtons(Enum):
             DialogButtons.YesNoCancel: "YesNoCancel",
         }
         return switcher.get(self, "Invalid button id")
-    
+
     @staticmethod
-    def fromSentioAbbr(abbr: str) -> "DialogButtons":
+    def from_string(abbr: str) -> "DialogButtons":
         mapping = {
             "Ok": DialogButtons.Ok,
             "Cancel": DialogButtons.Cancel,
@@ -730,7 +646,7 @@ class DieCompensationMode(Enum):
     ProbeCard = 3
     SkateDetection = 4
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             DieCompensationMode.Lateral: "Lateral",
             DieCompensationMode.Vertical: "Vertical",
@@ -758,7 +674,7 @@ class DieCompensationType(Enum):
     OnTheFly = 5
     Offaxis = 6
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             DieCompensationType.DieAlign: "DieAlign",
             DieCompensationType.MapScan: "MapScan",
@@ -788,12 +704,37 @@ class DriftType(Enum):
     DriftRef = "DriftRef"
     Drift = "Drift"
 
+
+class ElementType(Enum):
+    """Represents the type of a calibration element."""
+    Open = 0
+    Short = 1
+    Thru = 2
+    Load = 3
+    Align = 4
+    Unknown = 99
+
+    @staticmethod
+    def from_string(abbr: str):
+        mapping = {
+            "open": ElementType.Open,
+            "short": ElementType.Short,
+            "thru": ElementType.Thru,
+            "load" : ElementType.Load,
+            "align": ElementType.Align
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ElementType string: {abbr}")
+
+
 @deprecated("ExecuteAction is deprecated.")
 class ExecuteAction(Enum):
     Execute = 0
     Abort = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ExecuteAction.Execute: "execute",
             ExecuteAction.Abort: "abort",
@@ -807,7 +748,7 @@ class ExecuteCompensation(Enum):
     MapScan = 1
     Topography = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ExecuteCompensation.AlignDie: "AlignDie",
             ExecuteCompensation.MapScan: "MapScan",
@@ -829,7 +770,7 @@ class FiberType(Enum):
     Array = 1
     Lensed = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             FiberType.Single: "Single",
             FiberType.Array: "Array",
@@ -849,7 +790,7 @@ class FindPatternReference(Enum):
     DieHome = 0
     CenterOfRoi = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             FindPatternReference.DieHome: "DieHome",
             FindPatternReference.CenterOfRoi: "CenterOfRoi",
@@ -861,7 +802,7 @@ class HighPowerAirState(Enum):
     Off = 0
     On = 1
 
-    def toSentioAbbr(self) -> str:
+    def to_string(self) -> str:
         return {
             HighPowerAirState.Off: "0",
             HighPowerAirState.On: "1",
@@ -893,7 +834,7 @@ class IMagProZReference(Enum):
     Relative = 1
     Center = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             IMagProZReference.Zero: "Zero",
             IMagProZReference.Relative: "Relative",
@@ -925,7 +866,7 @@ class LoaderStation(Enum):
     WaferWallet = 6
     IdReader = 7
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             LoaderStation.Cassette1: "cas1",
             LoaderStation.Cassette2: "cas2",
@@ -953,7 +894,7 @@ class LoadPosition(Enum):
     Side = 1
     Center = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             LoadPosition.Front: "front", 
             LoadPosition.Side: "side", 
@@ -990,7 +931,7 @@ class Module(Enum):
     Loader = 6
     Dashboard = 7
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             Module.Wafermap: "Wafermap",
             Module.Vision: "Vision",
@@ -1011,7 +952,7 @@ class MoveAxis(Enum):
     Imagpro = 1
     Chuck = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             MoveAxis.Scope: "scope",
             MoveAxis.Imagpro: "imagpro",
@@ -1026,7 +967,7 @@ class OnTheFlyMode(Enum):
     Both = 2
     ProbeCard = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             OnTheFlyMode.Lateral: "AlignDie",
             OnTheFlyMode.Vertical: "MapScan",
@@ -1054,7 +995,7 @@ class OrientationMarker(Enum):
     Notch = 0
     Flat = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {OrientationMarker.Notch: "Notch", OrientationMarker.Flat: "Flat"}
         return switcher.get(self, "Invalid orientation marker")
 
@@ -1074,7 +1015,7 @@ class PathSelection(Enum):
     Undefined = 2
     Unbinned = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             PathSelection.Pass: "pass",
             PathSelection.Fail: "fail",
@@ -1098,7 +1039,7 @@ class PoiReferenceXy(Enum):
     DieCenter = 0
     StageCenter = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             PoiReferenceXy.DieCenter: "DieCenter",
             PoiReferenceXy.StageCenter: "StageCenter",
@@ -1117,7 +1058,7 @@ class ProjectFileInfo(Enum):
     NameOnly = 0
     FullPath = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ProjectFileInfo.NameOnly: "Name",
             ProjectFileInfo.FullPath: "FullPath",
@@ -1136,7 +1077,7 @@ class PtpaType(Enum):
     OffAxis = 0
     OnAxis = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {PtpaType.OffAxis: "offaxis", PtpaType.OnAxis: "onaxis"}
         return switcher.get(self, "Invalid ptpa type")
 
@@ -1152,7 +1093,7 @@ class SnapshotType(Enum):
         will also contain the overlays displayed by the vision module but the image resolution
         will be whatever the current resolution of SENTIO's vision module is. """
 
-    def toSentioAbbr(self):
+    def to_string(self):
         """Turn the SnapshotType into a string that can be used as a parameter for SENTIO's snap_image command."""
         switcher = {SnapshotType.CameraRaw: "0", SnapshotType.WithOverlays: "1"}
         return switcher.get(self, "Invalid SnapshotType type")
@@ -1173,7 +1114,7 @@ class SoftContactState(Enum):
     Disable = 0
     Enable = 1
 
-    def toSentioAbbr(self) -> str:
+    def to_string(self) -> str:
         return {
             SoftContactState.Disable: "0",
             SoftContactState.Enable: "1",
@@ -1195,6 +1136,10 @@ class Stage(Enum):
         Probe2 (5): Second motorized probe.
         Probe3 (6): Third motorized probe.
         Probe4 (7): Fourth motorized probe.
+        BottomPlaten (8): The bottom platen stage.
+        BottomScope (9): The bottom scope stage. This is an optional stage.
+        TopProbe (10): Not a specific stage but a reference to a top probe. 
+        BottomProbe (11): Not a specific stage but a reference to a bottom probe.
     """
 
     Chuck = 0
@@ -1205,8 +1150,13 @@ class Stage(Enum):
     Probe2 = 5
     Probe3 = 6
     Probe4 = 7
+    BottomPlaten = 8
+    BottomScope = 9
+    TopProbe = 10
+    BottomProbe = 11
+    AuxiliaryScope = 12
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             Stage.Chuck: "chuck",
             Stage.Scope: "scope",
@@ -1216,6 +1166,11 @@ class Stage(Enum):
             Stage.Probe2: "Probe02",
             Stage.Probe3: "Probe03",
             Stage.Probe4: "Probe04",
+            Stage.BottomPlaten: "bottomplaten",
+            Stage.BottomScope: "bottomscope",
+            Stage.TopProbe: "topprobe",
+            Stage.BottomProbe: "bottomprobe",
+            Stage.AuxiliaryScope: "auxscope",
         }
         return switcher.get(self, "Invalid stage")
 
@@ -1233,7 +1188,7 @@ class SteppingContactMode(Enum):
     StepToSeparation = 1
     LockContact = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             SteppingContactMode.BackToContact: "BackToContact",
             SteppingContactMode.StepToSeparation: "StepToSeparation",
@@ -1261,7 +1216,7 @@ class TestSelection(Enum):
     GoodUglyAndEdge = 3
     All = 4
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             TestSelection.Nothing: "n",
             TestSelection.Good: "g",
@@ -1270,44 +1225,6 @@ class TestSelection(Enum):
             TestSelection.All: "a",
         }
         return switcher.get(self, "Invalid TestSelection")
-
-
-class ScopeXYReference(Enum):
-    """Position reference for scope motions.
-
-    Attributes:
-        Zero (0): Use absolute scope coordinates.
-        Home (1): Use coordinates with respect to the scope home position.
-        Relative (2): Use coordinates with respect to the current scope position.
-    """
-
-    Zero = 0
-    Home = 1
-    Relative = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ScopeXYReference.Zero: "Z",
-            ScopeXYReference.Home: "H",
-            ScopeXYReference.Relative: "R",
-        }
-        return switcher.get(self, "Invalid scope xy reference")
-
-
-class ScopeZReference(Enum):
-    """Scope z reference for scoep motions.
-
-    Attributes:
-        Zero (0): Use absolute scope coordinates.
-        Relative (1): Use coordinates with respect to the current scope position.
-    """
-
-    Zero = 0
-    Relative = 1
-
-    def toSentioAbbr(self):
-        switcher = {ScopeZReference.Zero: "Z", ScopeZReference.Relative: "R"}
-        return switcher.get(self, "Invalid scope z reference")
 
 
 class ProbeSentio(Enum):
@@ -1325,7 +1242,7 @@ class ProbeSentio(Enum):
     North = 2
     South = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ProbeSentio.East: "East",
             ProbeSentio.West: "West",
@@ -1333,53 +1250,6 @@ class ProbeSentio(Enum):
             ProbeSentio.South: "South",
         }
         return switcher.get(self, "Invalid ProbeSentio enumerator")
-
-
-class ProbeXYReference(Enum):
-    """Position reference for mororized probe movements.
-
-    Attributes:
-        Zero (0): Use absolute probe coordinates.
-        Home (1): Use coordinates with respect to the probe home position.
-        Current (2): Use coordinates with respect to the current probe position.
-    """
-
-    Zero = 0
-    Home = 1
-    Current = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ProbeXYReference.Zero: "Zero",
-            ProbeXYReference.Home: "Home",
-            ProbeXYReference.Current: "Current",
-        }
-        return switcher.get(self, "Invalid probe xy reference")
-
-
-class ProbeZReference(Enum):
-    """Position reference for probe z motions.
-
-    Attributes:
-        Zero (0): Use absolute probe coordinates.
-        Current (1): Use coordinates with respect to the current probe position.
-        Contact (2): Use coordinates with respect to the contact height.
-        Separation (3): Use coordinates with respect to the separation height.
-    """
-
-    Zero = 0
-    Current = 1
-    Contact = 2
-    Separation = 3
-
-    def toSentioAbbr(self):
-        switcher = {
-            ProbeZReference.Zero: "Zero",
-            ProbeZReference.Current: "Current",
-            ProbeZReference.Contact: "Contact",
-            ProbeZReference.Separation: "Separation",
-        }
-        return switcher.get(self, "Invalid probe z reference")
 
 
 class PtpaFindTipsMode(Enum):
@@ -1393,7 +1263,7 @@ class PtpaFindTipsMode(Enum):
     OnAxis = 0
     OffAxis = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             PtpaFindTipsMode.OnAxis: "OnAxis",
             PtpaFindTipsMode.OffAxis: "OffAxis",
@@ -1600,7 +1470,7 @@ class RoutingPriority(Enum):
     RowBiDir = 2
     ColBiDir = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             RoutingPriority.RowUniDir: "r",
             RoutingPriority.ColUniDir: "c",
@@ -1610,7 +1480,7 @@ class RoutingPriority(Enum):
         return switcher.get(self, "Invalid RoutingPriority enumerator")
 
     @staticmethod
-    def fromSentioAbbr(abbr: str):
+    def from_string(abbr: str):
         mapping = {
             "R": RoutingPriority.RowUniDir,
             "C": RoutingPriority.ColUniDir,
@@ -1638,7 +1508,7 @@ class RoutingStartPoint(Enum):
     LowerLeft = 2
     LowerRight = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             RoutingStartPoint.UpperLeft: "ul",
             RoutingStartPoint.UpperRight: "ur",
@@ -1648,7 +1518,7 @@ class RoutingStartPoint(Enum):
         return switcher.get(self, "Invalid RoutingStartPoint enumerator")
 
     @staticmethod
-    def fromSentioAbbr(abbr: str):
+    def from_string(abbr: str):
         mapping = {
             "UL": RoutingStartPoint.UpperLeft,
             "UR": RoutingStartPoint.UpperRight,
@@ -1720,7 +1590,7 @@ class SubsiteGroup(Enum):
     WaferPresent = 4
     WaferSelected = 5
 
-    def toSentioAbbr(self) -> str:
+    def to_string(self) -> str:
         switcher = {
             SubsiteGroup.Present: "P",
             SubsiteGroup.Selected: "S",
@@ -1730,6 +1600,28 @@ class SubsiteGroup(Enum):
             SubsiteGroup.WaferSelected: "WS",
         }
         return switcher.get(self, "Invalid subsite group identifier")
+    
+
+class SwapBridgeSide(Enum):    
+    """Control swap bridge move to right or left side.
+
+    Attributes:
+        Right (0): Move swap bridge to right side.
+        Left (1): Move swap bridge to left side.
+        Current (2): Keep bridge at current side.
+    """
+    
+    Right = 0
+    Left = 1
+    Current = 2
+    
+    def to_string(self):
+        switcher = {
+            SwapBridgeSide.Right: "Right",
+            SwapBridgeSide.Left: "Left",
+            SwapBridgeSide.Current: "Current",
+        }
+        return switcher.get(self, "Invalid swap bridge side.")
     
 
 class ThermoChuckState(Enum):
@@ -1755,7 +1647,7 @@ class ThermoChuckState(Enum):
     Unknown = 7
 
     @staticmethod
-    def fromSentioAbbr(abbr: str) -> "ThermoChuckState":
+    def from_string(abbr: str) -> "ThermoChuckState":
         """Convert a SENTIO abbreviation to a ThermoChuckState.
 
         Args:
@@ -1782,11 +1674,33 @@ class ThermoChuckState(Enum):
             raise ValueError(f"Unknown ThermoChuckState abbreviation: {abbr}")
 
 
+class ThetaReference(Enum):
+    """Reference to use for chuck theat motions.
+
+    Attributes:
+        Zero (0): Use zero of the theta axis.
+        Align (1): Use the trained site of "home" angle as the reference.
+        Current (2): Use the current theta position as reference.
+    """
+
+    Zero = 0
+    Align = 1
+    Current = 2
+
+    def to_string(self):
+        switcher = {
+            ThetaReference.Zero: "Z",
+            ThetaReference.Align: "S",
+            ThetaReference.Current: "R",
+        }
+        return switcher.get(self, "Invalid chuck theta reference")
+
+
 class UserCoordState(Enum):
     Chuck = 0
     Scope = 1
 
-    def toSentioAbbr(self) -> str:
+    def to_string(self) -> str:
         return {
             UserCoordState.Chuck: "chuck",
             UserCoordState.Scope: "scope"
@@ -1806,7 +1720,7 @@ class UvwAxis(Enum):
     V = 1
     W = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             UvwAxis.U: "U",
             UvwAxis.V: "V",
@@ -1819,14 +1733,14 @@ class VacuumState(Enum):
     Off = 0
     On = 1
 
-    def toSentioAbbr(self) -> str:
+    def to_string(self) -> str:
         return {
             VacuumState.Off: "Off",
             VacuumState.On: "On",
         }.get(self, "Invalid VacuumState")
 
     @staticmethod
-    def fromSentioAbbr(abbr: str):
+    def from_string(abbr: str):
         mapping = {
             "0": VacuumState.Off,
             "1": VacuumState.On
@@ -1835,22 +1749,6 @@ class VacuumState(Enum):
             return mapping[abbr]
         except KeyError:
             raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
-
-
-class VceZReference(Enum):
-    """Reference for Vce z motions.
-
-    Attributes:
-        Zero (0): Use absolute Vce coordinates.
-        Relative (1): Use coordinates with respect to the current Vce position.
-    """
-
-    Zero = 0
-    Relative = 1
-
-    def toSentioAbbr(self):
-        switcher = {VceZReference.Zero: "Z", VceZReference.Relative: "R"}
-        return switcher.get(self, "Invalid vce z reference")
 
 
 class VirtualCarrierInitFlags(Enum):
@@ -1864,7 +1762,7 @@ class VirtualCarrierInitFlags(Enum):
     Start = 0
     Continue = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             VirtualCarrierInitFlags.Start: "Start",
             VirtualCarrierInitFlags.Continue: "Continue",
@@ -1884,7 +1782,7 @@ class VirtualCarrierStepProcessingState(Enum):
     Done = 1
     Ready = 2
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             VirtualCarrierStepProcessingState.Skip: "Skip",
             VirtualCarrierStepProcessingState.Done: "Done",
@@ -1905,7 +1803,7 @@ class WaferIdSide(Enum):
     Top = 0
     Bottom = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             WaferIdSide.Top: "T",
             WaferIdSide.Bottom: "B",
@@ -1924,7 +1822,7 @@ class WaferStatusItem(Enum):
     Progress = 0
     Orientation = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             WaferStatusItem.Progress: "Progress",
             WaferStatusItem.Orientation: "Orientation",
@@ -1943,7 +1841,7 @@ class WorkArea(Enum):
     Probing = 0
     Offaxis = 1
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             WorkArea.Probing: "Probing",
             WorkArea.Offaxis: "Offaxis",
@@ -1967,7 +1865,7 @@ class XyCompensationType(Enum):
     MapScan = 2
     Thermal = 3
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             XyCompensationType.Disable: "None",
             XyCompensationType.OnTheFly: "OnTheFly",
@@ -1976,6 +1874,65 @@ class XyCompensationType(Enum):
         }
         return switcher.get(self, "Invalid XyCompensationType")
 
+
+class XyReference(Enum):
+    """Defines a reference for stage xy motions.
+
+    Attributes:
+        Machine (0): Use absolute stage coordinates without considering stage work positions.
+        Home (1): Use home position as reference.
+        Center (2): Use center position as reference.
+        Zero (3): Use absolute stage coordinates for the current work position.
+        UserDefined (4): Use user defined coordinate system.
+        Current (5): Use curent position as reference.
+        RealPos (6): for internal use only.
+    """
+
+    Machine = 0
+    Home = 1
+    Center = 2
+    Zero = 3
+    UserDefined = 4
+    Current = 5
+    RealPos = 6
+
+    def to_string(self):
+        switcher = {
+            XyReference.Machine: "M",
+            XyReference.Home: "H",
+            XyReference.Center: "C",
+            XyReference.Zero: "Z",
+            XyReference.UserDefined: "U",
+            XyReference.Current: "R", 
+            XyReference.RealPos: "A",
+        }
+        return switcher.get(self, "Invalid xy reference")
+
+    @staticmethod
+    def from_string(abbr: str) -> "XyReference":
+        """ Convert a string to a XyReference. """
+        mapping = {
+            "m" :          XyReference.Machine,
+            "machine" :    XyReference.Machine,
+            "h" :          XyReference.Home,
+            "home" :       XyReference.Home,
+            "c":           XyReference.Center,
+            "center":      XyReference.Center,
+            "z":           XyReference.Zero,
+            "zero":        XyReference.Zero,
+            "u":           XyReference.UserDefined,
+            "userdefined": XyReference.UserDefined,
+            "r":           XyReference.Current, 
+            "relative":    XyReference.Current, 
+            "current":     XyReference.Current, 
+            "a":           XyReference.RealPos,
+            "realpos":     XyReference.RealPos,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown XyReference abbreviation: {abbr}")
+        
 
 class ZPositionHint(Enum):
     """Represents a hint for the z position of a stage.
@@ -1999,7 +1956,7 @@ class ZPositionHint(Enum):
     Lift = 4
     Transfer = 5
 
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
             ZPositionHint.Default: "Default",
             ZPositionHint.Contact: "Contact",
@@ -2010,41 +1967,70 @@ class ZPositionHint(Enum):
         }
         return switcher.get(self, "Invalid ZPositionHint")
 
-class SwapBridgeSide(Enum):    
-    """Control swap bridge move to right or left side.
+    @staticmethod
+    def from_string(abbr: str) -> "ZPositionHint":
+        """Convert a string to a ZPositionHint. """
+        mapping = {
+            "default":ZPositionHint.Default,
+            "contact":ZPositionHint.Contact,
+            "hover":ZPositionHint.Hover,
+            "separation":ZPositionHint.Separation,
+            "lift":ZPositionHint.Lift,
+            "transfer":ZPositionHint.Transfer,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ChuckPositionHint abbreviation: {abbr}")
+
+
+class ZCompensationType(Enum):
+    """A list of Z compensation types.
 
     Attributes:
-        Right (0): Move swap bridge to right side.
-        Left (1): Move swap bridge to left side.
-        Current (2): Keep bridge at current side.
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
     """
-    
-    Right = 0
-    Left = 1
-    Current = 2
-    
-    def toSentioAbbr(self):
+
+    Disable = 0
+    OnTheFly = 1
+    Topography = 2
+
+    def to_string(self):
         switcher = {
-            SwapBridgeSide.Right: "Right",
-            SwapBridgeSide.Left: "Left",
-            SwapBridgeSide.Current: "Current",
+            ZCompensationType.Disable: "None",
+            ZCompensationType.OnTheFly: "OnTheFly",
+            ZCompensationType.Topography: "Topography",
         }
-        return switcher.get(self, "Invalid swap bridge side.")
-    
-class DevicePosition(Enum):
-    """Control swap bridge move to up or down side.
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
+class ZReference(Enum):
+    """Defines a position reference for stage z-motions.
 
     Attributes:
-        Up (0): Move device to up position.
-        Down (1): Move device to down position.
+        Contact (0): Use relative chuck z coordinated with respect to the chucks contact height.
+        Separation (1): Use relative chuck z coordinated with respect to the chucks separation height.
+        Hover (2): Use relative chuck z coordinated with respect to the chucks hover height.
+        Zero (3): Use absolute chuck z coordinates with respect the the physical axis zero positon.
+        Current (4): Use relative chuck z coordinated with respect to the current position.
     """
+
+    Contact = 0
+    Separation = 1
+    Hover = 2
+    Zero = 3
+    Current = 4
     
-    Up = 0
-    Down = 1
-    
-    def toSentioAbbr(self):
+    def to_string(self):
         switcher = {
-            DevicePosition.Up: "Up",
-            DevicePosition.Down: "Down",
+            ZReference.Contact: "C",
+            ZReference.Separation: "S",
+            ZReference.Hover: "H",
+            ZReference.Zero: "Z",
+            ZReference.Current: "R"
         }
-        return switcher.get(self, "Invalid device position.")
+        return switcher.get(self, "Invalid chuck z reference")

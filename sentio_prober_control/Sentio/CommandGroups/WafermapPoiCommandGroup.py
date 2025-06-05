@@ -58,7 +58,7 @@ class WafermapPoiCommandGroup(CommandGroupBase):
             stage: The stage to reset the POIs for.
             refXy: The reference point for the POIs.
         """
-        self.comm.send("map:poi:reset {0}, {1}".format(stage.toSentioAbbr(), refXy.toSentioAbbr()))
+        self.comm.send("map:poi:reset {0}, {1}".format(stage.to_string(), refXy.to_string()))
         Response.check_resp(self.comm.read_line())
 
     def step(self, target: str | int) -> tuple[int, int, int]:

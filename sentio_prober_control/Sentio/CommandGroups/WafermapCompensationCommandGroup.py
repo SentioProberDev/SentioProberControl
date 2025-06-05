@@ -19,7 +19,7 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         Returns:
             The command ID of the asynchronous operation.
         """
-        self.comm.send(f"map:compensation:topography {execute.toSentioAbbr()}")
+        self.comm.send(f"map:compensation:topography {execute.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
 
         if not resp.ok():
@@ -33,7 +33,7 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         Args:
             comp_type: The type of XY Stepping Compensation.
         """
-        self.comm.send(f"map:compensation:set_xy {comp_type.toSentioAbbr()}")
+        self.comm.send(f"map:compensation:set_xy {comp_type.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_z(self, comp_type: ZCompensationType) -> None:
@@ -42,5 +42,5 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         Args:
             comp_type: The type of Z Stepping Compensation.
         """
-        self.comm.send(f"map:compensation:set_z {comp_type.toSentioAbbr()}")
+        self.comm.send(f"map:compensation:set_z {comp_type.to_string()}")
         Response.check_resp(self.comm.read_line())

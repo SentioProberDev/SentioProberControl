@@ -1,33 +1,30 @@
 import base64
 import os
-from typing import Tuple
+from typing import Tuple, Optional, Callable, TypeVar
 from enum import Enum
 
 from deprecated import deprecated
 
 from sentio_prober_control.Sentio.Enumerations import (
+    ChuckPositionHint,
     ChuckSite,
-    ChuckXYReference,
-    ChuckThetaReference,
-    ChuckZReference,
+    ChuckSpeed,
+    ThetaReference,
     DialogButtons,
     LoadPosition,
-    ProjectFileInfo,
     Module,
-    ScopeXYReference,
-    ScopeZReference,
+    ProjectFileInfo,
+    SoftContactState,
     Stage,
     SteppingContactMode,
-    VceZReference,
-    WorkArea,
-    ChuckPositionHint,
-    ChuckSpeed,
-    VacuumState,
     HighPowerAirState,
-    SoftContactState,
     UserCoordState,
     SwapBridgeSide,
-    DevicePosition
+    DevicePosition,
+    VacuumState,
+    WorkArea,
+    XyReference,
+    ZReference
 )
 
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
@@ -47,6 +44,7 @@ from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import Status
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.ScopeCommandGroup import ScopeCommandGroup
 
 class SentioCommunicationType(Enum):
     """This enum defines different types of prober communication.
@@ -93,7 +91,6 @@ class SentioProber(ProberBase):
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
 
         self.aux: AuxCommandGroup = AuxCommandGroup(self)
-        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
         self.loader: LoaderCommandGroup = LoaderCommandGroup(self)
         self.map: WafermapCommandGroup = WafermapCommandGroup(self)
         self.probe: ProbeCommandGroup = ProbeCommandGroup(self)
@@ -104,6 +101,12 @@ class SentioProber(ProberBase):
         self.vision: VisionCommandGroup = VisionCommandGroup(self)
         self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
+        # Command groups for stages; Only available for Sentio > 25.2
+        self.scope: ScopeCommandGroup = ScopeCommandGroup(self, Stage.Scope, True)
+
+        # deprecated command groups; may be removed at any time.
+        # DO NOT USE THEM IN NEW CODE!
+        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
 
     def abort_command(self, cmd_id: int) -> Response:
         """Stop an ongoing asynchronous remote command.
@@ -118,20 +121,20 @@ class SentioProber(ProberBase):
         return Response.check_resp(self.comm.read_line())
 
 
-    def clear_contact(self, site: ChuckSite | None = None) -> None:
+    def clear_contact(self, chuckSite: Optional[ChuckSite] = None) -> None:
         """Clear contact positions.
 
         Args:
-            site (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
+            chuckSite (ChuckSite): The chuck site to clear. If None is given all sites will be cleared.
 
         Returns:
-            A response object with the result of the command.
+            None
         """
 
-        if site is None:
+        if chuckSite is None:
             self.comm.send("clear_contact")
         else:
-            self.comm.send(f"clear_contact {site.toSentioAbbr()}")
+            self.comm.send(f"clear_contact {chuckSite.to_string()}")
 
         Response.check_resp(self.comm.read_line())
 
@@ -222,7 +225,7 @@ class SentioProber(ProberBase):
             None
         """
 
-        self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
+        self.comm.send(f"enable_chuck_site_hover {site.to_string()}, {stat}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -238,7 +241,7 @@ class SentioProber(ProberBase):
             None
         """
 
-        self.comm.send(f"enable_chuck_site_hover {site.toSentioAbbr()}, {stat}")
+        self.comm.send(f"enable_chuck_site_hover {site.to_string()}, {stat}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -285,7 +288,7 @@ class SentioProber(ProberBase):
             hover_gap (float): hover gap
         """
 
-        self.comm.send("get_chuck_site_heights {0}".format(site.toSentioAbbr()))
+        self.comm.send("get_chuck_site_heights {0}".format(site.to_string()))
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
@@ -312,7 +315,7 @@ class SentioProber(ProberBase):
             overtravelActive (bool): True if the overtravel is active.
             vacuumOn (bool): True if the vacuum is on.
         """
-        self.comm.send("get_chuck_site_status {0}".format(site.toSentioAbbr()))
+        self.comm.send("get_chuck_site_status {0}".format(site.to_string()))
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
@@ -348,17 +351,17 @@ class SentioProber(ProberBase):
             angle (float): The current angle of the chuck site in degrees.
         """
 
-        self.comm.send("get_chuck_theta {0}".format(site.toSentioAbbr()))
+        self.comm.send("get_chuck_theta {0}".format(site.to_string()))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
-    def get_chuck_xy(self, site: ChuckSite, ref: ChuckXYReference) -> Tuple[float, float]:
+    def get_chuck_xy(self, site: ChuckSite, ref: XyReference) -> Tuple[float, float]:
         """Get current chuck xy position with respect to a given reference.
 
         Args:
             site (ChuckSite): The chuck site to query.
-            ref (ChuckXYReference): The reference to use for the query.
+            ref (XyReference): The reference to use for the query.
 
         Returns:
             x (float): x position in micrometer.
@@ -366,9 +369,9 @@ class SentioProber(ProberBase):
         """
 
         if site is None:
-            self.comm.send(f"get_chuck_xy {site.toSentioAbbr()}")
+            self.comm.send(f"get_chuck_xy {site.to_string()}")
         else:
-            self.comm.send(f"get_chuck_xy {site.toSentioAbbr()}, {ref.toSentioAbbr()}")
+            self.comm.send(f"get_chuck_xy {site.to_string()}, {ref.to_string()}")
 
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -385,17 +388,17 @@ class SentioProber(ProberBase):
         return curX, curY
 
 
-    def get_chuck_z(self, ref: ChuckZReference) -> float:
+    def get_chuck_z(self, ref: ZReference) -> float:
         """Get chuck z position.
 
         Args:
-            ref (ChuckZReference): The reference to use for the query.
+            ref (ZReference): The reference to use for the query.
 
         Returns:
             height (float): The actual z position of the chuck in micrometer (from axis zero).
         """
 
-        self.comm.send(f"get_chuck_z {ref.toSentioAbbr()}")
+        self.comm.send(f"get_chuck_z {ref.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -409,7 +412,7 @@ class SentioProber(ProberBase):
             project_name (str): The name of the current project.
         """
 
-        self.comm.send(f"get_project {pfi.toSentioAbbr()}")
+        self.comm.send(f"get_project {pfi.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
@@ -548,6 +551,24 @@ class SentioProber(ProberBase):
         """
         self.comm.send("*LOCAL")
 
+    T = TypeVar("T")
+    def get(self, variable : str, stype: Callable[[str], T] = str) -> T:
+        """Get a variable from the prober.
+
+        This function wraps SENTIO's "*GET?" remote command.
+        This command can query the value of any internal SENTIO variable that is accessible via the 
+        SENTIO's internal environment object.
+
+        Args:
+            variable (str): The full name of the global variable to get.
+
+        Returns:
+            value (str): The value of the variable.
+        """
+        self.comm.send(f"*GET? {variable}")
+        resp : str = self.comm.read_line()
+        return stype(resp)
+
 
     def move_chuck_contact(self) -> float:
         """Move the chuck to contact height.
@@ -588,7 +609,7 @@ class SentioProber(ProberBase):
         Returns:
             None
         """
-        self.comm.send(f"move_chuck_load {pos.toSentioAbbr()}")
+        self.comm.send(f"move_chuck_load {pos.to_string()}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -614,13 +635,13 @@ class SentioProber(ProberBase):
             z (float): The z height in micrometer.
             theta (float): The theta angle in degrees.
         """
-        self.comm.send("move_chuck_site {0}".format(site.toSentioAbbr()))
+        self.comm.send("move_chuck_site {0}".format(site.to_string()))
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
 
 
-    def move_chuck_theta(self, ref: ChuckThetaReference, angle: float) -> float:
+    def move_chuck_theta(self, ref: ThetaReference, angle: float) -> float:
         """Move chuck theta axis to a given angle.
 
         Wraps SENTIO's "move_chuck_theta" remote command.
@@ -629,12 +650,12 @@ class SentioProber(ProberBase):
             ref: The reference to use for the move.
             angle: The angle to move to in degrees.
         """
-        self.comm.send("move_chuck_theta {0}, {1}".format(ref.toSentioAbbr(), angle))
+        self.comm.send(f"move_chuck_theta {ref.to_string()}, {angle}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
-    def move_chuck_xy(self, ref: ChuckXYReference, x: float, y: float) -> Tuple[float, float]:
+    def move_chuck_xy(self, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move chuck to a given xy position.
 
         Wraps SENTIO's "move_chuck_xy" remote command.
@@ -648,13 +669,13 @@ class SentioProber(ProberBase):
             x: The chuck x position after the move in micrometer (from zero)
             y: The chuck y position after the move in micrometer (from zero)
         """
-        self.comm.send("move_chuck_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
+        self.comm.send(f"move_chuck_xy {ref.to_string()}, {x}, {y}")
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def move_chuck_z(self, ref: ChuckZReference, z: float) -> float:
+    def move_chuck_z(self, ref: ZReference, z: float) -> float:
         """Move chuck to a given z position.
 
         Wraps SENTIO's "move_chuck_z" remote command.
@@ -666,7 +687,7 @@ class SentioProber(ProberBase):
         Returns:
             The actual z position in micrometer after the move.
         """
-        self.comm.send("move_chuck_z {0}, {1}".format(ref.toSentioAbbr(), z))
+        self.comm.send(f"move_chuck_z {ref.to_string()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -688,11 +709,11 @@ class SentioProber(ProberBase):
         Returns:
             None
         """
-        self.comm.send(f"move_chuck_work_area {area.toSentioAbbr()}")
+        self.comm.send(f"move_chuck_work_area {area.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def move_scope_xy(
-        self, ref: ScopeXYReference, x: float, y: float
+        self, ref: XyReference, x: float, y: float
     ) -> Tuple[float, float]:
         """Move scope to a given xy position.
 
@@ -706,7 +727,7 @@ class SentioProber(ProberBase):
             y: Scope x position after the move in micrometers (from zero)
         """
 
-        self.comm.send(f"move_scope_xy {ref.toSentioAbbr()}, {x}, {y}")
+        self.comm.send(f"move_scope_xy {ref.to_string()}, {x}, {y}")
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
@@ -726,7 +747,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"move_scope_lift {state}")
         Response.check_resp(self.comm.read_line())
 
-    def move_scope_z(self, ref: ScopeZReference, z: float) -> float:
+    def move_scope_z(self, ref: ZReference, z: float) -> float:
         """Move scope to a given z position.
 
         Args:
@@ -736,11 +757,12 @@ class SentioProber(ProberBase):
         Returns:
             The actual z position in micrometer after the move.
         """
-        self.comm.send("move_scope_z {0}, {1}".format(ref.toSentioAbbr(), z))
+        self.comm.send(f"move_scope_z {ref.to_string()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-    def move_vce_z(self, stage: Stage, ref: VceZReference, z: float) -> float:
+
+    def move_vce_z(self, stage: Stage, ref: ZReference, z: float) -> float:
         """Move VCE stage to a given z position.
 
         Args:
@@ -755,7 +777,7 @@ class SentioProber(ProberBase):
                 f"This command can only be applied to vce stages! (stage={0})"
             )
 
-        self.comm.send(f"move_vce_z {stage.toSentioAbbr()}, {ref.toSentioAbbr()}, {z}")
+        self.comm.send(f"move_vce_z {stage.to_string()}, {ref.to_string()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -844,9 +866,9 @@ class SentioProber(ProberBase):
             tabSheet: The name of the module tab to activate. If None is given the default tab will be activated.
         """
         if tabSheet is not None:
-            self.comm.send(f"select_module {module.toSentioAbbr()}, {tabSheet}")
+            self.comm.send(f"select_module {module.to_string()}, {tabSheet}")
         else:
-            self.comm.send(f"select_module {module.toSentioAbbr()}")
+            self.comm.send(f"select_module {module.to_string()}")
 
         Response.check_resp(self.comm.read_line())
 
@@ -909,7 +931,7 @@ class SentioProber(ProberBase):
             hover_gap: The new hover gap in micrometer.
         """
 
-        self.comm.send(f"set_chuck_site_heights {site.toSentioAbbr()},{contact},{separation},{overtravel_dist},{hover_gap}")
+        self.comm.send(f"set_chuck_site_heights {site.to_string()},{contact},{separation},{overtravel_dist},{hover_gap}")
         resp = Response.check_resp(self.comm.read_line())        
         tok = resp.message().split(",")
         site = ChuckSite[tok[0]]
@@ -948,7 +970,7 @@ class SentioProber(ProberBase):
              mode: The stepping contact mode to set.
         """
 
-        self.comm.send(f"set_stepping_contact_mode {mode.toSentioAbbr()}")
+        self.comm.send(f"set_stepping_contact_mode {mode.to_string()}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -963,7 +985,7 @@ class SentioProber(ProberBase):
             None
         """
 
-        self.comm.send(f"set_vacuum {site.toSentioAbbr()}, {stat}")
+        self.comm.send(f"set_vacuum {site.to_string()}, {stat}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -1032,7 +1054,7 @@ class SentioProber(ProberBase):
         """
         self.comm.send(
             "status:start_show_message {0}, {1}, {2}".format(
-                msg, buttons.toSentioAbbr(), caption
+                msg, buttons.to_string(), caption
             )
         )
         resp = Response.check_resp(self.comm.read_line())
@@ -1118,7 +1140,7 @@ class SentioProber(ProberBase):
         return home_x, home_y
 
 
-    def set_scope_home(self, home_x: float = None, home_y: float = None) -> None:
+    def set_scope_home(self, home_x: Optional[float] = None, home_y: Optional[float] = None) -> None:
 
         """Sets the home position for the scope stage.
 
@@ -1217,8 +1239,8 @@ class SentioProber(ProberBase):
         pos_hint_str = tok[0]
         site_str = tok[1]
 
-        pos_hint = ChuckPositionHint.fromSentioAbbr(pos_hint_str)
-        site = ChuckSite.fromSentioAbbr(site_str)
+        pos_hint = ChuckPositionHint.from_string(pos_hint_str)
+        site = ChuckSite.from_string(site_str)
 
         return pos_hint, site
 
@@ -1239,7 +1261,7 @@ class SentioProber(ProberBase):
 
         return count
 
-    def get_chuck_site_index(self, name: str | None = None) -> int:
+    def get_chuck_site_index(self, name: Optional[str] = None) -> int:
         """Retrieve the index of a chuck site by name. If no name is provided, returns the index of the current site.
 
         Args:
@@ -1261,7 +1283,7 @@ class SentioProber(ProberBase):
 
         return index
 
-    def get_chuck_site_name(self, index: int | None = None) -> ChuckSite:
+    def get_chuck_site_name(self, index: Optional[int] = None) -> ChuckSite:
         """Retrieve the name of a chuck site. If no index is given, returns the current site's name.
 
         Args:
@@ -1276,11 +1298,11 @@ class SentioProber(ProberBase):
             self.comm.send(f"get_chuck_site_name {index}")
 
         resp = Response.check_resp(self.comm.read_line())
-        site : ChuckSite = ChuckSite.fromSentioAbbr(resp.message())
+        site : ChuckSite = ChuckSite.from_string(resp.message())
         
         return site
 
-    def get_chuck_site_pos(self, site: ChuckSite | None = None) -> tuple[float, float, float]:
+    def get_chuck_site_pos(self, site: Optional[ChuckSite] = None) -> tuple[float, float, float]:
         """Retrieve position information of a chuck site.
 
         Args:
@@ -1290,7 +1312,7 @@ class SentioProber(ProberBase):
             tuple[float, float, float]: (home_x, home_y, angle) in µm and degrees.
         """
         if site is not None:
-            site_arg = site.toSentioAbbr()
+            site_arg = site.to_string()
             self.comm.send(f"get_chuck_site_pos {site_arg}")
         else:
             self.comm.send("get_chuck_site_pos")
@@ -1312,11 +1334,9 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         speed_str = resp.message().split(",")[0]
 
-        speed = ChuckSpeed.fromSentioAbbr(speed_str)
+        speed = ChuckSpeed.from_string(speed_str)
 
         return speed
-
-    from sentio_prober_control.Sentio.Enumerations import ChuckSite
 
     def get_vacuum_status(self, site: ChuckSite | None = None) -> VacuumState:
         """Get the vacuum status of a chuck site.
@@ -1328,7 +1348,7 @@ class SentioProber(ProberBase):
             VacuumState: Enum indicating On or Off.
         """
         if site is not None:
-            site_arg = site.toSentioAbbr()
+            site_arg = site.to_string()
             self.comm.send(f"get_vacuum_status {site_arg}")
         else:
             self.comm.send("get_vacuum_status")
@@ -1336,7 +1356,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         status = resp.message().split(",")[0]
 
-        return VacuumState.fromSentioAbbr(status)
+        return VacuumState.from_string(status)
     
     def get_wafer_diameter(self) -> float:
         """Get the diameter of wafer on chuck.
@@ -1459,7 +1479,7 @@ class SentioProber(ProberBase):
         if site is None:
             raise ValueError("site is required and cannot be None")
 
-        site_arg = site.toSentioAbbr()
+        site_arg = site.to_string()
         self.comm.send(f"set_chuck_site_overtravel_gap {site_arg}, {gap}")
         Response.check_resp(self.comm.read_line())
 
@@ -1482,7 +1502,7 @@ class SentioProber(ProberBase):
             None
         """
         if x is not None and y is not None and theta is not None:
-            site_arg = site.toSentioAbbr() if site is not None else None
+            site_arg = site.to_string() if site is not None else None
 
             if site_arg:
                 self.comm.send(f"set_chuck_site_pos {site_arg},{x},{y},{theta}")
@@ -1506,7 +1526,7 @@ class SentioProber(ProberBase):
         if site is None:
             raise ValueError("site is required and cannot be None")
 
-        site_arg = site.toSentioAbbr()
+        site_arg = site.to_string()
         self.comm.send(f"set_chuck_site_separation_gap {site_arg}, {gap}")
         Response.check_resp(self.comm.read_line())
 
@@ -1522,7 +1542,7 @@ class SentioProber(ProberBase):
         if state is None:
             raise ValueError("state is required and must be a valid HighPowerAirState enum")
 
-        self.comm.send(f"set_high_power_air {state.toSentioAbbr()}")
+        self.comm.send(f"set_high_power_air {state.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_soft_contact(self, state: SoftContactState) -> None:
@@ -1537,7 +1557,7 @@ class SentioProber(ProberBase):
         if state is None:
             raise ValueError("state is required and must be a valid SoftContactState enum")
 
-        self.comm.send(f"set_soft_contact {state.toSentioAbbr()}")
+        self.comm.send(f"set_soft_contact {state.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_user_coordinate_origin(self, state: UserCoordState, x: float, y: float) -> None:
@@ -1554,7 +1574,7 @@ class SentioProber(ProberBase):
         if state is None:
             raise ValueError("state is required and must be a valid UserCoordState")
 
-        cmd = f"set_user_coordinate_origin {state.toSentioAbbr()},{x},{y}"
+        cmd = f"set_user_coordinate_origin {state.to_string()},{x},{y}"
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 

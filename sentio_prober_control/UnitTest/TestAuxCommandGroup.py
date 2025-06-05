@@ -53,7 +53,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_retrieve_substrate_data_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,1,AuxRight"
         sites = self.aux.retrieve_substrate_data(ChuckSite.AuxRight)
-        expected_command = "aux:retrieve_substrate_data " + ChuckSite.AuxRight.toSentioAbbr()
+        expected_command = "aux:retrieve_substrate_data " + ChuckSite.AuxRight.to_string()
         self.mock_comm.send.assert_called_with(expected_command)
         expected_sites = [ChuckSite.AuxRight]
         self.assertEqual(sites, expected_sites)
@@ -68,7 +68,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_substrate_type_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,AC-2"
         result = self.aux.get_substrate_type(ChuckSite.AuxLeft)
-        expected_command = "aux:get_substrate_type " + ChuckSite.AuxLeft.toSentioAbbr()
+        expected_command = "aux:get_substrate_type " + ChuckSite.AuxLeft.to_string()
         self.mock_comm.send.assert_called_with(expected_command)
         self.assertEqual(result, "AC-2")
 
@@ -103,7 +103,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_element_type_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,Thru"
         result = self.aux.get_element_type("0102", ChuckSite.AuxRight)
-        expected_command = "aux:get_element_type " + ChuckSite.AuxRight.toSentioAbbr() + ",0102"
+        expected_command = "aux:get_element_type " + ChuckSite.AuxRight.to_string() + ",0102"
         self.mock_comm.send.assert_called_with(expected_command)
         self.assertEqual(result, ElementType.Thru)
 
@@ -111,7 +111,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_substrate_info(self):
         self.mock_comm.read_line.return_value = "0,0,AC-2,ac2,4.48"
         result = self.aux.get_substrate_info(ChuckSite.AuxLeft)
-        expected_command = "aux:get_substrate_info " + ChuckSite.AuxLeft.toSentioAbbr()
+        expected_command = "aux:get_substrate_info " + ChuckSite.AuxLeft.to_string()
         self.mock_comm.send.assert_called_with(expected_command)
         expected = ("AC-2", "ac2", 4.48)
         self.assertEqual(result, expected)
@@ -135,7 +135,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_element_touch_count_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,7"
         result = self.aux.get_element_touch_count("0102", ChuckSite.AuxRight)
-        expected_command = "aux:get_element_touch_count " + ChuckSite.AuxRight.toSentioAbbr() + ",0102"
+        expected_command = "aux:get_element_touch_count " + ChuckSite.AuxRight.to_string() + ",0102"
         self.mock_comm.send.assert_called_with(expected_command)
         self.assertEqual(result, 7)
 
@@ -150,7 +150,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_element_spacing_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,200.5"
         result = self.aux.get_element_spacing("0102", ChuckSite.AuxLeft)
-        expected_command = "aux:get_element_spacing " + ChuckSite.AuxLeft.toSentioAbbr() + ",0102"
+        expected_command = "aux:get_element_spacing " + ChuckSite.AuxLeft.to_string() + ",0102"
         self.mock_comm.send.assert_called_with(expected_command)
         self.assertEqual(result, 200.5)
 
@@ -165,7 +165,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_element_pos_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,100.0,200.0"
         result = self.aux.get_element_pos("0102", ChuckSite.AuxRight)
-        expected_command = "aux:get_element_pos " + ChuckSite.AuxRight.toSentioAbbr() + ",0102"
+        expected_command = "aux:get_element_pos " + ChuckSite.AuxRight.to_string() + ",0102"
         self.mock_comm.send.assert_called_with(expected_command)
         self.assertEqual(result, (100.0, 200.0))
 
@@ -180,7 +180,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_element_life_time_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,85.5"
         result = self.aux.get_element_life_time("0102", ChuckSite.AuxLeft)
-        expected_command = "aux:get_element_life_time " + ChuckSite.AuxLeft.toSentioAbbr() + ",0102"
+        expected_command = "aux:get_element_life_time " + ChuckSite.AuxLeft.to_string() + ",0102"
         self.mock_comm.send.assert_called_with(expected_command)
         self.assertEqual(result, 85.5)
 
@@ -205,7 +205,7 @@ class TestAuxCommandGroup(unittest.TestCase):
     def test_get_element_info_with_site(self):
         self.mock_comm.read_line.return_value = "0,0,Open,NonGSG,100.0,200.0,30.0,1,99.0"
         result = self.aux.get_element_info("0102", ChuckSite.AuxRight)
-        expected_command = "aux:get_element_info " + ChuckSite.AuxRight.toSentioAbbr() + ",0102"
+        expected_command = "aux:get_element_info " + ChuckSite.AuxRight.to_string() + ",0102"
         self.mock_comm.send.assert_called_with(expected_command)
         expected = ElementInfo(
             element_type=ElementType.Open,

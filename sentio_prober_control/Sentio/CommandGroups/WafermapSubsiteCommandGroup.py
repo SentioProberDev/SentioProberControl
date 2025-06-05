@@ -33,7 +33,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
             y: The y position of the subsite in micrometer as an offset to the die home position.
             orient: The axis orientation used fot the submitted values
         """
-        self.comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.toSentioAbbr()))
+        self.comm.send("map:subsite:add {}, {}, {}, {}".format(id, x, y, orient.to_string()))
         resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
 
@@ -75,7 +75,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         if orient is None:
             orient_str = "MAP"
         else:
-            orient_str = orient.toSentioAbbr()
+            orient_str = orient.to_string()
 
         self.comm.send(f"map:subsite:get {idx}, {orient_str}")
         resp = Response.check_resp(self.comm.read_line())
@@ -94,7 +94,7 @@ class WafermapSubsiteGroup(CommandGroupBase):
         if group is None:
             group_str = ""
         else:
-            group_str = group.toSentioAbbr()
+            group_str = group.to_string()
 
         self.comm.send(f"map:subsite:get_num {group_str}")
         resp = Response.check_resp(self.comm.read_line())

@@ -6,8 +6,8 @@ from sentio_prober_control.Sentio.CommandGroups.ModuleCommandGroupBase import Mo
 class ServiceCommandGroup(ModuleCommandGroupBase):
     """A command group for accessing service module functions."""
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm, "service")
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober, "service")
 
 
     def set_compensation_mode(self, status: bool) -> None:
