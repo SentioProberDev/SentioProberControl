@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import ProbeSentio, ProbeXYReference, ProbeZReference, ChuckSite
+from sentio_prober_control.Sentio.Enumerations import ProbeSentio, XyReference, ZReference, ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -16,7 +16,7 @@ class ProbeCommandGroup(CommandGroupBase):
     from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
     prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-    prober.probe.move_probe_xy(ProbeSentio.East, ProbeXYReference.Current, 1000, 2000)
+    prober.probe.move_probe_xy(ProbeSentio.East, XyReference.Current, 1000, 2000)
     ```
     """
 
@@ -116,7 +116,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return int(resp.message())
 
 
-    def get_probe_xy(self, probe: ProbeSentio, ref: ProbeXYReference) -> Tuple[float, float]:
+    def get_probe_xy(self, probe: ProbeSentio, ref: XyReference) -> Tuple[float, float]:
         """Get probe xy position in micrometer.
 
         Args:
@@ -133,7 +133,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def get_probe_z(self, probe: ProbeSentio, ref: ProbeZReference) -> float:
+    def get_probe_z(self, probe: ProbeSentio, ref: ZReference) -> float:
         """Get probe z position in micrometer.
 
         Args:
@@ -194,7 +194,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_probe_xy(self, probe: ProbeSentio, ref: ProbeXYReference, x: float, y: float) -> Tuple[float, float]:
+    def move_probe_xy(self, probe: ProbeSentio, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move probe to a given position.
 
         Args:
@@ -213,7 +213,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_probe_z(self, probe: ProbeSentio, ref: ProbeZReference, z: float) -> float:
+    def move_probe_z(self, probe: ProbeSentio, ref: ZReference, z: float) -> float:
         """Move probe to a given z position.
 
         Args:

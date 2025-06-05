@@ -10,14 +10,10 @@ from sentio_prober_control.Sentio.Enumerations import (
     ChuckSite,
     ChuckSpeed,
     ChuckThetaReference,
-    ChuckXYReference,
-    ChuckZReference,
     DialogButtons,
     LoadPosition,
     Module,
     ProjectFileInfo,
-    ScopeXYReference,
-    ScopeZReference,
     SoftContactState,
     Stage,
     SteppingContactMode,
@@ -27,7 +23,9 @@ from sentio_prober_control.Sentio.Enumerations import (
     DevicePosition,
     VacuumState,
     VceZReference,
-    WorkArea
+    WorkArea,
+    XyReference,
+    ZReference
 )
 
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
@@ -358,12 +356,12 @@ class SentioProber(ProberBase):
         return float(resp.message())
 
 
-    def get_chuck_xy(self, site: ChuckSite, ref: ChuckXYReference) -> Tuple[float, float]:
+    def get_chuck_xy(self, site: ChuckSite, ref: XyReference) -> Tuple[float, float]:
         """Get current chuck xy position with respect to a given reference.
 
         Args:
             site (ChuckSite): The chuck site to query.
-            ref (ChuckXYReference): The reference to use for the query.
+            ref (XyReference): The reference to use for the query.
 
         Returns:
             x (float): x position in micrometer.
@@ -390,11 +388,11 @@ class SentioProber(ProberBase):
         return curX, curY
 
 
-    def get_chuck_z(self, ref: ChuckZReference) -> float:
+    def get_chuck_z(self, ref: ZReference) -> float:
         """Get chuck z position.
 
         Args:
-            ref (ChuckZReference): The reference to use for the query.
+            ref (ZReference): The reference to use for the query.
 
         Returns:
             height (float): The actual z position of the chuck in micrometer (from axis zero).
@@ -652,12 +650,12 @@ class SentioProber(ProberBase):
             ref: The reference to use for the move.
             angle: The angle to move to in degrees.
         """
-        self.comm.send("move_chuck_theta {0}, {1}".format(ref.toSentioAbbr(), angle))
+        self.comm.send(f"move_chuck_theta {ref.toSentioAbbr()}, {angle}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
 
-    def move_chuck_xy(self, ref: ChuckXYReference, x: float, y: float) -> Tuple[float, float]:
+    def move_chuck_xy(self, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move chuck to a given xy position.
 
         Wraps SENTIO's "move_chuck_xy" remote command.
@@ -671,13 +669,13 @@ class SentioProber(ProberBase):
             x: The chuck x position after the move in micrometer (from zero)
             y: The chuck y position after the move in micrometer (from zero)
         """
-        self.comm.send("move_chuck_xy {0}, {1}, {2}".format(ref.toSentioAbbr(), x, y))
+        self.comm.send(f"move_chuck_xy {ref.toSentioAbbr()}, {x}, {y}")
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-    def move_chuck_z(self, ref: ChuckZReference, z: float) -> float:
+    def move_chuck_z(self, ref: ZReference, z: float) -> float:
         """Move chuck to a given z position.
 
         Wraps SENTIO's "move_chuck_z" remote command.
@@ -689,7 +687,7 @@ class SentioProber(ProberBase):
         Returns:
             The actual z position in micrometer after the move.
         """
-        self.comm.send("move_chuck_z {0}, {1}".format(ref.toSentioAbbr(), z))
+        self.comm.send(f"move_chuck_z {ref.toSentioAbbr()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -715,7 +713,7 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
     def move_scope_xy(
-        self, ref: ScopeXYReference, x: float, y: float
+        self, ref: XyReference, x: float, y: float
     ) -> Tuple[float, float]:
         """Move scope to a given xy position.
 
@@ -749,7 +747,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"move_scope_lift {state}")
         Response.check_resp(self.comm.read_line())
 
-    def move_scope_z(self, ref: ScopeZReference, z: float) -> float:
+    def move_scope_z(self, ref: ZReference, z: float) -> float:
         """Move scope to a given z position.
 
         Args:
@@ -759,7 +757,7 @@ class SentioProber(ProberBase):
         Returns:
             The actual z position in micrometer after the move.
         """
-        self.comm.send("move_scope_z {0}, {1}".format(ref.toSentioAbbr(), z))
+        self.comm.send(f"move_scope_z {ref.toSentioAbbr()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 

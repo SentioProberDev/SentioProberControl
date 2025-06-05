@@ -429,62 +429,6 @@ class ChuckThetaReference(Enum):
         return switcher.get(self, "Invalid chuck theta reference")
 
 
-class ChuckXYReference(Enum):
-    """Defines a reference for chuck xy motions.
-
-    Attributes:
-        Zero (0): Use absolute chuck coordinates.
-        Home (1): Use home position as reference.
-        Relative (2): Use curent chuck position as reference.
-        Center (3): Use chuck center position as reference.
-        User (4): Use user defined coordinate system.
-    """
-
-    Zero = 0
-    Home = 1
-    Relative = 2
-    Center = 3
-    User = 4
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckXYReference.Zero: "Z",
-            ChuckXYReference.Home: "H",
-            ChuckXYReference.Relative: "R",
-            ChuckXYReference.Center: "C",
-            ChuckXYReference.User: "U",
-        }
-        return switcher.get(self, "Invalid chuck xy reference")
-
-
-class ChuckZReference(Enum):
-    """Defines a position reference for chuck z-motions.
-
-    Attributes:
-        Zero (0): Use absolute chuck z coordinates with respect the the physical axis zero positon.
-        Relative (1): Use relative chuck z coordinated with respect to the current position.
-        Contact (2): Use relative chuck z coordinated with respect to the chucks contact height.
-        Hover (3): Use relative chuck z coordinated with respect to the chucks hover height.
-        Separation (4): Use relative chuck z coordinated with respect to the chucks separation height.
-    """
-
-    Zero = 0
-    Relative = 1
-    Contact = 2
-    Hover = 3
-    Separation = 4
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckZReference.Zero: "Z",
-            ChuckZReference.Relative: "R",
-            ChuckZReference.Contact: "C",
-            ChuckZReference.Hover: "H",
-            ChuckZReference.Separation: "S",
-        }
-        return switcher.get(self, "Invalid chuck z reference")
-
-
 class ColorScheme(Enum):
     """The color scheme used by the wafer map.
 
@@ -1371,44 +1315,6 @@ class TestSelection(Enum):
         return switcher.get(self, "Invalid TestSelection")
 
 
-class ScopeXYReference(Enum):
-    """Position reference for scope motions.
-
-    Attributes:
-        Zero (0): Use absolute scope coordinates.
-        Home (1): Use coordinates with respect to the scope home position.
-        Relative (2): Use coordinates with respect to the current scope position.
-    """
-
-    Zero = 0
-    Home = 1
-    Relative = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ScopeXYReference.Zero: "Z",
-            ScopeXYReference.Home: "H",
-            ScopeXYReference.Relative: "R",
-        }
-        return switcher.get(self, "Invalid scope xy reference")
-
-
-class ScopeZReference(Enum):
-    """Scope z reference for scoep motions.
-
-    Attributes:
-        Zero (0): Use absolute scope coordinates.
-        Relative (1): Use coordinates with respect to the current scope position.
-    """
-
-    Zero = 0
-    Relative = 1
-
-    def toSentioAbbr(self):
-        switcher = {ScopeZReference.Zero: "Z", ScopeZReference.Relative: "R"}
-        return switcher.get(self, "Invalid scope z reference")
-
-
 class ProbeSentio(Enum):
     """An enumeration containing a list of position for motorized probes.
 
@@ -1432,53 +1338,6 @@ class ProbeSentio(Enum):
             ProbeSentio.South: "South",
         }
         return switcher.get(self, "Invalid ProbeSentio enumerator")
-
-
-class ProbeXYReference(Enum):
-    """Position reference for mororized probe movements.
-
-    Attributes:
-        Zero (0): Use absolute probe coordinates.
-        Home (1): Use coordinates with respect to the probe home position.
-        Current (2): Use coordinates with respect to the current probe position.
-    """
-
-    Zero = 0
-    Home = 1
-    Current = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ProbeXYReference.Zero: "Zero",
-            ProbeXYReference.Home: "Home",
-            ProbeXYReference.Current: "Current",
-        }
-        return switcher.get(self, "Invalid probe xy reference")
-
-
-class ProbeZReference(Enum):
-    """Position reference for probe z motions.
-
-    Attributes:
-        Zero (0): Use absolute probe coordinates.
-        Current (1): Use coordinates with respect to the current probe position.
-        Contact (2): Use coordinates with respect to the contact height.
-        Separation (3): Use coordinates with respect to the separation height.
-    """
-
-    Zero = 0
-    Current = 1
-    Contact = 2
-    Separation = 3
-
-    def toSentioAbbr(self):
-        switcher = {
-            ProbeZReference.Zero: "Zero",
-            ProbeZReference.Current: "Current",
-            ProbeZReference.Contact: "Contact",
-            ProbeZReference.Separation: "Separation",
-        }
-        return switcher.get(self, "Invalid probe z reference")
 
 
 class PtpaFindTipsMode(Enum):
@@ -2166,6 +2025,65 @@ class XyCompensationType(Enum):
         return switcher.get(self, "Invalid XyCompensationType")
 
 
+class XyReference(Enum):
+    """Defines a reference for stage xy motions.
+
+    Attributes:
+        Machine (0): Use absolute stage coordinates without considering stage work positions.
+        Home (1): Use home position as reference.
+        Center (2): Use center position as reference.
+        Zero (3): Use absolute stage coordinates for the current work position.
+        UserDefined (4): Use user defined coordinate system.
+        Current (5): Use curent position as reference.
+        RealPos (6): for internal use only.
+    """
+
+    Machine = 0
+    Home = 1
+    Center = 2
+    Zero = 3
+    UserDefined = 4
+    Current = 5
+    RealPos = 6
+
+    def toSentioAbbr(self):
+        switcher = {
+            XyReference.Machine: "M",
+            XyReference.Home: "H",
+            XyReference.Center: "C",
+            XyReference.Zero: "Z",
+            XyReference.UserDefined: "U",
+            XyReference.Current: "R", 
+            XyReference.RealPos: "A",
+        }
+        return switcher.get(self, "Invalid xy reference")
+
+    @staticmethod
+    def from_string(abbr: str) -> "XyReference":
+        """Convert a string to a XyReference. """
+        mapping = {
+            "M" :          XyReference.Machine,
+            "Machine" :    XyReference.Machine,
+            "H" :          XyReference.Home,
+            "Home" :       XyReference.Home,
+            "C":           XyReference.Center,
+            "Center":      XyReference.Center,
+            "Z":           XyReference.Zero,
+            "Zero":        XyReference.Zero,
+            "U":           XyReference.UserDefined,
+            "UserDefined": XyReference.UserDefined,
+            "R":           XyReference.Current, 
+            "Relative":    XyReference.Current, 
+            "Current":     XyReference.Current, 
+            "A":           XyReference.RealPos,
+            "RealPos":     XyReference.RealPos,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown XyReference abbreviation: {abbr}")
+        
+
 class ZPositionHint(Enum):
     """Represents a hint for the z position of a stage.
 
@@ -2239,3 +2157,30 @@ class ZCompensationType(Enum):
         }
         return switcher.get(self, "Invalid XyCompensationType")
 
+
+class ZReference(Enum):
+    """Defines a position reference for stage z-motions.
+
+    Attributes:
+        Contact (0): Use relative chuck z coordinated with respect to the chucks contact height.
+        Separation (1): Use relative chuck z coordinated with respect to the chucks separation height.
+        Hover (2): Use relative chuck z coordinated with respect to the chucks hover height.
+        Zero (3): Use absolute chuck z coordinates with respect the the physical axis zero positon.
+        Current (4): Use relative chuck z coordinated with respect to the current position.
+    """
+
+    Contact = 0
+    Separation = 1
+    Hover = 2
+    Zero = 3
+    Current = 4
+    
+    def toSentioAbbr(self):
+        switcher = {
+            ZReference.Contact: "Contact",
+            ZReference.Separation: "Separation",
+            ZReference.Hover: "Hover",
+            ZReference.Zero: "Zero",
+            ZReference.Current: "Current"
+        }
+        return switcher.get(self, "Invalid chuck z reference")
