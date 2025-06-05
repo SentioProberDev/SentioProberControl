@@ -1136,6 +1136,10 @@ class Stage(Enum):
         Probe2 (5): Second motorized probe.
         Probe3 (6): Third motorized probe.
         Probe4 (7): Fourth motorized probe.
+        BottomPlaten (8): The bottom platen stage.
+        BottomScope (9): The bottom scope stage. This is an optional stage.
+        TopProbe (10): Not a specific stage but a reference to a top probe. 
+        BottomProbe (11): Not a specific stage but a reference to a bottom probe.
     """
 
     Chuck = 0
@@ -1146,6 +1150,11 @@ class Stage(Enum):
     Probe2 = 5
     Probe3 = 6
     Probe4 = 7
+    BottomPlaten = 8
+    BottomScope = 9
+    TopProbe = 10
+    BottomProbe = 11
+    AuxiliaryScope = 12
 
     def to_string(self):
         switcher = {
@@ -1157,6 +1166,11 @@ class Stage(Enum):
             Stage.Probe2: "Probe02",
             Stage.Probe3: "Probe03",
             Stage.Probe4: "Probe04",
+            Stage.BottomPlaten: "bottomplaten",
+            Stage.BottomScope: "bottomscope",
+            Stage.TopProbe: "topprobe",
+            Stage.BottomProbe: "bottomprobe",
+            Stage.AuxiliaryScope: "auxscope",
         }
         return switcher.get(self, "Invalid stage")
 

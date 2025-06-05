@@ -102,7 +102,7 @@ class SentioProber(ProberBase):
         self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
         # Command groups for stages; Only available for Sentio > 25.2
-        self.scope: ScopeCommandGroup = ScopeCommandGroup(self)
+        self.scope: ScopeCommandGroup = ScopeCommandGroup(self, Stage.Scope, True)
 
         # deprecated command groups; may be removed at any time.
         # DO NOT USE THEM IN NEW CODE!
