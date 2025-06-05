@@ -1885,22 +1885,6 @@ class VacuumState(Enum):
             raise ValueError(f"Unknown VacuumState abbreviation: {abbr}")
 
 
-class VceZReference(Enum):
-    """Reference for Vce z motions.
-
-    Attributes:
-        Zero (0): Use absolute Vce coordinates.
-        Relative (1): Use coordinates with respect to the current Vce position.
-    """
-
-    Zero = 0
-    Relative = 1
-
-    def toSentioAbbr(self):
-        switcher = {VceZReference.Zero: "Z", VceZReference.Relative: "R"}
-        return switcher.get(self, "Invalid vce z reference")
-
-
 class VirtualCarrierInitFlags(Enum):
     """Flags for initializing a virtual carrier measurement.
 
@@ -2177,10 +2161,10 @@ class ZReference(Enum):
     
     def toSentioAbbr(self):
         switcher = {
-            ZReference.Contact: "Contact",
-            ZReference.Separation: "Separation",
-            ZReference.Hover: "Hover",
-            ZReference.Zero: "Zero",
-            ZReference.Current: "Current"
+            ZReference.Contact: "C",
+            ZReference.Separation: "S",
+            ZReference.Hover: "H",
+            ZReference.Zero: "Z",
+            ZReference.Current: "R"
         }
         return switcher.get(self, "Invalid chuck z reference")
