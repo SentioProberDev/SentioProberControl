@@ -9,7 +9,7 @@ from sentio_prober_control.Sentio.Enumerations import (
     ChuckPositionHint,
     ChuckSite,
     ChuckSpeed,
-    ChuckThetaReference,
+    ThetaReference,
     DialogButtons,
     LoadPosition,
     Module,
@@ -641,7 +641,7 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
 
 
-    def move_chuck_theta(self, ref: ChuckThetaReference, angle: float) -> float:
+    def move_chuck_theta(self, ref: ThetaReference, angle: float) -> float:
         """Move chuck theta axis to a given angle.
 
         Wraps SENTIO's "move_chuck_theta" remote command.

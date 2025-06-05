@@ -407,28 +407,6 @@ class ChuckThermoHoldMode(Enum):
         return switcher.get(self, "Invalid ChuckThermoHoldMode")
 
 
-class ChuckThetaReference(Enum):
-    """Reference to use for chuck theat motions.
-
-    Attributes:
-        Zero (0): Use zero of the theta axis.
-        Site (1): Use the trained site of "home" angle as the reference.
-        Relative (2): Use the current theta position as reference.
-    """
-
-    Zero = 0
-    Site = 1
-    Relative = 2
-
-    def toSentioAbbr(self):
-        switcher = {
-            ChuckThetaReference.Zero: "Z",
-            ChuckThetaReference.Site: "S",
-            ChuckThetaReference.Relative: "R",
-        }
-        return switcher.get(self, "Invalid chuck theta reference")
-
-
 class ColorScheme(Enum):
     """The color scheme used by the wafer map.
 
@@ -1818,6 +1796,28 @@ class ThermoChuckState(Enum):
             raise ValueError(f"Unknown ThermoChuckState abbreviation: {abbr}")
 
 
+class ThetaReference(Enum):
+    """Reference to use for chuck theat motions.
+
+    Attributes:
+        Zero (0): Use zero of the theta axis.
+        Align (1): Use the trained site of "home" angle as the reference.
+        Current (2): Use the current theta position as reference.
+    """
+
+    Zero = 0
+    Align = 1
+    Current = 2
+
+    def toSentioAbbr(self):
+        switcher = {
+            ThetaReference.Zero: "Z",
+            ThetaReference.Align: "S",
+            ThetaReference.Current: "R",
+        }
+        return switcher.get(self, "Invalid chuck theta reference")
+
+
 class UserCoordState(Enum):
     Chuck = 0
     Scope = 1
@@ -2060,7 +2060,7 @@ class XyReference(Enum):
 
     @staticmethod
     def from_string(abbr: str) -> "XyReference":
-        """Convert a string to a XyReference. """
+        """ Convert a string to a XyReference. """
         mapping = {
             "M" :          XyReference.Machine,
             "Machine" :    XyReference.Machine,
