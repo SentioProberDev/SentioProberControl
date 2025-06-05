@@ -93,7 +93,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:retrieve_substrate_data"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()}"
+            cmd += f" {site.to_string()}"
 
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
@@ -107,7 +107,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         for token in parts[1:]:
             token = token.strip()
             for aux_site in ChuckSite:
-                if token.lower() == aux_site.toSentioAbbr().lower():
+                if token.lower() == aux_site.to_string().lower():
                     sites.append(aux_site)
                     break
         return sites
@@ -130,7 +130,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:get_substrate_type"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()}"
+            cmd += f" {site.to_string()}"
 
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
@@ -207,7 +207,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:get_element_type"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
+            cmd += f" {site.to_string()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -232,7 +232,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
                 - life_time (float) in %
         """
         self._validate_aux_site(site)
-        cmd = f"aux:get_substrate_info {site.toSentioAbbr()}"
+        cmd = f"aux:get_substrate_info {site.to_string()}"
         self.comm.send(cmd)
         resp = Response.check_resp(self.comm.read_line())
         parts = resp.message().split(",")
@@ -262,7 +262,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:get_element_touch_count"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
+            cmd += f" {site.to_string()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -290,7 +290,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:get_element_spacing"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
+            cmd += f" {site.to_string()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -318,7 +318,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:get_element_pos"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
+            cmd += f" {site.to_string()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -351,7 +351,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         cmd = "aux:get_element_life_time"
         if site:
             self._validate_aux_site(site)
-            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
+            cmd += f" {site.to_string()},{element_standard_id}"
         else:
             cmd += f" {element_standard_id}"
 
@@ -394,7 +394,7 @@ class AuxCommandGroup(ModuleCommandGroupBase):
         if site is not None:
             self._validate_aux_site(site)
             # First parameter is the optional chuck site, second is the element ID
-            cmd += f" {site.toSentioAbbr()},{element_standard_id}"
+            cmd += f" {site.to_string()},{element_standard_id}"
         else:
             # Only the element ID is passed if the site is omitted
             cmd += f" {element_standard_id}"

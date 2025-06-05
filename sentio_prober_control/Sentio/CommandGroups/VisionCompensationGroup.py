@@ -20,7 +20,7 @@ class VisionCompensationGroup(CommandGroupBase):
 
     @deprecated("Use vision.compensation.enable() instead")
     def set_compensation(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:
-        self.comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
+        self.comm.send(f"vis:compensation:enable {comp.to_string()}, {enable}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
@@ -39,7 +39,7 @@ class VisionCompensationGroup(CommandGroupBase):
             Z-Mode: State of the Z compensation.
         """
 
-        self.comm.send(f"vis:compensation:enable {comp.toSentioAbbr()}, {enable}")
+        self.comm.send(f"vis:compensation:enable {comp.to_string()}, {enable}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
@@ -57,5 +57,5 @@ class VisionCompensationGroup(CommandGroupBase):
             A Response object.
         """
 
-        self.comm.send(f"vis:compensation:start_execute {type.toSentioAbbr()}, {mode.toSentioAbbr()}")
+        self.comm.send(f"vis:compensation:start_execute {type.to_string()}, {mode.to_string()}")
         return Response.check_resp(self.comm.read_line())

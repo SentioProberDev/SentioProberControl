@@ -359,7 +359,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         Args:
             orient: The axis orientation.
         """
-        self.comm.send(f"map:set_axis_orient {orient.toSentioAbbr()}")
+        self.comm.send(f"map:set_axis_orient {orient.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_color_scheme(self, scheme: ColorScheme) -> None:
@@ -377,7 +377,7 @@ class WafermapCommandGroup(ModuleCommandGroupBase):
         Args:
             scheme: The color scheme.
         """
-        self.comm.send(f"map:set_color_scheme {scheme.toSentioAbbr()}")
+        self.comm.send(f"map:set_color_scheme {scheme.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_flat_params(self, angle: int, width: int) -> None:

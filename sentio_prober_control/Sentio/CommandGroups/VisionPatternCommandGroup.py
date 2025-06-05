@@ -18,7 +18,7 @@ class VisionPatternCommandGroup(CommandGroupBase):
             reference: The reference point to use for the pattern detection.
         """
 
-        self.comm.send(f"vis:find_pattern {name}, {threshold}, {pattern_index}, {reference.toSentioAbbr()}")
+        self.comm.send(f"vis:find_pattern {name}, {threshold}, {pattern_index}, {reference.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2]), float(tok[3])
@@ -33,7 +33,7 @@ class VisionPatternCommandGroup(CommandGroupBase):
         Returns:
             A tuple with the X and Y coordinates in micrometers.
         """
-        self.comm.send(f"vis:pattern:get_chuck_pos {camera.toSentioAbbr()}, {pattern.toSentioAbbr()}")
+        self.comm.send(f"vis:pattern:get_chuck_pos {camera.to_string()}, {pattern.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -50,7 +50,7 @@ class VisionPatternCommandGroup(CommandGroupBase):
         Returns:
             A tuple with the confirmed X and Y coordinates.
         """
-        self.comm.send(f"vis:pattern:set_chuck_pos {camera.toSentioAbbr()}, {pattern.toSentioAbbr()}, {x}, {y}")
+        self.comm.send(f"vis:pattern:set_chuck_pos {camera.to_string()}, {pattern.to_string()}, {x}, {y}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])

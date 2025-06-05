@@ -39,7 +39,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The async command id of the command.
         """
 
-        self.comm.send(f"start_step_positioner_site {probe.toSentioAbbr()},{idx}")
+        self.comm.send(f"start_step_positioner_site {probe.to_string()},{idx}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.cmd_id()
 
@@ -58,7 +58,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The async command id of the command.
         """
 
-        self.comm.send(f"start_step_positioner_site_next {probe.toSentioAbbr()}")
+        self.comm.send(f"start_step_positioner_site_next {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.cmd_id()
 
@@ -77,7 +77,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The async command id of the command.
         """
 
-        self.comm.send(f"start_step_positioner_site_first {probe.toSentioAbbr()}")
+        self.comm.send(f"start_step_positioner_site_first {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.cmd_id()
 
@@ -94,7 +94,7 @@ class ProbeCommandGroup(CommandGroupBase):
         Returns:
             A tuple containing the site index, position x, the position y in micrometer and the reference.
         """
-        self.comm.send(f"get_positioner_site {probe.toSentioAbbr()},{idx}")
+        self.comm.send(f"get_positioner_site {probe.to_string()},{idx}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
 
@@ -111,7 +111,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The total number of sites.
         """
 
-        self.comm.send(f"get_positioner_site_num {probe.toSentioAbbr()}")
+        self.comm.send(f"get_positioner_site_num {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return int(resp.message())
 
@@ -127,7 +127,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position in micrometer.
         """
 
-        self.comm.send(f"get_positioner_xy {probe.toSentioAbbr()},{ref.toSentioAbbr()}")
+        self.comm.send(f"get_positioner_xy {probe.to_string()},{ref.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -143,7 +143,7 @@ class ProbeCommandGroup(CommandGroupBase):
         Returns:
             The z position in micrometer.
         """
-        self.comm.send(f"get_positioner_z {probe.toSentioAbbr()},{ref.toSentioAbbr()}")
+        self.comm.send(f"get_positioner_z {probe.to_string()},{ref.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -158,7 +158,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        self.comm.send(f"move_positioner_contact {probe.toSentioAbbr()}")
+        self.comm.send(f"move_positioner_contact {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -173,7 +173,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        self.comm.send(f"move_positioner_separation {probe.toSentioAbbr()}")
+        self.comm.send(f"move_positioner_separation {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -188,7 +188,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position after the move.
         """
 
-        self.comm.send(f"move_positioner_home {probe.toSentioAbbr()}")
+        self.comm.send(f"move_positioner_home {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -207,7 +207,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position after the move.
         """
 
-        self.comm.send(f"move_positioner_xy {probe.toSentioAbbr()},{ref.toSentioAbbr()},{x},{y}")
+        self.comm.send(f"move_positioner_xy {probe.to_string()},{ref.to_string()},{x},{y}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -225,7 +225,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        self.comm.send(f"move_positioner_z {probe.toSentioAbbr()},{ref.toSentioAbbr()},{z}")
+        self.comm.send(f"move_positioner_z {probe.to_string()},{ref.to_string()},{z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -239,9 +239,9 @@ class ProbeCommandGroup(CommandGroupBase):
         """
 
         if z == None:
-            self.comm.send(f"set_positioner_contact {probe.toSentioAbbr()}")
+            self.comm.send(f"set_positioner_contact {probe.to_string()}")
         else:
-            self.comm.send(f"set_positioner_contact {probe.toSentioAbbr()},{z}")
+            self.comm.send(f"set_positioner_contact {probe.to_string()},{z}")
 
         Response.check_resp(self.comm.read_line())
 
@@ -256,9 +256,9 @@ class ProbeCommandGroup(CommandGroupBase):
             y: The y position in micrometer. If not specified, the current y position is used.
         """
         if site is None:
-            self.comm.send(f"set_positioner_home {probe.toSentioAbbr()}")
+            self.comm.send(f"set_positioner_home {probe.to_string()}")
         else:
-            self.comm.send(f"set_positioner_home {probe.toSentioAbbr()},{site.toSentioAbbr()},{x},{y}")
+            self.comm.send(f"set_positioner_home {probe.to_string()},{site.to_string()},{x},{y}")
 
         Response.check_resp(self.comm.read_line())
 
@@ -277,7 +277,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the site id, the x position in micrometer and the y position in micrometer.
         """
 
-        self.comm.send(f"step_positioner_site {probe.toSentioAbbr()},{idx}")
+        self.comm.send(f"step_positioner_site {probe.to_string()},{idx}")
 
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -297,7 +297,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the site id, the x position in micrometer and the y position in micrometer.
         """
 
-        self.comm.send(f"step_positioner_site_first {probe.toSentioAbbr()}")
+        self.comm.send(f"step_positioner_site_first {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], float(tok[1]), float(tok[2])
@@ -316,7 +316,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the site id, the x position in micrometer and the y position in micrometer.
         """
 
-        self.comm.send(f"step_positioner_site_next {probe.toSentioAbbr()}")
+        self.comm.send(f"step_positioner_site_next {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], float(tok[1]), float(tok[2])
@@ -331,7 +331,7 @@ class ProbeCommandGroup(CommandGroupBase):
             status: Enable or disable status
 
         """
-        self.comm.send(f"enable_positioner_motor {probe.toSentioAbbr()},{status}")
+        self.comm.send(f"enable_positioner_motor {probe.to_string()},{status}")
         Response.check_resp(self.comm.read_line())
 
     def get_probe_status(self, probe: ProbeSentio) -> str:
@@ -347,7 +347,7 @@ class ProbeCommandGroup(CommandGroupBase):
             3rd digit indicates the North Positioner, 4rd digit indicates the South Positioner.
         """
 
-        self.comm.send(f"get_positioner_status {probe.toSentioAbbr()}")
+        self.comm.send(f"get_positioner_status {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
@@ -361,6 +361,6 @@ class ProbeCommandGroup(CommandGroupBase):
             status: Enable or disable status
 
         """
-        self.comm.send(f"set_positioner_status {probe.toSentioAbbr()},{status}")
+        self.comm.send(f"set_positioner_status {probe.to_string()},{status}")
         Response.check_resp(self.comm.read_line())
 

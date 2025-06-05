@@ -243,7 +243,7 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Returns:
             The button that was pressed.
         """
-        self.comm.send(f"status:show_message {message},{button.toSentioAbbr()},{caption},{level}")
+        self.comm.send(f"status:show_message {message},{button.to_string()},{caption},{level}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
@@ -260,5 +260,5 @@ class StatusCommandGroup(ModuleCommandGroupBase):
         Returns:
             A string containing Command ID and button pressed info.
         """
-        self.comm.send(f"status:start_show_message {message},{button.toSentioAbbr()},{caption},{level}")
+        self.comm.send(f"status:start_show_message {message},{button.to_string()},{caption},{level}")
         return Response.check_resp(self.comm.read_line())

@@ -36,7 +36,7 @@ class VisionIMagProCommandGroup(CommandGroupBase):
         # Response.check_resp(self.comm.read_line())
         # time.sleep(0.5)
 
-        self.comm.send("vis:imagpro:move_z {0}, {1}".format(ref.toSentioAbbr(), pos))
+        self.comm.send("vis:imagpro:move_z {0}, {1}".format(ref.to_string(), pos))
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -51,7 +51,7 @@ class VisionIMagProCommandGroup(CommandGroupBase):
             The position of the z-axis.
         """
 
-        par: str = ref.toSentioAbbr()
+        par: str = ref.to_string()
         self.comm.send(f"vis:imagpro:get_z {par}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())

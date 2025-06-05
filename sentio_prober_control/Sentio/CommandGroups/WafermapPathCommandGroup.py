@@ -20,7 +20,7 @@ class WafermapPathCommandGroup(CommandGroupBase):
             bin_val: The bin value to use. Can be an int or PathSelection enum.
         """
         if isinstance(bin_val, PathSelection):
-            bin_val_str = bin_val.toSentioAbbr()
+            bin_val_str = bin_val.to_string()
         else:
             bin_val_str = str(bin_val)
 
@@ -53,7 +53,7 @@ class WafermapPathCommandGroup(CommandGroupBase):
         Args:
             selection: The selection of dies to select.
         """
-        self.comm.send(f"map:path:select_dies {selection.toSentioAbbr()}")
+        self.comm.send(f"map:path:select_dies {selection.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_routing(self, sp: RoutingStartPoint, pri: RoutingPriority) -> None:
@@ -66,7 +66,7 @@ class WafermapPathCommandGroup(CommandGroupBase):
             sp: The start point of the routing.
             pri: The priority of the routing (rows first, columns first).
         """
-        self.comm.send(f"map:set_routing {sp.toSentioAbbr()}, {pri.toSentioAbbr()}")
+        self.comm.send(f"map:set_routing {sp.to_string()}, {pri.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def add_bins(self, selection: int | list[int] | range | list[range]) -> int:
