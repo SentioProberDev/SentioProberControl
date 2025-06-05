@@ -32,11 +32,11 @@ class ScopeCommandGroup(CommandGroupBase):
         else:
             raise ValueError(f"Invalid stage {stage} for ScopeCommandGroup")
 
-        if has_subgroups:
+        if stage==Stage.Scope and has_subgroups:
             self.top: ScopeCommandGroup = ScopeCommandGroup(prober, Stage.Scope)
             self.bottom: ScopeCommandGroup = ScopeCommandGroup(prober, Stage.BottomScope)
             self.aux: ScopeCommandGroup = ScopeCommandGroup(prober, Stage.AuxiliaryScope)
-
+        
 
     def move_xy(self, ref: XyReference, x: float, y: float) -> Tuple[float, float, XyReference]:
         """Move scope to a given position.
