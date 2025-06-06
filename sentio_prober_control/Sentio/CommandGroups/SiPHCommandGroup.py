@@ -35,6 +35,19 @@ class SiPHCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
+    def get_fiber_length(self, probe: ProbeSentio, index : int) -> float:
+        """Get the fiber length of a SiPh probe.
+
+         Args:
+            probe: Probe stage TopProbe or BottomProbe
+            index: Index of the probe (0...7).
+        """
+
+        self.comm.send(f"siph:get_fiber_length {probe.toSentioAbbr()},{index}")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
+    
+
     def get_intensity(self, channel : int = 1) -> float:
         """Get the current intensity value.
 
@@ -57,6 +70,19 @@ class SiPHCommandGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
 
+    def set_hover(self, probe: ProbeSentio, index : int, hovergap : float) -> None:
+        """Sets the hover gap and enables hovering for a SiPh probe.
+
+         Args:
+            probe: Probe stage TopProbe or BottomProbe
+            index: Index of the probe (0...7).
+            hovergap: Hover distance in µm
+        """
+
+        self.comm.send(f"siph:set_hover {probe.toSentioAbbr()},{index},{hovergap}")
+        Response.check_resp(self.comm.read_line())
+        
+    
     def move_hover(self, probe: ProbeSentio) -> None:
         """Move SiPh probe to hover height.
 

@@ -1318,12 +1318,16 @@ class ProbeSentio(Enum):
         West (1): Probe is on the left side of the chuck.
         North (2): Probe is at the back side of the prober.
         South (3): Probe is on the front side of the prober.
+        TopProbe (100): Probe is on the front side of the wafer.
+        BottomProbe (101): Probe is on the rear side of the wafer.
     """
 
     East = 0
     West = 1
     North = 2
     South = 3
+    TopProbe = 100
+    BottomProbe = 101
 
     def toSentioAbbr(self):
         switcher = {
@@ -1331,6 +1335,8 @@ class ProbeSentio(Enum):
             ProbeSentio.West: "West",
             ProbeSentio.North: "North",
             ProbeSentio.South: "South",
+            ProbeSentio.TopProbe: "TopProbe",
+            ProbeSentio.BottomProbe: "BottomProbe"
         }
         return switcher.get(self, "Invalid ProbeSentio enumerator")
 
