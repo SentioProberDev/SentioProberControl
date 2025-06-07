@@ -1,5 +1,6 @@
 from typing import Tuple
 
+
 from sentio_prober_control.Sentio.Enumerations import ProbeSentio, UvwAxis, FiberType
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -11,8 +12,8 @@ class SiPHCommandGroup(CommandGroupBase):
     of the [SentioProber](SentioProber.md) class.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober)
 
 
     def fast_alignment(self) -> None:
@@ -64,7 +65,7 @@ class SiPHCommandGroup(CommandGroupBase):
         :raises: ProberException if an error occured.
         """
 
-        self.comm.send(f"siph:move_hover {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:move_hover {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -75,7 +76,7 @@ class SiPHCommandGroup(CommandGroupBase):
         :raises: ProberException if an error occured.
         """
 
-        self.comm.send(f"siph:move_separation {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:move_separation {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def coupling(self, probe: ProbeSentio, axis: UvwAxis) -> None:
@@ -86,7 +87,7 @@ class SiPHCommandGroup(CommandGroupBase):
             axis: Execute axis
         """
 
-        self.comm.send(f"siph:coupling {probe.toSentioAbbr()},{axis.toSentioAbbr()}")
+        self.comm.send(f"siph:coupling {probe.to_string()},{axis.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def get_alignment(self, probe: ProbeSentio, fiber_type: FiberType) -> Tuple[bool, bool, bool, bool]:
@@ -99,7 +100,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A tuple containing the status of Coarse, Fine, Gradient, and Rotary/Focal searching (True/False).
         """
-        self.comm.send(f"siph:get_alignment {probe.toSentioAbbr()},{fiber_type.toSentioAbbr()}")
+        self.comm.send(f"siph:get_alignment {probe.to_string()},{fiber_type.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
 
         tok = resp.message().split(",")
@@ -119,7 +120,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A Response object containing the command execution status.
         """
-        self.comm.send(f"siph:set_origin {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:set_origin {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def move_origin(self, probe: ProbeSentio) -> None:
@@ -136,7 +137,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A Response object containing the command execution status.
         """
-        self.comm.send(f"siph:move_origin {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:move_origin {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def move_position_uvw(self, probe: ProbeSentio, axis: UvwAxis, degree: float) -> float:
@@ -150,7 +151,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             The current position of the axis after movement.
         """
-        self.comm.send(f"siph:move_position_uvw {probe.toSentioAbbr()},{axis.toSentioAbbr()},{degree}")
+        self.comm.send(f"siph:move_position_uvw {probe.to_string()},{axis.to_string()},{degree}")
         resp = Response.check_resp(self.comm.read_line())
 
         return float(resp.message())
@@ -164,7 +165,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A Response object containing the command execution status.
         """
-        self.comm.send(f"siph:pivot_point {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:pivot_point {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_alignment(self, probe: ProbeSentio, fiber_type: FiberType, coarse: bool, fine: bool, gradient: bool,
@@ -188,7 +189,7 @@ class SiPHCommandGroup(CommandGroupBase):
         rotary_str = "ON" if rotary else "OFF"
 
         self.comm.send(
-            f"siph:set_alignment {probe.toSentioAbbr()},{fiber_type},{coarse_str},{fine_str},{gradient_str},{rotary_str}")
+            f"siph:set_alignment {probe.to_string()},{fiber_type},{coarse_str},{fine_str},{gradient_str},{rotary_str}")
         Response.check_resp(self.comm.read_line())
 
     def set_pivot_point(self, rotary_angle_1: float, rotary_angle_2: float, leveling_angle: float, repeats: int) -> None:
@@ -251,7 +252,7 @@ class SiPHCommandGroup(CommandGroupBase):
         if not (0 <= x <= 100 and 0 <= y <= 100):
             raise ValueError("X and Y values must be between 0 and 100 μm.")
 
-        self.comm.send(f"siph:move_nanocube_xy {probe.toSentioAbbr()},{x},{y}")
+        self.comm.send(f"siph:move_nanocube_xy {probe.to_string()},{x},{y}")
         resp = Response.check_resp(self.comm.read_line())
 
         # Parse response message
@@ -269,7 +270,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A tuple containing the current X and Y positions.
         """
-        self.comm.send(f"siph:get_nanocube_xy {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:get_nanocube_xy {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
 
         # Parse response message
@@ -287,7 +288,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             The current Z position.
         """
-        self.comm.send(f"siph:get_nanocube_z {probe.toSentioAbbr()}")
+        self.comm.send(f"siph:get_nanocube_z {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
 
         # Parse response message

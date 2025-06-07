@@ -1,3 +1,4 @@
+
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -5,8 +6,8 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 class SetupContactCounterCommandGroup(CommandGroupBase):
     """This command group bundles functions setting up the contact counter."""
     
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober)
 
     def get(self) -> int:
         """ Retrieves the contact counter value.

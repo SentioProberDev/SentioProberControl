@@ -92,7 +92,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             bin_val: The bin value to set.
             selection: The selection of dies to set the bin value for.
         """
-        self.comm.send(f"map:bins:set_all {bin_val}, {selection.toSentioAbbr()}")
+        self.comm.send(f"map:bins:set_all {bin_val}, {selection.to_string()}")
         Response.check_resp(self.comm.read_line())
 
     def set_bin(self, bin_value: int, col: int | None = None, row: int | None = None, site: int | None = None) -> None:
@@ -139,7 +139,7 @@ class WafermapBinsCommandGroup(CommandGroupBase):
             bin_quality: Pass/Fail/Undefined.
             color: The color of the bin.
         """
-        self.comm.send(f"map:bins:set_bin_info {index}, {description}, {bin_quality.toSentioAbbr()}, {color}")
+        self.comm.send(f"map:bins:set_bin_info {index}, {description}, {bin_quality.to_string()}, {color}")
         Response.check_resp(self.comm.read_line())
 
     def resize(self, bin_table_size: int) -> None:

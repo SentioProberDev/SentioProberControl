@@ -1,7 +1,7 @@
 from deprecated import deprecated
+
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Enumerations import DriftType
 from typing import List
 
@@ -10,8 +10,8 @@ class QAlibriaCommandGroup(CommandGroupBase):
     This command group contains functions for working with QAlibria.
     """
 
-    def __init__(self, comm) -> None:
-        super().__init__(comm)
+    def __init__(self, prober : 'SentioProber') -> None:
+        super().__init__(prober)
 
 
     def calibration_execute(self) -> None:

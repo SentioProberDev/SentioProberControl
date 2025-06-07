@@ -43,7 +43,7 @@ class LoaderCommandGroup(CommandGroupBase):
             has_station (bool): True if the station is present, False otherwise.
         """
 
-        self.comm.send(f"loader:has_station {station.toSentioAbbr()}")
+        self.comm.send(f"loader:has_station {station.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message() == "1"
     
@@ -62,9 +62,9 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         if angle is None:
-            self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}")
+            self.comm.send(f"loader:load_wafer {src_station.to_string()}, {src_slot}")
         else:
-            self.comm.send(f"loader:load_wafer {src_station.toSentioAbbr()}, {src_slot}, {angle}")
+            self.comm.send(f"loader:load_wafer {src_station.to_string()}, {src_slot}, {angle}")
 
         resp = Response.check_resp(self.comm.read_line())
         if resp.message().lower() == "ok":
@@ -85,7 +85,7 @@ class LoaderCommandGroup(CommandGroupBase):
             angle (float): The prealignment angle.
         """
 
-        self.comm.send(f"loader:prealign {marker.toSentioAbbr()}, {angle}")
+        self.comm.send(f"loader:prealign {marker.to_string()}, {angle}")
         Response.check_resp(self.comm.read_line())
 
     def query_wafer_status(self, station : LoaderStation, slot : int) -> Tuple[LoaderStation, int, int, int, float] | None:
@@ -102,7 +102,7 @@ class LoaderCommandGroup(CommandGroupBase):
             status (Tuple[LoaderStation, int, int, int, float]): A tuple with the following elements: OriginStation, OriginSlot, Wafer Size, Wafer Orientation, Progress Value.
         """
 
-        self.comm.send(f"loader:query_wafer_status {station.toSentioAbbr()}, {slot}")
+        self.comm.send(f"loader:query_wafer_status {station.to_string()}, {slot}")
         
         try:
             resp = Response.check_resp(self.comm.read_line())
@@ -140,7 +140,7 @@ class LoaderCommandGroup(CommandGroupBase):
             result (str): A string with the scan result.
         """
 
-        self.comm.send(f"loader:scan_station {station.toSentioAbbr()}")
+        self.comm.send(f"loader:scan_station {station.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
     
@@ -157,7 +157,7 @@ class LoaderCommandGroup(CommandGroupBase):
             value (float): The value to set.
         """
         
-        self.comm.send(f"loader:set_wafer_status {station.toSentioAbbr()},{slot},{what.toSentioAbbr()},{value}")
+        self.comm.send(f"loader:set_wafer_status {station.to_string()},{slot},{what.to_string()},{value}")
         Response.check_resp(self.comm.read_line())
         
 
@@ -179,9 +179,9 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         if angle == None:
-            self.comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}")
+            self.comm.send(f"loader:start_prepare_station {station.to_string()}")
         else:
-            self.comm.send(f"loader:start_prepare_station {station.toSentioAbbr()}, {angle}")
+            self.comm.send(f"loader:start_prepare_station {station.to_string()}, {angle}")
 
         return Response.check_resp(self.comm.read_line())
 
@@ -206,7 +206,7 @@ class LoaderCommandGroup(CommandGroupBase):
             dst_slot (int): The destination slot.
         """
 
-        self.comm.send(f"loader:transfer_wafer {src_station.toSentioAbbr()}, {src_slot}, {dst_station.toSentioAbbr()}, {dst_slot}")
+        self.comm.send(f"loader:transfer_wafer {src_station.to_string()}, {src_slot}, {dst_station.to_string()}, {dst_slot}")
         Response.check_resp(self.comm.read_line())
 
 
@@ -222,7 +222,7 @@ class LoaderCommandGroup(CommandGroupBase):
         """
 
         if station is not None:
-            self.comm.send(f"loader:unload_wafer {station.toSentioAbbr()}, {slot}")
+            self.comm.send(f"loader:unload_wafer {station.to_string()}, {slot}")
         else:
             self.comm.send("loader:unload_wafer")
 
@@ -241,7 +241,7 @@ class LoaderCommandGroup(CommandGroupBase):
             cassette_size (int): The size of the cassette in mm. 0 if no cassette is present.
         """
         
-        self.comm.send(f"loader:has_cassette {station.toSentioAbbr()}")
+        self.comm.send(f"loader:has_cassette {station.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(',')
         has_cassette = tok[0] == "1"
@@ -259,7 +259,7 @@ class LoaderCommandGroup(CommandGroupBase):
 
         """
         
-        self.comm.send(f"loader:set_wafer_id {station.toSentioAbbr()}, {slot}, {waferid}")
+        self.comm.send(f"loader:set_wafer_id {station.to_string()}, {slot}, {waferid}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
     
@@ -272,7 +272,7 @@ class LoaderCommandGroup(CommandGroupBase):
             slot(int):The slot to query waferid
         """
         
-        self.comm.send(f"loader:query_wafer_id {station.toSentioAbbr()}, {slot}")
+        self.comm.send(f"loader:query_wafer_id {station.to_string()}, {slot}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
     
@@ -292,7 +292,7 @@ class LoaderCommandGroup(CommandGroupBase):
         if angle is None and side is None:
             self.comm.send(f"loader:read_wafer_id")
         elif angle is not None and side is not None:
-            self.comm.send(f"loader:read_wafer_id {angle}, {side.toSentioAbbr()}")
+            self.comm.send(f"loader:read_wafer_id {angle}, {side.to_string()}")
         else:
             raise ValueError("Both angle or side must be given or neither of those.")
             
@@ -319,7 +319,7 @@ class LoaderCommandGroup(CommandGroupBase):
             for the command to finish.
         """
         
-        self.comm.send(f"loader:start_prepare_wafer {station.toSentioAbbr()}, {slot}, {angle}, {1 if read_id else 0}, {unloadstation.toSentioAbbr()}, {unloadslot}")
+        self.comm.send(f"loader:start_prepare_wafer {station.to_string()}, {slot}, {angle}, {1 if read_id else 0}, {unloadstation.to_string()}, {unloadslot}")
         return Response.check_resp(self.comm.read_line())
 
 
@@ -352,7 +352,7 @@ class LoaderCommandGroup(CommandGroupBase):
             status (str): A string consisting of "0" and "1" indicating the presence of a wafer in a slot of the station.
         """
         
-        self.comm.send(f"loader:query_station_status {station.toSentioAbbr()}")
+        self.comm.send(f"loader:query_station_status {station.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
     
@@ -372,5 +372,5 @@ class LoaderCommandGroup(CommandGroupBase):
             for the command to finish.
         """
         
-        self.comm.send(f"loader:start_read_wafer_id {angle}, {side.toSentioAbbr()}")
+        self.comm.send(f"loader:start_read_wafer_id {angle}, {side.to_string()}")
         return Response.check_resp(self.comm.read_line())

@@ -67,7 +67,7 @@ class LoaderVirtualCarrierCommandGroup(CommandGroupBase):
                 A List of steps to execute.
         """
 
-        resp : Response = self.prober.send_cmd(f"loader:vc:start_initialize {carrier_name},{mode.toSentioAbbr()},{forceDataSync}")
+        resp : Response = self.prober.send_cmd(f"loader:vc:start_initialize {carrier_name},{mode.to_string()},{forceDataSync}")
         resp = self.prober.wait_complete(resp.cmd_id())
 
         # parse processing steps into a list of tuples
