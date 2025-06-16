@@ -44,7 +44,7 @@ from sentio_prober_control.Sentio.CommandGroups.StatusCommandGroup import Status
 from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import VisionCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
-from sentio_prober_control.Sentio.CommandGroups.ScopeCommandGroup import ScopeCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.StageCommandGroup import StageCommandGroup
 
 class SentioCommunicationType(Enum):
     """This enum defines different types of prober communication.
@@ -102,7 +102,8 @@ class SentioProber(ProberBase):
         self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
         # Command groups for stages; Only available for Sentio > 25.2
-        self.scope: ScopeCommandGroup = ScopeCommandGroup(self, Stage.Scope, True)
+        self.scope: StageCommandGroup = StageCommandGroup(self, Stage.Scope, True)
+        self.chuck: StageCommandGroup = StageCommandGroup(self, Stage.Chuck, False)
 
         # deprecated command groups; may be removed at any time.
         # DO NOT USE THEM IN NEW CODE!

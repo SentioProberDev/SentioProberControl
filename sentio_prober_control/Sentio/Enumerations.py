@@ -1934,6 +1934,30 @@ class XyReference(Enum):
             raise ValueError(f"Unknown XyReference abbreviation: {abbr}")
         
 
+class ZCompensationType(Enum):
+    """A list of Z compensation types.
+
+    Attributes:
+        Disable (0): None
+        Topography (1): Vertical (Z) compensation.
+        MapScan (2): Both lateral and vertical compensation.
+        AlignDie (3): Probe card compensation.
+        SkateDetection (4): MapScan compensation.
+    """
+
+    Disable = 0
+    OnTheFly = 1
+    Topography = 2
+
+    def to_string(self):
+        switcher = {
+            ZCompensationType.Disable: "None",
+            ZCompensationType.OnTheFly: "OnTheFly",
+            ZCompensationType.Topography: "Topography",
+        }
+        return switcher.get(self, "Invalid XyCompensationType")
+
+
 class ZPositionHint(Enum):
     """Represents a hint for the z position of a stage.
 
@@ -1984,30 +2008,6 @@ class ZPositionHint(Enum):
             raise ValueError(f"Unknown ChuckPositionHint abbreviation: {abbr}")
 
 
-class ZCompensationType(Enum):
-    """A list of Z compensation types.
-
-    Attributes:
-        Disable (0): None
-        Topography (1): Vertical (Z) compensation.
-        MapScan (2): Both lateral and vertical compensation.
-        AlignDie (3): Probe card compensation.
-        SkateDetection (4): MapScan compensation.
-    """
-
-    Disable = 0
-    OnTheFly = 1
-    Topography = 2
-
-    def to_string(self):
-        switcher = {
-            ZCompensationType.Disable: "None",
-            ZCompensationType.OnTheFly: "OnTheFly",
-            ZCompensationType.Topography: "Topography",
-        }
-        return switcher.get(self, "Invalid XyCompensationType")
-
-
 class ZReference(Enum):
     """Defines a position reference for stage z-motions.
 
@@ -2017,6 +2017,10 @@ class ZReference(Enum):
         Hover (2): Use relative chuck z coordinated with respect to the chucks hover height.
         Zero (3): Use absolute chuck z coordinates with respect the the physical axis zero positon.
         Current (4): Use relative chuck z coordinated with respect to the current position.
+        Vce1 (5): For internal and debug use only
+        Vce2 (6): For internal and debug use only
+        Ready (7): For internal and debug use only
+        RealPos (8): For internal and debug use only
     """
 
     Contact = 0
@@ -2024,13 +2028,40 @@ class ZReference(Enum):
     Hover = 2
     Zero = 3
     Current = 4
-    
+    Vce1 = 5
+    Vce2 = 6
+    Ready = 7
+    RealPos = 8
+
     def to_string(self):
         switcher = {
             ZReference.Contact: "C",
             ZReference.Separation: "S",
             ZReference.Hover: "H",
             ZReference.Zero: "Z",
-            ZReference.Current: "R"
+            ZReference.Current: "R",
+            ZReference.Vce1: "VCE01",
+            ZReference.Vce2: "VCE02",
+            ZReference.Ready: "Ready",
+            ZReference.RealPos: "RealPos",
         }
         return switcher.get(self, "Invalid chuck z reference")
+    
+    @staticmethod
+    def from_string(abbr: str) -> "ZReference":
+        """ Convert a string to a ZReference. """
+        mapping = {
+            "contact" :         ZReference.Contact,
+            "separation" :      ZReference.Separation,
+            "hover":            ZReference.Hover,
+            "zero":             ZReference.Zero,
+            "current":          ZReference.Current,
+            "vce01":            ZReference.Vce1,
+            "vce02":            ZReference.Vce2,
+            "ready":            ZReference.Ready,
+            "realpos":          ZReference.RealPos,
+        }
+        try:
+            return mapping[abbr.lower()]
+        except KeyError:
+            raise ValueError(f"Unknown ZReference abbreviation: {abbr}")
