@@ -376,6 +376,17 @@ class ColorScheme(Enum):
         return switcher.get(self, "Invalid ColorScheme")
 
 
+class CompatibilityLevel(Enum):
+    """ Compatibility level of the prober. 
+    
+        The compatibility level is determined at time of instantiating the prober class. 
+        It is used to determine which features are available in the prober.
+    """
+    Undefined = 0,
+    Sentio_24 = 1,
+    Sentio_25 = 2
+
+
 @deprecated(reason="duplicated; use DieCompensationMode instead.")
 class Compensation(Enum):
     Lateral = 0
@@ -1227,7 +1238,7 @@ class TestSelection(Enum):
         return switcher.get(self, "Invalid TestSelection")
 
 
-class ProbeSentio(Enum):
+class ProbePosition(Enum):
     """An enumeration containing a list of position for motorized probes.
 
     Attributes:
@@ -1235,21 +1246,33 @@ class ProbeSentio(Enum):
         West (1): Probe is on the left side of the chuck.
         North (2): Probe is at the back side of the prober.
         South (3): Probe is on the front side of the prober.
+        NorthEast (4): Probe is at the back right side of the prober.
+        SouthEast (5): Probe is at the front right side of the prober.
+        SouthWest (6): Probe is at the front left side of the prober.
+        NorthWest (7): Probe is at the back left side of the prober.
     """
 
     East = 0
     West = 1
     North = 2
     South = 3
+    NorthEast = 4,
+    SouthEast = 5,
+    SouthWest = 6,
+    NorthWest = 7
 
     def to_string(self):
         switcher = {
-            ProbeSentio.East: "East",
-            ProbeSentio.West: "West",
-            ProbeSentio.North: "North",
-            ProbeSentio.South: "South",
+            ProbePosition.East: "East",
+            ProbePosition.West: "West",
+            ProbePosition.North: "North",
+            ProbePosition.South: "South",
+            ProbePosition.NorthEast: "NorthEast",
+            ProbePosition.SouthEast: "SouthEast",
+            ProbePosition.SouthWest: "SouthWest",
+            ProbePosition.NorthWest: "NorthWest",
         }
-        return switcher.get(self, "Invalid ProbeSentio enumerator")
+        return switcher.get(self, "Invalid ProbePosition enumerator")
 
 
 class PtpaFindTipsMode(Enum):

@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import ProbeSentio, XyReference, ZReference, ChuckSite
+from sentio_prober_control.Sentio.Enumerations import ProbePosition, XyReference, ZReference, ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -16,7 +16,7 @@ class ProbeCommandGroup(CommandGroupBase):
     from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
     prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-    prober.probe.move_probe_xy(ProbeSentio.East, XyReference.Current, 1000, 2000)
+    prober.probe.move_probe_xy(ProbePosition.East, XyReference.Current, 1000, 2000)
     ```
     """
 
@@ -24,7 +24,7 @@ class ProbeCommandGroup(CommandGroupBase):
         super().__init__(prober)
 
 
-    def async_step_probe_site(self, probe: ProbeSentio, idx: int) -> int:
+    def async_step_probe_site(self, probe: ProbePosition, idx: int) -> int:
         """Start the process of stepping to a positioner site.
 
         Each positioner can define n a number of predefined positions called "sites". This command
@@ -44,7 +44,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return resp.cmd_id()
 
 
-    def async_step_probe_site_next(self, probe: ProbeSentio) -> int:
+    def async_step_probe_site_next(self, probe: ProbePosition) -> int:
         """Step to next probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -63,7 +63,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return resp.cmd_id()
 
 
-    def async_step_probe_site_first(self, probe: ProbeSentio) -> int:
+    def async_step_probe_site_first(self, probe: ProbePosition) -> int:
         """Step to first probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -82,7 +82,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return resp.cmd_id()
 
 
-    def get_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[str, float, float, str]:
+    def get_probe_site(self, probe: ProbePosition, idx: int) -> Tuple[str, float, float, str]:
         """Get information for a probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -101,7 +101,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return str(tok[0]), float(tok[1]), float(tok[2]), str(tok[3])
 
 
-    def get_probe_site_number(self, probe: ProbeSentio) -> int:
+    def get_probe_site_number(self, probe: ProbePosition) -> int:
         """Returns the total number of probe sites set up.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -116,7 +116,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return int(resp.message())
 
 
-    def get_probe_xy(self, probe: ProbeSentio, ref: XyReference) -> Tuple[float, float]:
+    def get_probe_xy(self, probe: ProbePosition, ref: XyReference) -> Tuple[float, float]:
         """Get probe xy position in micrometer.
 
         Args:
@@ -133,7 +133,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def get_probe_z(self, probe: ProbeSentio, ref: ZReference) -> float:
+    def get_probe_z(self, probe: ProbePosition, ref: ZReference) -> float:
         """Get probe z position in micrometer.
 
         Args:
@@ -148,7 +148,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(resp.message())
 
 
-    def move_probe_contact(self, probe: ProbeSentio) -> float:
+    def move_probe_contact(self, probe: ProbePosition) -> float:
         """Move a probe to its contact position.
 
         Args:
@@ -163,7 +163,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(resp.message())
 
 
-    def move_probe_separation(self, probe: ProbeSentio) -> float:
+    def move_probe_separation(self, probe: ProbePosition) -> float:
         """Move a probe to its separation position.
 
         Args:
@@ -178,7 +178,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(resp.message())
 
 
-    def move_probe_home(self, probe: ProbeSentio) -> Tuple[float, float]:
+    def move_probe_home(self, probe: ProbePosition) -> Tuple[float, float]:
         """Move probe to its home position.
 
         Args:
@@ -194,7 +194,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_probe_xy(self, probe: ProbeSentio, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
+    def move_probe_xy(self, probe: ProbePosition, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move probe to a given position.
 
         Args:
@@ -213,7 +213,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-    def move_probe_z(self, probe: ProbeSentio, ref: ZReference, z: float) -> float:
+    def move_probe_z(self, probe: ProbePosition, ref: ZReference, z: float) -> float:
         """Move probe to a given z position.
 
         Args:
@@ -230,7 +230,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(resp.message())
 
 
-    def set_probe_contact(self, probe: ProbeSentio, z: float | None = None) -> None:
+    def set_probe_contact(self, probe: ProbePosition, z: float | None = None) -> None:
         """Set contact position of a positioner.
 
         Args:
@@ -246,7 +246,7 @@ class ProbeCommandGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def set_probe_home(self, probe: ProbeSentio, site: ChuckSite | None = None, x: float | None = None, y: float | None = None) -> None:
+    def set_probe_home(self, probe: ProbePosition, site: ChuckSite | None = None, x: float | None = None, y: float | None = None) -> None:
         """Set home position of a probe.
 
         Args:
@@ -263,7 +263,7 @@ class ProbeCommandGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def step_probe_site(self, probe: ProbeSentio, idx: int) -> Tuple[str, float, float]:
+    def step_probe_site(self, probe: ProbePosition, idx: int) -> Tuple[str, float, float]:
         """Step to a specific probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -284,7 +284,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return tok[0], float(tok[1]), float(tok[2])
 
 
-    def step_probe_site_first(self, probe: ProbeSentio) -> Tuple[str, float, float]:
+    def step_probe_site_first(self, probe: ProbePosition) -> Tuple[str, float, float]:
         """Step to the first probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -303,7 +303,7 @@ class ProbeCommandGroup(CommandGroupBase):
         return tok[0], float(tok[1]), float(tok[2])
 
 
-    def step_probe_site_next(self, probe: ProbeSentio) -> Tuple[str, float, float]:
+    def step_probe_site_next(self, probe: ProbePosition) -> Tuple[str, float, float]:
         """Step to the next probe site.
 
         Each positioner can define n a number of predefined positions called "sites".
@@ -321,7 +321,7 @@ class ProbeCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return tok[0], float(tok[1]), float(tok[2])
 
-    def enable_probe_motor(self, probe: ProbeSentio, status: bool) -> None:
+    def enable_probe_motor(self, probe: ProbePosition, status: bool) -> None:
         """Enable/Disable the probe motor.
 
         Probe with 3 motors will enable and disable by following behavior.
@@ -334,7 +334,7 @@ class ProbeCommandGroup(CommandGroupBase):
         self.comm.send(f"enable_positioner_motor {probe.to_string()},{status}")
         Response.check_resp(self.comm.read_line())
 
-    def get_probe_status(self, probe: ProbeSentio) -> str:
+    def get_probe_status(self, probe: ProbePosition) -> str:
         """Obtain the status of probe.
 
         Command will return 4 probe status
@@ -351,7 +351,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
-    def set_probe_status(self, probe: ProbeSentio, status: bool) -> None:
+    def set_probe_status(self, probe: ProbePosition, status: bool) -> None:
         """Enable/Disable the probe stage in the SENTIO.
 
         Enable/Disable the Probes in the SENTIO.
