@@ -1,7 +1,7 @@
 from typing import Tuple
 
 
-from sentio_prober_control.Sentio.Enumerations import ProbeSentio, UvwAxis, FiberType
+from sentio_prober_control.Sentio.Enumerations import ProbePosition, UvwAxis, FiberType, CompatibilityLevel
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -18,7 +18,6 @@ class SiPHCommandGroup(CommandGroupBase):
 
     def fast_alignment(self) -> None:
         """Perform fast fiber alignment."""
-
         self.comm.send("siph:fast_alignment")
         Response.check_resp(self.comm.read_line())
 
@@ -26,12 +25,11 @@ class SiPHCommandGroup(CommandGroupBase):
     def get_cap_sensor(self) -> Tuple[float, float]:
         """Get the capacitance sensor value.
 
-        :raises: ProberException if an error occured.
-        :return: A tuple with the values from the capacity sensors of probe 1 and probe 2.
+        Returns:
+            A tuple with the values from the capacity sensors of probe 1 and probe 2.
         """
         self.comm.send("siph:get_cap_sensor")
         resp = Response.check_resp(self.comm.read_line())
-
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
@@ -51,36 +49,41 @@ class SiPHCommandGroup(CommandGroupBase):
     def gradient_search(self) -> None:
         """Execute SiPh gradient search.
 
-        :raises: ProberException if an error occured.
+           Returns:
+                None
         """
 
         self.comm.send("siph:gradient_search")
         Response.check_resp(self.comm.read_line())
 
 
-    def move_hover(self, probe: ProbeSentio) -> None:
+    def move_hover(self, probe: ProbePosition) -> None:
         """Move SiPh probe to hover height.
 
-        :param probe: The probe on which the SiPh probe is mounted.
-        :raises: ProberException if an error occured.
+        Args:
+            probe: The probe on which the SiPh probe is mounted.
         """
 
         self.comm.send(f"siph:move_hover {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
 
-    def move_separation(self, probe: ProbeSentio) -> None:
+    def move_separation(self, probe: ProbePosition) -> None:
         """Move SiPh probe to separation height.
 
-        :param probe: The probe on which the SiPh probe is mounted.
-        :raises: ProberException if an error occured.
+        Args:
+            probe: The probe on which the SiPh probe is mounted.
+
+        Returns:
+            None
         """
 
         self.comm.send(f"siph:move_separation {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-    def coupling(self, probe: ProbeSentio, axis: UvwAxis) -> None:
-        """Start execute coupling .
+
+    def coupling(self, probe: ProbePosition, axis: UvwAxis) -> None:
+        """Start execute coupling.
 
         Args:
             probe: Execute probe.
@@ -90,7 +93,8 @@ class SiPHCommandGroup(CommandGroupBase):
         self.comm.send(f"siph:coupling {probe.to_string()},{axis.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-    def get_alignment(self, probe: ProbeSentio, fiber_type: FiberType) -> Tuple[bool, bool, bool, bool]:
+
+    def get_alignment(self, probe: ProbePosition, fiber_type: FiberType) -> Tuple[bool, bool, bool, bool]:
         """Get the fast alignment function enable including Coarse, Fine, Gradient, and Rotary/Focal searching.
 
         Args:
@@ -111,7 +115,8 @@ class SiPHCommandGroup(CommandGroupBase):
 
         return coarse, fine, gradient, rotary_focal
 
-    def set_origin(self, probe: ProbeSentio) -> None:
+
+    def set_origin(self, probe: ProbePosition) -> None:
         """Set the current position as the origin position for the SiPH positioner.
 
         Args:
@@ -120,10 +125,12 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A Response object containing the command execution status.
         """
+
         self.comm.send(f"siph:set_origin {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-    def move_origin(self, probe: ProbeSentio) -> None:
+
+    def move_origin(self, probe: ProbePosition) -> None:
         """Move SiPH positioner to its origin position.
 
         The movement includes:
@@ -140,7 +147,8 @@ class SiPHCommandGroup(CommandGroupBase):
         self.comm.send(f"siph:move_origin {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-    def move_position_uvw(self, probe: ProbeSentio, axis: UvwAxis, degree: float) -> float:
+
+    def move_position_uvw(self, probe: ProbePosition, axis: UvwAxis, degree: float) -> float:
         """Move the SiPH positioner target axis with a relative degree.
 
         Args:
@@ -156,7 +164,8 @@ class SiPHCommandGroup(CommandGroupBase):
 
         return float(resp.message())
 
-    def pivot_point(self, probe: ProbeSentio) -> None:
+
+    def pivot_point(self, probe: ProbePosition) -> None:
         """Run pivot point calibration for the specified positioner.
 
         Args:
@@ -168,7 +177,8 @@ class SiPHCommandGroup(CommandGroupBase):
         self.comm.send(f"siph:pivot_point {probe.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-    def set_alignment(self, probe: ProbeSentio, fiber_type: FiberType, coarse: bool, fine: bool, gradient: bool,
+
+    def set_alignment(self, probe: ProbePosition, fiber_type: FiberType, coarse: bool, fine: bool, gradient: bool,
                       rotary: bool) -> None:
         """Set the fast alignment function enable including Coarse, Fine, Gradient, and Rotary/Focal searching.
 
@@ -188,9 +198,9 @@ class SiPHCommandGroup(CommandGroupBase):
         gradient_str = "ON" if gradient else "OFF"
         rotary_str = "ON" if rotary else "OFF"
 
-        self.comm.send(
-            f"siph:set_alignment {probe.to_string()},{fiber_type},{coarse_str},{fine_str},{gradient_str},{rotary_str}")
+        self.comm.send(f"siph:set_alignment {probe.to_string()},{fiber_type},{coarse_str},{fine_str},{gradient_str},{rotary_str}")
         Response.check_resp(self.comm.read_line())
+
 
     def set_pivot_point(self, rotary_angle_1: float, rotary_angle_2: float, leveling_angle: float, repeats: int) -> None:
         """Set the parameters for the pivot point function.
@@ -207,6 +217,7 @@ class SiPHCommandGroup(CommandGroupBase):
         self.comm.send(f"siph:set_pivot_point {rotary_angle_1},{rotary_angle_2},{leveling_angle},{repeats}")
         Response.check_resp(self.comm.read_line())
 
+
     def download_graph_data(self, file_path: str, file_name: str) -> None:
         """Download the graph data and save it to the specified location.
 
@@ -217,8 +228,12 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A Response object containing the command execution status.
         """
+        if self.prober.compatibility_level < CompatibilityLevel.Sentio_25:
+            raise NotImplementedError(f"download_graph_data is not supported in compatibility level {self.prober.compatibility_level}.")
+
         self.comm.send(f"siph:download_graph_data {file_path}, {file_name}")
         Response.check_resp(self.comm.read_line())
+
 
     def start_tracking(self, timeout: int = 60) -> int:
         """Start the SiPH positioner gradient tracking search asynchronously.
@@ -236,7 +251,8 @@ class SiPHCommandGroup(CommandGroupBase):
         command_id = int(resp.cmd_id())
         return command_id
 
-    def move_nanocube_xy(self, probe: ProbeSentio, x: float, y: float) -> tuple[float, float]:
+
+    def move_nanocube_xy(self, probe: ProbePosition, x: float, y: float) -> tuple[float, float]:
         """Move NanoCube to the target XY position.
 
         The movement range is limited to 0 ~ 100 μm.
@@ -252,7 +268,7 @@ class SiPHCommandGroup(CommandGroupBase):
         if not (0 <= x <= 100 and 0 <= y <= 100):
             raise ValueError("X and Y values must be between 0 and 100 μm.")
 
-        self.comm.send(f"siph:move_nanocube_xy {probe.to_string()},{x},{y}")
+        self.comm.send(f"move_nanocube_xy {probe.to_string()},{x},{y}")
         resp = Response.check_resp(self.comm.read_line())
 
         # Parse response message
@@ -261,7 +277,8 @@ class SiPHCommandGroup(CommandGroupBase):
         new_y = float(tok[1])
         return new_x, new_y
 
-    def get_nanocube_xy(self, probe: ProbeSentio) -> tuple[float, float]:
+
+    def get_nanocube_xy(self, probe: ProbePosition) -> tuple[float, float]:
         """Get the current NanoCube XY position.
 
         Args:
@@ -270,7 +287,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A tuple containing the current X and Y positions.
         """
-        self.comm.send(f"siph:get_nanocube_xy {probe.to_string()}")
+        self.comm.send(f"get_nanocube_xy {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
 
         # Parse response message
@@ -279,7 +296,8 @@ class SiPHCommandGroup(CommandGroupBase):
         current_y = float(tok[1])
         return current_x, current_y
 
-    def get_nanocube_z(self, probe: ProbeSentio) -> float:
+
+    def get_nanocube_z(self, probe: ProbePosition) -> float:
         """Get the current NanoCube Z position.
 
         Args:
@@ -288,7 +306,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             The current Z position.
         """
-        self.comm.send(f"siph:get_nanocube_z {probe.to_string()}")
+        self.comm.send(f"get_nanocube_z {probe.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
 
         # Parse response message

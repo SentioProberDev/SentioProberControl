@@ -1,5 +1,6 @@
 import base64
 import os
+import re
 from typing import Tuple, Optional, Callable, TypeVar
 from enum import Enum
 
@@ -9,6 +10,7 @@ from sentio_prober_control.Sentio.Enumerations import (
     ChuckPositionHint,
     ChuckSite,
     ChuckSpeed,
+    CompatibilityLevel,
     ThetaReference,
     DialogButtons,
     LoadPosition,
@@ -45,6 +47,7 @@ from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import Vision
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.ScopeCommandGroup import ScopeCommandGroup
+
 
 class SentioCommunicationType(Enum):
     """This enum defines different types of prober communication.
@@ -107,6 +110,43 @@ class SentioProber(ProberBase):
         # deprecated command groups; may be removed at any time.
         # DO NOT USE THEM IN NEW CODE!
         self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
+
+        version : str = self.status.get_version()
+        self._compatibility_level = CompatibilityLevel.Undefined
+
+        # Extract version string
+        match = re.search(r"Version:\s*([\d\.]+)", version)
+        if match:
+            version = match.group(1)
+            parts = version.split(".")
+            major = int(parts[0]) if len(parts) > 0 else None
+            minor = int(parts[1]) if len(parts) > 1 else None
+            if major==24:
+                self._compatibility_level = CompatibilityLevel.Sentio_24
+            elif major==25:
+                self._compatibility_level = CompatibilityLevel.Sentio_25
+            else:
+                self._compatibility_level = CompatibilityLevel.Undefined
+
+    @property
+    def compatibility_level(self) -> CompatibilityLevel:
+        """Get the compatibility level of the prober.
+
+        The compatibility level is determined at time of instantiating the prober 
+        class by executing the prober.status.get_verison() command. It is used to 
+        determine which features are available in the probers remote command API.
+        """
+        return self._compatibility_level
+
+    @compatibility_level.setter
+    def compatibility_level(self, value: CompatibilityLevel) -> None:
+        """Set the compatibility level of the prober.
+
+            This setter allows overriding the compatibility level of the prober to set it 
+            to a specific version. This can be done to keep compatibility with older 
+            scripts.
+        """
+        self._compatibility_level = value
 
     def abort_command(self, cmd_id: int) -> Response:
         """Stop an ongoing asynchronous remote command.
