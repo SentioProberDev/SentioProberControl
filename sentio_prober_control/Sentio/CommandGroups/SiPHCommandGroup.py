@@ -1,6 +1,6 @@
 from typing import Tuple
 
-
+from sentio_prober_control.Sentio.Compatibility import Compatibility, CompatibilityLevel
 from sentio_prober_control.Sentio.Enumerations import ProbePosition, UvwAxis, FiberType, CompatibilityLevel
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
@@ -228,8 +228,7 @@ class SiPHCommandGroup(CommandGroupBase):
         Returns:
             A Response object containing the command execution status.
         """
-        if self.prober.compatibility_level < CompatibilityLevel.Sentio_25:
-            raise NotImplementedError(f"download_graph_data is not supported in compatibility level {self.prober.compatibility_level}.")
+        Compatibility.assert_min(CompatibilityLevel.Sentio_25_2)
 
         self.comm.send(f"siph:download_graph_data {file_path}, {file_name}")
         Response.check_resp(self.comm.read_line())

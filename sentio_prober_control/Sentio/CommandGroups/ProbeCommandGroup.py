@@ -3,7 +3,7 @@ from typing import Tuple
 from sentio_prober_control.Sentio.Enumerations import ProbePosition, XyReference, ZReference, ChuckSite
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-
+from sentio_prober_control.Sentio.Compatibility import Compatibility, CompatibilityLevel
 
 class ProbeCommandGroup(CommandGroupBase):
     """This command group contains functions for working with motorized prober.
@@ -143,7 +143,12 @@ class ProbeCommandGroup(CommandGroupBase):
         Returns:
             The z position in micrometer.
         """
-        self.comm.send(f"get_positioner_z {probe.to_string()},{ref.to_string()}")
+        
+        # Note: 
+        # Even in Sentio 24.x the ref parameter is expected in long form! This is why we use 
+        # CompatibilityLevel.Sentio_25_2 here.
+        self.comm.send(f"get_positioner_z {probe.to_string()},{ref.to_string(CompatibilityLevel.Sentio_25_2)}")
+
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -225,7 +230,10 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        self.comm.send(f"move_positioner_z {probe.to_string()},{ref.to_string()},{z}")
+        # Note:
+        # Even in Sentio 24.x the ref parameter is expected in long form! This is why we use
+        # CompatibilityLevel.Sentio_25_2 here.
+        self.comm.send(f"move_positioner_z {probe.to_string()},{ref.to_string(CompatibilityLevel.Sentio_25_2)},{z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
