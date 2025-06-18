@@ -2,6 +2,9 @@ from enum import Enum
 
 from deprecated import deprecated
 
+from sentio_prober_control.Sentio.Compatibility import CompatibilityLevel, Compatibility
+
+
 class AccessLevel(Enum):
     """Specifies a SENTIO access level.
 
@@ -374,17 +377,6 @@ class ColorScheme(Enum):
     def to_string(self):
         switcher = {ColorScheme.ColorFromBin: 0, ColorScheme.ColorFromValue: 1}
         return switcher.get(self, "Invalid ColorScheme")
-
-
-class CompatibilityLevel(Enum):
-    """ Compatibility level of the prober. 
-    
-        The compatibility level is determined at time of instantiating the prober class. 
-        It is used to determine which features are available in the prober.
-    """
-    Undefined = 0,
-    Sentio_24 = 1,
-    Sentio_25 = 2
 
 
 @deprecated(reason="duplicated; use DieCompensationMode instead.")
@@ -2056,18 +2048,43 @@ class ZReference(Enum):
     Ready = 7
     RealPos = 8
 
-    def to_string(self):
-        switcher = {
-            ZReference.Contact: "C",
-            ZReference.Separation: "S",
-            ZReference.Hover: "H",
-            ZReference.Zero: "Z",
-            ZReference.Current: "R",
-            ZReference.Vce1: "VCE01",
-            ZReference.Vce2: "VCE02",
-            ZReference.Ready: "Ready",
-            ZReference.RealPos: "RealPos",
-        }
+    def to_string(self, compat_level : CompatibilityLevel = CompatibilityLevel.Undefined) -> str:
+        if compat_level == CompatibilityLevel.Undefined:
+            compat_level = Compatibility.level
+
+        if compat_level < CompatibilityLevel.Sentio_25_2:
+            # This is the original implementation for SENTIO <25.2. 
+            # Older versions of SENTIO are inconsistent with what they expect 
+            # as remote command parameters. Most older remote commands accept both 
+            # long and short form of the z reference although some may only work with 
+            # the long form.
+            switcher = {
+                ZReference.Contact: "C",
+                ZReference.Separation: "S",
+                ZReference.Hover: "H",
+                ZReference.Zero: "Z",
+                ZReference.Current: "R",
+                ZReference.Vce1: "VCE01",
+                ZReference.Vce2: "VCE02",
+                ZReference.Ready: "Ready",
+                ZReference.RealPos: "RealPos",
+            }
+        else:
+            # This is for SENTIO >=25.2.
+            # Newer versions of SENTIO always accept both long and short versions. 
+            # For clarity the long version is used exclusively.
+            switcher = {
+                ZReference.Contact: "Contact",
+                ZReference.Separation: "Separation",
+                ZReference.Hover: "Hover",
+                ZReference.Zero: "Zero",
+                ZReference.Current: "Current",
+                ZReference.Vce1: "VCE01",
+                ZReference.Vce2: "VCE02",
+                ZReference.Ready: "Ready",
+                ZReference.RealPos: "RealPos",
+            }
+
         return switcher.get(self, "Invalid chuck z reference")
     
     @staticmethod

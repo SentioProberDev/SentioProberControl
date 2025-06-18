@@ -10,7 +10,6 @@ from sentio_prober_control.Sentio.Enumerations import (
     ChuckPositionHint,
     ChuckSite,
     ChuckSpeed,
-    CompatibilityLevel,
     ThetaReference,
     DialogButtons,
     LoadPosition,
@@ -28,7 +27,7 @@ from sentio_prober_control.Sentio.Enumerations import (
     XyReference,
     ZReference
 )
-
+from sentio_prober_control.Sentio.Compatibility import CompatibilityLevel, Compatibility
 from sentio_prober_control.Sentio.ProberBase import ProberBase, ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
@@ -62,6 +61,7 @@ class SentioCommunicationType(Enum):
     Gpib = 1
     Visa = 2
 
+  
 
 class SentioProber(ProberBase):
     """This class represents the SENTIO probe station in python.
@@ -90,9 +90,7 @@ class SentioProber(ProberBase):
         """
         ProberBase.__init__(self, comm)
 
-        self.__name = "SentioProber"
-        self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
-
+        # Standard command groups
         self.aux: AuxCommandGroup = AuxCommandGroup(self)
         self.loader: LoaderCommandGroup = LoaderCommandGroup(self)
         self.map: WafermapCommandGroup = WafermapCommandGroup(self)
@@ -104,16 +102,10 @@ class SentioProber(ProberBase):
         self.vision: VisionCommandGroup = VisionCommandGroup(self)
         self.setup: SetupCommandGroup = SetupCommandGroup(self)
 
-        # Command groups for stages; Only available for Sentio > 25.2
-        self.scope: StageCommandGroup = StageCommandGroup(self, Stage.Scope, True)
-        self.chuck: StageCommandGroup = StageCommandGroup(self, Stage.Chuck, False)
-
-        # deprecated command groups; may be removed at any time.
-        # DO NOT USE THEM IN NEW CODE!
-        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
+        self.__name = "SentioProber"
+        self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
 
         version : str = self.status.get_version()
-        self._compatibility_level = CompatibilityLevel.Undefined
 
         # Extract version string
         match = re.search(r"Version:\s*([\d\.]+)", version)
@@ -122,32 +114,30 @@ class SentioProber(ProberBase):
             parts = version.split(".")
             major = int(parts[0]) if len(parts) > 0 else None
             minor = int(parts[1]) if len(parts) > 1 else None
+            release = int(parts[2]) if len(parts) > 2 else None
             if major==24:
-                self._compatibility_level = CompatibilityLevel.Sentio_24
-            elif major==25:
-                self._compatibility_level = CompatibilityLevel.Sentio_25
+                Compatibility.level = CompatibilityLevel.Sentio_24
+            elif major==25 and (minor==2 or (minor==1 and release==99)):
+                Compatibility.level = CompatibilityLevel.Sentio_25_2
             else:
-                self._compatibility_level = CompatibilityLevel.Undefined
+                Compatibility.level = CompatibilityLevel.Undefined
 
-    @property
-    def compatibility_level(self) -> CompatibilityLevel:
-        """Get the compatibility level of the prober.
+        #
+        # More command groups not supported by all SENTIO versions.
+        #
 
-        The compatibility level is determined at time of instantiating the prober 
-        class by executing the prober.status.get_verison() command. It is used to 
-        determine which features are available in the probers remote command API.
-        """
-        return self._compatibility_level
+        # Command groups for stages; Only available for Sentio > 25.2
+        if Compatibility.level >= CompatibilityLevel.Sentio_25_2:
+            self.scope: StageCommandGroup = StageCommandGroup(self, Stage.Scope, True)
+            self.chuck: StageCommandGroup = StageCommandGroup(self, Stage.Chuck, False)
 
-    @compatibility_level.setter
-    def compatibility_level(self, value: CompatibilityLevel) -> None:
-        """Set the compatibility level of the prober.
+        #
+        # Deprecated command groups
+        #
+        # DO NOT USE THEM IN NEW CODE! They will be removed in the future!
 
-            This setter allows overriding the compatibility level of the prober to set it 
-            to a specific version. This can be done to keep compatibility with older 
-            scripts.
-        """
-        self._compatibility_level = value
+        self.compensation: CompensationCommandGroup = CompensationCommandGroup(self)
+
 
     def abort_command(self, cmd_id: int) -> Response:
         """Stop an ongoing asynchronous remote command.
