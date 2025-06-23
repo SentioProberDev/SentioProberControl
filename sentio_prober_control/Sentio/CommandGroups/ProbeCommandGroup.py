@@ -1,9 +1,11 @@
 from typing import Tuple
 
-from sentio_prober_control.Sentio.Enumerations import ProbePosition, XyReference, ZReference, ChuckSite
+from sentio_prober_control.Sentio.Enumerations import ProbePosition, XyReference, ZReference, ChuckSite, Stage
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.Compatibility import Compatibility, CompatibilityLevel
+from sentio_prober_control.Sentio.CommandGroups.StageCommandGroup import StageCommandGroup
+
 
 class ProbeCommandGroup(CommandGroupBase):
     """This command group contains functions for working with motorized prober.
@@ -20,9 +22,37 @@ class ProbeCommandGroup(CommandGroupBase):
     ```
     """
 
+    class _TopBottomPositionSelector:
+        """ This is a dummy command group for providing access to top and bottom probes.
+        """
+        def __init__(self, prober: 'SentioProber', stage : Stage, stage_selector : str) -> None: # type: ignore
+            self.east : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:east")
+            self.west : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:west")
+            self.north : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:north")
+            self.south : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:south")
+            self.northeast : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:northeast")
+            self.northwest : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:northwest")
+            self.southeast : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:southeast")
+            self.southwest : StageCommandGroup = StageCommandGroup(prober, stage, f"{stage_selector}:southwest")
+
+
     def __init__(self, prober: 'SentioProber') -> None:
         super().__init__(prober)
 
+        if Compatibility.level >= CompatibilityLevel.Sentio_25_2:
+            self.top = self._TopBottomPositionSelector(prober, Stage.TopProbe, "probe:top")
+            self.bottom = self._TopBottomPositionSelector(prober, Stage.BottomProbe, "probe:bottom")
+
+            # Top probes are also available as east, west, north, south, northeast, northwest, southeast, southwest
+            self.east = self.top.east
+            self.west = self.top.west
+            self.north = self.top.north
+            self.south = self.top.south
+            self.northeast = self.top.northeast
+            self.northwest = self.top.northwest
+            self.southeast = self.top.southeast
+            self.southwest = self.top.southwest
+       
 
     def async_step_probe_site(self, probe: ProbePosition, idx: int) -> int:
         """Start the process of stepping to a positioner site.
@@ -265,9 +295,11 @@ class ProbeCommandGroup(CommandGroupBase):
         """
         if site is None:
             self.comm.send(f"set_positioner_home {probe.to_string()}")
-        else:
+        elif x is not None and y is not None:
             self.comm.send(f"set_positioner_home {probe.to_string()},{site.to_string()},{x},{y}")
-
+        else:
+            raise ValueError("When site is specified, x and y must also be specified.")
+        
         Response.check_resp(self.comm.read_line())
 
 
@@ -352,7 +384,7 @@ class ProbeCommandGroup(CommandGroupBase):
 
         Returns:
             Status of positioner with 4 digits, 1st digit indicates the East Positioner, 2nd digit indicates West Positioner
-            3rd digit indicates the North Positioner, 4rd digit indicates the South Positioner.
+            3rd digit indicates the North Positioner, 4th digit indicates the South Positioner.
         """
 
         self.comm.send(f"get_positioner_status {probe.to_string()}")

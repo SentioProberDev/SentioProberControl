@@ -46,6 +46,7 @@ from sentio_prober_control.Sentio.CommandGroups.VisionCommandGroup import Vision
 from sentio_prober_control.Sentio.CommandGroups.WafermapCommandGroup import WafermapCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.SetupCommandGroup import SetupCommandGroup
 from sentio_prober_control.Sentio.CommandGroups.StageCommandGroup import StageCommandGroup
+from sentio_prober_control.Sentio.CommandGroups.ScopeCommandGroup import ScopeCommandGroup
 
 
 class SentioCommunicationType(Enum):
@@ -79,7 +80,7 @@ class SentioProber(ProberBase):
         vision (VisionCommandGroup): The vision command group provides access to the vision modules functionality.
     """
 
-    def __init__(self, comm: CommunicatorBase):
+    def __init__(self, comm: CommunicatorBase, compat_level : CompatibilityLevel = CompatibilityLevel.Auto) -> None:
         """Construct a SENTIO prober object.
 
         The prober must be initialized with a communication object that
@@ -87,6 +88,7 @@ class SentioProber(ProberBase):
 
         Args:
             comm (CommunicatorBase): The communicator to use for communication with the prober.
+            compat_level (CompatibilityLevel): The compatibility level to use. If CompatibilityLevel.Auto is set SENTIO is queried to figure the compatibility level out.
         """
         ProberBase.__init__(self, comm)
 
@@ -94,7 +96,6 @@ class SentioProber(ProberBase):
         self.aux: AuxCommandGroup = AuxCommandGroup(self)
         self.loader: LoaderCommandGroup = LoaderCommandGroup(self)
         self.map: WafermapCommandGroup = WafermapCommandGroup(self)
-        self.probe: ProbeCommandGroup = ProbeCommandGroup(self)
         self.qalibria: QAlibriaCommandGroup = QAlibriaCommandGroup(self)
         self.service: ServiceCommandGroup = ServiceCommandGroup(self)
         self.siph: SiPHCommandGroup = SiPHCommandGroup(self)
@@ -105,31 +106,35 @@ class SentioProber(ProberBase):
         self.__name = "SentioProber"
         self.comm.send("*RCS 1")  # switch to the native SENTIO remote command set
 
-        version : str = self.status.get_version()
+        # If the compatibility Level is set to Auto, we will try to determine the compatibility level
+        if compat_level == CompatibilityLevel.Auto:
+            version : str = self.status.get_version()
 
-        # Extract version string
-        match = re.search(r"Version:\s*([\d\.]+)", version)
-        if match:
-            version = match.group(1)
-            parts = version.split(".")
-            major = int(parts[0]) if len(parts) > 0 else None
-            minor = int(parts[1]) if len(parts) > 1 else None
-            release = int(parts[2]) if len(parts) > 2 else None
-            if major==24:
-                Compatibility.level = CompatibilityLevel.Sentio_24
-            elif major==25 and (minor==2 or (minor==1 and release==99)):
-                Compatibility.level = CompatibilityLevel.Sentio_25_2
-            else:
-                Compatibility.level = CompatibilityLevel.Undefined
+            # Extract version string
+            match = re.search(r"Version:\s*([\d\.]+)", version)
+            if match:
+                version = match.group(1)
+                parts = version.split(".")
+                major = int(parts[0]) if len(parts) > 0 else None
+                minor = int(parts[1]) if len(parts) > 1 else None
+                release = int(parts[2]) if len(parts) > 2 else None
+                if major==25 and (minor==2 or (minor==1 and release==99)):
+                    Compatibility.level = CompatibilityLevel.Sentio_25_2
+                else:
+                    Compatibility.level = CompatibilityLevel.Sentio_24
 
         #
         # More command groups not supported by all SENTIO versions.
         #
+        
+        # The probe command group has optional sub-groups for top and bottom probes.
+        # These are only available for Sentio > 25.2
+        self.probe: ProbeCommandGroup = ProbeCommandGroup(self)
 
         # Command groups for stages; Only available for Sentio > 25.2
         if Compatibility.level >= CompatibilityLevel.Sentio_25_2:
-            self.scope: StageCommandGroup = StageCommandGroup(self, Stage.Scope, True)
-            self.chuck: StageCommandGroup = StageCommandGroup(self, Stage.Chuck, False)
+            self.scope: ScopeCommandGroup = ScopeCommandGroup(self, Stage.Scope, "scope:top")
+            self.chuck: StageCommandGroup = StageCommandGroup(self, Stage.Chuck, "chuck")
 
         #
         # Deprecated command groups
