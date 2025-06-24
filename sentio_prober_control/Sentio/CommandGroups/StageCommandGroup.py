@@ -6,8 +6,9 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 
 from typing import Optional
 
+
 class StageCommandGroup(CommandGroupBase):
-    """This command group contains functions for working with motorized scopes.
+    """This command group contains functions for working with motorized stages.
     You are not meant to instantiate this class directly. Access it via the probe attribute
     of the [SentioProber](SentioProber.md) class.
 
@@ -21,27 +22,11 @@ class StageCommandGroup(CommandGroupBase):
     ```
     """
 
-    def __init__(self, prober: 'SentioProber', stage : Stage, has_subgroups = False) -> None: # type: ignore
+    def __init__(self, prober: 'SentioProber', stage : Stage, stage_selector : str) -> None: # type: ignore
         super().__init__(prober)
 
-        self.__stage_selector: str = ""
         self.__stage = stage
-
-        if stage==Stage.Scope:
-            self.__stage_selector = "scope:top"
-        elif stage==Stage.BottomScope:
-            self.__stage_selector = "scope:bottom"
-        elif stage==Stage.AuxiliaryScope:
-            self.__stage_selector = "scope:aux"
-        elif stage==Stage.Chuck:
-            self.__stage_selector = "chuck"
-        else:
-            raise ValueError(f"Invalid stage {stage} for ScopeCommandGroup")
-
-        if stage==Stage.Scope and has_subgroups:
-            self.top: StageCommandGroup = StageCommandGroup(prober, Stage.Scope, False)
-            self.bottom: StageCommandGroup = StageCommandGroup(prober, Stage.BottomScope, False)
-            self.aux: StageCommandGroup = StageCommandGroup(prober, Stage.AuxiliaryScope, False)
+        self.__stage_selector = stage_selector
 
 
     def get_home(self, chuck_site : ChuckSite = ChuckSite.Wafer) -> Tuple[float, float, ChuckSite]:
@@ -258,3 +243,7 @@ class StageCommandGroup(CommandGroupBase):
     def stage(self) -> Stage:
         """The stage this command group is for."""
         return self.__stage
+    
+
+
+

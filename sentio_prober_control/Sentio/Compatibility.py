@@ -8,9 +8,10 @@ class CompatibilityLevel(IntEnum):
         It is used to determine which features are available in the prober. This enum
         only contains SENTIO versions which introduces API changes.
     """
-    Undefined = 0,
-    Sentio_24 = 1,
+    Auto = 0
+    Sentio_24 = 1
     Sentio_25_2 = 2
+    Experimental = 99
 
 
 class Compatibility:
@@ -22,7 +23,7 @@ class Compatibility:
     """
     
     # Default compatibility level is Undefined 
-    level : CompatibilityLevel = CompatibilityLevel.Undefined
+    level : CompatibilityLevel = CompatibilityLevel.Auto
 
     @staticmethod
     def assert_min(level : CompatibilityLevel) -> None:

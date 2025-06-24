@@ -2048,8 +2048,8 @@ class ZReference(Enum):
     Ready = 7
     RealPos = 8
 
-    def to_string(self, compat_level : CompatibilityLevel = CompatibilityLevel.Undefined) -> str:
-        if compat_level == CompatibilityLevel.Undefined:
+    def to_string(self, compat_level : CompatibilityLevel = CompatibilityLevel.Auto) -> str:
+        if compat_level == CompatibilityLevel.Auto:
             compat_level = Compatibility.level
 
         if compat_level < CompatibilityLevel.Sentio_25_2:
