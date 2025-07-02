@@ -212,6 +212,27 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
+    def move_probe_lift(self, stage: Stage, probe: ProbePosition) -> float:
+        """Move a probe to its lift position.
+
+        Args:
+            stage: The probe stage (TopProbe/BottomProbe).
+            probe: The probe position.
+
+        Returns:
+            The z position after the move in micrometer (from zero).
+        """
+        if stage == Stage.TopProbe:
+            pos = 'top'
+        elif stage == Stage.BottomProbe:
+            pos = 'bottom'
+        else:
+            raise ValueError("Stage must be a probe stage")
+
+        self.comm.send(f"probe:{pos}:{probe.to_string().lower()}:move_lift")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
+
 
     def move_probe_home(self, probe: ProbePosition) -> Tuple[float, float]:
         """Move probe to its home position.

@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from sentio_prober_control.Sentio.Compatibility import Compatibility, CompatibilityLevel
-from sentio_prober_control.Sentio.Enumerations import ProbePosition, UvwAxis, FiberType, CompatibilityLevel
+from sentio_prober_control.Sentio.Enumerations import ProbePosition, UvwAxis, FiberType, CompatibilityLevel, Stage
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
@@ -32,6 +32,27 @@ class SiPHCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
+
+    def get_fiber_length(self, stage: Stage, probe: ProbePosition) -> float:
+        """Retrieves the fiber length of an SiPH positioner.
+
+        Args:
+            stage: The probe stage (TopProbe/BottomProbe).
+            probe: The probe position.
+
+        Returns:
+            The fiber length in micrometer.
+        """
+        if stage == Stage.TopProbe:
+            pos = 'top'
+        elif stage == Stage.BottomProbe:
+            pos = 'bottom'
+        else:
+            raise ValueError("Stage must be a probe stage")
+
+        self.comm.send(f"siph:{pos}:{probe.to_string().lower()}:get_fiber_length")
+        resp = Response.check_resp(self.comm.read_line())
+        return float(resp.message())
 
 
     def get_intensity(self, channel : int = 1) -> float:
@@ -199,6 +220,26 @@ class SiPHCommandGroup(CommandGroupBase):
         rotary_str = "ON" if rotary else "OFF"
 
         self.comm.send(f"siph:set_alignment {probe.to_string()},{fiber_type},{coarse_str},{fine_str},{gradient_str},{rotary_str}")
+        Response.check_resp(self.comm.read_line())
+
+    def set_hover(self, stage: Stage, probe: ProbePosition, gap: float) -> None:
+        """Sets the hover gap of an SiPH positioner.
+
+        Args:
+            stage: The probe stage (TopProbe/BottomProbe).
+            probe: The probe position.
+
+        Returns:
+            A Response object containing the command execution status.
+        """
+        if stage == Stage.TopProbe:
+            pos = 'top'
+        elif stage == Stage.BottomProbe:
+            pos = 'bottom'
+        else:
+            raise ValueError("Stage must be a probe stage")
+
+        self.comm.send(f"siph:{pos}:{probe.to_string().lower()}:set_hover {gap}")
         Response.check_resp(self.comm.read_line())
 
 
