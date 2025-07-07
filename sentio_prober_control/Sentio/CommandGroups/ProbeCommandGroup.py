@@ -124,6 +124,11 @@ class ProbeCommandGroup(CommandGroupBase):
         Returns:
             A tuple containing the site index, position x, the position y in micrometer and the reference.
         """
+        
+        # This command was briefly removed and is not part of the SENTIO 24.0
+        # release. It was reintroduced in 25.1.
+        Compatibility.assert_min(CompatibilityLevel.Sentio_25_1)
+
         self.comm.send(f"get_positioner_site {probe.to_string()},{idx}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
