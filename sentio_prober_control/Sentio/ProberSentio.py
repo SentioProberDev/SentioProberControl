@@ -118,17 +118,24 @@ class SentioProber(ProberBase):
                 major = int(parts[0]) if len(parts) > 0 else None
                 minor = int(parts[1]) if len(parts) > 1 else None
                 release = int(parts[2]) if len(parts) > 2 else None
-                if major==25 and (minor==2 or (minor==1 and release==99)):
+                if major==25 and (minor==1 or (minor==0 and release==99)):
+                    Compatibility.level = CompatibilityLevel.Sentio_25_1
+                elif major==25 and (minor==2 or (minor==1 and release==99)):
                     Compatibility.level = CompatibilityLevel.Sentio_25_2
                 else:
-                    Compatibility.level = CompatibilityLevel.Sentio_24
+                    Compatibility.level = CompatibilityLevel.Sentio_24_0
+
+        # make sure there is a valid compatibility level now
+        assert Compatibility.level != CompatibilityLevel.Auto, "Compatibility level could not be determined. Please set it manually."
 
         #
         # More command groups not supported by all SENTIO versions.
         #
         
-        # The probe command group has optional sub-groups for top and bottom probes.
-        # These are only available for Sentio > 25.2
+        # The probe command group has optional sub-groups for top and bottom 
+        # probes. These are only available for Sentio > 25.2. Therefore 
+        # this command group must be initialized after determining the 
+        # compatibility level.
         self.probe: ProbeCommandGroup = ProbeCommandGroup(self)
 
         # Command groups for stages; Only available for Sentio > 25.2
@@ -482,7 +489,8 @@ class SentioProber(ProberBase):
     def get_scope_site(self, idx : int) -> Tuple[str, float, float, bool]:
         """ Get scope site data.
 
-            This command queries the name and position of a scope site. The index is zero based.
+            This command queries the name and position of a scope site. The index 
+            is zero based.
 
         Args:
             idx (int): The index of the site to query.
@@ -490,6 +498,10 @@ class SentioProber(ProberBase):
         Returns:
             num (int): The number of defined scope sites.
         """
+
+        # This command was briefly removed and is not part of the SENTIO 24.0
+        # release. It was reintroduced in 25.2.
+        Compatibility.assert_min(CompatibilityLevel.Sentio_25_2)
 
         self.comm.send(f"get_scope_site {idx}")
         resp = Response.check_resp(self.comm.read_line())
