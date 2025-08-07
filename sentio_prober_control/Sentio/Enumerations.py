@@ -274,6 +274,7 @@ class ChuckSite(Enum):
     ChuckCamera = 5
     SiPhSetHoverHeight = 6
     SiPhFiberPowerMeasure = 7
+    ChuckCamera2 = 8
 
     def to_string(self):
         switcher = {
@@ -284,7 +285,8 @@ class ChuckSite(Enum):
             ChuckSite.AuxLeft2: "AuxLeft2",
             ChuckSite.ChuckCamera: "ChuckCamera",
             ChuckSite.SiPhSetHoverHeight: "SiPhSetHoverHeight",
-            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure"
+            ChuckSite.SiPhFiberPowerMeasure: "SiPhFiberPowerMeasure",
+            ChuckSite.ChuckCamera2: "ChuckCamera2"
         }
         return switcher.get(self, "Invalid chuck site")
 
@@ -299,6 +301,7 @@ class ChuckSite(Enum):
             "ChuckCamera": ChuckSite.ChuckCamera,
             "SiPhSetHoverHeight": ChuckSite.SiPhSetHoverHeight,
             "SiPhFiberPowerMeasure": ChuckSite.SiPhFiberPowerMeasure,
+            "ChuckCamera2": ChuckSite.ChuckCamera2  
         }
         try:
             return mapping[abbr]
