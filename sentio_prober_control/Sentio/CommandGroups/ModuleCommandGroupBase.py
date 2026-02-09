@@ -1,6 +1,6 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
-from typing import Tuple
+from typing import Literal, Tuple, Union, overload
 from enum import Enum
 
 class ModuleCommandGroupBase(CommandGroupBase):
@@ -10,8 +10,16 @@ class ModuleCommandGroupBase(CommandGroupBase):
         super().__init__(parent)
         self._groupAbbr = abbr
 
+    @overload
+    def get_prop(self, prop_name: Literal["chuck_to_wafer_offset"], arg1: None | Enum | str | int | float = ...) -> Tuple[float, float]: ...
 
-    def get_prop(self, prop_name: str, arg1=None) -> int | float | str | bool | Tuple[float, float] | Tuple[float, float, float]:
+    @overload
+    def get_prop(self, prop_name: Literal["grid_chuck_mode"], arg1: None | Enum | str | int | float = ...) -> bool: ...
+
+    @overload
+    def get_prop(self, prop_name: str, arg1: None | Enum | str | int | float = ...) -> Union[float, str, bool, Tuple[float, float], Tuple[float, float, float]]: ...
+
+    def get_prop(self, prop_name: str, arg1=None) -> Union[float, str, bool, Tuple[float, float], Tuple[float, float, float]]:
 
         """Query a module property.
 
@@ -60,7 +68,7 @@ class ModuleCommandGroupBase(CommandGroupBase):
         elif len(values) == 3:
             return float(values[0]), float(values[1]), float(values[2])
 
-        return int(resp.message())
+        return resp.message()
 
 
     def set_prop(self, prop_name: str, *argv) -> None:
