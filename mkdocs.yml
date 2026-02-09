@@ -22,6 +22,9 @@ nav:
             - WafermapPoiCommandGroup: WafermapPoiCommandGroup.md
             - WafermapSubsiteGroup: WafermapSubsiteGroup.md
         - Probe Handling: ProbeCommandGroup.md
+        # - Probe Handling: 
+        #     - ProbeCommandGroup: ProbeCommandGroup.md
+        #     - StageCommandGroup: StageCommandGroup.md
         - Qalibria: QalibriaCommandGroup.md
         - SiPH: SiPHCommandGroup.md
         - Dashboard: StatusCommandGroup.md
@@ -42,13 +45,15 @@ theme:
       primary: custom
 
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
+    - admonition        # Required for !!! syntax
+    - pymdownx.details  # Required for collapsible blocks (optional but recommended)
+    - pymdownx.superfences
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
 
 extra_css:
   - stylesheets/extra.css

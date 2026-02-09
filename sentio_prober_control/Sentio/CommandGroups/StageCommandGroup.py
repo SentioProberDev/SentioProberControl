@@ -9,8 +9,9 @@ from typing import Optional
 
 class StageCommandGroup(CommandGroupBase):
     """This command group contains functions for working with motorized stages.
-    You are not meant to instantiate this class directly. Access it via the probe attribute
-    of the [SentioProber](SentioProber.md) class.
+    You are not meant to instantiate this class directly. Access it via the 
+    chuck or scope attribute of the [SentioProber](SentioProber.md) or via 
+    the [SentioProber.probe](ProbeCommandGroup.md) class.
 
     Example:
 
@@ -18,7 +19,7 @@ class StageCommandGroup(CommandGroupBase):
     from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
     prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-    prober.scope.move_probe_xy(XyReference.Current, 1000, 2000)
+    prober.scope.move_xy(XyReference.Current, 1000, 2000)
     ```
     """
 
@@ -43,7 +44,7 @@ class StageCommandGroup(CommandGroupBase):
 
 
     def get_site(self, site_idx : int) -> Tuple[str, float, float, XyReference, bool]:
-        """Returns the number of stage specific site position.
+        """Get information for a probe site.
 
         Returns:
             id (str): The site identifier.
@@ -72,6 +73,9 @@ class StageCommandGroup(CommandGroupBase):
     def get_xy(self, ref_xy : XyReference) -> Tuple[float, float, XyReference]:
         """ Returns the stage position for a given reference.
 
+        Args:
+            ref_xy: The position reference for the submitted values.
+                            
         Returns:
             x (float): The x position in micrometer.
             y (float): The y position in micrometer.
@@ -85,6 +89,9 @@ class StageCommandGroup(CommandGroupBase):
 
     def get_z(self, ref_z : ZReference) -> Tuple[float, ZReference]:
         """Returns stage z-position.
+
+        Args:
+            ref_z: The position reference for the submitted values.
 
         Returns:
             z (float): The x position in micrometer.
@@ -121,6 +128,9 @@ class StageCommandGroup(CommandGroupBase):
     def lift(self, lift : bool) -> None:
         """Move stage to lift position.
         
+        Args:
+            lift (bool): If true, stage will move to lift position. If false, stage will move to separation position.
+
         Returns:
             None
         """
