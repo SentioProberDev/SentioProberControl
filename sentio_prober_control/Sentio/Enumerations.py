@@ -380,37 +380,32 @@ class ColorScheme(Enum):
         return switcher.get(self, "Invalid ColorScheme")
 
 
-class Compensation(Enum):
+class _CompensationToStringMixin:
+    """Mixin providing a unified ``to_string()`` implementation for compensation-related enums.
+
+    Subclasses must override :meth:`_to_string_map` to return a ``{int_value: str}``
+    mapping and, optionally, :meth:`_to_string_default` to customise the fallback string
+    returned for unrecognised values.
+
+    ``@classmethod`` descriptors are used deliberately: plain class-level dicts inside an
+    ``Enum`` body are picked up by ``EnumMeta`` as enum members, whereas descriptors
+    (objects that implement ``__get__``) are left untouched.
     """
-        This enum is obsolete and may be removed in future versions.
 
-        !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
-    """
-    Lateral = 0
-    Vertical = 1
-    Both = 2
-    ProbeCard = 3
-    MapScan = 4
-    Thermal = 5
-    Topography = 6
+    @classmethod
+    def _to_string_map(cls) -> dict:
+        return {}
 
-    def to_string(self):
-        switcher = {
-            Compensation.Lateral: "lateral",
-            Compensation.Vertical: "vertical",
-            Compensation.Both: "both",
-            Compensation.ProbeCard: "probecard",
-            Compensation.MapScan: "mapscan",
-            Compensation.Thermal: "thermal",
-            Compensation.Topography: "topography",
-        }
-        return switcher.get(self, "Invalid compensation type")
+    @classmethod
+    def _to_string_default(cls) -> str:
+        return "Invalid"
+
+    def to_string(self) -> str:
+        return self._to_string_map().get(self.value, self._to_string_default())
 
 
-class CompensationMode(Enum):
+class CompensationMode(_CompensationToStringMixin, Enum):
     """A list with available compensation modes.
-
-    !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
 
     Attributes:
         Lateral (0): Lateral (XY) compensation.
@@ -418,7 +413,8 @@ class CompensationMode(Enum):
         Both (2): Both lateral and vertical compensation.
         ProbeCard (3): Probe card compensation.
         MapScan (4): MapScan compensation.
-        Topography (5): Topography compensation.
+        Thermal (5): Thermal compensation.
+        Topography (6): Topography compensation.
     """
 
     Lateral = 0
@@ -429,17 +425,20 @@ class CompensationMode(Enum):
     Thermal = 5
     Topography = 6
 
-    def to_string(self):
-        switcher = {
-            CompensationMode.Lateral: "lateral",
-            CompensationMode.Vertical: "vertical",
-            CompensationMode.Both: "both",
-            CompensationMode.ProbeCard: "probecard",
-            CompensationMode.MapScan: "mapscan",
-            CompensationMode.Thermal: "thermal",
-            CompensationMode.Topography: "topography",
-        }
-        return switcher.get(self, "Invalid CompensationMode")
+    @classmethod
+    def _to_string_map(cls) -> dict:
+        return {0: "lateral", 1: "vertical", 2: "both", 3: "probecard", 4: "mapscan", 5: "thermal", 6: "topography"}
+
+    @classmethod
+    def _to_string_default(cls) -> str:
+        return "Invalid CompensationMode"
+
+
+#: Backwards-compatible alias for :class:`CompensationMode`.
+#: ``Compensation`` was an obsolete duplicate of ``CompensationMode`` and has been
+#: unified into a single implementation.  The old name is retained so that existing
+#: code continues to work without modification.
+Compensation = CompensationMode
 
 
 class CompensationType(Enum):
@@ -637,10 +636,8 @@ class DialogButtons(Enum):
             raise ValueError(f"Unknown button abbreviation: {abbr}")
 
 
-class DieCompensationMode(Enum):
+class DieCompensationMode(_CompensationToStringMixin, Enum):
     """Represents a compensation mode used by SENTIO.
-
-    !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
 
     The compensation mode is a selector that defines what principal type of compensation shall be used.
 
@@ -658,15 +655,13 @@ class DieCompensationMode(Enum):
     ProbeCard = 3
     SkateDetection = 4
 
-    def to_string(self):
-        switcher = {
-            DieCompensationMode.Lateral: "Lateral",
-            DieCompensationMode.Vertical: "Vertical",
-            DieCompensationMode.Both: "Both",
-            DieCompensationMode.ProbeCard: "ProbeCard",
-            DieCompensationMode.SkateDetection: "SkateDetection",
-        }
-        return switcher.get(self, "Invalid DieCompensationMode function")
+    @classmethod
+    def _to_string_map(cls) -> dict:
+        return {0: "Lateral", 1: "Vertical", 2: "Both", 3: "ProbeCard", 4: "SkateDetection"}
+
+    @classmethod
+    def _to_string_default(cls) -> str:
+        return "Invalid DieCompensationMode"
 
 
 class DieCompensationType(Enum):
@@ -981,10 +976,12 @@ class MoveAxis(Enum):
         return switcher.get(self, "Invalid AxisOrient")
     
     
-class OnTheFlyMode(Enum):
-    """ On the fly compensation mode.
-    
-        !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
+class OnTheFlyMode(_CompensationToStringMixin, Enum):
+    """On the fly compensation mode.
+
+    Note: the member names (``Lateral``, ``Vertical``, ``Both``) are kept for backwards
+    compatibility.  Their ``to_string()`` values map to the SENTIO command strings, which
+    differ from the member names.
     """
 
     Lateral = 0
@@ -992,14 +989,13 @@ class OnTheFlyMode(Enum):
     Both = 2
     ProbeCard = 3
 
-    def to_string(self):
-        switcher = {
-            OnTheFlyMode.Lateral: "AlignDie",
-            OnTheFlyMode.Vertical: "MapScan",
-            OnTheFlyMode.Both: "Topography",
-            OnTheFlyMode.ProbeCard: "ProbeCard",
-        }
-        return switcher.get(self, "Invalid OTF mode")
+    @classmethod
+    def _to_string_map(cls) -> dict:
+        return {0: "AlignDie", 1: "MapScan", 2: "Topography", 3: "ProbeCard"}
+
+    @classmethod
+    def _to_string_default(cls) -> str:
+        return "Invalid OTF mode"
 
 
 class OrientationMarker(Enum):
