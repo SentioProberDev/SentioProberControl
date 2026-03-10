@@ -4,8 +4,6 @@ import re
 from typing import Tuple, Optional, Callable, TypeVar
 from enum import Enum
 
-from deprecated import deprecated
-
 from sentio_prober_control.Sentio.Enumerations import (
     ChuckPositionHint,
     ChuckSite,
@@ -400,13 +398,13 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-#    @deprecated("Use chuck.get_xy(ref) instead")
+
     def get_chuck_xy(self, site: ChuckSite, ref: XyReference) -> Tuple[float, float]:
         """Get current chuck xy position with respect to a given reference.
 
         !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.get_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead.
+        This function is obsolete and will be removed in a future release. 
+        Use [`chuck.get_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead.
 
         Args:
             site (ChuckSite): The chuck site to query.
@@ -427,8 +425,14 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-    @deprecated(reason="Duplicate functionality; Use get_chuck_xy instead")
     def get_chuck_xy_pos(self) -> Tuple[float, float]:
+        """Get current chuck xy position.
+
+            !!! danger "Deprecated since Sentio 25.2"
+            This function is obsolete and will be removed in a future release. 
+            Use [`chuck.get_chuck_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_chuck_xy) instead.
+        
+        """
         self.comm.send("get_chuck_xy")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
@@ -436,7 +440,7 @@ class SentioProber(ProberBase):
         curY = float(tok[1])
         return curX, curY
 
-#    @deprecated("Use chuck.get_z(ref) instead")
+
     def get_chuck_z(self, ref: ZReference) -> float:
         """Get chuck z position.
 
@@ -470,7 +474,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
 
-#    @deprecated("Use scope.get_xy(ref) instead")
+
     def get_scope_xy(self) -> Tuple[float, float]:
         """Get current scope xy position.
 
@@ -491,7 +495,6 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-#    @deprecated("Use scope.get_z(ref) instead")
     def get_scope_z(self) -> float:
         """Get scope z position in micrometer from axis zero.
 
@@ -555,7 +558,6 @@ class SentioProber(ProberBase):
         return int(resp.message())
 
 
-#    @deprecated("Use chuck.has_xy() and chuck.has_z() instead")
     def has_chuck_xyz(self) -> bool:
         """Returns True if the chuck has xyz axes.
 
@@ -571,7 +573,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "YES"
 
-#    @deprecated("Use scope.has_xy() and scope.has_z() instead")
+
     def has_scope_xyz(self) -> bool:
         """Returns True if the scope has xyz axes.
 
@@ -587,7 +589,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return resp.message().upper() == "YES"
 
-#    @deprecated("Use scope.has_z() instead")
+
     def has_scope_z(self) -> bool:
         """Returns true if the microscope has a motorized z axis.
 
@@ -653,7 +655,6 @@ class SentioProber(ProberBase):
         return stype(resp)
 
 
-#    @deprecated("Use chuck.move_z() instead")
     def move_chuck_contact(self) -> float:
         """Move the chuck to contact height.
 
@@ -671,7 +672,7 @@ class SentioProber(ProberBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-#    @deprecated("Use chuck.move_xy(XyReference.Home, 0, 0) instead")
+
     def move_chuck_home(self) -> Tuple[float, float]:
         """Move chuck to its home position.
 
@@ -704,7 +705,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"move_chuck_load {pos.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-#    @deprecated("Use chuck.move_z(ZReference,Separation, 0) instead")
+
     def move_chuck_separation(self) -> float:
         """Move the chuck to separation height.
 
@@ -751,7 +752,6 @@ class SentioProber(ProberBase):
         return float(resp.message())
 
 
-#    @deprecated("Use chuck.move_xy(ref, x, y) instead")
     def move_chuck_xy(self, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move chuck to a given xy position.
 
@@ -777,7 +777,6 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-#    @deprecated("Use chuck.move_z(ref, z) instead")
     def move_chuck_z(self, ref: ZReference, z: float) -> float:
         """Move chuck to a given z position.
 
@@ -819,7 +818,7 @@ class SentioProber(ProberBase):
         self.comm.send(f"move_chuck_work_area {area.to_string()}")
         Response.check_resp(self.comm.read_line())
 
-#    @deprecated("Use scope.move_xy(...) instead")
+
     def move_scope_xy(
         self, ref: XyReference, x: float, y: float
     ) -> Tuple[float, float]:
@@ -846,7 +845,6 @@ class SentioProber(ProberBase):
         return float(tok[0]), float(tok[1])
 
 
-#    @deprecated("Use scope.lift(stat) instead")
     def move_scope_lift(self, state: bool):
         """Move scope to its lift position.
 
@@ -866,7 +864,6 @@ class SentioProber(ProberBase):
         Response.check_resp(self.comm.read_line())
 
 
-#    @deprecated("Use scope.move_z(ref, z) instead")
     def move_scope_z(self, ref: ZReference, z: float) -> float:
         """Move scope to a given z position.
 
@@ -1536,7 +1533,7 @@ class SentioProber(ProberBase):
 
         return new_x, new_y
 
-#    @deprecated("Use chuck.lift(stat) instead")
+
     def move_chuck_lift(self) -> float:
         """Move chuck to "Lift" position.
 

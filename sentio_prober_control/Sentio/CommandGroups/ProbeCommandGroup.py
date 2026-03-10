@@ -6,7 +6,6 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 from sentio_prober_control.Sentio.Compatibility import Compatibility, CompatibilityLevel
 from sentio_prober_control.Sentio.CommandGroups.StageCommandGroup import StageCommandGroup
 
-from deprecated import deprecated
 
 class ProbeCommandGroup(CommandGroupBase):
     """This command group contains functions for working with motorized probes.
@@ -152,7 +151,6 @@ class ProbeCommandGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_site(...) instead")
     def get_probe_site(self, probe: ProbePosition, idx: int) -> Tuple[str, float, float, str]:
         """Get information for a probe site.
 
@@ -182,7 +180,6 @@ class ProbeCommandGroup(CommandGroupBase):
         return str(tok[0]), float(tok[1]), float(tok[2]), str(tok[3])
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_site_num(...) instead")
     def get_probe_site_number(self, probe: ProbePosition) -> int:
         """Returns the total number of probe sites set up.
 
@@ -220,7 +217,6 @@ class ProbeCommandGroup(CommandGroupBase):
         return resp.message()
     
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_xy(...) instead")
     def get_probe_xy(self, probe: ProbePosition, ref: XyReference) -> Tuple[float, float]:
         """Get probe xy position in micrometer.
 
@@ -242,7 +238,6 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(tok[0]), float(tok[1])
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_z(...) instead")
     def get_probe_z(self, probe: ProbePosition, ref: ZReference) -> float:
         """Get probe z position in micrometer.
 
@@ -267,7 +262,6 @@ class ProbeCommandGroup(CommandGroupBase):
         return float(resp.message())
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(ZReference.Contact, 0) instead")
     def move_probe_contact(self, probe: ProbePosition) -> float:
         """Move a probe to its contact position.
 
@@ -286,7 +280,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(ZReference.Separation, 0) instead")
+
     def move_probe_separation(self, probe: ProbePosition) -> float:
         """Move a probe to its separation position.
 
@@ -305,7 +299,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.lift() instead")
+
     def move_probe_lift(self, stage: Stage, probe: ProbePosition) -> float:
         """Move a probe to its lift position.
 
@@ -331,7 +325,7 @@ class ProbeCommandGroup(CommandGroupBase):
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_xy(XyReference.Home, ...) instead")
+
     def move_probe_home(self, probe: ProbePosition) -> Tuple[float, float]:
         """Move probe to its home position.
 
@@ -351,7 +345,7 @@ class ProbeCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_xy(ref, x, y) instead")
+
     def move_probe_xy(self, probe: ProbePosition, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move probe to a given position.
 
@@ -374,7 +368,7 @@ class ProbeCommandGroup(CommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(...) instead")
+
     def move_probe_z(self, probe: ProbePosition, ref: ZReference, z: float) -> float:
         """Move probe to a given z position.
 
@@ -415,7 +409,6 @@ class ProbeCommandGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.set_home(...) instead")
     def set_probe_home(self, probe: ProbePosition, site: ChuckSite | None = None, x: float | None = None, y: float | None = None) -> None:
         """Set home position of a probe.
 
@@ -439,7 +432,7 @@ class ProbeCommandGroup(CommandGroupBase):
         
         Response.check_resp(self.comm.read_line())
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site(...) instead")
+
     def step_probe_site(self, probe: ProbePosition, idx: int) -> Tuple[str, float, float]:
         """Step to a specific probe site.
 
@@ -465,7 +458,6 @@ class ProbeCommandGroup(CommandGroupBase):
         return tok[0], float(tok[1]), float(tok[2])
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site_first(...) instead")
     def step_probe_site_first(self, probe: ProbePosition) -> Tuple[str, float, float]:
         """Step to the first probe site.
 
@@ -489,7 +481,6 @@ class ProbeCommandGroup(CommandGroupBase):
         return tok[0], float(tok[1]), float(tok[2])
 
 
-#    @deprecated("Use [top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site_next(...) instead")
     def step_probe_site_next(self, probe: ProbePosition) -> Tuple[str, float, float]:
         """Step to the next probe site.
 

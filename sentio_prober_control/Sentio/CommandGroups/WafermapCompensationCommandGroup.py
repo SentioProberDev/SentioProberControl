@@ -1,17 +1,24 @@
-from deprecated import deprecated
 from sentio_prober_control.Sentio.Enumerations import ExecuteAction, XyCompensationType, ZCompensationType
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
 
-@deprecated("Use VisionCompensationGroup instead")
 class WafermapCompensationCommandGroup(CommandGroupBase):
-    """This command group bundles functions for setting up and using XY/Z compensation on the wafermap."""
+    """This command group bundles functions for setting up and using XY/Z compensation on the wafermap.
+    
+        !!! danger "Deprecated since Sentio 25.2"
+        This command group is obsolete and will be removed in a future release. 
+        Use the vision.compensation command group instead
 
-    @deprecated("Use vision.compensation.enable instead")
+    """
+
     def topography(self, execute: ExecuteAction) -> Response:
         """Execute topography compensation.
+
+        !!! danger "Deprecated since Sentio 25.2"
+        This function is obsolete and will be removed in a future release. 
+        Use vision.compensation.enable instead
 
         Args:
             execute: The action to execute.
@@ -27,6 +34,7 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
 
         return resp
 
+
     def set_xy(self, comp_type: XyCompensationType) -> None:
         """Enable the XY Stepping Compensation.
 
@@ -35,6 +43,7 @@ class WafermapCompensationCommandGroup(CommandGroupBase):
         """
         self.comm.send(f"map:compensation:set_xy {comp_type.to_string()}")
         Response.check_resp(self.comm.read_line())
+
 
     def set_z(self, comp_type: ZCompensationType) -> None:
         """Enable the Z Stepping Compensation.

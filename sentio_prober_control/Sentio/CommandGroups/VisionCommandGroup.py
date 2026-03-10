@@ -1,8 +1,6 @@
 import base64
 from typing import Tuple
 
-from deprecated import deprecated
-
 from sentio_prober_control.Communication.CommunicatorBase import CommunicatorBase
 from sentio_prober_control.Sentio.Enumerations import (
     AutoAlignCmd,
@@ -289,6 +287,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1]), float(tok[2])
 
+
     def start_fast_track(self) -> Response:
         """Start the fast track process as defined in SENTIO.
 
@@ -302,8 +301,14 @@ class VisionCommandGroup(ModuleCommandGroupBase):
 
         return self.prober.send_cmd("vis:start_fast_track")
 
-    @deprecated("use vision.compensation.start_execute(...) instead!")
+
     def start_execute_compensation(self, comp_type: DieCompensationType, comp_mode: DieCompensationMode) -> Response:
+        """Start the execution of a compensation.
+        
+            !!! danger "Deprecated since Sentio 25.2"
+            This function is obsolete and will be removed in a future release.
+            use vision.compensation.start_execute(...) instead!
+        """
         self.comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.to_string(), comp_mode.to_string()))
         resp = Response.check_resp(self.comm.read_line())
 
@@ -311,6 +316,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             raise ProberException(resp.message())
 
         return resp
+
 
     def find_thermal_die_size(self) -> Tuple[float, float]:
         """Detect thermal expansion and return die size ratio.

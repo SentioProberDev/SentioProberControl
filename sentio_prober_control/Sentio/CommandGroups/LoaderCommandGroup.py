@@ -1,4 +1,3 @@
-from deprecated import deprecated
 from typing import Tuple
 
 from sentio_prober_control.Sentio.Enumerations import LoaderStation, OrientationMarker, RemoteCommandError, WaferStatusItem, WaferIdSide
@@ -185,11 +184,18 @@ class LoaderCommandGroup(CommandGroupBase):
 
         return Response.check_resp(self.comm.read_line())
 
-    @deprecated("duplicate functionality; Use SentioProber.move_chuck_work_area!")
+
     def switch_work_area(self, area: str):
+        """Switch the chuck work area.
+        
+            !!! danger "Deprecated since 2026-03-10"
+            This command will be removed in a future version.
+            Use SentioProber.move_chuck_work_area!
+        """
         self.comm.send("move_chuck_work_area {0}".format(area))
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
+
 
     def transfer_wafer(
         self,

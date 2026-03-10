@@ -1,7 +1,5 @@
 from enum import Enum
 
-from deprecated import deprecated
-
 from sentio_prober_control.Sentio.Compatibility import CompatibilityLevel, Compatibility
 
 
@@ -382,8 +380,16 @@ class ColorScheme(Enum):
         return switcher.get(self, "Invalid ColorScheme")
 
 
-@deprecated(reason="duplicated; use DieCompensationMode instead.")
 class Compensation(Enum):
+    """
+        This enum is obsolete and may be removed in future versions.
+
+        !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
+
+        Reason:
+            Duplicated enum
+            use DieCompensationMode instead.
+    """
     Lateral = 0
     Vertical = 1
     Both = 2
@@ -407,6 +413,8 @@ class Compensation(Enum):
 
 class CompensationMode(Enum):
     """A list with available compensation modes.
+
+    !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
 
     Attributes:
         Lateral (0): Lateral (XY) compensation.
@@ -468,6 +476,7 @@ class CompensationType(Enum):
             CompensationType.OffAxis: "OffAxis",
         }
         return switcher.get(self, "Invalid CompensationType")
+
 
 class DefaultPattern(Enum):
     """A list of slots for visual patterns used by SENTIO.
@@ -632,9 +641,10 @@ class DialogButtons(Enum):
             raise ValueError(f"Unknown button abbreviation: {abbr}")
 
 
-@deprecated("Use CompensationMode instead")
 class DieCompensationMode(Enum):
     """Represents a compensation mode used by SENTIO.
+
+    !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
 
     The compensation mode is a selector that defines what principal type of compensation shall be used.
 
@@ -705,6 +715,7 @@ class DieNumber(Enum):
     Selected = 2
     Total = 3
 
+
 class DriftType(Enum):
     """Specifies the type of drift."""
     DriftRef = "DriftRef"
@@ -735,8 +746,11 @@ class ElementType(Enum):
             raise ValueError(f"Unknown ElementType string: {abbr}")
 
 
-@deprecated("ExecuteAction is deprecated.")
 class ExecuteAction(Enum):
+    """
+        !!! danger "Deprecated since 2026-03-10"
+        This enum is now obsolete and may be removed in a future versions.
+    """
     Execute = 0
     Abort = 1
 
@@ -748,8 +762,12 @@ class ExecuteAction(Enum):
         return switcher.get(self, "Invalid ExecuteAction function")
 
 
-@deprecated("ExecuteCompensation is deprecated.")
 class ExecuteCompensation(Enum):
+    """
+        !!! danger "Deprecated since 2026-03-10"
+        This enum is now obsolete and may be removed in a future versions.
+    """
+
     AlignDie = 0
     MapScan = 1
     Topography = 2
@@ -966,8 +984,13 @@ class MoveAxis(Enum):
         }
         return switcher.get(self, "Invalid AxisOrient")
     
-@deprecated(reason="duplicated; Use CompensationMode instead.")
+    
 class OnTheFlyMode(Enum):
+    """ On the fly compensation mode.
+    
+        !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
+    """
+
     Lateral = 0
     Vertical = 1
     Both = 2

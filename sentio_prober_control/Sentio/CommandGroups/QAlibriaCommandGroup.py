@@ -1,5 +1,3 @@
-from deprecated import deprecated
-
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 from sentio_prober_control.Sentio.Enumerations import DriftType
@@ -113,10 +111,13 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:reset_ets")
         Response.check_resp(self.comm.read_line())
 
-    @deprecated(reason="oddly specific function name; filed as CR#13887")
+
     def set_calibration_drift_probe12(self):
         """
-        Deprecated function for setting calibration drift for probe 1 and 2.
+            Function for setting calibration drift for probe 1 and 2.
+
+            !!! danger "Deprecated since 2026-03-10
+            This function is obsolete and will be removed in a future release. 
         """
         self.comm.send("qal:set_dut_network RefDUT,DriftRef,12,false")
         Response.check_resp(self.comm.read_line())
@@ -124,7 +125,8 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send("qal:set_dut_network RefDUT,Drift,12,false")
         resp = Response.check_resp(self.comm.read_line())
         return resp.message()
-    
+
+
     def set_ets(self, port: int, path: str, ets_mode: int = 0) -> None:
         """
         Set error terms in the buffer.
@@ -157,33 +159,42 @@ class QAlibriaCommandGroup(CommandGroupBase):
         self.comm.send(cmd)
         Response.check_resp(self.comm.read_line())
 
-    @deprecated(reason="use calibration_execute instead!; violates naming conventions. (CR#13887)")
+
     def start_calibration(self) -> None:
         """
-        Deprecated function for starting calibration.
-        Please use calibration_execute instead.
+            function for starting calibration.
+
+            !!! danger "Deprecated since 2026-03-10
+            This function is obsolete and will be removed in a future release. 
+            Please use calibration_execute instead.
         """
         self.comm.send("qal:calibration_execute")
         Response.check_resp(self.comm.read_line())
         
-    @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
+
     def verify_calibration_drift(self) -> None:
         """
-        Deprecated function for verifying calibration drift.
-        Please use calibration_drift_verify instead.
+            A Function for verifying calibration drift.
+
+            !!! danger "Deprecated since 2026-03-10
+            This function is obsolete and will be removed in a future release. 
+            Please use calibration_drift_verify instead.
         """
         self.comm.send("qal:calibration_drift_verify")
         Response.check_resp(self.comm.read_line())
 
 
-    @deprecated(reason="use calibration_drift_verify instead!; violates naming conventions. (CR#13887)")
     def verify_calibration_drift_dut(self, dut) -> None:
         """
-        Deprecated function for verifying calibration drift with a specific DUT.
-        Please use calibration_drift_verify(dut_name, ...) instead.
+            Function for verifying calibration drift with a specific DUT.
+            
+            !!! danger "Deprecated since 2026-03-10
+            This function is obsolete and will be removed in a future release. 
+            Please use calibration_drift_verify(dut_name, ...) instead.
         """
         self.comm.send(f"qal:calibration_drift_verify {dut}")
         Response.check_resp(self.comm.read_line())
+
 
     def vna_query(self, vna_command: str) -> str:
         """

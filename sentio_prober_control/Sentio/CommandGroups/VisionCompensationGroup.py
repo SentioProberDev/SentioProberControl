@@ -5,7 +5,6 @@ from sentio_prober_control.Sentio.Enumerations import CompensationMode, Compensa
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
 
-from deprecated import deprecated
 
 
 class VisionCompensationGroup(CommandGroupBase):
@@ -18,12 +17,19 @@ class VisionCompensationGroup(CommandGroupBase):
     def __init__(self, prober : 'SentioProber'):
         super().__init__(prober)
 
-    @deprecated("Use vision.compensation.enable() instead")
+
     def set_compensation(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:
+        """Enable or disable compensation.
+        
+            !!! danger "Deprecated since Sentio 25.2"
+            This function is obsolete and will be removed in a future release. 
+            Use vision.compensation.enable instead
+        """
         self.comm.send(f"vis:compensation:enable {comp.to_string()}, {enable}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return tok[0], tok[1]
+
 
     def enable(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:
         """Enable or disable compensation for a given subsystem.
