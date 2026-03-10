@@ -139,9 +139,9 @@ class Response:
         """
             Prints the content of the response object to the console.
 
-            !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use print() instead.
+            !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use print() instead."
         """
         print('errc={0}; stat={1}; msg="{2}"; id={3}'.format(self.__errc, self.__stat, self.__msg, self.__cmd_id))
 

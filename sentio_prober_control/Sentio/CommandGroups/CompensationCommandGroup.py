@@ -7,9 +7,9 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 class CompensationCommandGroup(CommandGroupBase):
     """This command group contains functions for working with x,y and z compensation.
 
-        !!! danger "Deprecated since 2023-09-04"
-        This command group will be removed in a future version. 
-        Use the SentioProber.vis.compensation group instead!
+        !!! danger "Deprecated since 2023-09-04<br/>\
+        This command group will be removed in a future version. \
+        Use the SentioProber.vis.compensation group instead!"
     """
 
     def __init__(self, prober : 'SentioProber') -> None: # type: ignore
@@ -20,9 +20,9 @@ class CompensationCommandGroup(CommandGroupBase):
     def set_compensation(self, comp: Compensation, enable: bool):
         """Enable or disable compensation for a given subsystem.
 
-        !!! danger "Deprecated since 2023-09-04"
-        This command group will be removed in a future version.
-        Use the SentioProber.vis.compensation group instead!
+        !!! danger "Deprecated since 2023-09-04<br/>\
+        This command group will be removed in a future version.\
+        Use the SentioProber.vis.compensation group instead!"
 
         >>> prober.vis.compensation.set_compensation(comp, enable)
         """
@@ -36,9 +36,9 @@ class CompensationCommandGroup(CommandGroupBase):
     def execute_compensation(self, comp: ExecuteCompensation, mode: OnTheFlyMode):
         """Execute compensation.
 
-        !!! danger "Deprecated since 2023-09-04"
-        This command group will be removed in a future version.
-        use prober.vis.compensation.start_execute instead.
+        !!! danger "Deprecated since 2023-09-04<br/>\
+        This command group will be removed in a future version.\
+        use prober.vis.compensation.start_execute instead."
 
         """
         self.comm.send(

@@ -116,8 +116,8 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
             Function for setting calibration drift for probe 1 and 2.
 
-            !!! danger "Deprecated since 2026-03-10
-            This function is obsolete and will be removed in a future release. 
+            !!! danger "Deprecated since Sentio 26.1<br/>\
+            This function is obsolete and will be removed in a future release. "
         """
         self.comm.send("qal:set_dut_network RefDUT,DriftRef,12,false")
         Response.check_resp(self.comm.read_line())
@@ -164,9 +164,9 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
             function for starting calibration.
 
-            !!! danger "Deprecated since 2026-03-10
-            This function is obsolete and will be removed in a future release. 
-            Please use calibration_execute instead.
+            !!! danger "Deprecated since Sentio 26.1<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Please use calibration_execute instead."
         """
         self.comm.send("qal:calibration_execute")
         Response.check_resp(self.comm.read_line())
@@ -176,9 +176,9 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
             A Function for verifying calibration drift.
 
-            !!! danger "Deprecated since 2026-03-10
-            This function is obsolete and will be removed in a future release. 
-            Please use calibration_drift_verify instead.
+            !!! danger "Deprecated since Sentio 26.1<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Please use calibration_drift_verify instead."
         """
         self.comm.send("qal:calibration_drift_verify")
         Response.check_resp(self.comm.read_line())
@@ -188,9 +188,9 @@ class QAlibriaCommandGroup(CommandGroupBase):
         """
             Function for verifying calibration drift with a specific DUT.
             
-            !!! danger "Deprecated since 2026-03-10
-            This function is obsolete and will be removed in a future release. 
-            Please use calibration_drift_verify(dut_name, ...) instead.
+            !!! danger "Deprecated since Sentio 26.1<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Please use calibration_drift_verify(dut_name, ...) instead."
         """
         self.comm.send(f"qal:calibration_drift_verify {dut}")
         Response.check_resp(self.comm.read_line())

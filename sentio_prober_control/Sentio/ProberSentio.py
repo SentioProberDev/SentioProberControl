@@ -402,9 +402,9 @@ class SentioProber(ProberBase):
     def get_chuck_xy(self, site: ChuckSite, ref: XyReference) -> Tuple[float, float]:
         """Get current chuck xy position with respect to a given reference.
 
-        !!! danger "Deprecated since Sentio 25.2"
-        This function is obsolete and will be removed in a future release. 
-        Use [`chuck.get_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+        This function is obsolete and will be removed in a future release.\
+        Use [`chuck.get_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead."
 
         Args:
             site (ChuckSite): The chuck site to query.
@@ -428,9 +428,9 @@ class SentioProber(ProberBase):
     def get_chuck_xy_pos(self) -> Tuple[float, float]:
         """Get current chuck xy position.
 
-            !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.get_chuck_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_chuck_xy) instead.
+            !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use [`chuck.get_chuck_xy(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_chuck_xy) instead."
         
         """
         self.comm.send("get_chuck_xy")
@@ -444,9 +444,9 @@ class SentioProber(ProberBase):
     def get_chuck_z(self, ref: ZReference) -> float:
         """Get chuck z position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.get_z(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use [`chuck.get_z(ref)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_z) instead."
 
         Args:
             ref (ZReference): The reference to use for the query.
@@ -480,9 +480,9 @@ class SentioProber(ProberBase):
 
         The returned position is an absolute position with respect to the axis zero in micrometer.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.get_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use [`scope.get_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead."
 
         Returns:
             x (float): The current x position in micrometer.
@@ -498,9 +498,9 @@ class SentioProber(ProberBase):
     def get_scope_z(self) -> float:
         """Get scope z position in micrometer from axis zero.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.get_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use [`scope.get_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_z) instead."
 
         Returns:
             height (float): The z position in micrometer.
@@ -561,9 +561,9 @@ class SentioProber(ProberBase):
     def has_chuck_xyz(self) -> bool:
         """Returns True if the chuck has xyz axes.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.has_xy(...) and chuck.has_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.has_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use [`chuck.has_xy(...) and chuck.has_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.has_xy) instead."
 
         Returns:
             has_xyz (bool): True if the chuck has xyz axes.
@@ -577,9 +577,9 @@ class SentioProber(ProberBase):
     def has_scope_xyz(self) -> bool:
         """Returns True if the scope has xyz axes.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.has_xy(...) and scope.has_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.has_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`scope.has_xy(...) and scope.has_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.has_xy) instead."
 
         Returns:
             has_xyz (bool): True if the scope has xyz axes.
@@ -593,9 +593,9 @@ class SentioProber(ProberBase):
     def has_scope_z(self) -> bool:
         """Returns true if the microscope has a motorized z axis.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.has_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.has_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use [`scope.has_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.has_z) instead."
 
         Returns:
             True if the scope has z axes.
@@ -660,9 +660,9 @@ class SentioProber(ProberBase):
 
         Wraps SENTIO's "move_chuck_contact" remote command.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.move_z(ZReference.Contact, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`chuck.move_z(ZReference.Contact, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Returns:
             height (float): The contact height in micrometer from chuck z axis zero.
@@ -676,9 +676,9 @@ class SentioProber(ProberBase):
     def move_chuck_home(self) -> Tuple[float, float]:
         """Move chuck to its home position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.move_xy(XyReference.Home, 0, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`chuck.move_xy(XyReference.Home, 0, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead."
 
         Returns:
             x (float): The x position in micrometer.
@@ -709,9 +709,9 @@ class SentioProber(ProberBase):
     def move_chuck_separation(self) -> float:
         """Move the chuck to separation height.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.move_z(ZReference.Separation, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`chuck.move_z(ZReference.Separation, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Returns:
             The separation height in micrometer from chuck z axis zero.
@@ -757,9 +757,9 @@ class SentioProber(ProberBase):
 
         Wraps SENTIO's "move_chuck_xy" remote command.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.move_xy(ref, x, y)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`chuck.move_xy(ref, x, y)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead."
 
         Args:
             ref: The reference to use for the move.
@@ -782,9 +782,9 @@ class SentioProber(ProberBase):
 
         Wraps SENTIO's "move_chuck_z" remote command.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.move_z(ref, z)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`chuck.move_z(ref, z)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Args:
             ref: The z-reference to use for the move.
@@ -824,9 +824,9 @@ class SentioProber(ProberBase):
     ) -> Tuple[float, float]:
         """Move scope to a given xy position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.move_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`scope.move_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead."
 
         Args:
             ref: The reference to use for the move.
@@ -853,9 +853,9 @@ class SentioProber(ProberBase):
         possible are of unhindered operation when changing probe cards
         or other maintenance tasks.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.lift(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.lift) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`scope.lift(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.lift) instead."
 
         Args:
             state: True to move to the lift position, False to move away from the lift position.
@@ -867,9 +867,9 @@ class SentioProber(ProberBase):
     def move_scope_z(self, ref: ZReference, z: float) -> float:
         """Move scope to a given z position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`scope.move_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`scope.move_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Args:
             ref: The reference to use for the move.
@@ -1539,9 +1539,9 @@ class SentioProber(ProberBase):
 
         Wraps SENTIO's "move_chuck_lift" remote command.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`chuck.lift(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.lift) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`chuck.lift(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.lift) instead."
 
 
         Returns:

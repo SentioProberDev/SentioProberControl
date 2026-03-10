@@ -21,9 +21,9 @@ class VisionCompensationGroup(CommandGroupBase):
     def set_compensation(self, comp: CompensationMode, enable: bool) -> Tuple[str, str]:
         """Enable or disable compensation.
         
-            !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use vision.compensation.enable instead
+            !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            Use vision.compensation.enable instead"
         """
         self.comm.send(f"vis:compensation:enable {comp.to_string()}, {enable}")
         resp = Response.check_resp(self.comm.read_line())

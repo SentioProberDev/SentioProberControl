@@ -305,9 +305,9 @@ class VisionCommandGroup(ModuleCommandGroupBase):
     def start_execute_compensation(self, comp_type: DieCompensationType, comp_mode: DieCompensationMode) -> Response:
         """Start the execution of a compensation.
         
-            !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release.
-            use vision.compensation.start_execute(...) instead!
+            !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release.\
+            use vision.compensation.start_execute(...) instead!"
         """
         self.comm.send("vis:compensation:start_execute {0},{1}".format(comp_type.to_string(), comp_mode.to_string()))
         resp = Response.check_resp(self.comm.read_line())

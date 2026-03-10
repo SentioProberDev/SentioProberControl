@@ -154,9 +154,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def get_probe_site(self, probe: ProbePosition, idx: int) -> Tuple[str, float, float, str]:
         """Get information for a probe site.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_site(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_site) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_site(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_site) instead."
             
         Each positioner can define a number of predefined positions called "sites".
         This command returns the data associated with a site.
@@ -183,9 +183,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def get_probe_site_number(self, probe: ProbePosition) -> int:
         """Returns the total number of probe sites set up.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_site_num(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_site_num) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_site_num(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_site_num) instead."
 
         Each positioner can define n a number of predefined positions called "sites".
         This command returns the total number of sites.
@@ -220,9 +220,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def get_probe_xy(self, probe: ProbePosition, ref: XyReference) -> Tuple[float, float]:
         """Get probe xy position in micrometer.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_xy) instead."
 
         Args:
             probe: The probe to get the position for.
@@ -241,9 +241,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def get_probe_z(self, probe: ProbePosition, ref: ZReference) -> float:
         """Get probe z position in micrometer.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.get_xy(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.get_z) instead."
 
         Args:
             probe: The probe to get the position for.
@@ -265,9 +265,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def move_probe_contact(self, probe: ProbePosition) -> float:
         """Move a probe to its contact position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(ZReference.Contact, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(ZReference.Contact, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Args:
             probe: The probe to move.
@@ -284,9 +284,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def move_probe_separation(self, probe: ProbePosition) -> float:
         """Move a probe to its separation position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(ZReference.Separation, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(ZReference.Separation, 0)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Args:
             probe: The probe to move.
@@ -303,9 +303,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def move_probe_lift(self, stage: Stage, probe: ProbePosition) -> float:
         """Move a probe to its lift position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.lift()`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.lift) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.lift()`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.lift) instead."
         
         Args:
             stage: The probe stage (TopProbe/BottomProbe).
@@ -329,9 +329,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def move_probe_home(self, probe: ProbePosition) -> Tuple[float, float]:
         """Move probe to its home position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_xy(XyReference.Home, ...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_xy(XyReference.Home, ...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead."
 
         Args:
             probe: The probe to move.
@@ -349,9 +349,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def move_probe_xy(self, probe: ProbePosition, ref: XyReference, x: float, y: float) -> Tuple[float, float]:
         """Move probe to a given position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_xy(ref, x, y)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_xy(ref, x, y)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_xy) instead."
 
         Args:
             probe: The probe to move.
@@ -372,9 +372,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def move_probe_z(self, probe: ProbePosition, ref: ZReference, z: float) -> float:
         """Move probe to a given z position.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.move_z(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.move_z) instead."
 
         Args:
             probe: The probe to move.
@@ -412,9 +412,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def set_probe_home(self, probe: ProbePosition, site: ChuckSite | None = None, x: float | None = None, y: float | None = None) -> None:
         """Set home position of a probe.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.set_home(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.set_home) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.set_home(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.set_home) instead."
 
         Args:
             probe: The probe to set home position.
@@ -436,9 +436,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def step_probe_site(self, probe: ProbePosition, idx: int) -> Tuple[str, float, float]:
         """Step to a specific probe site.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.step_site) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.step_site) instead."
         
         Each positioner can define n a number of predefined positions called "sites".
         This command initiates a step to such a site.
@@ -461,9 +461,9 @@ class ProbeCommandGroup(CommandGroupBase):
     def step_probe_site_first(self, probe: ProbePosition) -> Tuple[str, float, float]:
         """Step to the first probe site.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site_first(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.step_site_first) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site_first(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.step_site_first) instead."
 
         Each positioner can define n a number of predefined positions called "sites".
         This command initiates a step to the first site.
@@ -487,9 +487,9 @@ class ProbeCommandGroup(CommandGroupBase):
         Each positioner can define n a number of predefined positions called "sites".
         This command initiates a step to the next site.
 
-        !!! danger "Deprecated since Sentio 25.2"
-            This function is obsolete and will be removed in a future release. 
-            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site_next(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.step_site_next) instead.
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+            This function is obsolete and will be removed in a future release. \
+            Use [`[top|bottom].{east|west|north|south|northeast|northwest|southeast|southwest}.step_site_next(...)`](StageCommandGroup.md#sentio_prober_control.Sentio.CommandGroups.StageCommandGroup.StageCommandGroup.step_site_next) instead."
 
         Args:
             probe: The probe to step.

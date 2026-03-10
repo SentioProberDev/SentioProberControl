@@ -385,10 +385,6 @@ class Compensation(Enum):
         This enum is obsolete and may be removed in future versions.
 
         !!! danger "Duplicates: Compensation, CompensationMode, OnTheFlyMode, DieCompensationMode"
-
-        Reason:
-            Duplicated enum
-            use DieCompensationMode instead.
     """
     Lateral = 0
     Vertical = 1
@@ -748,8 +744,8 @@ class ElementType(Enum):
 
 class ExecuteAction(Enum):
     """
-        !!! danger "Deprecated since 2026-03-10"
-        This enum is now obsolete and may be removed in a future versions.
+        !!! danger "Deprecated since Sentio 26.1<br/>\
+        This enum is now obsolete and may be removed in a future versions."
     """
     Execute = 0
     Abort = 1
@@ -764,8 +760,8 @@ class ExecuteAction(Enum):
 
 class ExecuteCompensation(Enum):
     """
-        !!! danger "Deprecated since 2026-03-10"
-        This enum is now obsolete and may be removed in a future versions.
+        !!! danger "Deprecated since Sentio 26.1<br/>\
+        This enum is now obsolete and may be removed in a future versions."
     """
 
     AlignDie = 0

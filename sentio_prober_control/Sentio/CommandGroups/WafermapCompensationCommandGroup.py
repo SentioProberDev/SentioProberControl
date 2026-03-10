@@ -7,18 +7,18 @@ from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandG
 class WafermapCompensationCommandGroup(CommandGroupBase):
     """This command group bundles functions for setting up and using XY/Z compensation on the wafermap.
     
-        !!! danger "Deprecated since Sentio 25.2"
-        This command group is obsolete and will be removed in a future release. 
-        Use the vision.compensation command group instead
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+        This command group is obsolete and will be removed in a future release. \
+        Use the vision.compensation command group instead."
 
     """
 
     def topography(self, execute: ExecuteAction) -> Response:
         """Execute topography compensation.
 
-        !!! danger "Deprecated since Sentio 25.2"
-        This function is obsolete and will be removed in a future release. 
-        Use vision.compensation.enable instead
+        !!! danger "Deprecated since Sentio 25.2<br/>\
+        This function is obsolete and will be removed in a future release. \
+        Use vision.compensation.enable instead."
 
         Args:
             execute: The action to execute.
