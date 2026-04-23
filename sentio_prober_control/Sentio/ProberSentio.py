@@ -122,6 +122,9 @@ class SentioProber(ProberBase):
                     Compatibility.level = CompatibilityLevel.Sentio_25_1
                 elif major==25 and (minor==2 or (minor==1 and release==99)):
                     Compatibility.level = CompatibilityLevel.Sentio_25_2
+                elif major==26:
+                    # We do not have a compat level for 26 yet, but we know that it has to be at least 25.2, so we set it to 25.2 for now.
+                    Compatibility.level = CompatibilityLevel.Sentio_25_2
                 else:
                     Compatibility.level = CompatibilityLevel.Sentio_24_0
 

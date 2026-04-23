@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sentio_prober_control.Sentio.Enumerations import CompensationMode, CompensationType
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
