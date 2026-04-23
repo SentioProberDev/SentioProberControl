@@ -180,20 +180,28 @@ class StageCommandGroup(CommandGroupBase):
         """ Set the stage home position.
 
         Args:
-            x (float): The x position in micrometer.
-            y (float): The y position in micrometer.
-            site (ChuckSite): The chuck site to set the home position for.
+            x (float | None): The x position in micrometer.
+            y (float | None): The y position in micrometer.
+            site (ChuckSite | None): The chuck site to set the home position for.
 
         Returns:
             x (float): The x position in micrometer.
             y (float): The y position in micrometer.
             site (ChuckSite): The chuck site the home position was set for.
         """
-        if (x is None and y is not None) or (y is None and x is not None):
-            raise ValueError("If y is specified, x must also be specified (and vice versa).")
+
+        if (x is None) != (y is None):
+            raise ValueError("x and y must both be specified or both be None.")
 
         args : str = f"{x},{y}" if x is not None and y is not None else ""
-        args += f" {site.to_string()}" if site is not None else ""
+        if args=="":
+            # no x and y parameters, only site
+            args = site.to_string() if site is not None else ""
+        else:
+            # x and y are present, check if site is also present and add it to the arguments
+            if site is not None:
+                args += f",{site.to_string()}"
+
         self.comm.send(f"{self.__stage_selector}:set_home {args}")
 
         resp = Response.check_resp(self.comm.read_line())
