@@ -1,6 +1,7 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+from sentio_prober_control.Sentio.Enumerations import ChuckSite
 
 
 class AuxCleaningGroup(CommandGroupBase):
@@ -30,7 +31,18 @@ class AuxCleaningGroup(CommandGroupBase):
         Response.check_resp(self.comm.read_line())
 
 
-    def start(self, touchdowns: int | None = None) -> None:
+    def reset_touch_counter(self, cs: ChuckSite) -> None:
+        """Resets the touch counter of a cleaning pad
+
+        Args:
+            cs (ChuckSite): Enumerator defining the chuck site the cleaning pad is placed
+        """
+
+        self.comm.send(f"aux:cleaning:reset_touch_count {cs.toSentioAbbr()}")
+        Response.check_resp(self.comm.read_line())
+
+
+    def start(self, touchdowns: int | None = None) -> float:
         """Start the cleaning procedure.
 
         Args:
@@ -41,4 +53,9 @@ class AuxCleaningGroup(CommandGroupBase):
         else:
             self.comm.send(f"aux:cleaning:start {touchdowns}")
 
-        Response.check_resp(self.comm.read_line())
+        resp = Response.check_resp(self.comm.read_line())
+        try:
+            val = float(resp.message())
+            return val
+        except:
+            return -1.0
