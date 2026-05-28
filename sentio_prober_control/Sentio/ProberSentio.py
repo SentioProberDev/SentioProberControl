@@ -931,6 +931,21 @@ class SentioProber(ProberBase):
         self.comm.send(f"open_project {project}, {restore_heights}")
         Response.check_resp(self.comm.read_line())
 
+
+    def list_project_files(self) -> [str]:
+        """List all project files in SENTIO's default project folder.
+
+        Wraps SENTIO's "list_project_files" remote command.
+        """
+        self.comm.send("list_project_files")
+        resp = Response.check_resp(self.comm.read_line())
+
+        import csv
+        import io
+        reader = csv.reader(io.StringIO(resp.message()))
+        return next(reader)
+
+
     def query_command_status(self, cmd_id: int) -> Response:
         """Query the status of an async command.
 
