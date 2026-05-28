@@ -115,18 +115,22 @@ class SentioProber(ProberBase):
             if match:
                 version = match.group(1)
                 parts = version.split(".")
-                major = int(parts[0]) if len(parts) > 0 else None
-                minor = int(parts[1]) if len(parts) > 1 else None
-                release = int(parts[2]) if len(parts) > 2 else None
-                if major==25 and (minor==1 or (minor==0 and release==99)):
+                major = int(parts[0]) if len(parts) > 0 else 24
+                minor = int(parts[1]) if len(parts) > 1 else 0
+                release = int(parts[2]) if len(parts) > 2 else 0
+
+                v = (major, minor, release)
+                Compatibility.level = CompatibilityLevel.Sentio_24_0
+
+                if v >= (25, 0, 99):
                     Compatibility.level = CompatibilityLevel.Sentio_25_1
-                elif major==25 and (minor==2 or (minor==1 and release==99)):
+
+                if v >= (25, 1, 99):
                     Compatibility.level = CompatibilityLevel.Sentio_25_2
-                elif major==26:
-                    # We do not have a compat level for 26 yet, but we know that it has to be at least 25.2, so we set it to 25.2 for now.
-                    Compatibility.level = CompatibilityLevel.Sentio_25_2
-                else:
-                    Compatibility.level = CompatibilityLevel.Sentio_24_0
+
+                if v >= (26, 1, 99):
+                    Compatibility.level = CompatibilityLevel.Sentio_26_2
+
 
         # make sure there is a valid compatibility level now
         assert Compatibility.level != CompatibilityLevel.Auto, "Compatibility level could not be determined. Please set it manually."
@@ -937,6 +941,8 @@ class SentioProber(ProberBase):
 
         Wraps SENTIO's "list_project_files" remote command.
         """
+
+        Compatibility.assert_min(CompatibilityLevel.Sentio_26_2)
         self.comm.send("list_project_files")
         resp = Response.check_resp(self.comm.read_line())
 
