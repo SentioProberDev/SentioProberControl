@@ -15,6 +15,7 @@ class CompatibilityLevel(IntEnum):
     Sentio_24_0 = 1
     Sentio_25_1 = 2
     Sentio_25_2 = 3
+    Sentio_26_2 = 4
     Experimental = 99
 
 
