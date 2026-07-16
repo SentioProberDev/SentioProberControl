@@ -44,7 +44,7 @@ class VisionCommandGroup(ModuleCommandGroupBase):
         self.compensation = VisionCompensationGroup(prober)
         self.pattern = VisionPatternCommandGroup(prober)
 
-    def align_wafer(self, mode: AutoAlignCmd = AutoAlignCmd.AlignOnly) -> None:
+    def align_wafer(self, mode: AutoAlignCmd = AutoAlignCmd.AlignOnly, timeout: int = 180000) -> None:
         """Perform a wafer alignment.
 
         Args:
@@ -54,13 +54,20 @@ class VisionCommandGroup(ModuleCommandGroupBase):
             A Response object.
         """
 
-        # Sentio before 25.1 did not accept the explicit mode parameter "alignonly". It was only implicitly used when
-        # no parameter was given. This changed in 25.1 but i have to add this special treatment for backwards 
-        # compatibility. Sentio Versions after 25.1 will work with the else branch.
-        if mode==AutoAlignCmd.AlignOnly:
-            self.comm.send(f"vis:align_wafer")
+        # Sentio before 26.0.3 accepts only one parameter, either mode or timeout
+        # Limitation for Python interface was that only 'mode' could be submitted
+        # For Sentio 26.0.3 or higher (not 26.1), function only succeeds for default timeout (180000)
+        if timeout == 180000:
+            # Sentio before 25.1 did not accept the explicit mode parameter "alignonly". It was only implicitly used when
+            # no parameter was given. This changed in 25.1 but i have to add this special treatment for backwards 
+            # compatibility. Sentio Versions after 25.1 will work with the else branch.
+            if mode==AutoAlignCmd.AlignOnly:
+                self.comm.send(f"vis:align_wafer")
+            else:
+                self.comm.send(f"vis:align_wafer {mode.to_string()}")
         else:
-            self.comm.send(f"vis:align_wafer {mode.to_string()}")
+            # For Sentio 26.0.3 and higher (not 26.1): both parameters may be submitted
+            self.comm.send(f"vis:align_wafer {mode.to_string()},{str(timeout)}")
 
         Response.check_resp(self.comm.read_line())
 
