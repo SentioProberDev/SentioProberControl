@@ -1,6 +1,7 @@
 from sentio_prober_control.Sentio.Response import Response
 from sentio_prober_control.Sentio.ProberBase import ProberException
 from sentio_prober_control.Sentio.CommandGroups.CommandGroupBase import CommandGroupBase
+import sentio_prober_control.Sentio.Enumerations as enums
 
 
 class AuxCleaningGroup(CommandGroupBase):
@@ -41,4 +42,14 @@ class AuxCleaningGroup(CommandGroupBase):
         else:
             self.comm.send(f"aux:cleaning:start {touchdowns}")
 
+        Response.check_resp(self.comm.read_line())
+
+    def reset_touch_count(self, chuckSite : enums.ChuckSite) -> None:
+        """Resets the touchdown counter of a cleaning pad.
+
+        Args:
+            chuckSite (enum ChuckSite): The chuck site the cleaning pad is placed on
+        """
+
+        self.comm.send(f"aux:cleaning:reset_touch_count {chuckSite.to_string()}")
         Response.check_resp(self.comm.read_line())
