@@ -7,6 +7,21 @@ from sentio_prober_control.Sentio.Compatibility import Compatibility, Compatibil
 from sentio_prober_control.Sentio.CommandGroups.StageCommandGroup import StageCommandGroup
 
 
+def _positioner_reference(ref: XyReference | ZReference) -> str:
+    """Text of the position reference for move_positioner_xy/z and get_positioner_xy/z.
+
+    SENTIO before 25.2 reads the reference of these commands by its enum name: only the long
+    form is accepted, and the reference to the current position is called "Current" there.
+    """
+    if Compatibility.level >= CompatibilityLevel.Sentio_25_2:
+        return ref.to_string()
+
+    if ref.name == "Relative":
+        return "Current"
+
+    return ref.name
+
+
 class ProbeCommandGroup(CommandGroupBase):
     """This command group contains functions for working with motorized probes.
     You are not meant to instantiate this class directly. Access it via the probe 
@@ -43,7 +58,7 @@ class ProbeCommandGroup(CommandGroupBase):
     from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
     prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-    prober.probe.top.east.move_xy(XyReference.Current, 1000, 2000)
+    prober.probe.top.east.move_xy(XyReference.Relative, 1000, 2000)
     ```
     """
 
@@ -232,7 +247,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position in micrometer.
         """
 
-        self.comm.send(f"get_positioner_xy {probe.to_string()},{ref.to_string()}")
+        self.comm.send(f"get_positioner_xy {probe.to_string()},{_positioner_reference(ref)}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -253,10 +268,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position in micrometer.
         """
         
-        # Note: 
-        # Even in Sentio 24.x the ref parameter is expected in long form! This is why we use 
-        # CompatibilityLevel.Sentio_25_2 here.
-        self.comm.send(f"get_positioner_z {probe.to_string()},{ref.to_string(CompatibilityLevel.Sentio_25_2)}")
+        self.comm.send(f"get_positioner_z {probe.to_string()},{_positioner_reference(ref)}")
 
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
@@ -356,7 +368,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position after the move.
         """
 
-        self.comm.send(f"move_positioner_xy {probe.to_string()},{ref.to_string()},{x},{y}")
+        self.comm.send(f"move_positioner_xy {probe.to_string()},{_positioner_reference(ref)},{x},{y}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -378,10 +390,7 @@ class ProbeCommandGroup(CommandGroupBase):
             The z position after the move in micrometer (from zero).
         """
 
-        # Note:
-        # Even in Sentio 24.x the ref parameter is expected in long form! This is why we use
-        # CompatibilityLevel.Sentio_25_2 here.
-        self.comm.send(f"move_positioner_z {probe.to_string()},{ref.to_string(CompatibilityLevel.Sentio_25_2)},{z}")
+        self.comm.send(f"move_positioner_z {probe.to_string()},{_positioner_reference(ref)},{z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 

@@ -1,5 +1,28 @@
 Changes:
 
+Unreleased
+==========
+Position references: "Relative" replaces "Current" (SENTIO Redmine #20896, #20929)
+	XyReference.Relative, ZReference.Relative and ThetaReference.Relative are the names of the reference to the
+	current position. XyReference.Current, ZReference.Current and ThetaReference.Current remain as aliases, existing
+	scripts keep working.
+
+	New compatibility level CompatibilityLevel.Sentio_26_0 (SENTIO 26.0 and 26.1).
+
+	XyReference.to_string and ZReference.to_string take the compatibility level; it is the only conversion to text.
+	What is sent for the relative reference depends on the SENTIO version, this package works with every version:
+		SENTIO 26.0 and newer: long form, "Relative"
+		SENTIO 25.2 and 25.3:  long form, but "R" for the relative reference
+		older versions:        short form ("R"); move_probe_xy / get_probe_xy / move_probe_z / get_probe_z send
+		                       the enum name ("Current"), the only form these versions accept there
+	"Current" is no longer sent to SENTIO 25.2 or newer: move_chuck_z, get_chuck_z, move_scope_z and move_vce_z
+	read only the first letter and took it as contact. prober.move_chuck_z(ZReference.Current, z) moved relative
+	to the contact height instead of the current height.
+	XyReference is sent in the long form from SENTIO 25.2 on (was: always the short form).
+
+	Responses: "Relative" and "Current" are both read (ZReference.from_string also accepts the short forms,
+	XyReference.from_string also accepts "user").
+
 Version 26.2.0
 =============
 BREAKING CHANGE: SiPH positioner commands follow the remote command structure

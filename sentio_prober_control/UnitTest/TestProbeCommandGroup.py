@@ -37,8 +37,8 @@ class TestProbeCommandGroup(unittest.TestCase):
 
     def test_get_probe_xy(self):
         self.mock_comm.read_line.return_value = "0,0,1500,2500"
-        result = self.test_prober.probe.get_probe_xy(ProbePosition.West, XyReference.Current)
-        self.mock_comm.send.assert_called_with("get_positioner_xy West,Current")
+        result = self.test_prober.probe.get_probe_xy(ProbePosition.West, XyReference.Relative)
+        self.mock_comm.send.assert_called_with("get_positioner_xy West,Relative")
         self.assertEqual(result, (1500.0, 2500.0))
 
 

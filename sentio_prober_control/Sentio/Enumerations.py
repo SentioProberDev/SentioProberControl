@@ -3,6 +3,20 @@ from enum import Enum
 from sentio_prober_control.Sentio.Compatibility import CompatibilityLevel, Compatibility
 
 
+def _relative_reference_word(compat_level: CompatibilityLevel) -> str:
+    """ Word for the position reference "relative to the current position" in the long form.
+
+        SENTIO 26.0 and newer know the word "Relative" in every remote command. SENTIO 25.2 and 25.3
+        do not know it yet, and their name "Current" is read as "C" (contact / center) by the remote
+        commands that only evaluate the first letter (move_chuck_z, get_chuck_z, move_scope_z,
+        move_vce_z). "R" is the one spelling all commands of these versions understand.
+    """
+    if compat_level >= CompatibilityLevel.Sentio_26_0:
+        return "Relative"
+
+    return "R"
+
+
 class AccessLevel(Enum):
     """Specifies a SENTIO access level.
 
@@ -1754,18 +1768,20 @@ class ThetaReference(Enum):
     Attributes:
         Zero (0): Use zero of the theta axis.
         Align (1): Use the trained site of "home" angle as the reference.
-        Current (2): Use the current theta position as reference.
+        Relative (2): Use the current theta position as reference.
+        Current (2): Former name of Relative, kept as an alias.
     """
 
     Zero = 0
     Align = 1
+    Relative = 2
     Current = 2
 
     def to_string(self):
         switcher = {
             ThetaReference.Zero: "Z",
             ThetaReference.Align: "S",
-            ThetaReference.Current: "R",
+            ThetaReference.Relative: "R",
         }
         return switcher.get(self, "Invalid chuck theta reference")
 
@@ -1958,7 +1974,8 @@ class XyReference(Enum):
         Center (2): Use center position as reference.
         Zero (3): Use absolute stage coordinates for the current work position.
         UserDefined (4): Use user defined coordinate system.
-        Current (5): Use curent position as reference.
+        Relative (5): Use curent position as reference.
+        Current (5): Former name of Relative, kept as an alias.
         RealPos (6): for internal use only.
     """
 
@@ -1967,19 +1984,39 @@ class XyReference(Enum):
     Center = 2
     Zero = 3
     UserDefined = 4
+    Relative = 5
     Current = 5
     RealPos = 6
 
-    def to_string(self):
-        switcher = {
-            XyReference.Machine: "M",
-            XyReference.Home: "H",
-            XyReference.Center: "C",
-            XyReference.Zero: "Z",
-            XyReference.UserDefined: "U",
-            XyReference.Current: "R", 
-            XyReference.RealPos: "A",
-        }
+    def to_string(self, compat_level : CompatibilityLevel = CompatibilityLevel.Auto) -> str:
+        """ Convert to the text the given SENTIO version expects as a remote command parameter. """
+        if compat_level == CompatibilityLevel.Auto:
+            compat_level = Compatibility.level
+
+        if compat_level < CompatibilityLevel.Sentio_25_2:
+            switcher = {
+                XyReference.Machine: "M",
+                XyReference.Home: "H",
+                XyReference.Center: "C",
+                XyReference.Zero: "Z",
+                XyReference.UserDefined: "U",
+                XyReference.Relative: "R",
+                XyReference.RealPos: "A",
+            }
+        else:
+            # SENTIO >= 25.2 accepts the long form.
+            # RealPos stays short: move_scope_xy of SENTIO 25.x reads only the first letter and
+            # would take "RealPos" as "R" (relative).
+            switcher = {
+                XyReference.Machine: "Machine",
+                XyReference.Home: "Home",
+                XyReference.Center: "Center",
+                XyReference.Zero: "Zero",
+                XyReference.UserDefined: "UserDefined",
+                XyReference.Relative: _relative_reference_word(compat_level),
+                XyReference.RealPos: "A",
+            }
+
         return switcher.get(self, "Invalid xy reference")
 
     @staticmethod
@@ -1995,10 +2032,11 @@ class XyReference(Enum):
             "z":           XyReference.Zero,
             "zero":        XyReference.Zero,
             "u":           XyReference.UserDefined,
+            "user":        XyReference.UserDefined,
             "userdefined": XyReference.UserDefined,
-            "r":           XyReference.Current, 
-            "relative":    XyReference.Current, 
-            "current":     XyReference.Current, 
+            "r":           XyReference.Relative,
+            "relative":    XyReference.Relative,
+            "current":     XyReference.Relative,
             "a":           XyReference.RealPos,
             "realpos":     XyReference.RealPos,
         }
@@ -2090,7 +2128,8 @@ class ZReference(Enum):
         Separation (1): Use relative chuck z coordinated with respect to the chucks separation height.
         Hover (2): Use relative chuck z coordinated with respect to the chucks hover height.
         Zero (3): Use absolute chuck z coordinates with respect the the physical axis zero positon.
-        Current (4): Use relative chuck z coordinated with respect to the current position.
+        Relative (4): Use relative chuck z coordinated with respect to the current position.
+        Current (4): Former name of Relative, kept as an alias.
         Vce1 (5): For internal and debug use only
         Vce2 (6): For internal and debug use only
         Ready (7): For internal and debug use only
@@ -2101,6 +2140,7 @@ class ZReference(Enum):
     Separation = 1
     Hover = 2
     Zero = 3
+    Relative = 4
     Current = 4
     Vce1 = 5
     Vce2 = 6
@@ -2122,7 +2162,7 @@ class ZReference(Enum):
                 ZReference.Separation: "S",
                 ZReference.Hover: "H",
                 ZReference.Zero: "Z",
-                ZReference.Current: "R",
+                ZReference.Relative: "R",
                 ZReference.Vce1: "VCE01",
                 ZReference.Vce2: "VCE02",
                 ZReference.Ready: "Ready",
@@ -2137,7 +2177,7 @@ class ZReference(Enum):
                 ZReference.Separation: "Separation",
                 ZReference.Hover: "Hover",
                 ZReference.Zero: "Zero",
-                ZReference.Current: "Current",
+                ZReference.Relative: _relative_reference_word(compat_level),
                 ZReference.Vce1: "VCE01",
                 ZReference.Vce2: "VCE02",
                 ZReference.Ready: "Ready",
@@ -2145,16 +2185,22 @@ class ZReference(Enum):
             }
 
         return switcher.get(self, "Invalid chuck z reference")
-    
+
     @staticmethod
     def from_string(abbr: str) -> "ZReference":
         """ Convert a string to a ZReference. """
         mapping = {
+            "c" :               ZReference.Contact,
             "contact" :         ZReference.Contact,
+            "s" :               ZReference.Separation,
             "separation" :      ZReference.Separation,
+            "h":                ZReference.Hover,
             "hover":            ZReference.Hover,
+            "z":                ZReference.Zero,
             "zero":             ZReference.Zero,
-            "current":          ZReference.Current,
+            "r":                ZReference.Relative,
+            "relative":         ZReference.Relative,
+            "current":          ZReference.Relative,
             "vce01":            ZReference.Vce1,
             "vce02":            ZReference.Vce2,
             "ready":            ZReference.Ready,

@@ -129,6 +129,9 @@ class SentioProber(ProberBase):
                 if v >= (25, 1, 99):
                     Compatibility.level = CompatibilityLevel.Sentio_25_2
 
+                if v >= (25, 3, 99):
+                    Compatibility.level = CompatibilityLevel.Sentio_26_0
+
                 if v >= (26, 1, 99):
                     Compatibility.level = CompatibilityLevel.Sentio_26_2
 

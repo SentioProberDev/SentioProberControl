@@ -31,7 +31,7 @@ class TestCompatibilityLevelSelection(unittest.TestCase):
         self.mock_comm.read_line.return_value = "0,0,Version: 26.0.4"
         SentioProber(self.mock_comm, CompatibilityLevel.Auto)
         self.mock_comm.send.assert_any_call("status:get_version")
-        self.assertEqual(Compatibility.level, CompatibilityLevel.Sentio_25_2)
+        self.assertEqual(Compatibility.level, CompatibilityLevel.Sentio_26_0)
 
 
 if __name__ == "__main__":
