@@ -34,11 +34,25 @@ class TestRelativeReferenceNames(unittest.TestCase):
     def test_xy_reference_reads_user(self):
         self.assertEqual(XyReference.from_string("user"), XyReference.UserDefined)
 
+    def test_to_string_is_the_only_conversion_to_text(self):
+        # One conversion per enum, controlled by the compatibility level. A second one (to_short_string,
+        # to_long_string, ...) lets every command pick its own spelling again.
+        for enum_type in (XyReference, ZReference, ThetaReference):
+            conversions = [name for name in vars(enum_type) if name.startswith("to_")]
+            self.assertEqual(conversions, ["to_string"], enum_type.__name__)
+
 
 class TestRelativeReferenceIsSentAsSentioExpectsIt(unittest.TestCase):
-    """A relative reference is sent with the words every SENTIO version understands, never as "Relative"."""
+    """What is sent for a relative reference depends on the SENTIO version; it must work with every version.
 
-    ALL_LEVELS = (CompatibilityLevel.Sentio_24_0, CompatibilityLevel.Sentio_25_2, CompatibilityLevel.Sentio_26_2)
+        before 25.2:   short form "R"; the positioner commands need the enum name "Current"
+        25.2 and 25.3: long form, but "R" for the relative reference ("Relative" is not known yet and "Current"
+                       is read as contact by the commands that only evaluate the first letter)
+        from 26.0:     long form, "Relative"
+    """
+
+    BEFORE_25_2 = CompatibilityLevel.Sentio_24_0, CompatibilityLevel.Sentio_25_1
+    FROM_26_0 = CompatibilityLevel.Sentio_26_0, CompatibilityLevel.Sentio_26_2
 
     def tearDown(self):
         Compatibility.level = CompatibilityLevel.Auto
@@ -52,62 +66,104 @@ class TestRelativeReferenceIsSentAsSentioExpectsIt(unittest.TestCase):
     def _sent(self) -> str:
         return self.mock_comm.send.call_args.args[0]
 
-    def test_legacy_z_commands_send_the_short_form_in_every_version(self):
-        # SENTIO up to 26.x reads only the first letter in these commands: "Current" would mean contact.
-        for level in self.ALL_LEVELS:
+    def _words(self, before_25_2: str, sentio_25_2: str, from_26_0: str) -> dict:
+        words = {level: before_25_2 for level in self.BEFORE_25_2}
+        words[CompatibilityLevel.Sentio_25_2] = sentio_25_2
+        words.update({level: from_26_0 for level in self.FROM_26_0})
+        return words
+
+    def test_legacy_z_commands(self):
+        relative = self._words("R", "R", "Relative")
+        contact = self._words("C", "Contact", "Contact")
+        for level in relative:
             prober = self._prober(level)
             self.mock_comm.read_line.return_value = "0,0,100.0"
 
             prober.move_chuck_z(ZReference.Relative, -50)
-            self.assertEqual(self._sent(), "move_chuck_z R, -50")
+            self.assertEqual(self._sent(), f"move_chuck_z {relative[level]}, -50")
 
             prober.move_chuck_z(ZReference.Current, -50)
-            self.assertEqual(self._sent(), "move_chuck_z R, -50")
+            self.assertEqual(self._sent(), f"move_chuck_z {relative[level]}, -50")
 
             prober.move_chuck_z(ZReference.Contact, -50)
-            self.assertEqual(self._sent(), "move_chuck_z C, -50")
+            self.assertEqual(self._sent(), f"move_chuck_z {contact[level]}, -50")
+
+            prober.get_chuck_z(ZReference.Relative)
+            self.assertEqual(self._sent(), f"get_chuck_z {relative[level]}")
 
             prober.move_scope_z(ZReference.Relative, 100)
-            self.assertEqual(self._sent(), "move_scope_z R, 100")
+            self.assertEqual(self._sent(), f"move_scope_z {relative[level]}, 100")
 
     def test_legacy_xy_commands(self):
-        for level in self.ALL_LEVELS:
+        relative = self._words("R", "R", "Relative")
+        zero = self._words("Z", "Zero", "Zero")
+        for level in relative:
             prober = self._prober(level)
             self.mock_comm.read_line.return_value = "0,0,10.0,20.0"
-            prober.move_chuck_xy(XyReference.Relative, 10, 20)
-            self.assertEqual(self._sent(), "move_chuck_xy R, 10, 20")
 
-    def test_positioner_commands_send_the_long_form(self):
-        # move_positioner_xy / move_positioner_z of old SENTIO versions only know the long form "Current".
-        for level in self.ALL_LEVELS:
+            prober.move_chuck_xy(XyReference.Relative, 10, 20)
+            self.assertEqual(self._sent(), f"move_chuck_xy {relative[level]}, 10, 20")
+
+            prober.move_chuck_xy(XyReference.Zero, 10, 20)
+            self.assertEqual(self._sent(), f"move_chuck_xy {zero[level]}, 10, 20")
+
+    def test_positioner_commands(self):
+        # SENTIO before 25.2 reads the reference of these commands by its enum name.
+        relative = self._words("Current", "R", "Relative")
+        for level in relative:
             prober = self._prober(level)
 
             self.mock_comm.read_line.return_value = "0,0,1.0,2.0"
             prober.probe.move_probe_xy(ProbePosition.East, XyReference.Relative, 1, 2)
-            self.assertEqual(self._sent(), "move_positioner_xy East,Current,1,2")
+            self.assertEqual(self._sent(), f"move_positioner_xy East,{relative[level]},1,2")
+
+            prober.probe.get_probe_xy(ProbePosition.East, XyReference.Zero)
+            self.assertEqual(self._sent(), "get_positioner_xy East,Zero")
 
             self.mock_comm.read_line.return_value = "0,0,3.0"
             prober.probe.move_probe_z(ProbePosition.East, ZReference.Relative, 3)
-            self.assertEqual(self._sent(), "move_positioner_z East,Current,3")
+            self.assertEqual(self._sent(), f"move_positioner_z East,{relative[level]},3")
+
+            prober.probe.get_probe_z(ProbePosition.East, ZReference.Contact)
+            self.assertEqual(self._sent(), "get_positioner_z East,Contact")
 
     def test_generic_stage_commands(self):
-        for level in (CompatibilityLevel.Sentio_25_2, CompatibilityLevel.Sentio_26_2):
+        relative = {
+            CompatibilityLevel.Sentio_25_2: "R",
+            CompatibilityLevel.Sentio_26_0: "Relative",
+            CompatibilityLevel.Sentio_26_2: "Relative",
+        }
+        for level, word in relative.items():
             prober = self._prober(level)
 
             self.mock_comm.read_line.return_value = "0,0,10.0,20.0,Current"
             prober.chuck.move_xy(XyReference.Relative, 10, 20)
-            self.assertEqual(self._sent(), "chuck:move_xy R,10,20")
+            self.assertEqual(self._sent(), f"chuck:move_xy {word},10,20")
 
             self.mock_comm.read_line.return_value = "0,0,5.0,Current"
             prober.chuck.move_z(ZReference.Relative, 5)
-            self.assertEqual(self._sent(), "chuck:move_z Current,5")
+            self.assertEqual(self._sent(), f"chuck:move_z {word},5")
 
-    def test_relative_is_never_sent(self):
-        # Not every SENTIO version contains the fix for #20929; "Relative" is misread by some of them.
-        for level in self.ALL_LEVELS:
-            for text in (XyReference.Relative.to_string(), XyReference.Relative.to_long_string(),
-                         ZReference.Relative.to_string(level), ZReference.Relative.to_short_string()):
-                self.assertNotEqual(text, "Relative")
+    def test_current_is_never_sent_to_sentio_25_2_or_newer(self):
+        # move_chuck_z, get_chuck_z, move_scope_z and move_vce_z read "Current" as contact.
+        for level in (CompatibilityLevel.Sentio_25_2, *self.FROM_26_0):
+            self.assertNotEqual(ZReference.Relative.to_string(level), "Current")
+            self.assertNotEqual(XyReference.Relative.to_string(level), "Current")
+
+    def test_sentio_version_selects_the_level(self):
+        levels = {
+            "25.1.0": CompatibilityLevel.Sentio_25_1,
+            "25.2.1": CompatibilityLevel.Sentio_25_2,
+            "25.3.0": CompatibilityLevel.Sentio_25_2,
+            "26.0.0": CompatibilityLevel.Sentio_26_0,
+            "26.1.3": CompatibilityLevel.Sentio_26_0,
+            "26.2.0": CompatibilityLevel.Sentio_26_2,
+        }
+        for version, level in levels.items():
+            mock_comm = MagicMock(spec=CommunicatorTcpIp)
+            mock_comm.read_line.return_value = f"0,0,Version: {version}"
+            SentioProber(mock_comm, CompatibilityLevel.Auto)
+            self.assertEqual(Compatibility.level, level, version)
 
 
 class TestRelativeReferenceInResponses(unittest.TestCase):

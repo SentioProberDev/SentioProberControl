@@ -129,6 +129,9 @@ class SentioProber(ProberBase):
                 if v >= (25, 1, 99):
                     Compatibility.level = CompatibilityLevel.Sentio_25_2
 
+                if v >= (25, 3, 99):
+                    Compatibility.level = CompatibilityLevel.Sentio_26_0
+
                 if v >= (26, 1, 99):
                     Compatibility.level = CompatibilityLevel.Sentio_26_2
 
@@ -468,7 +471,7 @@ class SentioProber(ProberBase):
             height (float): The actual z position of the chuck in micrometer (from axis zero).
         """
 
-        self.comm.send(f"get_chuck_z {ref.to_short_string()}")
+        self.comm.send(f"get_chuck_z {ref.to_string()}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -806,7 +809,7 @@ class SentioProber(ProberBase):
         Returns:
             The actual z position in micrometer after the move.
         """
-        self.comm.send(f"move_chuck_z {ref.to_short_string()}, {z}")
+        self.comm.send(f"move_chuck_z {ref.to_string()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -891,7 +894,7 @@ class SentioProber(ProberBase):
         Returns:
             The actual z position in micrometer after the move.
         """
-        self.comm.send(f"move_scope_z {ref.to_short_string()}, {z}")
+        self.comm.send(f"move_scope_z {ref.to_string()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 
@@ -911,7 +914,7 @@ class SentioProber(ProberBase):
                 f"This command can only be applied to vce stages! (stage={0})"
             )
 
-        self.comm.send(f"move_vce_z {stage.to_string()}, {ref.to_short_string()}, {z}")
+        self.comm.send(f"move_vce_z {stage.to_string()}, {ref.to_string()}, {z}")
         resp = Response.check_resp(self.comm.read_line())
         return float(resp.message())
 

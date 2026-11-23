@@ -3,6 +3,20 @@ from enum import Enum
 from sentio_prober_control.Sentio.Compatibility import CompatibilityLevel, Compatibility
 
 
+def _relative_reference_word(compat_level: CompatibilityLevel) -> str:
+    """ Word for the position reference "relative to the current position" in the long form.
+
+        SENTIO 26.0 and newer know the word "Relative" in every remote command. SENTIO 25.2 and 25.3
+        do not know it yet, and their name "Current" is read as "C" (contact / center) by the remote
+        commands that only evaluate the first letter (move_chuck_z, get_chuck_z, move_scope_z,
+        move_vce_z). "R" is the one spelling all commands of these versions understand.
+    """
+    if compat_level >= CompatibilityLevel.Sentio_26_0:
+        return "Relative"
+
+    return "R"
+
+
 class AccessLevel(Enum):
     """Specifies a SENTIO access level.
 
@@ -1974,29 +1988,36 @@ class XyReference(Enum):
     Current = 5
     RealPos = 6
 
-    def to_string(self):
-        switcher = {
-            XyReference.Machine: "M",
-            XyReference.Home: "H",
-            XyReference.Center: "C",
-            XyReference.Zero: "Z",
-            XyReference.UserDefined: "U",
-            XyReference.Relative: "R",
-            XyReference.RealPos: "A",
-        }
+    def to_string(self, compat_level : CompatibilityLevel = CompatibilityLevel.Auto) -> str:
+        """ Convert to the text the given SENTIO version expects as a remote command parameter. """
+        if compat_level == CompatibilityLevel.Auto:
+            compat_level = Compatibility.level
+
+        if compat_level < CompatibilityLevel.Sentio_25_2:
+            switcher = {
+                XyReference.Machine: "M",
+                XyReference.Home: "H",
+                XyReference.Center: "C",
+                XyReference.Zero: "Z",
+                XyReference.UserDefined: "U",
+                XyReference.Relative: "R",
+                XyReference.RealPos: "A",
+            }
+        else:
+            # SENTIO >= 25.2 accepts the long form.
+            # RealPos stays short: move_scope_xy of SENTIO 25.x reads only the first letter and
+            # would take "RealPos" as "R" (relative).
+            switcher = {
+                XyReference.Machine: "Machine",
+                XyReference.Home: "Home",
+                XyReference.Center: "Center",
+                XyReference.Zero: "Zero",
+                XyReference.UserDefined: "UserDefined",
+                XyReference.Relative: _relative_reference_word(compat_level),
+                XyReference.RealPos: "A",
+            }
+
         return switcher.get(self, "Invalid xy reference")
-
-    def to_long_string(self) -> str:
-        """ Convert to the long form.
-
-            Needed for remote commands that only accept the long form in older SENTIO versions
-            (move_positioner_xy, get_positioner_xy). The reference to the current position is sent
-            as "Current": every SENTIO version understands that word, "Relative" only some.
-        """
-        if self == XyReference.Relative:
-            return "Current"
-
-        return self.name
 
     @staticmethod
     def from_string(abbr: str) -> "XyReference":
@@ -2151,14 +2172,12 @@ class ZReference(Enum):
             # This is for SENTIO >=25.2.
             # Newer versions of SENTIO always accept both long and short versions. 
             # For clarity the long version is used exclusively.
-            # The reference to the current position is sent as "Current": every SENTIO version
-            # understands that word, "Relative" only some.
             switcher = {
                 ZReference.Contact: "Contact",
                 ZReference.Separation: "Separation",
                 ZReference.Hover: "Hover",
                 ZReference.Zero: "Zero",
-                ZReference.Relative: "Current",
+                ZReference.Relative: _relative_reference_word(compat_level),
                 ZReference.Vce1: "VCE01",
                 ZReference.Vce2: "VCE02",
                 ZReference.Ready: "Ready",
@@ -2166,15 +2185,6 @@ class ZReference(Enum):
             }
 
         return switcher.get(self, "Invalid chuck z reference")
-
-    def to_short_string(self) -> str:
-        """ Convert to the short form.
-
-            Used for the remote commands move_chuck_z, get_chuck_z, move_scope_z and move_vce_z. These
-            commands only evaluate the first letter in SENTIO versions up to 26.x. The word "Current"
-            would be read as "C" (contact) there, the short form works in every version.
-        """
-        return self.to_string(CompatibilityLevel.Sentio_24_0)
 
     @staticmethod
     def from_string(abbr: str) -> "ZReference":
