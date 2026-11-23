@@ -43,7 +43,7 @@ class ProbeCommandGroup(CommandGroupBase):
     from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
     prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-    prober.probe.top.east.move_xy(XyReference.Current, 1000, 2000)
+    prober.probe.top.east.move_xy(XyReference.Relative, 1000, 2000)
     ```
     """
 
@@ -232,7 +232,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position in micrometer.
         """
 
-        self.comm.send(f"get_positioner_xy {probe.to_string()},{ref.to_string()}")
+        self.comm.send(f"get_positioner_xy {probe.to_string()},{ref.to_long_string()}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])
@@ -356,7 +356,7 @@ class ProbeCommandGroup(CommandGroupBase):
             A tuple containing the x and y position after the move.
         """
 
-        self.comm.send(f"move_positioner_xy {probe.to_string()},{ref.to_string()},{x},{y}")
+        self.comm.send(f"move_positioner_xy {probe.to_string()},{ref.to_long_string()},{x},{y}")
         resp = Response.check_resp(self.comm.read_line())
         tok = resp.message().split(",")
         return float(tok[0]), float(tok[1])

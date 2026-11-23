@@ -21,7 +21,7 @@ class ScopeCommandGroup(StageCommandGroup):
     from sentio_prober_control.Sentio.ProberSentio import SentioProber
 
     prober = SentioProber.create_prober("tcpip", "127.0.0.1:35555")
-    prober.scope.move_probe_xy(XyReference.Current, 1000, 2000)
+    prober.scope.move_probe_xy(XyReference.Relative, 1000, 2000)
     ```
     """
 
